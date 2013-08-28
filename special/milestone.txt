@@ -1,0 +1,6 @@
+Milestone - What I wish to add to Znote AAC in the future. (Znote AAC TODO/wish list).
+- Character auction page for donation points.
+- TFS 1.0 support. 
+- Semi-live communication with OT.
+- Live ban, kick, broadcast message, open/close server and Custom commands. 
+- Sub-page system. 
