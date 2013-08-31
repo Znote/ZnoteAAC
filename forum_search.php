@@ -16,23 +16,24 @@ $type = getValue($_GET['type']);
 if ($type !== false) $type = (int)$type;
 $text = getvalue($_GET['text']);
 
-$text = explode(' ', $text);
 $textTitleSql = "";
 $textPostSql = "";
 $textAuthorSql = "";
-for ($i = 0; $i < count($text); $i++) {
-	if ($i != count($text) -1) {
-		$textTitleSql .= "`title` LIKE '%". $text[$i] ."%' AND ";
-		$textPostSql .= "`text` LIKE '%". $text[$i] ."%' AND ";
-		$textAuthorSql .= "`player_name` LIKE '%". $text[$i] ."%' AND ";
-	} else {
-		$textTitleSql .= "`title` LIKE '%". $text[$i] ."%'";
-		$textPostSql .= "`text` LIKE '%". $text[$i] ."%'";
-		$textAuthorSql .= "`player_name` LIKE '%". $text[$i] ."%'";
+if ($text !== false) {
+	$text = explode(' ', $text);
+	for ($i = 0; $i < count($text); $i++) {
+		if ($i != count($text) -1) {
+			$textTitleSql .= "`title` LIKE '%". $text[$i] ."%' AND ";
+			$textPostSql .= "`text` LIKE '%". $text[$i] ."%' AND ";
+			$textAuthorSql .= "`player_name` LIKE '%". $text[$i] ."%' AND ";
+		} else {
+			$textTitleSql .= "`title` LIKE '%". $text[$i] ."%'";
+			$textPostSql .= "`text` LIKE '%". $text[$i] ."%'";
+			$textAuthorSql .= "`player_name` LIKE '%". $text[$i] ."%'";
+		}
 	}
+	//data_dump($text, array($textTitleSql, $textPostSql, $textAuthorSql), "search");
 }
-
-data_dump($text, array($textTitleSql, $textPostSql, $textAuthorSql), "search");
 
 ?>
 <h1>Search forum</h1>
@@ -204,4 +205,5 @@ if ($type !== false && $text !== false && $type <= 4 || $type > 4 && $type <= 6)
 	} else echo "No results.";
 } else echo "<br><b>You must fill in all fields!</b>";
 
-include 'layout/overall/footer.php'; ?>
+include 'layout/overall/footer.php'; 
+?>
