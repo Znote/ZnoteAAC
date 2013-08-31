@@ -4,7 +4,7 @@
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
 	// TFS 0.4 = TFS_03
 	// TFS 1.0 = TFS_10 (Under developement)
-	$config['TFSVersion'] = 'TFS_10';
+	$config['TFSVersion'] = 'TFS_03';
 	
 	$config['site_title'] = 'Znote AAC';
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
@@ -14,13 +14,13 @@
 	// ------------------------ \\
 	
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'new';
+	$config['sqlUser'] = 'username';
 	
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'new';
+	$config['sqlPassword'] = 'password';
 	
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'new';
+	$config['sqlDatabase'] = 'database';
 	
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
@@ -62,16 +62,7 @@
 	// Town ids and names: (In RME map editor, open map, click CTRL + T to view towns, their names and their IDs. 
 	// townID => 'townName' etc: ['3'=>'Thais']
 	$config['towns'] = array(
-		0 => 'Town 0',
-		1 => 'Town 1',
-		2 => 'Town 2',
-		3 => 'Town 3',
-		4 => 'Town 4',
-		5 => 'Town 5',
-		6 => 'Town 6',
-		7 => 'Town 7',
-		8 => 'Town 8',
-		9 => 'Town 9',
+		2 => 'Thyrfing',
 	);
 	
 	// Leave on black square in map and player should get teleported to their selected town.
@@ -108,13 +99,13 @@
 	$config['available_vocations'] = array(1, 2, 3, 4);
 	
 	// Available towns (specify town ids, etc: (0, 1, 2); to display 3 town options (town id 0, 1 and 2).
-	$config['available_towns'] = array(1);
+	$config['available_towns'] = array(2);
 	
 	$config['level'] = 8;
 	$config['health'] = 185;
-	$config['mana'] = 35;
+	$config['mana'] = 40;
 	$config['cap'] = 435;
-	$config['soul'] = 0;
+	$config['soul'] = 100;
 	
 	$config['maleOutfitId'] = 128;
 	$config['femaleOutfitId'] = 138;
@@ -122,9 +113,9 @@
 	// No vocation info (if user select vocation id 0, we force thees configurations on him
 	$config['nvlevel'] = 1;
 	$config['nvHealth'] = 150;
-	$config['nvMana'] = 0;
+	$config['nvMana'] = 5;
 	$config['nvCap'] = 400;
-	$config['nvSoul'] = 0;
+	$config['nvSoul'] = 100;
 	
 	$config['nvForceTown'] = 0; // Force a town to no vocation even though he selected something else? 0 = no, 1 = yes.
 	$config['nvTown'] = 0; // Town id to force no vocations to get to, if nvForceTown is 1.
@@ -154,7 +145,7 @@
 		);
 
 	$config['validate_IP'] = true; // Only allow legal IP addresses to register and create character.
-	$config['salt'] = false; // Some noob 0.3.6 servers don't support salt.
+	$config['salt'] = true; // Some noob 0.3.6 servers don't support salt.
 	
 	// Restricted names
 	$config['invalidNameTags'] = array("god", "gm", "cm", "gamemaster", "hoster", "admin", "admim", "adm", "owner", "staff");
@@ -186,13 +177,13 @@
 	$config['port'] = 7171; // Port number to connect to your OT.
 	
 	// How often do you want highscores to update?
-	$config['cache_lifespan'] = 60 * 15; // 15 minutes.
+	$config['cache_lifespan'] = 1;//60 * 15; // 15 minutes.
 	
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
 		'otland0',
 		'otland1',
-		'znote'
+		//'znote'
 	);
 	
 	// Built-in FORUM
@@ -413,6 +404,18 @@
 		'imageType' => 'gif',
 	);
 
+	//////////
+	/// Let players sell characters.
+	/////////
+	$config['shop_auction'] = array(
+			'characterAuction' => true, // Enable/disable this system
+			'requiredLevel' => 50, // Minimum level of sold character
+			'leastValue' => 10, // Lowest donation points a char can be sold for.
+			'leastTime' => 24, // In hours. False to disable.
+			// leastTime = Lowest duration of time an auctioned player has to be 
+			// sellable before auctioneer can claim character back.
+		);
+	
 	// If useDB is false, this array list will be used for shop offers.
 	$config['shop_offers'] = array(
 		// offer 1

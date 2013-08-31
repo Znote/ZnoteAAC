@@ -69,7 +69,7 @@ if (empty($_POST) === false) {
 					<?php
 					foreach ($array as $value) {
 						// start foreach
-						if ($value['group_id'] < 2) {
+						if ($config['TFSVersion'] == 'TFS_10' || $value['group_id'] < 2) {
 							echo '<tr>';
 							echo '<td><a href="characterprofile.php?name='. $value['name'] .'">'. $value['name'] .'</a></td>';
 							if ($skillid == 7) echo '<td>'. $value['level'] .'</td>';
