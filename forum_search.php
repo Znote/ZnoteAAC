@@ -3,6 +3,21 @@
 // Search CONFIG
 $searchResults = 30; // How many max search results
 
+/* Below HTML CODE = Plugin you can put anywhere in Znote AAC where you want search.
+<h1>Search forum</h1>
+<form action="forum_search.php" method="get">
+	<select name="type">
+		<option value="1">Title</option>
+		<option value="2">Post</option>
+		<option value="3">Author (threads)</option>
+		<option value="4">Author (posts)</option>
+		<option value="5">Latest Posts</option>
+		<option value="6">Latest Threads</option>
+	</select>
+	<input type="text" name="text" placeholder="Search string">
+	<input type="submit" value="Search">
+</form>
+*/
 function stripBBCode($text_to_search) {
 	$pattern = '|[[\/\!]*?[^\[\]]*?]|si';
 	$replace = '';

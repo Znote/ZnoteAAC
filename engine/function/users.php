@@ -834,7 +834,7 @@ function user_character_list($account_id) {
 			
 			// Make lastlogin human read-able. 
 			if ($characters[$i]['lastlogin'] != 0) {
-				$characters[$i]['lastlogin'] = date(config('date'),$characters[$i]['lastlogin']);
+				$characters[$i]['lastlogin'] = getClock($characters[$i]['lastlogin'], true, false);
 			} else {
 				$characters[$i]['lastlogin'] = 'Never.';
 			}
