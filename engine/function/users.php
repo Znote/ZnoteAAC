@@ -273,7 +273,11 @@ function shop_account_gender_tickets($accid) {
 //
 function guild_remove_member($cid) {
 	$cid = (int)$cid;
-	mysql_query("UPDATE `players` SET `rank_id`='0' WHERE `id`=$cid") or die(mysql_error());
+	mysql_update("UPDATE `players` SET `rank_id`='0' WHERE `id`=$cid");
+}
+function guild_remove_member_10($cid) {
+	$cid = (int)$cid;
+	mysql_update("DELETE FROM `guild_membership` WHERE `player_id`='$cid' LIMIT 1;");
 }
 
 // Change guild rank name.
@@ -290,7 +294,6 @@ function guild_change_leader($nCid, $oCid) {
 	$oCid = (int)$oCid;
 	$gid = guild_leader_gid($oCid);
 	$ranks = get_guild_rank_data($gid);
-	
 	$leader_rid = 0;
 	$vice_rid = 0;
 	
@@ -306,9 +309,15 @@ function guild_change_leader($nCid, $oCid) {
 	
 	// Verify that we found the rank ids for vice leader and leader.
 	if ($status) {
+		
 		// Update players and set their new rank id
-		mysql_query("UPDATE `players` SET `rank_id`='$leader_rid' WHERE `id`=$nCid") or die(mysql_error());
-		mysql_query("UPDATE `players` SET `rank_id`='$vice_rid' WHERE `id`=$oCid") or die(mysql_error());
+		if (config('TFSVersion') !== 'TFS_10') {
+			mysql_update("UPDATE `players` SET `rank_id`='$leader_rid' WHERE `id`=$nCid LIMIT 1;");
+			mysql_update("UPDATE `players` SET `rank_id`='$vice_rid' WHERE `id`=$oCid LIMIT 1;");
+		} else {
+			mysql_update("UPDATE `guild_membership` SET `rank_id`='$leader_rid' WHERE `player_id`=$nCid LIMIT 1;");
+			mysql_update("UPDATE `guild_membership` SET `rank_id`='$vice_rid' WHERE `player_id`=$oCid LIMIT 1;");
+		}
 		
 		// Update guilds set new ownerid
 		guild_new_leader($nCid, $gid);
@@ -353,36 +362,50 @@ function guild_delete($gid) {
 // Player leave guild
 function guild_player_leave($cid) {
 	$cid = (int)$cid;
-	mysql_query("UPDATE `players` SET `rank_id`='0' WHERE `id`=$cid");
+	mysql_update("UPDATE `players` SET `rank_id`='0' WHERE `id`=$cid LIMIT 1;");
+}
+function guild_player_leave_10($cid) {
+	$cid = (int)$cid;
+	mysql_delete("DELETE FROM `guild_membership` WHERE `player_id`='$cid' LIMIT 1;");
 }
 
 // Player join guild
 function guild_player_join($cid, $gid) {
-	// Get rank data
-	$ranks = get_guild_rank_data($gid);
-	
-	// Locate rank id for regular member position in this guild
-	$rid = false;
-	foreach ($ranks as $rank) {
-		if ($rank['level'] == 1) $rid = $rank['id'];
-	}
-	
-	// Sanitize cid
 	$cid = (int)$cid;
-	
+	$gid = (int)$gid;
 	// Create a status we can return depending on results.
 	$status = false;
-	
-	// Add to guild if rank id was found:
-	if ($rid != false) {
-		// Remove the invite:
-		guild_remove_invitation($cid, $gid);
-		
-		// Add to guild:
-		mysql_query("UPDATE `players` SET `rank_id`='$rid' WHERE `id`=$cid") or die(mysql_error());
-		$status = true;
+
+	if (config('TFSVersion') !== 'TFS_10') {
+		// Get rank data
+		$ranks = get_guild_rank_data($gid);
+		// Locate rank id for regular member position in this guild
+		$rid = false;
+		foreach ($ranks as $rank) {
+			if ($rank['level'] == 1) $rid = $rank['id'];
+		}
+		// Add to guild if rank id was found:
+		if ($rid != false) {
+			// Remove the invite:
+			guild_remove_invitation($cid, $gid);
+			// Add to guild:
+			mysql_update("UPDATE `players` SET `rank_id`='$rid' WHERE `id`=$cid");
+			$status = true;
+		}
+
+	} else {
+		// Find rank id for regular member in this guild
+		$guildrank = mysql_select_single("SELECT `id` FROM `guild_ranks` WHERE `guild_id`='$gid' AND `level`='1' LIMIT 1;");
+		if ($guildrank !== false) {
+			$rid = $guildrank['id'];
+			// Remove invite
+			guild_remove_invitation($cid, $gid);
+			// Add to guild
+			mysql_insert("INSERT INTO `guild_membership` (`player_id`, `guild_id`, `rank_id`, `nick`) VALUES ('$cid', '$gid', '$rid', '');");
+			// Return success
+			return true;
+		} return false;
 	}
-	
 	return $status;
 }
 
@@ -390,7 +413,7 @@ function guild_player_join($cid, $gid) {
 function guild_remove_invitation($cid, $gid) {
 	$cid = (int)$cid;
 	$gid = (int)$gid;
-	mysql_query("DELETE FROM `guild_invites` WHERE `player_id`='$cid' AND `guild_id`='$gid';");
+	mysql_delete("DELETE FROM `guild_invites` WHERE `player_id`='$cid' AND `guild_id`='$gid';");
 }
 
 // Invite character to guild
@@ -403,19 +426,19 @@ function guild_invite_player($cid, $gid) {
 // Gets a list of invited players to a particular guild.
 function guild_invite_list($gid) {
 	$gid = (int)$gid;
-	$query = mysql_query("SELECT `player_id`, `guild_id` FROM `guild_invites` WHERE `guild_id`='$gid'");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	}
-	return !empty($array) ? $array : false;
+	return mysql_select_multi("SELECT `player_id`, `guild_id` FROM `guild_invites` WHERE `guild_id`='$gid';");
 }
 
 // Update player's guild position
 function update_player_guild_position($cid, $rid) {
 	$cid = (int)$cid;
 	$rid = (int)$rid;
-	mysql_query("UPDATE `players` SET `rank_id`='$rid' WHERE `id`=$cid") or die(mysql_error());
+	mysql_update("UPDATE `players` SET `rank_id`='$rid' WHERE `id`=$cid");
+}
+function update_player_guild_position_10($cid, $rid) {
+	$cid = (int)$cid;
+	$rid = (int)$rid;
+	mysql_update("UPDATE `guild_membership` SET `rank_id`='$rid' WHERE `player_id`=$cid");
 }
 
 // Get guild data, using guild id.
@@ -436,33 +459,37 @@ function create_guild($cid, $name) {
 	$time = time();
 	
 	// Create the guild
-	mysql_query("INSERT INTO `guilds` (`name`, `ownerid`, `creationdata`, `motd`) VALUES ('$name', '$cid', '$time', 'The guild has been created!')") or die(mysql_error());
-	echo '<br>Created guild.';
+	mysql_insert("INSERT INTO `guilds` (`name`, `ownerid`, `creationdata`, `motd`) VALUES ('$name', '$cid', '$time', 'The guild has been created!');");
+
 	// Get guild id
 	$gid = get_guild_id($name);
-	echo '<br>Gotten guild id: '. $gid;
 	
 	// Get rank id for guild leader
-	$rid = mysql_result(mysql_query("SELECT `id` FROM `guild_ranks` WHERE `guild_id`='$gid' AND `level`='3';"), 0, 'id');
-	echo '<br>Gotten rank id: '. $rid;
-	
+	$data = mysql_select_single("SELECT `id` FROM `guild_ranks` WHERE `guild_id`='$gid' AND `level`='3' LIMIT 1;");
+	$rid = ($data !== false) ? $data['id'] : false;
+
 	// Give player rank id for leader of his guild
-	mysql_query("UPDATE `players` SET `rank_id`='$rid' WHERE `id`=$cid") or die(mysql_error());
-	echo '<br>Player uodated';
+	if (config('TFSVersion') !== 'TFS_10') mysql_update("UPDATE `players` SET `rank_id`='$rid' WHERE `id`='$cid' LIMIT 1;");
+	else mysql_insert("INSERT INTO `guild_membership` (`player_id`, `guild_id`, `rank_id`, `nick`) VALUES ('$cid', '$gid', '$rid', '');");
 }
 
 // Search player table on cid for his rank_id, returns rank_id
 function get_character_guild_rank($cid) {
 	$cid = (int)$cid;
-	$rid = mysql_result(mysql_query("SELECT `rank_id` FROM `players` WHERE `id`='$cid';"), 0, 'rank_id');
-	if ($rid > 0) return $rid;
-	else return false;
+	if (config('TFSVersion') !== 'TFS_10') {
+		$rid = mysql_result(mysql_query("SELECT `rank_id` FROM `players` WHERE `id`='$cid';"), 0, 'rank_id');
+		return ($rid > 0) ? $rid : false;
+	} else {
+		$data = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='$cid' LIMIT 1;");
+		return ($data !== false) ? $data['rank_id'] : false;
+	}
 }
 
 // Get a player guild rank, using his rank_id
 function get_player_guild_rank($rank_id) {
 	$rank_id = (int)$rank_id;
-	return mysql_result(mysql_query("SELECT `name` FROM `guild_ranks` WHERE `id`=$rank_id;"), 0, 'name');
+	$data = mysql_select_single("SELECT `name` FROM `guild_ranks` WHERE `id`=$rank_id LIMIT 1;");
+	return ($data !== false) ? $data['name'] : false;
 }
 
 // Get a player guild position ID, using his rank_id
@@ -474,17 +501,15 @@ function get_guild_position($rid) {
 // Get a players rank_id, guild_id, rank_level(ID), rank_name(string), using cid(player id)
 function get_player_guild_data($cid) {
 	$cid = (int)$cid;
-	$rid = mysql_result(mysql_query("SELECT `rank_id` FROM `players` WHERE `id`='$cid';"), 0, 'rank_id');
-	$gid = mysql_result(mysql_query("SELECT `guild_id` FROM `guild_ranks` WHERE `id`=$rid;"), 0, 'guild_id');
-	$rl = mysql_result(mysql_query("SELECT `level` FROM `guild_ranks` WHERE `id`=$rid;"), 0, 'level');
-	$rn = mysql_result(mysql_query("SELECT `name` FROM `guild_ranks` WHERE `id`=$rid;"), 0, 'name');
-	$data = array(
-		'rank_id' => $rid,
-		'guild_id' => $gid,
-		'rank_level' => $rl,
-		'rank_name' => $rn,
-	);
-	return $data;
+	if (config('TFSVersion') !== 'TFS_10') $playerdata = mysql_select_single("SELECT `rank_id` FROM `players` WHERE `id`='$cid' LIMIT 1;");
+	else $playerdata = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='$cid' LIMIT 1;");
+	if ($playerdata !== false) {
+		$rankdata = mysql_select_single("SELECT `guild_id`, `level` AS `rank_level`, `name` AS `rank_name` FROM `guild_ranks` WHERE `id`='". $playerdata['rank_id'] ."' LIMIT 1;");
+		if ($rankdata !== false) {
+			$rankdata['rank_id'] = $playerdata['rank_id'];
+			return $rankdata;
+		} else return false;
+	} else return false;
 }
 
 // Returns guild name of guild id
@@ -506,30 +531,26 @@ function get_guild_id($name) {
 
 // Get complete list of guilds
 function get_guilds_list() {
-	$query = mysql_query("SELECT `id`, `name`, `creationdata` FROM `guilds` ORDER BY `name`;");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	}
-	return !empty($array) ? $array : false;
+	return mysql_select_multi("SELECT `id`, `name`, `creationdata` FROM `guilds` ORDER BY `name`;");
 }
 
 // Get array of player data related to a guild.
 function get_guild_players($gid) {
 	$gid = (int)$gid; // Sanitizing the parameter id
-	$query = mysql_query("SELECT p.rank_id, p.name, p.level, p.vocation FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =$gid");
-	$array = array();
-	while ($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	}
-	
-	return !empty($array) ? $array : false;
+	if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT p.rank_id, p.name, p.level, p.vocation FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';");
+	else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid';");
 }
 
 // Returns total members in a guild (integer)
 function count_guild_members($gid) {
 	$gid = (int)$gid;
-	return mysql_result(mysql_query("SELECT COUNT(p.id) AS total FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =$gid"), 0, 'total');
+	if (config('TFSVersion') !== 'TFS_10') {
+		$data = mysql_select_single("SELECT COUNT(p.id) AS total FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =$gid");
+		return ($data !== false) ? $data['total'] : false;
+	} else {
+		$data = mysql_select_single("SELECT COUNT('guild_id') AS `total` FROM `guild_membership` WHERE `guild_id`='$gid';");
+		return ($data !== false) ? $data['total'] : false;
+	}
 }
 
 //
@@ -840,8 +861,6 @@ function user_character_list($account_id) {
 			}
 			
 			$characters[$i]['online'] = online_id_to_name($characters[$i]['online']); // 0 to "offline", 1 to "ONLINE". 
-			// deprecated, znote_players now has hide_char
-			//$array[$i][6] = hide_char_to_name($array[$i][6]); // 0 to "visible", 1 to "hidden".
 		}
 	}
 	

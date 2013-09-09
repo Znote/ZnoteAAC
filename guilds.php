@@ -56,7 +56,11 @@ if (user_logged_in() === true) {
 			//code here
 			$name = sanitize($_POST['selected_char']);
 			$user_id = user_character_id($name);
-			$char_data = user_character_data($user_id, 'level', 'online');
+			if ($config['TFSVersion'] !== 'TFS_10') $char_data = user_character_data($user_id, 'level', 'online');
+			else {
+				$char_data = user_character_data($user_id, 'level');
+				$char_data['online'] = (user_is_online_10($user_id)) ? 1 : 0;
+			}
 			
 			// If character level is high enough
 			if ($char_data['level'] >= $config['create_guild_level']) {
@@ -148,7 +152,8 @@ if (user_logged_in() === true) {
 			$rid = $player['rank_id'];
 			
 			for ($i = 0; $i < $char_count; $i++) {
-				$data = user_character_data(user_character_id($characters[$i]), 'rank_id');
+				if ($config['TFSVersion'] !== 'TFS_10') $data = user_character_data(user_character_id($characters[$i]), 'rank_id');
+				else $data = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='". user_character_id($characters[$i]) ."' LIMIT 1;");
 				if ($data['rank_id'] == $rid) {
 					$access = get_guild_position($data['rank_id']);
 					if ($access == 2 || $access == 3) { //If player got access level vice leader or leader
@@ -173,7 +178,8 @@ if (user_logged_in() === true) {
 	</tr>
 		<?php
 		foreach ($players as $player) {
-			$chardata = user_character_data(user_character_id($player['name']), 'online');
+			if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data(user_character_id($player['name']), 'online');
+			else $chardata['online'] = (user_is_online_10(user_character_id($player['name']))) ? 1 : 0;
 			echo '<tr>';
 			echo '<td>'. get_player_guild_rank($player['rank_id']) .'</td>';
 			echo '<td><a href="characterprofile.php?name='. $player['name'] .'">'. $player['name'] .'</a></td>';
@@ -199,7 +205,7 @@ if (user_logged_in() === true) {
 		for ($i = 0; $i < $char_count; $i++) {
 			$exist = false;
 			// Shuffle through invited character, see if they match your character.
-			foreach ($inv_data as $inv) {
+			if ($inv_data !== false) foreach ($inv_data as $inv) {
 				if (user_character_id($characters[$i]) == $inv['player_id']) {
 					$exist = true;
 				}
@@ -210,7 +216,7 @@ if (user_logged_in() === true) {
 	</tr>
 		<?php
 		$bool = false;
-		foreach ($inv_data as $inv) {
+		if ($inv_data !== false) foreach ($inv_data as $inv) {
 			$uninv = user_character_data($inv['player_id'], 'name');
 			echo '<tr>';
 			echo '<td>'. $uninv['name'] .'</td>';
@@ -276,7 +282,8 @@ if (user_logged_in() === true) {
 		// 
 		foreach ($inv_data as $inv) {
 			if ($inv['player_id'] == $_POST['joinguild']) {
-				$chardata = user_character_data($_POST['joinguild'], 'online');
+				if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data($_POST['joinguild'], 'online');
+				else $chardata['online'] = (user_is_online_10($_POST['joinguild'])) ? 1 : 0;
 				if ($chardata['online'] == 0) {
 					if (guild_player_join($_POST['joinguild'], $gid)) {
 						header('Location: guilds.php?name='. $_GET['name']);
@@ -291,9 +298,11 @@ if (user_logged_in() === true) {
 		$name = sanitize($_POST['leave_guild']);
 		$cidd = user_character_id($name);
 		// If character is offline
-		$chardata = user_character_data($cidd, 'online');
+		if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data($cidd, 'online');
+		else $chardata['online'] = (user_is_online_10($cidd)) ? 1 : 0;
 		if ($chardata['online'] == 0) {
-			guild_player_leave($cidd);
+			if ($config['TFSVersion'] !== 'TFS_10') guild_player_leave($cidd);
+			else guild_player_leave_10($cidd);
 			header('Location: guilds.php?name='. $_GET['name']);
 			exit();
 		} else echo '<font color="red" size="4">Character must be offline first!</font>';
@@ -311,9 +320,11 @@ if ($highest_access >= 2) {
 		
 		if ($p_guild['guild_id'] == $gid) {
 			// Do the magic.
-			$chardata = user_character_data($p_cid, 'online');
+			if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data($p_cid, 'online');
+			else $chardata['online'] = (user_is_online_10($p_cid)) ? 1 : 0;
 			if ($chardata['online'] == 0) {
-				update_player_guild_position($p_cid, $p_rid);
+				if ($config['TFSVersion'] !== 'TFS_10') update_player_guild_position($p_cid, $p_rid);
+				else update_player_guild_position_10($p_cid, $p_rid);
 				header('Location: guilds.php?name='. $_GET['name']);
 				exit();
 			} else echo '<font color="red" size="4">Character not offline.</font>';
@@ -349,7 +360,8 @@ if ($highest_access >= 2) {
 		
 		// First figure out if anyone are online.
 		foreach ($members as $member) {
-			$chardata = user_character_data(user_character_id($member['name']), 'online');
+			if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data(user_character_id($member['name']), 'online');
+			else $chardata['online'] = (user_is_online_10(user_character_id($member['name']))) ? 1 : 0;
 			if ($chardata['online'] == 1) {
 				$online = true;
 			}
@@ -357,10 +369,8 @@ if ($highest_access >= 2) {
 		
 		if (!$online) {
 			// Then remove guild rank from every player.
-			foreach ($members as $member) {
-				//$chardata = user_character_data(user_character_id($member['name']), 'online');
-				guild_player_leave(user_character_id($member['name']));
-			}
+			if ($config['TFSVersion'] !== 'TFS_10') foreach ($members as $member) guild_player_leave(user_character_id($member['name']));
+			else foreach ($members as $member) guild_player_leave_10(user_character_id($member['name']));
 			
 			// Remove all guild invitations to this guild
 			if ($inv_count > 0) guild_remove_invites($gidd);
@@ -377,8 +387,13 @@ if ($highest_access >= 2) {
 		$old_leader = guild_leader($gid);
 		
 		$online = false;
-		$newData = user_character_data($new_leader, 'online');
-		$oldData = user_character_data($old_leader, 'online');
+		if ($config['TFSVersion'] !== 'TFS_10') {
+			$newData = user_character_data($new_leader, 'online');
+			$oldData = user_character_data($old_leader, 'online');
+		} else {
+			$newData['online'] = (user_is_online_10($new_leader)) ? 1 : 0;
+			$oldData['online'] = (user_is_online_10($old_leader)) ? 1 : 0;
+		}
 		if ($newData['online'] == 1 || $oldData['online'] == 1) $online = true;
 		
 		if ($online == false) {
@@ -416,7 +431,8 @@ if ($highest_access >= 2) {
 		$name = sanitize($_POST['remove_member']);
 		$cid = user_character_id($name);
 		
-		guild_remove_member($cid);
+		if ($config['TFSVersion'] !== 'TFS_10') guild_remove_member($cid);
+		else guild_remove_member_10($cid);
 		header('Location: guilds.php?name='. $_GET['name']);
 		exit();
 	}
@@ -570,7 +586,7 @@ if ($highest_access >= 2) {
 						$pl_data = get_player_guild_data(user_character_id($player['name']));
 						if ($pl_data['rank_level'] != 3) {
 							echo '<option value="'. user_character_id($player['name']) .'">'. $player['name'] .'</option>'; 
-						}	
+						}
 					}
 					?>
 					</select>
@@ -585,7 +601,7 @@ if ($highest_access >= 2) {
 ?>
 <!-- end leader-->
 <?php
-if ($config['TFSVersion'] == 'TFS_02') $wardata = get_guild_wars();
+if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $wardata = get_guild_wars();
 else if ($config['TFSVersion'] == 'TFS_03') $wardata = get_guild_wars03();
 else die("Can't recognize TFS version. It has to be either TFS_02 or TFS_03. Correct this in config.php");
 $war_exist = false;
