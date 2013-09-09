@@ -4,7 +4,7 @@
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
 	// TFS 0.4 = TFS_03
 	// TFS 1.0 = TFS_10 (Under developement)
-	$config['TFSVersion'] = 'TFS_03';
+	$config['TFSVersion'] = 'TFS_10';
 	
 	$config['site_title'] = 'Znote AAC';
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
@@ -14,13 +14,13 @@
 	// ------------------------ \\
 	
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'username';
+	$config['sqlUser'] = 'new';
 	
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'password';
+	$config['sqlPassword'] = 'new';
 	
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'database';
+	$config['sqlDatabase'] = 'new';
 	
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
@@ -63,7 +63,10 @@
 	// townID => 'townName' etc: ['3'=>'Thais']
 	$config['towns'] = array(
 		2 => 'Thyrfing',
+		3 => 'Town 3',
 	);
+	// Default town id to display when visting house list page page. (TFS 1.0+).
+	$config['HouseListDefaultTown'] = 1;
 	
 	// Leave on black square in map and player should get teleported to their selected town.
 	// If chars get buggy set this position to a beginner location to force players there.
@@ -194,8 +197,8 @@
 		'enabled' => true,
 		'guildboard' => true,
 		'level' => 5,
-		'cooldownPost' => 60,
-		'cooldownCreate' => 180,
+		'cooldownPost' => 1,//60,
+		'cooldownCreate' => 1,//180,
 		'hidden' => '<font color="orange">[H]</font>',
 		'closed' => '<font color="red">[C]</font>',
 		'sticky' => '<font color="green">[S]</font>',

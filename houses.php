@@ -140,6 +140,97 @@ if (empty($_POST) === false && $config['TFSVersion'] === 'TFS_03') {
 			</table>
 			<?php
 		} else echo '<p><font color="red">Something is wrong with the cache.</font></p>';
-	}
+	} else if ($config['TFSVersion'] === 'TFS_10') {
+		// Fetch values
+		$townid = (getValue($_POST['selected']) !== false) ? (int)$_POST['selected'] : $config['HouseListDefaultTown'];
+		$towns = $config['towns'];
+
+		// Create Search house box
+		?>
+		<form action="" method="post">
+			<b>Select town:</b>
+			<select name="selected">
+			<?php
+			foreach ($towns as $id => $name) {
+				if ($id != $townid) echo '<option value="'. $id .'">'. $name .'</option>';
+				else echo '<option value="'. $id .'" selected>'. $name .'</option>';
+			}
+			?>
+			</select> 
+			<?php
+				/* Form file */
+				Token::create();
+			?>
+			<input type="submit" value="Fetch houses">
+		</form>
+		<?php
+		
+		// Create or fetch data from cache
+		$cache = new Cache('engine/cache/houses');
+		$houses = array();
+		if ($cache->hasExpired()) {
+			$houses = mysql_select_multi("SELECT `id`, `owner`, `paid`, `warnings`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses`;");
+
+			if ($houses !== false) {
+				// Fetch player names
+				$playerlist = array();
+				foreach ($houses as $h) if ($h['owner'] > 0) $playerlist[] = $h['owner'];
+				if (!empty($playerlist)) {
+					$ids = join(',',$playerlist);
+					$tmpPlayers = mysql_select_multi("SELECT `id`, `name` FROM players WHERE `id` IN ($ids);");
+					// Sort $tmpPlayers by player id
+					$tmpById = array();
+					foreach ($tmpPlayers as $p) $tmpById[$p['id']] = $p['name'];
+					for ($i = 0; $i < count($houses); $i++) {
+						if ($houses[$i]['owner'] > 0) $houses[$i]['ownername'] = $tmpById[$houses[$i]['owner']];
+					}
+				}
+
+				$cache->setContent($houses);
+				$cache->save();
+			}
+		} else {
+			$houses = $cache->load();
+		}
+		if ($houses !== false || !empty($houses)) {
+			// Intialize stuff
+			//data_dump($houses, false, "House data");
+			?>
+			<table id="housetable">
+				<tr class="yellow">
+					<th>Name</th>
+					<th>Size</th>
+					<th>Beds</th>
+					<th>Rent</th>
+					<th>Owner</th>
+					<th>Town</th>
+				</tr>
+				<?php
+				foreach ($houses as $house) {
+					if ($house['town_id'] == $townid) {
+						?>
+						<tr>
+							<td><?php echo $house['name']; ?></td>
+							<td><?php echo $house['size']; ?></td>
+							<td><?php echo $house['beds']; ?></td>
+							<td><?php echo $house['rent']; ?></td>
+							<?php
+							// Status:
+							if ($house['owner'] != 0) {
+								echo "<td><a href='characterprofile.php?name=". $house['ownername'] ."' target='_BLANK'>". $house['ownername'] ."</a></td>";
+							} else {
+								echo "<td>None</td>";
+							}
+							?>
+							<td><?php echo $towns[$house['town_id']]; ?></td>
+						</tr>
+						<?php
+					}
+				}
+				?>
+			</table>
+			<?php
+		} else echo "<h1>Failed to fetch data from sql->houses table.</h1><p>Is the table empty?</p>";
+	} // End TFS 1.0 logic
 }
 include 'layout/overall/footer.php'; ?>

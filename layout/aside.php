@@ -10,7 +10,7 @@
 		include 'layout/widgets/topplayers.php';
 		include 'layout/widgets/highscore.php';
 		include 'layout/widgets/serverinfo.php';
-		if ($config['TFSVersion'] === 'TFS_03') include 'layout/widgets/houses.php';
+		if ($config['TFSVersion'] !== 'TFS_02') include 'layout/widgets/houses.php';
 		// Remove // to enable twitter, edit twitter stuff in /widgets/twitter.php
 		//include 'layout/widgets/twitter.php';
 	?>
