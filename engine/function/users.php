@@ -1414,7 +1414,7 @@ function user_exist($username) {
 	return (mysql_result(mysql_query("SELECT COUNT('id') FROM `accounts` WHERE `name`='$username';"), 0) == 1) ? true : false;
 }
 
-function user_name($id) { //USERNAME FROM PLAYER ID (Hauni@otland.net)
+function user_name($id) { //USERNAME FROM PLAYER ID
     $id = (int)$id; 
     $name = mysql_select_single("SELECT `name` FROM `players` WHERE `id`='$id';");
     if ($name !== false) return $name['name'];

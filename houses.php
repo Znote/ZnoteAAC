@@ -142,14 +142,14 @@ if (empty($_POST) === false && $config['TFSVersion'] === 'TFS_03') {
 		} else echo '<p><font color="red">Something is wrong with the cache.</font></p>';
 	} else if ($config['TFSVersion'] === 'TFS_10') {
 		// Fetch values
-		$townid = (getValue($_POST['selected']) !== false) ? (int)$_POST['selected'] : $config['HouseListDefaultTown'];
+		$townid = (getValue($_GET['id']) !== false) ? (int)$_GET['id'] : $config['houseConfig']['HouseListDefaultTown'];
 		$towns = $config['towns'];
 
 		// Create Search house box
 		?>
-		<form action="" method="post">
+		<form action="" method="get">
 			<b>Select town:</b>
-			<select name="selected">
+			<select name="id">
 			<?php
 			foreach ($towns as $id => $name) {
 				if ($id != $townid) echo '<option value="'. $id .'">'. $name .'</option>';
@@ -157,10 +157,6 @@ if (empty($_POST) === false && $config['TFSVersion'] === 'TFS_03') {
 			}
 			?>
 			</select> 
-			<?php
-				/* Form file */
-				Token::create();
-			?>
 			<input type="submit" value="Fetch houses">
 		</form>
 		<?php
@@ -210,7 +206,7 @@ if (empty($_POST) === false && $config['TFSVersion'] === 'TFS_03') {
 					if ($house['town_id'] == $townid) {
 						?>
 						<tr>
-							<td><?php echo $house['name']; ?></td>
+							<td><?php echo "<a href='house.php?id=". $house['id'] ."'>". $house['name'] ."</a>"; ?></td>
 							<td><?php echo $house['size']; ?></td>
 							<td><?php echo $house['beds']; ?></td>
 							<td><?php echo $house['rent']; ?></td>
@@ -219,7 +215,11 @@ if (empty($_POST) === false && $config['TFSVersion'] === 'TFS_03') {
 							if ($house['owner'] != 0) {
 								echo "<td><a href='characterprofile.php?name=". $house['ownername'] ."' target='_BLANK'>". $house['ownername'] ."</a></td>";
 							} else {
-								echo "<td>None</td>";
+								if ($house['highest_bidder'] == 0) {
+									echo "<td>None</td>";
+								} else {
+									echo "<td><b>Selling</b></td>";
+								}
 							}
 							?>
 							<td><?php echo $towns[$house['town_id']]; ?></td>

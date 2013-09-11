@@ -36,7 +36,7 @@
 		if (!$time) $time = time();
 		// Date string representation
 		$date = "d F Y (H:i)"; // 15 July 2013 (13:50)
-		if ($adjust) $adjust = (2 * 3600); // Adjust to fit your timezone.
+		if ($adjust) $adjust = (1 * 3600); // Adjust to fit your timezone.
 		else $adjust = 0;
 		if ($format) return date($date, $time+$adjust);
 		else return $time+$adjust;
@@ -65,8 +65,13 @@
 		2 => 'Thyrfing',
 		3 => 'Town 3',
 	);
-	// Default town id to display when visting house list page page. (TFS 1.0+).
-	$config['HouseListDefaultTown'] = 1;
+
+	// - TFS 1.0 ONLY -- HOUSE AUCTION SYSTEM!
+	$config['houseConfig'] = array(
+		'HouseListDefaultTown' => 1, // Default town id to display when visting house list page page.
+		'minimumBidSQM' => 200, // minimum bid cost on auction (per SQM)
+		'auctionPeriod' => 24 * 60 * 60, // 24 hours auction time.
+		);
 	
 	// Leave on black square in map and player should get teleported to their selected town.
 	// If chars get buggy set this position to a beginner location to force players there.
