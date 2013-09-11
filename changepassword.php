@@ -52,7 +52,7 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 } else {
 	if (empty($_POST) === false && empty($errors) === true) {
 		//Posted the form without errors
-		if ($config['TFSVersion'] == 'TFS_02') {
+		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') {
 			user_change_password($session_user_id, $_POST['new_password']);
 		} else if ($config['TFSVersion'] == 'TFS_03') {
 			user_change_password03($session_user_id, $_POST['new_password']);
