@@ -16,7 +16,7 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 	// Bid on house logic
 	$bid_char = getValue($_POST['char']);
 	$bid_amount = getValue($_POST['amount']);
-	if ($bid_amount !== false && $bid_char !== false && $house['bid_end'] > time()) {
+	if ($bid_amount !== false && $bid_char !== false) {
 		$bid_char = (int)$bid_char;
 		$bid_amount = (int)$bid_amount;
 
@@ -31,8 +31,10 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 
 					// Has bid already started?
 					if ($house['bid_end'] > 0) {
-						mysql_update("UPDATE `houses` SET `highest_bidder`='". $player['id'] ."', `bid`='$bid_amount', `last_bid`='$lastbid' WHERE `id`='". $house['id'] ."' LIMIT 1;");
-						$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
+						if ($house['bid_end'] > time()) {
+							mysql_update("UPDATE `houses` SET `highest_bidder`='". $player['id'] ."', `bid`='$bid_amount', `last_bid`='$lastbid' WHERE `id`='". $house['id'] ."' LIMIT 1;");
+							$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
+						}
 					} else {
 						$lastbid = $minbid + 1;
 						$bidend = time() + $config['houseConfig']['auctionPeriod'];
@@ -84,7 +86,7 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 			echo "<br><b>Bid will end on:</b> ". getClock($house['bid_end'], true);
 		}
 
-		if ($house['bid_end'] > time()) {
+		if ($house['bid_end'] == 0 || $house['bid_end'] > time()) {
 			if (user_logged_in()) {
 				// Your characters, indexed by char_id
 				$yourChars = mysql_select_multi("SELECT `id`, `name`, `balance` FROM `players` WHERE `account_id`='". $user_data['id'] ."';");
