@@ -60,7 +60,6 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 	// HTML structure and logic
 	?>
 	<h1>House: <?php echo $house['name']; ?></h1>
-	<?php data_dump($house, false, "House SQL"); ?>
 	<ul>
 		<li><b>Town</b>: <?php echo "<a href='houses.php?id=". $house['town_id'] ."'>". $config['towns'][$house['town_id']] ."</a>"; ?></li>
 		<li><b>Size</b>: <?php echo $house['size']; ?></li>
