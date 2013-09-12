@@ -16,7 +16,7 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 	// Bid on house logic
 	$bid_char = getValue($_POST['char']);
 	$bid_amount = getValue($_POST['amount']);
-	if ($bid_amount !== false && $bid_char !== false) {
+	if ($bid_amount !== false && $bid_char !== false && $house['bid_end'] > time()) {
 		$bid_char = (int)$bid_char;
 		$bid_amount = (int)$bid_amount;
 
@@ -84,34 +84,31 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 			echo "<br><b>Bid will end on:</b> ". getClock($house['bid_end'], true);
 		}
 
-		if (user_logged_in()) {
-			// Your characters, indexed by char_id
-			$yourChars = mysql_select_multi("SELECT `id`, `name`, `balance` FROM `players` WHERE `account_id`='". $user_data['id'] ."';");
-			if ($yourChars !== false) {
-				$charData = array();
-				foreach ($yourChars as $char) {
-					$charData[$char['id']] = $char;
-					if (get_character_guild_rank($char['id']) > 0) {
-						$guild = get_player_guild_data($char['id']);
-						$charData[$char['id']]['guild'] = $guild['guild_id'];
-						$charData[$char['id']]['guild_rank'] = $guild['rank_level'];
-					} else $charData[$char['id']]['guild'] = '0';
-				}
-				?>
-				<form action="" method="post">
-					<select name="char">
-						<?php
-						foreach ($charData as $id => $char) {
-							echo "<option value='$id'>". $char['name'] ." [". $char['balance'] ."]</option>";
-						}
-						?>
-					</select>
-					<input type="text" name="amount" placeholder="Min bid: <?php echo $minbid + 1; ?>">
-					<input type="submit" value="Bid on this house">
-				</form>
-				<?php
-			} else echo "<br>You need a character to bid on this house.";
-		} else echo "<br>You need to login before you can bid on houses.";
+		if ($house['bid_end'] > time()) {
+			if (user_logged_in()) {
+				// Your characters, indexed by char_id
+				$yourChars = mysql_select_multi("SELECT `id`, `name`, `balance` FROM `players` WHERE `account_id`='". $user_data['id'] ."';");
+				if ($yourChars !== false) {
+					$charData = array();
+					foreach ($yourChars as $char) {
+						$charData[$char['id']] = $char;
+					}
+					?>
+					<form action="" method="post">
+						<select name="char">
+							<?php
+							foreach ($charData as $id => $char) {
+								echo "<option value='$id'>". $char['name'] ." [". $char['balance'] ."]</option>";
+							}
+							?>
+						</select>
+						<input type="text" name="amount" placeholder="Min bid: <?php echo $minbid + 1; ?>">
+						<input type="submit" value="Bid on this house">
+					</form>
+					<?php
+				} else echo "<br>You need a character to bid on this house.";
+			} else echo "<br>You need to login before you can bid on houses.";
+		} else echo "<br><b>Bid has ended! House transaction will proceed next server restart assuming active bidder have sufficient balance.</b>";
 	}
 } else {
 	?>
