@@ -18,18 +18,29 @@ function onSay(cid, words, param)
 			local q_itemid = result.getDataInt(orderQuery, "itemid")
 			local q_count = result.getDataInt(orderQuery, "count")
 			result.free(orderQuery)
-			
 			-- ORDER TYPE 1 (Regular item shop products)
 			if q_type == 1 then
 				-- Get wheight
 				local playerCap = getPlayerFreeCap(cid)
 				local itemweight = getItemWeightById(q_itemid, q_count)
-					if playerCap >= itemweight then
-						db.executeQuery("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
-						doPlayerAddItem(cid, q_itemid, q_count)
-						doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have recieved ".. q_count .." "..getItemNameById(q_itemid).."(s)!")
+					if playerCap >= itemweight and getTileInfo(getCreaturePosition(cid)).protection then
+						--backpack check
+						local backpack = getPlayerSlotItem(cid, 3)
+						local gotItem = false
+						if(backpack and backpack.itemid > 0) then
+							local received = doAddContainerItem(getPlayerSlotItem(cid, 3).uid, q_itemid,q_count)
+							if(received ~= false) then
+								db.executeQuery("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
+								doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have recieved ".. q_count .." "..getItemNameById(q_itemid).."(s)!")
+								gotItem = true
+							end
+						end
+
+						if(not gotItem) then
+							doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "You have no available space in backpack to receive that item.")
+						end						
 					else
-						doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "Need more CAP!")
+						doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "Need more CAP and Need ProtectZone!")
 					end
 			end
 			-- Add custom order types here
