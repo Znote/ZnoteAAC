@@ -687,6 +687,8 @@ function set_ingame_position($name, $acctype) {
 	$group_id = 2;
 	if ($acctype == 1) {
 		$group_id = 1;
+	} elseif ($acctype == 6) {
+		$group_id = 3;
 	}
 	mysql_query("UPDATE `accounts` SET `type` = '$acctype' WHERE `id` =$acc_id;");
 	mysql_query("UPDATE `players` SET `group_id` = '$group_id' WHERE `id` =$char_id;");
