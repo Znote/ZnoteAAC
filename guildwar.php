@@ -10,13 +10,13 @@ include 'layout/overall/header.php';
 if (!empty($_GET['warid'])) {
 	$warid = (int)$_GET['warid']; // Sanitizing GET.
 	
-	if ($config['TFSVersion'] == 'TFS_02') $war = get_guild_war($warid);
+	if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $war = get_guild_war($warid);
 	else if ($config['TFSVersion'] == 'TFS_03') $war = get_guild_war03($warid);
 	else die("Can't recognize TFS version. It has to be either TFS_02 or TFS_03. Correct this in config.php");
 	
 	if ($war != false) {
 		// Kills data for this specific war entry
-		if ($config['TFSVersion'] == 'TFS_02') $kills = get_war_kills($warid);
+		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $kills = get_war_kills($warid);
 		else if ($config['TFSVersion'] == 'TFS_03') $kills = get_war_kills03($warid);
 		// XDXD
 		
@@ -31,7 +31,7 @@ if (!empty($_GET['warid'])) {
 		$guild2 = $war['guild2'];
 		$g2c = 0; // kill count
 		
-		if ($config['TFSVersion'] == 'TFS_02') {
+		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') {
 			foreach ($kills as $kill) {
 				if ($kill[killerguild] == $guild1) ++$g1c;
 				if ($kill[killerguild] == $guild2) ++$g2c;
@@ -49,7 +49,7 @@ if (!empty($_GET['warid'])) {
 			<li>
 				War status: <?php echo $config['war_status'][$war['status']]; ?>.
 			</li>
-			<?php if ($config['TFSVersion'] == 'TFS_02') { ?>
+			<?php if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') { ?>
 			<li>
 				Leading guild: <?php echo $leading; ?>.
 			</li>
@@ -63,7 +63,7 @@ if (!empty($_GET['warid'])) {
 			<?php } ?>
 		</ul>
 		<?php
-		if ($config['TFSVersion'] == 'TFS_02') {
+		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') {
 		?>
 			<table id="guildwarTable" class="table table-striped table-hover">
 				<tr class="yellow">
@@ -142,7 +142,7 @@ if (!empty($_GET['warid'])) {
 	// Display current wars.
 	
 	// Fetch list of wars
-	if ($config['TFSVersion'] == 'TFS_02') $wardata = get_guild_wars();
+	if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $wardata = get_guild_wars();
 	else if ($config['TFSVersion'] == 'TFS_03') $wardata = get_guild_wars03();
 	else die("Can't recognize TFS version. It has to be either TFS_02 or TFS_03. Correct this in config.php");
 	//echo $wardata[0]['name1'];
@@ -152,7 +152,7 @@ if (!empty($_GET['warid'])) {
 	// kills data
 	$killsdata = array(); // killsdata[guildid] => array(warid) => array info about the selected war entry
 	foreach ($wardata as $wars) {
-		if ($config['TFSVersion'] == 'TFS_02') $killsdata[$wars['id']] = get_war_kills($wars['id']);
+		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $killsdata[$wars['id']] = get_war_kills($wars['id']);
 		else if ($config['TFSVersion'] == 'TFS_03') $killsdata[$wars['id']] = get_war_kills03($wars['id']);
 	} 
 		?>
