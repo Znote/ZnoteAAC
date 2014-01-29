@@ -127,19 +127,22 @@ function support_list() {
 	$TFS = Config('TFSVersion');
 	if ($TFS == 'TFS_10') $staffs = mysql_select_multi("SELECT `id`, `group_id`, `name`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
 	else $staffs = mysql_select_multi("SELECT `group_id`, `name`, `online`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
-	for ($i = 0; $i < count($staffs); $i++) {
-		// $staffs[$i]['']
-		if ($TFS == 'TFS_02' || $TFS == 'TFS_10') {
-			$account = mysql_select_single("SELECT `type` FROM `accounts` WHERE `id` ='". $staffs[$i]['account_id'] ."';");
-			$staffs[$i]['group_id'] = $account['type'];
-			if ($TFS == 'TFS_10') {
-				// Fix online status on TFS 1.0
-				if (user_is_online_10($staffs[$i]['id'])) $staffs[$i]['online'] = 1;
-				else $staffs[$i]['online'] = 0;
-				unset($staffs[$i]['id']);
+
+	if ($staffs !== false) {
+		for ($i = 0; $i < count($staffs); $i++) {
+			// $staffs[$i]['']
+			if ($TFS == 'TFS_02' || $TFS == 'TFS_10') {
+				$account = mysql_select_single("SELECT `type` FROM `accounts` WHERE `id` ='". $staffs[$i]['account_id'] ."';");
+				$staffs[$i]['group_id'] = $account['type'];
+				if ($TFS == 'TFS_10') {
+					// Fix online status on TFS 1.0
+					if (user_is_online_10($staffs[$i]['id'])) $staffs[$i]['online'] = 1;
+					else $staffs[$i]['online'] = 0;
+					unset($staffs[$i]['id']);
+				}
 			}
+			unset($staffs[$i]['account_id']);
 		}
-		unset($staffs[$i]['account_id']);
 	}
 	return $staffs;
 }
