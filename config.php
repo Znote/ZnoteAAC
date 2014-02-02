@@ -33,7 +33,7 @@
 		- echo getClock($profile_data['lastlogin'], true); = from characterprofile,
 		explains when user was last logged in. */
 	function getClock($time = false, $format = false, $adjust = true) {
-		if (!$time) $time = time();
+		if ($time === false) $time = time();
 		// Date string representation
 		$date = "d F Y (H:i)"; // 15 July 2013 (13:50)
 		if ($adjust) $adjust = (1 * 3600); // Adjust to fit your timezone.
