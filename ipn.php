@@ -1,87 +1,124 @@
 <?php
+
 	// Require the functions to connect to database and fetch config values
 	require 'config.php';
 	require 'engine/database/connect.php';
 	
+	function VerifyPaypalIPN(array $IPN = null){
+		if(empty($IPN)){
+			$IPN = $_POST;
+		}
+		if(empty($IPN['verify_sign'])){
+			return null;
+		}
+		$IPN['cmd'] = '_notify-validate';
+		$PaypalHost = (empty($IPN['test_ipn']) ? 'www' : 'www.sandbox').'.paypal.com';
+		$cURL = curl_init();
+		curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($cURL, CURLOPT_URL, "https://{$PaypalHost}/cgi-bin/webscr");
+		curl_setopt($cURL, CURLOPT_ENCODING, 'gzip');
+		curl_setopt($cURL, CURLOPT_BINARYTRANSFER, true);
+		curl_setopt($cURL, CURLOPT_POST, true); // POST back
+		curl_setopt($cURL, CURLOPT_POSTFIELDS, $IPN); // the $IPN
+		curl_setopt($cURL, CURLOPT_HEADER, false);
+		curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($cURL, CURLOPT_FORBID_REUSE, true);
+		curl_setopt($cURL, CURLOPT_FRESH_CONNECT, true);
+		curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT, 30);
+		curl_setopt($cURL, CURLOPT_TIMEOUT, 60);
+		curl_setopt($cURL, CURLINFO_HEADER_OUT, true);
+		curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
+			'Connection: close',
+			'Expect: ',
+		));
+		$Response = curl_exec($cURL);
+		$Status = (int)curl_getinfo($cURL, CURLINFO_HTTP_CODE);
+		curl_close($cURL);
+		if(empty($Response) or !preg_match('~^(VERIFIED|INVALID)$~i', $Response = trim($Response)) or !$Status){
+			return null;
+		}
+		if(intval($Status / 100) != 2){
+			return false;
+		}
+		return !strcasecmp($Response, 'VERIFIED');
+	}
+
 	// Fetch paypal configurations
 	$paypal = $config['paypal'];
 	$prices = $config['paypal_prices'];
 	
-	// read the post from PayPal system and add 'cmd'
+	// Send an empty HTTP 200 OK response to acknowledge receipt of the notification 
+	header('HTTP/1.1 200 OK'); 
+
+	// Build the required acknowledgement message out of the notification just received
 	$req = 'cmd=_notify-validate';
 	foreach ($_POST as $key => $value) {
 		$value = urlencode(stripslashes($value));
-		$req .= "&$key=$value";
+		$req  .= "&$key=$value";
 	}
+	$postdata = $req;
 	
-	// post back to PayPal system to validate
-	$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
-	$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-	$header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
-	$fp = fsockopen ('ssl://www.paypal.com', 443, $errno, $errstr, 30);
-	
-	// assign posted variables to local variables
-	$item_name = $_POST['item_name'];
-	$item_number = $_POST['item_number'];
-	$payment_status = $_POST['payment_status'];
-	$payment_amount = $_POST['mc_gross'];
+	// Assign payment notification values to local variables
+	$item_name        = $_POST['item_name'];
+	$item_number      = $_POST['item_number'];
+	$payment_status   = $_POST['payment_status'];
+	$payment_amount   = $_POST['mc_gross'];
 	$payment_currency = $_POST['mc_currency'];
-	$txn_id = mysql_real_escape_string($_POST['txn_id']);
-	$receiver_email = $_POST['receiver_email'];
-	$payer_email = mysql_real_escape_string($_POST['payer_email']);
-	$custom = $_POST['custom'];
+	$txn_id           = $_POST['txn_id'];
+	$receiver_email   = $_POST['receiver_email'];
+	$payer_email      = $_POST['payer_email'];
+	$custom           = (int)$_POST['custom'];
+
+	$connectedIp = $_SERVER['REMOTE_ADDR'];
+	mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', 'Connection from IP: $connectedIp', '0', '0', '0')");
 	
-	if (!$fp) {
-		// HTTP ERROR
-	} else {
-		fputs ($fp, $header . $req);
-		while (!feof($fp)) {
-			$res = fgets ($fp, 1024);
-			if (strcmp ($res, "VERIFIED") == 0) {
-				if ($payment_status == 'Completed') {
-					$txn_id_check = mysql_query("SELECT `txn_id` FROM `znote_paypal` WHERE `txn_id`='$txn_id'");
-					if (mysql_num_rows($txn_id_check) != 1) {
-						if ($receiver_email == $paypal['email']) {
-							
-							$status = true;
-							$pieces = explode("!", $custom);
-							// TODO - fix this logic
-							// 0 = user_id, 1 = price, 2 = points
-							$f_user_id = (int)$pieces[0];
-							$f_price = (float)$pieces[1];
-							$f_points = (int)$pieces[2];
-							if ($payment_amount != $f_price) $status = false; // If he paid wrong ammount
-							if ($payment_currency != $paypal['currency']) $status = false; // If he paid using another currency
-							
-							// Verify that the user havent messed around with POST data
-							if ($status) {
-								$status = false;
-								foreach ($prices as $price => $points) {
-									if ($price == $f_price && $points == $f_points) $status = true; // data does not appear to be manipulated.
-								}
-								if ($status) {
-									// transaction log
-									$log_query = mysql_query("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', '$payer_email', '$f_user_id', '".(int)$f_price."', '".(int)$f_points."')");
-									
-									// Give points to user
-									$old_points = mysql_result(mysql_query("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$f_user_id';"), 0, 'points');
-									$new_points = (int)$f_points;
-									$new_points += $old_points;
-									$update_account = mysql_query("UPDATE `znote_accounts` SET `points`='$new_points' WHERE `account_id`='$f_user_id'");
-								} else mysql_query("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', 'ERROR: HACKER detected: $payer_email', '$f_user_id', '".(int)$f_price."', '".(int)$f_points."')");
-							}
-						}  else {
-							$pmail = $paypal['email'];
-							mysql_query("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', 'ERROR: Wrong mail. Received: $receiver_email, configured: $pmail', '0', '0', '0')");
+	$status = VerifyPaypalIPN();
+	if ($status) {
+		// Check that the payment_status is Completed
+		if ($payment_status == 'Completed') {
+
+			
+			// Check that txn_id has not been previously processed
+			$txn_id_check = mysql_select_single("SELECT `txn_id` FROM `znote_paypal` WHERE `txn_id`='$txn_id'");
+			if ($txn_id_check !== false) {
+				// Check that receiver_email is your Primary PayPal email
+				if ($receiver_email == $paypal['email']) {
+					
+					$status = true;
+					$paidMoney = 0;
+					$paidPoints = 0;
+
+					foreach ($prices as $priceValue => $pointsValue) {
+						if ($priceValue == $payment_amount) {
+							$paidMoney = $priceValue;
+							$paidPoints = $pointsValue;
 						}
 					}
+
+					if ($paidMoney == 0) $status = false; // Wrong ammount of money
+					if ($payment_currency != $paypal['currency']) $status = false; // Wrong currency
+					
+					// Verify that the user havent messed around with POST data
+					if ($status) {
+						// transaction log
+						mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', '$payer_email', '$custom', '".$paidMoney."', '".$paidPoints."')");
+						
+						// Process payment
+						$data = mysql_select_single("SELECT `points` AS `old_points` FROM `znote_accounts` WHERE `account_id`='$custom';");
+
+						// Give points to user
+						$new_points = $data['old_points'] + $paidPoints;
+						mysql_update("UPDATE `znote_accounts` SET `points`='$new_points' WHERE `account_id`='$custom'");
+					}
+				}  else {
+					$pmail = $paypal['email'];
+					mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', 'ERROR: Wrong mail. Received: $receiver_email, configured: $pmail', '0', '0', '0')");
 				}
 			}
-			else if (strcmp ($res, "INVALID") == 0) {
-				// log for manual investigation
-				
-			}
 		}
-		fclose ($fp);
+	} else {
+		// Something is wrong
+		mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', 'ERROR: Invalid data. $postdata', '0', '0', '0')");
 	}
 ?>

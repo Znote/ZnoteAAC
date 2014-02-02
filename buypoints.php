@@ -43,7 +43,7 @@ if ($paypal['enabled']) {
 				<input type="hidden" name="cancel_return" value="<?php echo $paypal['failed']; ?>">
 				<input type="hidden" name="rm" value="2">
 				<input type="hidden" name="notify_url" value="<?php echo $paypal['ipn']; ?>" />
-				<input type="hidden" name="custom" value="<?php echo sanitize($_SESSION['user_id']).'!'.$price.'!'.$points; ?>">
+				<input type="hidden" name="custom" value="<?php echo (int)$_SESSION['user_id']; ?>">
 				<input type="submit" value="  PURCHASE  ">
 			</form>
 		</td>
