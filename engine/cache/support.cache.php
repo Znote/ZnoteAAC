@@ -1,1 +1,1 @@
-{"God":[{"group_id":"6","name":"Znote","online":1}]}
+{"God":[{"group_id":"6","name":"Znote","online":0}]}

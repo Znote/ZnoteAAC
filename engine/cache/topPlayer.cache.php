@@ -1,1 +1,1 @@
-[{"name":"Znote","level":"8","experience":"4200"},{"name":"Testing","level":"8","experience":"4200"},{"name":"Brannfjell","level":"8","experience":"4200"}]
+[{"name":"Test Warrior","level":"13","experience":"23200"},{"name":"Test Character","level":"12","experience":"17600"},{"name":"Znote","level":"15","experience":"4200"},{"name":"Testing Character","level":"8","experience":"4200"}]

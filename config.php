@@ -14,13 +14,13 @@
 	// ------------------------ \\
 	
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'new';
+	$config['sqlUser'] = 'dev';
 	
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'new';
+	$config['sqlPassword'] = 'dev';
 	
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'new';
+	$config['sqlDatabase'] = 'dev';
 	
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
@@ -189,9 +189,9 @@
 	
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
-		'otland0',
-		'otland1',
-		//'znote'
+		//'otland0',
+		//'otland1',
+		'znote'
 	);
 	
 	// Built-in FORUM
@@ -361,7 +361,7 @@
 	// Write your paypal address here, and what currency you want to recieve money in.
 	$config['paypal'] = array(
 		'enabled' => true,
-		'email' => 'Change_Paypal_mail_in_config.php', // Example: paypal@mail.com
+		'email' => 'stefan_brannfjell@live.no', // Example: paypal@mail.com
 		'currency' => 'EUR',
 		'points_per_currency' => 10, // 1 currency = ? points? [ONLY used to calculate bonuses]
 		'success' => "http://".$_SERVER['HTTP_HOST']."/success.php",
@@ -374,7 +374,7 @@
 	// Giving some bonus points for higher donations will tempt users to donate more.
 	$config['paypal_prices'] = array(
 	//	price => points,
-		5 => 45, // -10% bonus
+		1 => 45, // -10% bonus
 		10 => 100, // 0% bonus
 		15 => 165, // +10% bonus
 		20 => 240, // +20% bonus
