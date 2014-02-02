@@ -99,23 +99,18 @@ function url($path = false) {
 
 // Get last cached
 function getCache() {
-	return mysql_result(mysql_query("SELECT `cached` FROM `znote`;"), 0, 'cached');
+	$results = mysql_select_single("SELECT `cached` FROM `znote`;");
+	return ($results !== false) ? $results['cached'] : false;
 }
 
 function setCache($time) {
 	$time = (int)$time;
-	mysql_query("UPDATE `znote` set `cached`='$time'");
+	mysql_update("UPDATE `znote` set `cached`='$time'");
 }
 
 // Get visitor basic data
 function znote_visitors_get_data() {
-	// select
-	$result = mysql_query("SELECT `ip`, `value` FROM `znote_visitors`");
-	while ($row = mysql_fetch_assoc($result)) {
-		$data[] = $row;
-	}
-	if (isset($data)) return $data;
-	else return false;
+	return mysql_select_multi("SELECT `ip`, `value` FROM `znote_visitors`");
 }
 
 // Set visitor basic data
@@ -133,23 +128,17 @@ function znote_visitor_set_data($visitor_data) {
 	if ($exist && isset($value)) {
 		// Update the value
 		$value++;
-		mysql_query("UPDATE `znote_visitors` SET `value` = '$value' WHERE `ip` = '$ip'") or die(mysql_error());
+		mysql_update("UPDATE `znote_visitors` SET `value` = '$value' WHERE `ip` = '$ip'");
 	} else {
 		// Insert new row
-		mysql_query("INSERT INTO `znote_visitors` (`ip`, `value`) VALUES ('$ip', '1')") or die(mysql_error());
+		mysql_insert("INSERT INTO `znote_visitors` (`ip`, `value`) VALUES ('$ip', '1')");
 	}
 }
 
 // Get visitor basic data
 function znote_visitors_get_detailed_data($cache_time) {
 	$period = (int)time() - (int)$cache_time;
-	// select
-	$result = mysql_query("SELECT `ip`, `time`, `type`, `account_id` FROM `znote_visitors_details` WHERE `time` >= '$period' LIMIT 0, 50");
-	while ($row = mysql_fetch_assoc($result)) {
-		$data[] = $row;
-	}
-	if (isset($data)) return $data;
-	else return false;
+	return mysql_select_multi("SELECT `ip`, `time`, `type`, `account_id` FROM `znote_visitors_details` WHERE `time` >= '$period' LIMIT 0, 50");
 }
 
 function znote_visitor_insert_detailed_data($type) {
@@ -163,10 +152,10 @@ function znote_visitor_insert_detailed_data($type) {
 	*/
 	$time = time();
 	$ip = ip2long(getIP());
-	if (user_logged_in() === true) {
+	if (user_logged_in()) {
 		$acc = $_SESSION['user_id'];
-		mysql_query("INSERT INTO `znote_visitors_details` (`ip`, `time`, `type`, `account_id`) VALUES ('$ip', '$time', '$type', '$acc')") or die(mysql_error());
-	} else mysql_query("INSERT INTO `znote_visitors_details` (`ip`, `time`, `type`, `account_id`) VALUES ('$ip', '$time', '$type', '0')") or die(mysql_error());
+		mysql_insert("INSERT INTO `znote_visitors_details` (`ip`, `time`, `type`, `account_id`) VALUES ('$ip', '$time', '$type', '$acc')");
+	} else mysql_insert("INSERT INTO `znote_visitors_details` (`ip`, `time`, `type`, `account_id`) VALUES ('$ip', '$time', '$type', '0')");
 }
 
 function something () {

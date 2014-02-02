@@ -194,21 +194,29 @@ CREATE TABLE IF NOT EXISTS `znote_forum_posts` (
 </ol>
 ";
 
-mysql_connect($config['sqlHost'], $config['sqlUser'], $config['sqlPassword']) or die('<h1>Failed to connect to database.</h1>'. $install);
-mysql_select_db($config['sqlDatabase']) or die('<h1>Connection accepted but failed to find configured database name.</h1>'. $install);
+$connect = new mysqli($config['sqlHost'], $config['sqlUser'], $config['sqlPassword'], $config['sqlDatabase']);
+if ($connect->connect_errno) {
+    echo "Failed to connect to MySQL: (" . $connect->connect_errno . ") " . $connect->connect_error . $install;
+}
 
+function mysql_real_escape_string($escapestr) {
+  global $connect;
+  return mysqli_real_escape_string($connect, $escapestr);
+}
 // Select single row from database
 function mysql_select_single($query) {
-  $result = mysql_query($query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_single</b> (select single row from database)<br><br>".mysql_error());
-  $row = mysql_fetch_assoc($result);
+  global $connect;
+  $result = mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_single</b> (select single row from database)<br><br>".mysqli_error($connect));
+  $row = mysqli_fetch_assoc($result);
   return !empty($row) ? $row : false;
 }
 
 // Selecting multiple rows from database.
 function mysql_select_multi($query){
+  global $connect;
   $array = array();
-  $results = mysql_query($query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_multi</b> (select multiple rows from database)<br><br>".mysql_error());
-  while($row = mysql_fetch_assoc($results)) {
+  $results = mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_multi</b> (select multiple rows from database)<br><br>".mysqli_error($connect));
+  while($row = mysqli_fetch_assoc($results)) {
       $array[] = $row;
   }
   return !empty($array) ? $array : false;
@@ -225,6 +233,7 @@ function mysql_insert($query){ voidQuery($query); }
 function mysql_delete($query){ voidQuery($query); }
 // Send a void query
 function voidQuery($query) {
-  mysql_query($query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>voidQuery</b> (voidQuery is used for update, insert or delete from database)<br><br>".mysql_error());
+  global $connect;
+  mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>voidQuery</b> (voidQuery is used for update, insert or delete from database)<br><br>".mysqli_error($connect));
 }
 ?>

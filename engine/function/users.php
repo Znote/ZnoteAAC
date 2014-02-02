@@ -16,13 +16,13 @@ function insertImage($account_id, $title, $desc, $image) {
 	$image = sanitize($image);
 	$account_id = (int)$account_id;
 	$time = time();
-	mysql_query("INSERT INTO `znote_images` (`title`, `desc`, `date`, `status`, `image`, `account_id`) VALUES ('$title', '$desc', '$time', '1', '$image', '$account_id');");
+	mysql_insert("INSERT INTO `znote_images` (`title`, `desc`, `date`, `status`, `image`, `account_id`) VALUES ('$title', '$desc', '$time', '1', '$image', '$account_id');");
 }
 
 function updateImage($id, $status) {
 	$id = (int)$id;
 	$status = (int)$status;
-	mysql_query("UPDATE `znote_images` SET `status`='$status' WHERE `id`='$id';");
+	mysql_update("UPDATE `znote_images` SET `status`='$status' WHERE `id`='$id';");
 }
 
 // Fetch killers score
@@ -149,25 +149,18 @@ function support_list() {
 
 // NEWS
 function fetchAllNews() {
-	$query = mysql_query("SELECT * FROM `znote_news` ORDER BY `id` DESC;");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$data = user_character_data($row['pid'], 'name');
-		$row['name'] = $data['name'];
-		unset($row['pid']);
-		$array[] = $row;
+	$data = mysql_select_multi("SELECT * FROM `znote_news` ORDER BY `id` DESC;");
+	for ($i = 0; $i < count($data); $i++) {
+		$cd = user_character_data($data[$i]['pid'], 'name');
+		$data[$i]['name'] = $cd['name'];
+		unset($data[$i]['pid']);
 	}
-	return !empty($array) ? $array : false;
+	return $data;
 }
 
 // HOUSES
 function fetchAllHouses_03() {
-	$query = mysql_query("SELECT * FROM `houses`;") or die("ERROR");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	}
-	return !empty($array) ? $array : false;
+	return mysql_select_multi("SELECT * FROM `houses`;");
 }
 
 // TFS Storage value functions (Warning, I think these things are saved in cache, 
@@ -177,20 +170,13 @@ function fetchAllHouses_03() {
 function getPlayerStorageList($storage, $minValue) {
 	$minValue = (int)$minValue;
 	$storage = (int)$storage;
-	$query = mysql_query("SELECT `player_id`, `value` FROM `player_storage` WHERE `key`='$storage' AND `value`>='$minValue' ORDER BY `value` DESC;");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	}
-	return !empty($array) ? $array : false;
+	return mysql_select_multi("SELECT `player_id`, `value` FROM `player_storage` WHERE `key`='$storage' AND `value`>='$minValue' ORDER BY `value` DESC;");
 }
 
 // Get global storage value
 function getGlobalStorage($storage) {
 	$storage = (int)$storage;
-	$query = mysql_query("SELECT `value` FROM `global_storage` WHERE `key`='$storage';");
-	$row = mysql_fetch_assoc($query);
-	return !empty($row) ? $row['value'] : false;
+	return mysql_select_single("SELECT `value` FROM `global_storage` WHERE `key`='$storage';");
 }
 
 // Set global storage value
@@ -200,9 +186,9 @@ function setGlobalStorage($storage, $value) {
 	
 	// If the storage does not exist yet
 	if (getGlobalStorage($storage) === false) {
-		mysql_query("INSERT INTO `global_storage` (`key`, `world_id`, `value`) VALUES ('$storage', 0, '$value')") or die(mysql_error());
+		mysql_insert("INSERT INTO `global_storage` (`key`, `world_id`, `value`) VALUES ('$storage', 0, '$value')");
 	} else {// If the storage exist
-		mysql_query("UPDATE `global_storage` SET `value`='$value' WHERE `key`='$storage'") or die(mysql_error());
+		mysql_update("UPDATE `global_storage` SET `value`='$value' WHERE `key`='$storage'");
 	}
 }
 
@@ -213,9 +199,7 @@ function getPlayerStorage($player_id, $storage, $online = false) {
 		// user is offline (false), we may safely proceed:
 		$player_id = (int)$player_id;
 		$storage = (int)$storage;
-		$query = mysql_query("SELECT `value` FROM `player_storage` WHERE `key`='$storage' AND `player_id`='$player_id';");
-		$row = mysql_fetch_assoc($query);
-		return !empty($row) ? $row['value'] : false;
+		return mysql_select_single("SELECT `value` FROM `player_storage` WHERE `key`='$storage' AND `player_id`='$player_id';");
 	} else return false;
 }
 
@@ -227,9 +211,9 @@ function setPlayerStorage($player_id, $storage, $value) {
 	
 	// If the storage does not exist yet
 	if (getPlayerStorage($storage) === false) {
-		mysql_query("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ('$player_id', '$storage', '$value')") or die(mysql_error());
+		mysql_insert("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ('$player_id', '$storage', '$value')");
 	} else {// If the storage exist
-		mysql_query("UPDATE `player_storage` SET `value`='$value' WHERE `key`='$storage' AND `player_id`='$player_id'") or die(mysql_error());
+		mysql_update("UPDATE `player_storage` SET `value`='$value' WHERE `key`='$storage' AND `player_id`='$player_id'");
 	}
 }
 
@@ -253,23 +237,18 @@ function user_is_online_10($player_id) {
 // Gets a list of tickets and ticket ids
 function shop_delete_row_order($rowid) {
 	$rowid = (int)$rowid;
-	mysql_query("DELETE FROM `znote_shop_orders` WHERE `id`='$rowid';") or die(mysql_error());
+	mysql_delete("DELETE FROM `znote_shop_orders` WHERE `id`='$rowid';");
 }
 
 function shop_update_row_count($rowid, $count) {
 	$rowid = (int)$rowid;
 	$count = (int)$count;
-	mysql_query("UPDATE `znote_shop_orders` SET `count`='$count' WHERE `id`='$rowid'") or die(mysql_error());
+	mysql_update("UPDATE `znote_shop_orders` SET `count`='$count' WHERE `id`='$rowid'");
 }
 
 function shop_account_gender_tickets($accid) {
 	$accid = (int)$accid;
-	$query = mysql_query("SELECT `id`, `count` FROM `znote_shop_orders` WHERE `account_id`='$accid' AND `type`='3';");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	}
-	return !empty($array) ? $array : false;
+	return mysql_select_multi("SELECT `id`, `count` FROM `znote_shop_orders` WHERE `account_id`='$accid' AND `type`='3';");
 }
 
 // GUILDS
@@ -288,7 +267,7 @@ function guild_change_rank($rid, $name) {
 	$rid = (int)$rid;
 	$name = sanitize($name);
 	
-	mysql_query("UPDATE `guild_ranks` SET `name`='$name' WHERE `id`=$rid") or die(mysql_error());
+	mysql_update("UPDATE `guild_ranks` SET `name`='$name' WHERE `id`=$rid");
 }
 
 // Change guild leader (parameters: cid, new and old leader).
@@ -333,33 +312,32 @@ function guild_change_leader($nCid, $oCid) {
 function guild_new_leader($new_leader, $gid) {
 	$new_leader = (int)$new_leader;
 	$gid = (int)$gid;
-	mysql_query("UPDATE `guilds` SET `ownerid`='$new_leader' WHERE `id`=$gid") or die(mysql_error());
+	mysql_update("UPDATE `guilds` SET `ownerid`='$new_leader' WHERE `id`=$gid");
 }
 
 // Returns $gid of a guild leader($cid).
 function guild_leader_gid($leader) {
 	$leader = (int)$leader;
-	$query = mysql_query("SELECT `id` FROM `guilds` WHERE `ownerid`='$leader';");
-	$row = mysql_fetch_assoc($query);
-	return !empty($row) ? $row['id'] : false;
+	return mysql_select_single("SELECT `id` FROM `guilds` WHERE `ownerid`='$leader';");
 }
 
 // Returns guild leader(charID) of a guild. (parameter: guild_ID)
 function guild_leader($gid) {
 	$gid = (int)$gid;
-	return mysql_result(mysql_query("SELECT `ownerid` FROM `guilds` WHERE `id`='$gid';"), 0, 'ownerid');
+	$data = mysql_select_single("SELECT `ownerid` FROM `guilds` WHERE `id`='$gid';");
+	return ($data !== false) ? $data['ownerid'] : false;
 }
 
 // Disband guild
 function guild_remove_invites($gid) {
 	$gid = (int)$gid;
-	mysql_query("DELETE FROM `guild_invites` WHERE `guild_id`='$gid';");
+	mysql_delete("DELETE FROM `guild_invites` WHERE `guild_id`='$gid';");
 }
 
 // Remove guild invites
 function guild_delete($gid) {
 	$gid = (int)$gid;
-	mysql_query("DELETE FROM `guilds` WHERE `id`='$gid';");
+	mysql_delete("DELETE FROM `guilds` WHERE `id`='$gid';");
 }
 
 // Player leave guild
@@ -423,7 +401,7 @@ function guild_remove_invitation($cid, $gid) {
 function guild_invite_player($cid, $gid) {
 	$cid = (int)$cid;
 	$gid = (int)$gid;
-	mysql_query("INSERT INTO `guild_invites` (`player_id`, `guild_id`) VALUES ('$cid', '$gid')") or die(mysql_error());
+	mysql_insert("INSERT INTO `guild_invites` (`player_id`, `guild_id`) VALUES ('$cid', '$gid')");
 }
 
 // Gets a list of invited players to a particular guild.
@@ -447,12 +425,7 @@ function update_player_guild_position_10($cid, $rid) {
 // Get guild data, using guild id.
 function get_guild_rank_data($gid) {
 	$gid = (int)$gid;
-	$query = mysql_query("SELECT `id`, `guild_id`, `name`, `level` FROM `guild_ranks` WHERE `guild_id`='$gid' ORDER BY `id` DESC LIMIT 0, 30");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	}
-	return !empty($array) ? $array : false;
+	return mysql_select_multi("SELECT `id`, `guild_id`, `name`, `level` FROM `guild_ranks` WHERE `guild_id`='$gid' ORDER BY `id` DESC LIMIT 0, 30");
 }
 
 // Creates a guild, where cid is the owner of the guild, and name is the name of guild.
@@ -480,8 +453,8 @@ function create_guild($cid, $name) {
 function get_character_guild_rank($cid) {
 	$cid = (int)$cid;
 	if (config('TFSVersion') !== 'TFS_10') {
-		$rid = mysql_result(mysql_query("SELECT `rank_id` FROM `players` WHERE `id`='$cid';"), 0, 'rank_id');
-		return ($rid > 0) ? $rid : false;
+		$data = mysql_select_single("SELECT `rank_id` FROM `players` WHERE `id`='$cid';");
+		return ($data !== false && $data['rank_id'] > 0) ? $data['rank_id'] : false;
 	} else {
 		$data = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='$cid' LIMIT 1;");
 		return ($data !== false) ? $data['rank_id'] : false;
@@ -498,7 +471,8 @@ function get_player_guild_rank($rank_id) {
 // Get a player guild position ID, using his rank_id
 function get_guild_position($rid) {
 	$rid = (int)$rid;
-	return mysql_result(mysql_query("SELECT `level` FROM `guild_ranks` WHERE `id`=$rid;"), 0, 'level');
+	$data = mysql_select_single("SELECT `level` FROM `guild_ranks` WHERE `id`=$rid;");
+	return ($data !== false) ? $data['level'] : false;
 }
 
 // Get a players rank_id, guild_id, rank_level(ID), rank_name(string), using cid(player id)
@@ -526,10 +500,8 @@ function get_guild_name($gid) {
 // Returns guild id from name
 function get_guild_id($name) {
 	$name = sanitize($name);
-	$query = mysql_query("SELECT `id` FROM `guilds` WHERE `name`='$name';");
-	$row = mysql_fetch_assoc($query);
-	
-	return !empty($row) ? $row['id'] : false;
+	$data = mysql_select_single("SELECT `id` FROM `guilds` WHERE `name`='$name';");
+	return ($data !== false) ? $data['id'] : false;
 }
 
 // Get complete list of guilds
@@ -562,51 +534,31 @@ function count_guild_members($gid) {
 // Returns guild war entry for id
 function get_guild_war($warid) {
 	$warid = (int)$warid; // Sanitizing the parameter id
-	$query = mysql_query("SELECT `id`, `guild1`, `guild2`, `name1`, `name2`, `status`, `started`, `ended` FROM `guild_wars` WHERE `id`=$warid ORDER BY `started`;");
-	$row = mysql_fetch_assoc($query);
-	
-	return !empty($row) ? $row : false;
+	return mysql_select_single("SELECT `id`, `guild1`, `guild2`, `name1`, `name2`, `status`, `started`, `ended` FROM `guild_wars` WHERE `id`=$warid ORDER BY `started`;");
 }
 
 // TFS 0.3 compatibility
 function get_guild_war03($warid) {
 	$warid = (int)$warid; // Sanitizing the parameter id
-	$query = mysql_query("SELECT `id`, `guild_id`, `enemy_id`, `status`, `begin`, `end` FROM `guild_wars` ORDER BY `begin` DESC LIMIT 0, 30");
-	$row = mysql_fetch_assoc($query);
-	
-	if (!empty($row)) {
-		$row['guild1'] = $row['guild_id'];
-		$row['guild2'] = $row['enemy_id'];
-		$row['name1'] = get_guild_name($row['guild_id']);
-		$row['name2'] = get_guild_name($row['enemy_id']);
-		$row['started'] = $row['begin'];
-		$row['ended'] = $row['end'];
+
+	$wars = mysql_select_multi("SELECT `id`, `guild_id`, `enemy_id`, `status`, `begin`, `end` FROM `guild_wars` ORDER BY `begin` DESC LIMIT 0, 30");
+	if ($wars !== false) {
+		for ($i = 0; $i < count($wars); $i++) {
+			$wars[$i]['guild1'] = $wars[$i]['guild_id'];
+			$wars[$i]['guild2'] = $wars[$i]['enemy_id'];
+			$wars[$i]['name1'] = get_guild_name($wars[$i]['guild_id']);
+			$wars[$i]['name2'] = get_guild_name($wars[$i]['enemy_id']);
+			$wars[$i]['started'] = $wars[$i]['begin'];
+			$wars[$i]['ended'] = $wars[$i]['end'];
+		}
 	}
-	
-	return !empty($row) ? $row : false;
+	return $wars;
 }
 
 // List all war entries
 function get_guild_wars() {
 	return mysql_select_multi("SELECT `id`, `guild1`, `guild2`, `name1`, `name2`, `status`, `started`, `ended` FROM `guild_wars` ORDER BY `started` DESC LIMIT 0, 30");
 }
-
-/* TFS 0.3 compatibility
-function get_guild_wars03() {
-	$query = mysql_query("SELECT `id`, `guild_id`, `enemy_id`, `status`, `begin`, `end` FROM `guild_wars` ORDER BY `begin` DESC LIMIT 0, 30");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		// Generating TFS 0.2 key values for this 0.3 query for web cross compatibility
-		$row['guild1'] = $row['guild_id'];
-		$row['guild2'] = $row['enemy_id'];
-		$row['name1'] = get_guild_name($row['guild_id']);
-		$row['name2'] = get_guild_name($row['enemy_id']);
-		$row['started'] = $row['begin'];
-		$row['ended'] = $row['end'];
-		$array[] = $row;
-	}
-	return !empty($array) ? $array : false;
-}*/
 
 // Untested. (TFS 0.3 compatibility)
 function get_guild_wars03() {
@@ -628,51 +580,23 @@ function get_guild_wars03() {
 // List kill activity in wars.
 function get_war_kills($war_id) {
 	$war_id = (int)$war_id;// Sanitize - verify its an integer.
-	
-	$query = mysql_query("SELECT `id`, `killer`, `target`, `killerguild`, `targetguild`, `warid`, `time` FROM `guildwar_kills` WHERE `warid`=$war_id ORDER BY `time` DESC LIMIT 0, 30") or die("02 q");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	} 
-	return !empty($array) ? $array : false;
+	return mysql_select_multi("SELECT `id`, `killer`, `target`, `killerguild`, `targetguild`, `warid`, `time` FROM `guildwar_kills` WHERE `warid`=$war_id ORDER BY `time` DESC");
 }
 
 // TFS 0.3 compatibility
 function get_war_kills03($war_id) {
 	$war_id = (int)$war_id;// Sanitize - verify its an integer.
-	
-	$query = mysql_query("SELECT `id`, `guild_id`, `war_id`, `death_id` FROM `guild_kills` WHERE `war_id`=$war_id ORDER BY `id` DESC LIMIT 0, 30") or die("03 q");
-	$array = array();
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	} 
-	return !empty($array) ? $array : false;
-}
-
-function get_death_data($did) {
-	$did = (int)$did; // Sanitizing the parameter id
-	$query = mysql_query("SELECT `id`, `guild_id`, `enemy_id`, `status`, `begin`, `end` FROM `guild_wars` ORDER BY `begin` DESC LIMIT 0, 30");
-	$row = mysql_fetch_assoc($query);
-	
-	return !empty($row) ? $row : false;
+	return mysql_select_multi("SELECT `id`, `guild_id`, `war_id`, `death_id` FROM `guild_kills` WHERE `war_id`=$war_id ORDER BY `id` DESC LIMIT 0, 30");
 }
 
 // Gesior compatibility port TFS .3
 function gesior_sql_death($warid) {
 	$warid = (int)$warid; // Sanitizing the parameter id
-	$query = mysql_query('SELECT `pd`.`id`, `pd`.`date`, `gk`.`guild_id` AS `enemy`, `p`.`name`, `pd`.`level` FROM `guild_kills` gk LEFT JOIN `player_deaths` pd ON `gk`.`death_id` = `pd`.`id` LEFT JOIN `players` p ON `pd`.`player_id` = `p`.`id` WHERE `gk`.`war_id` = ' . $warid . ' AND `p`.`deleted` = 0 ORDER BY `pd`.`date` DESC');
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	} 
-	return !empty($array) ? $array : false;
+	return mysql_select_multi('SELECT `pd`.`id`, `pd`.`date`, `gk`.`guild_id` AS `enemy`, `p`.`name`, `pd`.`level` FROM `guild_kills` gk LEFT JOIN `player_deaths` pd ON `gk`.`death_id` = `pd`.`id` LEFT JOIN `players` p ON `pd`.`player_id` = `p`.`id` WHERE `gk`.`war_id` = ' . $warid . ' AND `p`.`deleted` = 0 ORDER BY `pd`.`date` DESC');
 }
 function gesior_sql_killer($did) {
 	$did = (int)$did; // Sanitizing the parameter id
-	$query = mysql_query('SELECT `p`.`name` AS `player_name`, `p`.`deleted` AS `player_exists`, `k`.`war` AS `is_war` FROM `killers` k LEFT JOIN `player_killers` pk ON `k`.`id` = `pk`.`kill_id` LEFT JOIN `players` p ON `p`.`id` = `pk`.`player_id` WHERE `k`.`death_id` = ' . $did . ' ORDER BY `k`.`final_hit` DESC, `k`.`id` ASC');
-	while($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	} 
-	return !empty($array) ? $array : false;
+	return mysql_select_multi('SELECT `p`.`name` AS `player_name`, `p`.`deleted` AS `player_exists`, `k`.`war` AS `is_war` FROM `killers` k LEFT JOIN `player_killers` pk ON `k`.`id` = `pk`.`kill_id` LEFT JOIN `players` p ON `p`.`id` = `pk`.`player_id` WHERE `k`.`death_id` = ' . $did . ' ORDER BY `k`.`final_hit` DESC, `k`.`id` ASC');
 }
 // end gesior
 // END GUILD WAR
@@ -690,8 +614,8 @@ function set_ingame_position($name, $acctype) {
 	} elseif ($acctype == 6) {
 		$group_id = 3;
 	}
-	mysql_query("UPDATE `accounts` SET `type` = '$acctype' WHERE `id` =$acc_id;");
-	mysql_query("UPDATE `players` SET `group_id` = '$group_id' WHERE `id` =$char_id;");
+	mysql_update("UPDATE `accounts` SET `type` = '$acctype' WHERE `id` =$acc_id;");
+	mysql_update("UPDATE `players` SET `group_id` = '$group_id' WHERE `id` =$char_id;");
 }
 
 // .3
@@ -706,7 +630,7 @@ function set_ingame_position03($name, $acctype) {
 	if ($acctype == 1) {
 		$group_id = 1;
 	}
-	mysql_query("UPDATE `players` SET `group_id` = '$acctype' WHERE `id` =$char_id;");
+	mysql_update("UPDATE `players` SET `group_id` = '$acctype' WHERE `id` =$char_id;");
 }
 
 // Set rule violation. 
@@ -731,28 +655,28 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 		$bannedby = user_character_id($bannedby);
 		
 		if (Config('TFSVersion') === 'TFS_02')
-		mysql_query("INSERT INTO `bans` (`type` ,`ip` ,`mask` ,`player` ,`account` ,`time` ,`reason_id` ,`action_id` ,`comment` ,`banned_by`) VALUES ('$typeid', '$charip', '4294967295', '$charid', '$accountid', '$time', '$reasonid', '$actionid', '$comment', '$bannedby');") or die(mysql_error());
+		mysql_insert("INSERT INTO `bans` (`type` ,`ip` ,`mask` ,`player` ,`account` ,`time` ,`reason_id` ,`action_id` ,`comment` ,`banned_by`) VALUES ('$typeid', '$charip', '4294967295', '$charid', '$accountid', '$time', '$reasonid', '$actionid', '$comment', '$bannedby');");
 		if (Config('TFSVersion') === 'TFS_03') {
 			$now = time();
 			switch ($typeid) {
 				case 1: // IP ban
-					mysql_query("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charip', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');") or die(mysql_error());
+					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charip', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
 				
 				case 2: // namelock
-					mysql_query("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');") or die(mysql_error());
+					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
 				
 				case 3: // acc ban
-					mysql_query("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$accountid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');") or die(mysql_error());
+					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$accountid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
 				
 				case 4: // notation
-					mysql_query("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');") or die(mysql_error());
+					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
 				
 				case 5: // deletion
-					mysql_query("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');") or die(mysql_error());
+					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
 			}
 			
@@ -774,60 +698,53 @@ function user_fetch_deathlist($char_id) {
 // TFS .3 compatibility
 function user_fetch_deathlist03($char_id) {
 	$char_id = (int)$char_id;
-	$query = mysql_query("SELECT * FROM `player_deaths` WHERE `player_id`='$char_id' order by `date` DESC LIMIT 0, 10") or die(mysql_error());
-	
-	while($row = mysql_fetch_assoc($query)) {
-		$row['time'] = $row['date'];
-		$array[] = $row;
-	} 
-	return !empty($array) ? $array : false;
+	$data = mysql_select_multi("SELECT * FROM `player_deaths` WHERE `player_id`='$char_id' order by `date` DESC LIMIT 0, 10");
+	if ($data !== false) {
+		for ($i = 0; $i < count($data); $i++) {
+			$data[$i]['time'] = $data[$i]['date'];
+		}
+	}
+	return $data;
 }
 
 // same (death id ---> killer id)
 function user_get_kid($did) {
 	$did = (int)$did;
-	return mysql_result(mysql_query("SELECT `id` FROM `killers` WHERE `death_id`='$did';"), 0, 'id');
+	$data = mysql_select_single("SELECT `id` FROM `killers` WHERE `death_id`='$did';");
+	return ($data !== false) ? $data['id'] : false;
 }
 // same (killer id ---> player id)
 function user_get_killer_id($kn) {
 	$kn = (int)$kn;
-	$query = mysql_query("SELECT `player_id` FROM `player_killers` WHERE `kill_id`='$kn';") or die(mysql_error());
-	$count = mysql_num_rows($query);
-	for ($i = 0; $i < $count; $i++) {
-		$row = mysql_fetch_row($query);
-	}
-	
-	if (isset($row)) { return $row[0]; } else {return false;}
+	$data = mysql_select_single("SELECT `player_id` FROM `player_killers` WHERE `kill_id`='$kn';");
+	return ($data !== false) ? $data['player_id'] : false;
 }
 // same (killer id ---> monster name)
 function user_get_killer_m_name($mn) {
 	$mn = (int)$mn;
-	
-	$query = mysql_query("SELECT `name` FROM `environment_killers` WHERE `kill_id`='$mn';");
-	$data = mysql_fetch_assoc($query);
-	
-	//return $data;
-	return mysql_num_rows($query) !== 1 ? false : $data['name'];
+	$data = mysql_select_single("SELECT `name` FROM `environment_killers` WHERE `kill_id`='$mn';");
+	return ($data !== false) ? $data['name'] : false;
 }
 
 // Count character deaths. Counts up 10.
 function user_count_deathlist($char_id) {
 	$char_id = (int)$char_id;
-	return mysql_result(mysql_query("SELECT COUNT('id') FROM `player_deaths` WHERE `player_id`='$char_id' order by `time` DESC LIMIT 0, 10"), 0);
+	$data = mysql_select_single("SELECT COUNT('id') AS `id` FROM `player_deaths` WHERE `player_id`='$char_id' order by `time` DESC LIMIT 0, 10");
+	return ($data !== false) ? $data['id'] : false;
 }
 
 // MY ACCOUNT RELATED \\
 function user_update_comment($char_id, $comment) {
 	$char_id = sanitize($char_id);
 	$comment = sanitize($comment);
-	mysql_query("UPDATE `znote_players` SET `comment`='$comment' WHERE `player_id`='$char_id'");
+	mysql_update("UPDATE `znote_players` SET `comment`='$comment' WHERE `player_id`='$char_id'");
 }
 
 // Permamently delete character id. (parameter: character id)
 function user_delete_character($char_id) {
 	$char_id = (int)$char_id;
-	mysql_query("DELETE FROM `players` WHERE `id`='$char_id';");
-	mysql_query("DELETE FROM `znote_players` WHERE `player_id`='$char_id';");
+	mysql_delete("DELETE FROM `players` WHERE `id`='$char_id';");
+	mysql_delete("DELETE FROM `znote_players` WHERE `player_id`='$char_id';");
 }
 
 // Parameter: accounts.id returns: An array containing detailed information of every character on the account.
@@ -876,19 +793,14 @@ function user_character_list($account_id) {
 function user_character_list_player_id($account_id) {
 	//$count = user_character_list_count($account_id);
 	$account_id = sanitize($account_id);
-	$query = mysql_query("SELECT `id` FROM `players` WHERE `account_id`='$account_id' ORDER BY `level` DESC LIMIT 0, 30");
-	$count = mysql_num_rows($query);
-	for ($i = 0; $i < $count; $i++) {
-		$row = mysql_fetch_row($query);
-		$array[] = $row[0];
-	}
-	if (isset($array)) {return $array; } else {return false;}
+	return mysql_select_multi("SELECT `id` FROM `players` WHERE `account_id`='$account_id' ORDER BY `level` DESC LIMIT 0, 30");
 }
 
 // Parameter: accounts.id returns: number of characters on the account.
 function user_character_list_count($account_id) {
 	$account_id = sanitize($account_id);
-	return mysql_result(mysql_query("SELECT COUNT('id') FROM `players` WHERE `account_id`='$account_id'"), 0);
+	$data = mysql_select_single("SELECT COUNT('id') AS `id` FROM `players` WHERE `account_id`='$account_id'");
+	return ($data !== false) ? $data['id'] : 0;
 }
 
 // END MY ACCOUNT RELATED
@@ -935,48 +847,58 @@ function highscore_getSkill_10($id = 8, $from = 0, $to = 30) {
 // Returns an array containing up to 30 best players in terms of (selected skillid). Returns player ID and skill value.
 function highscore_skills($skillid) {
 	$skillid = (int)$skillid;
-	$query = mysql_query("SELECT `player_id`, `value` FROM `player_skills` WHERE `skillid`='$skillid' ORDER BY `value` DESC LIMIT 0, 30");
-	while ($row = mysql_fetch_assoc($query)) {
-		if ($skillid == 6 || $skillid == 5) {// If skillid is fish fighting, lets display vocation name instead of id.
-			$row['vocation'] = vocation_id_to_name(mysql_result(mysql_query("SELECT `vocation` FROM `players` WHERE `id` = '". $row['player_id'] ."';"), 0));
+
+	$data = mysql_select_multi("SELECT `player_id`, `value` FROM `player_skills` WHERE `skillid`='$skillid' ORDER BY `value` DESC LIMIT 0, 30");
+
+	if ($data !== false) {
+		for ($i = 0; $i < count($data); $i++) {
+			// Fetch extra data from SQL players table
+			if ($skillid == 6 || $skillid == 5) $vd = mysql_select_single("SELECT `vocation`, `group_id`, `name` FROM `players` WHERE `id` = '". $data[$i]['player_id'] ."';");
+			else $vd = mysql_select_single("SELECT `group_id`, `name` FROM `players` WHERE `id` = '". $data[$i]['player_id'] ."';");
+
+			// If skillid is fish fighting, lets display vocation name instead of id.
+			if ($skillid == 6 || $skillid == 5) {
+				
+				if ($vd !== false) $data[$i]['vocation'] = vocation_id_to_name($vd['vocation']);
+				else $data[$i]['vocation'] = 'Unknown';
+			}
+
+			// Happen to every skill group
+			$data[$i]['group_id'] = $vd['group_id'];
+			$data[$i]['name'] = $vd['name'];
+			unset($data[$i]['player_id']);
 		}
-		$row['group_id'] = mysql_result(mysql_query("SELECT `group_id` FROM `players` WHERE `id` = '". $row['player_id'] ."';"), 0);
-		$row['name'] = mysql_result(mysql_query("SELECT `name` FROM `players` WHERE `id` = '". $row['player_id'] ."';"), 0);
-		unset($row['player_id']);
-		$array[] = $row;
 	}
-	if (isset($array)) {return $array; } else {return false;}
+
+	return $data;
 }
 
 // Returns an array containing up to 30 best players in terms of experience. Returns name, experience, vocation and level. 
 function highscore_experience() {
-	//$count = highscore_experience_count();
-	$query = mysql_query("SELECT `name`, `experience` as `value`, `vocation`, `level`, `group_id` FROM `players` WHERE `experience`>500 ORDER BY `experience` DESC LIMIT 0, 30");
-	while ($row = mysql_fetch_assoc($query)) {
-		$row['vocation'] = vocation_id_to_name($row['vocation']);
-		$array[] = $row;
+	$data = mysql_select_multi("SELECT `name`, `experience` as `value`, `vocation`, `level`, `group_id` FROM `players` WHERE `experience`>500 ORDER BY `experience` DESC LIMIT 0, 30");
+	if ($data !== false) {
+		for ($i = 0; $i < count($data); $i++) {
+			$data[$i]['vocation'] = vocation_id_to_name($data[$i]['vocation']);
+		}
 	}
-	if (isset($array)) {return $array; } else {return false;}
+	return $data;
 }
 
 // Returns an array containing up to 30 best players with high magic level (returns their name and magic level)
 function highscore_maglevel() {
-	//$count = highscore_experience_count(); // Dosn't matter if I count exp, maglvl is on same table.
-	$query = mysql_query("SELECT `name`, `maglevel` as `value`, `group_id` FROM `players` WHERE `experience`>500 ORDER BY `maglevel` DESC LIMIT 0, 30");
-	while ($row = mysql_fetch_assoc($query)) {
-		$array[] = $row;
-	}
-	if (isset($array)) {return $array; } else {return false;}
+	return mysql_select_multi("SELECT `name`, `maglevel` as `value`, `group_id` FROM `players` WHERE `experience`>500 ORDER BY `maglevel` DESC LIMIT 0, 30");
 }
 
 // Count how many skill entries are in the db for a certain skillid (this can relate to how many players exist). 
 function highscore_count($skillid) {
-	return mysql_result(mysql_query("SELECT COUNT(`player_id`) FROM `player_skills` WHERE `skillid`='$skillid' LIMIT 0, 30"), 0);
+	$data = mysql_select_single("SELECT COUNT(`player_id`) AS `count` FROM `player_skills` WHERE `skillid`='$skillid' LIMIT 0, 30");
+	return ($data !== false) ? $data['count'] : 0;
 }
 
 // Count how many players have higher exp than 500
 function highscore_experience_count() {
-	return mysql_result(mysql_query("SELECT COUNT(`id`) FROM `players` WHERE `experience`>'500' LIMIT 0, 30"), 0);
+	$data = mysql_select_single("SELECT COUNT(`id`) AS `count` FROM `players` WHERE `experience`>'500' LIMIT 0, 30");
+	return ($data !== false) ? $data['count'] : 0;
 }
 
 // END HIGHSCORE FUNCTIONS
@@ -1046,23 +968,26 @@ function user_account_id_from_password($password) {
 function user_account_add_premdays($accid, $days) {
 	$accid = (int)$accid;
 	$days = (int)$days;
-	$tmp = mysql_result(mysql_query("SELECT `premdays` FROM `accounts` WHERE `id`='$accid';"), 0, 'premdays');
+	$data = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='$accid';");
+	$tmp = $data['premdays'];
 	$tmp += $days;
-	mysql_query("UPDATE `accounts` SET `premdays`='$tmp' WHERE `id`='$accid'");
+	mysql_update("UPDATE `accounts` SET `premdays`='$tmp' WHERE `id`='$accid'");
 }
 
 // Name = char name. Changes from male to female & vice versa.
 function user_character_change_gender($name) {
 	$user_id = user_character_id($name);
-	$gender = mysql_result(mysql_query("SELECT `sex` FROM `players` WHERE `id`='$user_id';"), 0, 'sex');
-	if ($gender == 1) mysql_query("UPDATE `players` SET `sex`='0' WHERE `id`='$user_id'");
-	else mysql_query("UPDATE `players` SET `sex`='1' WHERE `id`='$user_id'");
+	$data = mysql_select_single("SELECT `sex` FROM `players` WHERE `id`='$user_id';");
+	$gender = $data['sex'];
+	if ($gender == 1) mysql_update("UPDATE `players` SET `sex`='0' WHERE `id`='$user_id'");
+	else mysql_update("UPDATE `players` SET `sex`='1' WHERE `id`='$user_id'");
 }
 
 // Fetch account ID from player NAME
 function user_character_account_id($character) {
 	$character = sanitize($character);
-	return mysql_result(mysql_query("SELECT `account_id` FROM `players` WHERE `name`='$character';"), 0, 'account_id');
+	$data = mysql_select_single("SELECT `account_id` FROM `players` WHERE `name`='$character';");
+	return ($data !== false) ? $data['account_id'] : false;
 }
 
 // Verify data from accounts table. Parameter is an array of <columnName> - <data to verify>
@@ -1074,7 +999,8 @@ function user_account_fields_verify_value($verify_data) {
 	foreach ($verify_data as $field=>$data) {
 		$verify[] = '`'. $field .'` = \''. $data .'\'';
 	}
-	return (mysql_result(mysql_query("SELECT COUNT('id') FROM `accounts` WHERE ". implode(' AND ', $verify) .";"), 0) == 1) ? true : false;
+	$data = mysql_select_single("SELECT COUNT('id') AS `count` FROM `accounts` WHERE ". implode(' AND ', $verify) .";");
+	return ($data !== false && $data['count'] == 1) ? true : false;
 }
 
 // Update accounts, make sure user is logged in first.
@@ -1088,7 +1014,7 @@ function user_update_account($update_data) {
 	
 	$user_id = sanitize($_SESSION['user_id']);
 	
-	mysql_query("UPDATE `accounts` SET ". implode(', ', $update) ." WHERE `id`=". $user_id .";");
+	mysql_update("UPDATE `accounts` SET ". implode(', ', $update) ." WHERE `id`=". $user_id .";");
 }
 
 // Update znote_accounts table, make sure user is logged in for this. This is used to etc update lastIP
@@ -1102,7 +1028,7 @@ function user_update_znote_account($update_data) {
 	
 	$user_id = sanitize($_SESSION['user_id']);
 	
-	mysql_query("UPDATE `znote_accounts` SET ". implode(', ', $update) ." WHERE `account_id`=". $user_id .";");
+	mysql_update("UPDATE `znote_accounts` SET ". implode(', ', $update) ." WHERE `account_id`=". $user_id .";");
 }
 
 // Change password on account_id (Note: You should verify that he knows the old password before doing this)
@@ -1110,7 +1036,7 @@ function user_change_password($user_id, $password) {
 	$user_id = sanitize($user_id);
 	$password = sha1($password);
 	
-	mysql_query("UPDATE `accounts` SET `password`='$password' WHERE `id`=$user_id");
+	mysql_update("UPDATE `accounts` SET `password`='$password' WHERE `id`=$user_id");
 }
 // .3 compatibility
 function user_change_password03($user_id, $password) {
@@ -1119,7 +1045,7 @@ function user_change_password03($user_id, $password) {
 		$salt = user_data($user_id, 'salt');
 		$password = sha1($salt['salt'].$password);
 		
-		mysql_query("UPDATE `accounts` SET `password`='$password' WHERE `id`=$user_id");
+		mysql_update("UPDATE `accounts` SET `password`='$password' WHERE `id`=$user_id");
 	} else {
 		user_change_password($user_id, $password);
 	}
@@ -1130,7 +1056,7 @@ function user_character_set_hide($char_id, $value) {
 	$char_id = sanitize($char_id);
 	$value = sanitize($value);
 	
-	mysql_query("UPDATE `znote_players` SET `hide_char`='$value' WHERE `player_id`=$char_id");
+	mysql_update("UPDATE `znote_players` SET `hide_char`='$value' WHERE `player_id`=$char_id");
 }
 
 // CREATE ACCOUNT
@@ -1153,10 +1079,10 @@ function user_create_account($register_data) {
 	$fields = '`'. implode('`, `', array_keys($register_data)) .'`';
 	$data = '\''. implode('\', \'', $register_data) .'\'';
 
-	mysql_query("INSERT INTO `accounts` ($fields) VALUES ($data)") or die(mysql_error());
+	mysql_insert("INSERT INTO `accounts` ($fields) VALUES ($data)");
 	
 	$account_id = user_id($register_data['name']);
-	mysql_query("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$account_id', '$ip', '$created')") or die(mysql_error());
+	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$account_id', '$ip', '$created')");
 	
 	//TO-DO: mail server and verification.
 	// http://www.web-development-blog.com/archives/send-e-mail-messages-via-smtp-with-phpmailer-and-gmail/
@@ -1257,25 +1183,29 @@ function user_create_character($character_data) {
 	$fields_sql = implode("`, `", $fields); // Convert array into SQL compatible string
 	$data_sql = implode("', '", $data); // Convert array into SQL compatible string
 	echo 1;
-	mysql_query("INSERT INTO `players`(`$fields_sql`) VALUES ('$data_sql');") or die("INSERT ERROR: ". mysql_error());
+	mysql_insert("INSERT INTO `players`(`$fields_sql`) VALUES ('$data_sql');") or die("INSERT ERROR: ". mysql_error());
 	
 	$created = time();
 	$charid = user_character_id($import_data['name']);
 	echo 2;
-	mysql_query("INSERT INTO `znote_players`(`player_id`, `created`, `hide_char`, `comment`) VALUES ('$charid', '$created', '0', '');") or die(mysql_error());
+	mysql_insert("INSERT INTO `znote_players`(`player_id`, `created`, `hide_char`, `comment`) VALUES ('$charid', '$created', '0', '');");
 }
 
 // Returns counted value of all players online
 function user_count_online() {
 	if (config('TFSVersion') == 'TFS_10') {
 		$online = mysql_select_single("SELECT COUNT(`player_id`) AS `value` FROM `players_online`;");
-		return $online['value'];
-	} else return mysql_result(mysql_query("SELECT COUNT(`id`) from `players` WHERE `online` = 1;"), 0);
+		return ($online !== false) ? $online['value'] : 0;
+	} else {
+		$data = mysql_select_single("SELECT COUNT(`id`) AS `count` from `players` WHERE `online` = 1;");
+		return ($data !== false) ? $data['count'] : 0;
+	}
 }
 
 // Returns counted value of all accounts.
 function user_count_accounts() {
-	return mysql_result(mysql_query("SELECT COUNT(`id`) from `accounts`;"), 0);
+	$result = mysql_select_single("SELECT COUNT(`id`) AS `id` from `accounts`;");
+	return ($result !== false) ? $result['id'] : 0;
 }
 
 /* user_character_data (fetches whatever data you want from players table)!
@@ -1325,8 +1255,7 @@ function user_znote_data() {
 	if ($func_num_args > 0)  {
 		
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
-		$data = mysql_fetch_assoc(mysql_query("SELECT $fields FROM `znote`;"));
-		return $data;
+		return mysql_select_single("SELECT $fields FROM `znote`;");
 	} else return false;
 }
 
@@ -1343,9 +1272,8 @@ function user_znote_account_data($account_id) {
 		unset($func_get_args[0]);
 		
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
-		$data = mysql_select_single("SELECT $fields FROM `znote_accounts` WHERE `account_id` = $accid LIMIT 1;");
-		return $data;
-	}
+		return mysql_select_single("SELECT $fields FROM `znote_accounts` WHERE `account_id` = $accid LIMIT 1;");
+	} else return false;
 }
 
 // return query data from znote_visitors table
@@ -1361,9 +1289,8 @@ function user_znote_visitor_data($longip) {
 		unset($func_get_args[0]);
 		
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
-		$data = mysql_fetch_assoc(mysql_query("SELECT $fields FROM `znote_visitors` WHERE `ip` = $longip;"));
-		return $data;
-	}
+		return mysql_select_single("SELECT $fields FROM `znote_visitors` WHERE `ip` = $longip;");
+	} else return false;
 }
 
 // return query data from znote_visitors_details table
@@ -1379,9 +1306,8 @@ function user_znote_visitor_details_data($longip) {
 		unset($func_get_args[0]);
 		
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
-		$data = mysql_fetch_assoc(mysql_query("SELECT $fields FROM `znote_visitors_details` WHERE `ip` = $longip;"));
-		return $data;
-	}
+		return mysql_select_single("SELECT $fields FROM `znote_visitors_details` WHERE `ip` = $longip;");
+	} else return false;
 }
 
 /* user_data (fetches whatever data you want from accounts table)!
@@ -1400,23 +1326,22 @@ function user_data($user_id) {
 		unset($func_get_args[0]);
 		
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
-		$data = mysql_select_single("SELECT $fields FROM `accounts` WHERE `id` = $user_id LIMIT 1;");
-		return $data;
-	}
+		return mysql_select_single("SELECT $fields FROM `accounts` WHERE `id` = $user_id LIMIT 1;");
+	} else return false;
 }
 
 // Checks if user is activated (Not in use atm)
 function user_activated($username) {
 	$username = sanitize($username);
 	// Deprecated, removed from DB.
-	//return (mysql_result(mysql_query("SELECT COUNT('id') FROM `accounts` WHERE `name`='$username' AND `email_new_time`=1;"), 0) == 1) ? true : false;
 	return false;
 }
 
 // Checks that username exist in database
 function user_exist($username) {
 	$username = sanitize($username);
-	return (mysql_result(mysql_query("SELECT COUNT('id') FROM `accounts` WHERE `name`='$username';"), 0) == 1) ? true : false;
+	$data = mysql_select_single("SELECT COUNT('id') FROM `accounts` WHERE `name`='$username';");
+	return ($data !== false) ? true : false;
 }
 
 function user_name($id) { //USERNAME FROM PLAYER ID
@@ -1429,33 +1354,37 @@ function user_name($id) { //USERNAME FROM PLAYER ID
 // Checks that character name exist
 function user_character_exist($username) {
 	$username = sanitize($username);
-	return (mysql_result(mysql_query("SELECT COUNT('id') FROM `players` WHERE `name`='$username';"), 0) == 1) ? true : false;
+	$data = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$username';");
+	return ($data !== false) ? true : false;
 }
 
 // Checks that this email exist.
 function user_email_exist($email) {
 	$email = sanitize($email);
-	return (mysql_result(mysql_query("SELECT COUNT('id') FROM `accounts` WHERE `email`='$email';"), 0) >= 1) ? true : false;
+	$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `email`='$email';");
+	return ($data !== false) ? true : false;
 }
 
 // Fetch user account ID from registered email. (this is used by etc lost account)
 function user_id_from_email($email) {
 	$email = sanitize($email);
-	 $account_id = mysql_result(mysql_query("SELECT `id` FROM `accounts` WHERE `email`='$email';"), 0, 'id');
-	 return $account_id;
+	 $data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `email`='$email';");
+	 return ($data !== false) ? $data['id'] : false;
 }
 
 // Checks that a password exist in the database.
 function user_password_exist($password) {
 	$password = sha1($password); // No need to sanitize passwords since we encrypt them.
-	return (mysql_result(mysql_query("SELECT COUNT('id') FROM `accounts` WHERE `password`='$password';"), 0) == 1) ? true : false;
+	$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `password`='$password';");
+	return ($data !== false) ? true : false;
 }
 
 // Verify that submitted password match stored password in account id
 function user_password_match($password, $account_id) {
 	$password = sha1($password); // No need to sanitize passwords since we encrypt them.
 	$account_id = (int)$account_id;
-	return (mysql_result(mysql_query("SELECT COUNT('id') FROM `accounts` WHERE `password`='$password' AND `id`='$account_id';"), 0) == 1) ? true : false;
+	$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `password`='$password' AND `id`='$account_id';");
+	return ($data !== false) ? true : false;
 }
 
 // Get user ID from name
@@ -1482,11 +1411,12 @@ function user_login_id_03($username, $password) {
 			$user_id = user_id($username);
 			$username = sanitize($username);
 			
-			$salt = mysql_result(mysql_query("SELECT `salt` FROM `accounts` WHERE `id`='$user_id';"), 0, 'salt');
+			$data = mysql_select_single("SELECT `salt`, `id`, `name`, `password` FROM `accounts` WHERE `id`='$user_id';");
+			$salt = $data['salt'];
 			if (!empty($salt)) $password = sha1($salt.$password);
 			else $password = sha1($password);
-			return mysql_result(mysql_query("SELECT `id` FROM `accounts` WHERE `name`='$username' AND `password`='$password';"), 0, 'id');
-		}
+			return ($data !== false && $data['name'] == $username && $data['password'] == $password) ? $data['id'] : false;
+		} else return false;
 	} else return user_login_id($username, $password);
 }
 
@@ -1509,24 +1439,21 @@ function user_character_hide($username) {
 
 // Login with a user. (TFS 0.2)
 function user_login($username, $password) {
-	$user_id = user_login_id($username, $password);
-
 	$username = sanitize($username);
 	$password = sha1($password);
-	return (mysql_result(mysql_query("SELECT COUNT('id') FROM accounts WHERE name='$username' AND password='$password';"), 0) == 1) ? $user_id : false;
+	$data = mysql_select_single("SELECT `id` FROM accounts WHERE name='$username' AND password='$password';");
+	return ($data !== false) ? $data['id'] : false;
 }
 
 // Login a user with TFS 0.3 compatibility
 function user_login_03($username, $password) {
 	if (config('salt') === true) {
-		$user_id = user_login_id_03($username, $password);
-
 		$username = sanitize($username);
-		
-		$salt = mysql_result(mysql_query("SELECT `salt` FROM `accounts` WHERE `id`='$user_id';"), 0, 'salt');
+		$data = mysql_select_single("SELECT `salt`, `id`, `password`, `name` FROM `accounts` WHERE `name`='$username';");
+		$salt = $data['salt'];
 		if (!empty($salt)) $password = sha1($salt.$password);
 		else $password = sha1($password);
-		return (mysql_result(mysql_query("SELECT COUNT('id') FROM accounts WHERE name='$username' AND password='$password';"), 0) == 1) ? $user_id : false;
+		return ($data !== false && $data['name'] == $username && $data['password'] == $password) ? $data['id'] : false;
 	} else return user_login($username, $password);
 }
 

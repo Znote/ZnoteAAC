@@ -37,7 +37,7 @@ if ($config['log_ip']) {
 		$timef = $time - $flush;
 		if (getCache() < $timef) {
 			$timef = $time - $visitor_config['time_period'];
-			mysql_query("DELETE FROM znote_visitors_details WHERE time <= '$timef'") or die(mysql_error());
+			mysql_delete("DELETE FROM znote_visitors_details WHERE time <= '$timef'");
 			setCache($time);
 		}
 	}
