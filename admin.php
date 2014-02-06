@@ -123,7 +123,7 @@ if (empty($errors) === false){
 <?php
 $basic = user_znote_data('version', 'installed', 'cached');
 if ($basic['version'] !== $version) {
-	mysql_update("UPDATE `znote` SET `version`='$version';") or die(mysql_error());
+	mysql_update("UPDATE `znote` SET `version`='$version';");
 	$basic = user_znote_data('version', 'installed', 'cached');
 }
 echo "Running Znote AAC Version: ". $basic['version'] .".<br>";
