@@ -57,8 +57,6 @@ if (!empty($_POST['change_gender'])) {
 			
 			// Fetch character tickets
 			$tickets = shop_account_gender_tickets($account_id);
-			//$tickets = mysql_result(mysql_query("SELECT `count` FROM `znote_shop_orders` WHERE `account_id`='' AND `type`='3';"), 0, 'count');
-			//$dbid = mysql_result(mysql_query("SELECT `id` FROM `znote_shop_orders` WHERE `account_id`='$account_id' AND `type`='3';"), 0, 'id');
 			if ($tickets !== false || $config['free_sex_change'] == true) {
 				// They are allowed to change gender
 				$last = false;
