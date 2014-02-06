@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `znote_forum_posts` (
 
 $connect = new mysqli($config['sqlHost'], $config['sqlUser'], $config['sqlPassword'], $config['sqlDatabase']);
 if ($connect->connect_errno) {
-    echo "Failed to connect to MySQL: (" . $connect->connect_errno . ") " . $connect->connect_error . $install;
+    die("Failed to connect to MySQL: (" . $connect->connect_errno . ") " . $connect->connect_error . $install);
 }
 
 function mysql_real_escape_string($escapestr) {
