@@ -199,7 +199,7 @@ if ($connect->connect_errno) {
     die("Failed to connect to MySQL: (" . $connect->connect_errno . ") " . $connect->connect_error . $install);
 }
 
-function mysql_real_escape_string($escapestr) {
+function mysql_znote_escape_string($escapestr) {
   global $connect;
   return mysqli_real_escape_string($connect, $escapestr);
 }

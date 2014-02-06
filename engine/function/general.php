@@ -401,11 +401,11 @@ function is_admin($user_data) {
 }
 
 function array_sanitize(&$item) {
-	$item = htmlentities(strip_tags(mysql_real_escape_string($item)));
+	$item = htmlentities(strip_tags(mysql_znote_escape_string($item)));
 }
 
 function sanitize($data) {
-	return htmlentities(strip_tags(mysql_real_escape_string($data)));
+	return htmlentities(strip_tags(mysql_znote_escape_string($data)));
 }
 
 function output_errors($errors) {

@@ -29,7 +29,7 @@
 	
 	// FUNCTIONS
 	function sanitize($data)/* Security reasons */ {
-		return htmlentities(strip_tags(mysql_real_escape_string($data)));
+		return htmlentities(strip_tags(mysql_znote_escape_string($data)));
 	}
 	function user_data($user_id)/* account data */ {
 		$data = array();

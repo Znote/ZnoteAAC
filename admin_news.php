@@ -59,7 +59,7 @@ if (empty($_POST) === false) {
 	// Insert news
 	if ($action === 'i') {
 		echo '<font color="green"><b>News created successfully!</b></font>';
-		list($charid, $title, $text) = array((int)$_POST['selected_char'], mysql_real_escape_string($_POST['title']), mysql_real_escape_string($_POST['text']));
+		list($charid, $title, $text) = array((int)$_POST['selected_char'], mysql_znote_escape_string($_POST['title']), mysql_znote_escape_string($_POST['text']));
 		$date = time();
 		mysql_insert("INSERT INTO `znote_news` (`title`, `text`, `date`, `pid`) VALUES ('$title', '$text', '$date', '$charid');");
 		// Reload the cache.
@@ -71,7 +71,7 @@ if (empty($_POST) === false) {
 	// Save
 	if ($action === 's') {
 		echo '<font color="green"><b>News successfully updated!</b></font>';
-		list($title, $text) = array(mysql_real_escape_string($_POST['title']), mysql_real_escape_string($_POST['text']));
+		list($title, $text) = array(mysql_znote_escape_string($_POST['title']), mysql_znote_escape_string($_POST['text']));
 		mysql_update("UPDATE `znote_news` SET `title`='$title',`text`='$text' WHERE `id`='$id';") or die("FUCK!");
 		$cache = new Cache('engine/cache/news');
 		$news = fetchAllNews();
