@@ -29,11 +29,20 @@ if (!empty($_POST['selected_delete'])) {
 	}
 	if (user_character_account_id($_POST['selected_delete']) === $session_user_id) {
 		$charid = user_character_id($_POST['selected_delete']);
-		$chr_data = user_character_data($charid, 'online');
-		if ($chr_data['online'] != 1) {
-			if (guild_leader_gid($charid) === false) user_delete_character($charid);
-			else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
-		} else echo 'Character must be offline first.';
+		if ($charid !== false) {
+			if ($config['TFSVersion'] === 'TFS_10') {
+				if (!user_is_online_10($charid)) {
+					if (guild_leader_gid($charid) === false) user_delete_character($charid);
+					else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
+				} echo 'Character must be offline first.';
+			} else {
+				$chr_data = user_character_data($charid, 'online');
+				if ($chr_data['online'] != 1) {
+					if (guild_leader_gid($charid) === false) user_delete_character($charid);
+					else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
+				} else echo 'Character must be offline first.';
+			}
+		}
 	}
 }
 // end

@@ -150,10 +150,14 @@ function support_list() {
 // NEWS
 function fetchAllNews() {
 	$data = mysql_select_multi("SELECT * FROM `znote_news` ORDER BY `id` DESC;");
-	for ($i = 0; $i < count($data); $i++) {
-		$cd = user_character_data($data[$i]['pid'], 'name');
-		$data[$i]['name'] = $cd['name'];
-		unset($data[$i]['pid']);
+	if ($data !== false) {
+		for ($i = 0; $i < count($data); $i++) {
+			$player = mysql_select_single("SELECT `name` FROM `players` WHERE `id`='".$data[$i]['pid']."' LIMIT 1;");
+			if ($player !== false) $data[$i]['name'] = $player['name'];
+			else $data[$i]['name'] = "Player not found.";
+			
+			unset($data[$i]['pid']);
+		}
 	}
 	return $data;
 }
@@ -1183,7 +1187,7 @@ function user_create_character($character_data) {
 	$fields_sql = implode("`, `", $fields); // Convert array into SQL compatible string
 	$data_sql = implode("', '", $data); // Convert array into SQL compatible string
 	echo 1;
-	mysql_insert("INSERT INTO `players`(`$fields_sql`) VALUES ('$data_sql');") or die("INSERT ERROR: ". mysql_error());
+	mysql_insert("INSERT INTO `players`(`$fields_sql`) VALUES ('$data_sql');");
 	
 	$created = time();
 	$charid = user_character_id($import_data['name']);
@@ -1340,7 +1344,7 @@ function user_activated($username) {
 // Checks that username exist in database
 function user_exist($username) {
 	$username = sanitize($username);
-	$data = mysql_select_single("SELECT COUNT('id') FROM `accounts` WHERE `name`='$username';");
+	$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `name`='$username';");
 	return ($data !== false) ? true : false;
 }
 
