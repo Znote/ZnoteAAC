@@ -236,12 +236,14 @@ function validate_name($string) {
 	}
 }
 
-// Checks if an IPv4 address is valid
+// Checks if an IPv4(or localhost IPv6) address is valid
 function validate_ip($ip) {
 	$ipL = ip2long($ip);
 	$ipR = long2ip($ipL);
 	
 	if ($ip === $ipR) {
+		return true;
+	} elseif ($ip=='::1')  {
 		return true;
 	} else {
 		return false;
