@@ -386,17 +386,17 @@
 	/// PAYGOL SMS ///
 	//////////////////
 	// !!! Paygol takes 60%~ of the money, and send aprox 40% to your paypal.
-	// You can configure paygol to send each month, then they will send money to you 1 month after recieving 50+ eur.
+	// You can configure paygol to send each month, then they will send money 
+	// to you 1 month after recieving 50+ eur.
 	$config['paygol'] = array(
 		'enabled' => true,
-		'serviceID' => 40339,// Service ID from paygol.com
-		'currency' => 'EUR',
-		'price' => 5,
-		'points' => 25, // Remember to write same details in paygol.com!
-		'name' => '25 points',
+		'serviceID' => 86648,// Service ID from paygol.com
+		'currency' => 'SEK',
+		'price' => 20,
+		'points' => 20, // Remember to write same details in paygol.com!
+		'name' => '20 points',
 		'returnURL' => "http://".$_SERVER['HTTP_HOST']."/success.php",
-		'cancelURL' => "http://".$_SERVER['HTTP_HOST']."/failed.php",
-		'ipnURL' => "http://".$_SERVER['HTTP_HOST']."/paygol_ipn.php",
+		'cancelURL' => "http://".$_SERVER['HTTP_HOST']."/failed.php"
 	);
 	
 	////////////
