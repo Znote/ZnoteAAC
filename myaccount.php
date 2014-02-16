@@ -46,6 +46,55 @@ if (!empty($_POST['selected_delete'])) {
 	}
 }
 // end
+// CHANGE character name
+if (!empty($_POST['change_name'])) {
+	if (!Token::isValid($_POST['token'])) {
+		exit();
+	}
+	$oldname = getValue($_POST['change_name']);
+	$newname = getValue($_POST['newName']);
+	
+
+	// Check if user is online
+	$player = false;
+	if ($config['TFSVersion'] === 'TFS_10') {
+		$player = mysql_select_single("SELECT `id`, `account_id` FROM `players` WHERE `name` = '$oldname'");
+		$player['online'] = (user_is_online_10($player['id'])) ? 1 : 0;
+	} else $player = mysql_select_single("SELECT `id`, `account_id`, `online` FROM `players` WHERE `name` = '$oldname'");
+	
+	// Check if player has bough ticket
+	$order = mysql_select_single("SELECT `id`, `account_id` FROM `znote_shop_orders` WHERE `type`='4' LIMIT 1;");
+	if ($order !== false) {
+		// Check if player and account matches
+		if ($session_user_id == $player['account_id'] && $session_user_id == $order['account_id']) {
+			// Check if new name is not occupied
+			$exist = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$newname';");
+			if (!$exist) {
+				// Check if new name follow rules
+				$newname = validate_name($newname);
+				if ($newname !== false) {
+					$error = false;
+					// name restriction
+					$resname = explode(" ", $_POST['name']);
+					foreach($resname as $res) {
+						if(in_array(strtolower($res), $config['invalidNameTags'])) {
+							$error = true;
+						}
+						else if(strlen($res) == 1) {
+							$error = true;
+						}
+					}
+					if ($error === false) {
+						// Change the name!
+						mysql_update("UPDATE `players` SET `name`='$newname' WHERE `id`='".$player['id']."' LIMIT 1;");
+						mysql_delete("DELETE FROM `znote_shop_orders` WHERE `id`='".$order['id']."' LIMIT 1;");
+					} else echo "Illegal name.";
+				} else echo "Name validation failed, use another name.";
+			} else echo "The character name you wish to change to already exist.";
+		} else echo "Failed to sync your account. :|";
+	} else echo "Did not find any name change tickets, but them in our <a href='shop.php'>shop!</a>";
+}
+// end
 // Change character sex
 if (!empty($_POST['change_gender'])) {
 	if (!Token::isValid($_POST['token'])) {
@@ -218,6 +267,27 @@ if (!empty($_POST['selected_comment'])) {
 							Token::create();
 						?>
 						<input type="submit" value="Change gender" class="btn btn-info">
+					</li>
+				</ul>
+			</form>
+			<!-- FORMS TO CHANGE CHARACTER NAME-->
+			<form action="" method="post">
+				<ul>
+					<li>
+						Change character name:<br>
+						<select name="change_name" multiple="multiple">
+						<?php
+						for ($i = 0; $i < $char_count; $i++) {
+							echo '<option value="'. $characters[$i] .'">'. $characters[$i] .'</option>'; 	
+						}
+						?>
+						</select>
+						<input type="text" name="newName" placeholder="New Name">
+						<?php
+							/* Form file */
+							Token::create();
+						?>
+						<input type="submit" value="Change name" class="btn btn-info">
 					</li>
 				</ul>
 			</form>

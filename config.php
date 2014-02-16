@@ -4,7 +4,7 @@
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
 	// TFS 0.4 = TFS_03
 	// TFS 1.0 = TFS_10 (Under developement)
-	$config['TFSVersion'] = 'TFS_04';
+	$config['TFSVersion'] = 'TFS_10';
 	
 	$config['site_title'] = 'Znote AAC';
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
@@ -14,13 +14,13 @@
 	// ------------------------ \\
 	
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'gremlee';
+	$config['sqlUser'] = 'dev';
 	
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'gremlee';
+	$config['sqlPassword'] = 'dev';
 	
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'gremlee';
+	$config['sqlDatabase'] = 'dev';
 	
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
@@ -160,7 +160,7 @@
 		);
 
 	$config['validate_IP'] = true; // Only allow legal IP addresses to register and create character.
-	$config['salt'] = true; // Some noob 0.3.6 servers don't support salt.
+	$config['salt'] = false; // Some noob 0.3.6 servers don't support salt.
 	
 	// Restricted names
 	$config['invalidNameTags'] = array("god", "gm", "cm", "gamemaster", "hoster", "admin", "admim", "adm", "owner", "staff");
@@ -473,6 +473,13 @@
 			'itemid' => 12666,
 			'count' => 0,
 			'describtion' => "Change character gender.",
+			'points' => 20,
+		),
+		5 => array(
+			'type' => 4,
+			'itemid' => 12666,
+			'count' => 1,
+			'describtion' => "Change character name.",
 			'points' => 20,
 		),
 	);
