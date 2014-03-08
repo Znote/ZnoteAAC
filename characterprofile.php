@@ -4,9 +4,8 @@ if ($config['log_ip']) {
 }
 if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 	$name = $_GET['name'];
-	
-	if (user_character_exist($name)) {
-		$user_id = user_character_id($name);
+	$user_id = user_character_exist($name);
+	if ($user_id !== false) {
 		if ($config['TFSVersion'] == 'TFS_10') {
 			$profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin');
 			$profile_data['online'] = user_is_online_10($user_id);
@@ -22,7 +21,6 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 		?>
 		
 		<!-- PROFILE MARKUP HERE-->
-			<?php ?>
 			<h1><font class="profile_font" name="profile_font_header">Profile: <?php echo $profile_data['name']; ?></font></h1>
 			<ul class="unstyled">
 				<li><font class="profile_font" name="profile_font_level">Level: <?php echo $profile_data['level']; ?></font></li>
@@ -92,6 +90,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							}
 							//Done.
 						} else if ($config['TFSVersion'] == 'TFS_03') {
+							//mysql_select_single("SELECT * FROM players WHERE name='TEST DEBUG';");
 							$array = user_fetch_deathlist03($user_id);
 							if ($array) {
 							?>

@@ -206,6 +206,11 @@ function mysql_znote_escape_string($escapestr) {
 // Select single row from database
 function mysql_select_single($query) {
   global $connect;
+  global $aacQueries;
+  $aacQueries++;
+
+  global $accQueriesData;
+  $accQueriesData[] = $query;
   $result = mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_single</b> (select single row from database)<br><br>".mysqli_error($connect));
   $row = mysqli_fetch_assoc($result);
   return !empty($row) ? $row : false;
@@ -214,6 +219,10 @@ function mysql_select_single($query) {
 // Selecting multiple rows from database.
 function mysql_select_multi($query){
   global $connect;
+  global $aacQueries;
+  $aacQueries++;
+  global $accQueriesData;
+  $accQueriesData[] = $query;
   $array = array();
   $results = mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_multi</b> (select multiple rows from database)<br><br>".mysqli_error($connect));
   while($row = mysqli_fetch_assoc($results)) {
@@ -234,6 +243,10 @@ function mysql_delete($query){ voidQuery($query); }
 // Send a void query
 function voidQuery($query) {
   global $connect;
+  global $aacQueries;
+  $aacQueries++;
+  global $accQueriesData;
+  $accQueriesData[] = $query;
   mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>voidQuery</b> (voidQuery is used for update, insert or delete from database)<br><br>".mysqli_error($connect));
 }
 ?>

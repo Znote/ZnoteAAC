@@ -14,13 +14,13 @@
 	// ------------------------ \\
 	
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'dev';
+	$config['sqlUser'] = 'daler';
 	
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'dev';
+	$config['sqlPassword'] = 'daler';
 	
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'dev';
+	$config['sqlDatabase'] = 'daler';
 	
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
@@ -192,7 +192,7 @@
 	$config['port'] = 7171; // Port number to connect to your OT.
 	
 	// How often do you want highscores to update?
-	$config['cache_lifespan'] = 1;//60 * 15; // 15 minutes.
+	$config['cache_lifespan'] = 5;//60 * 15; // 15 minutes.
 	
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
@@ -338,7 +338,7 @@
 		to configure flush_ip_logs if IPs are logged.
 	*/
 	
-	$config['log_ip'] = true;
+	$config['log_ip'] = false;
 	
 	// Flush IP logs each configured seconds, 60 * 15 = 15 minutes.
 	// Set to false to entirely disable ip log flush. 
@@ -415,7 +415,7 @@
 		'enableShopConfirmation' => true, // Verify that user wants to buy with popup
 		'useDB' => false, // Fetch offers from database, or the below config array
 		'showImage' => true,
-		'imageServer' => 'items.znote.eu',
+		'imageServer' => 'items.halfaway.net',
 		'imageType' => 'gif',
 	);
 

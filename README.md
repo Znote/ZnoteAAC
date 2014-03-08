@@ -44,17 +44,16 @@ This will show you the rest of the instructions as well as the mysql schema.
 
 ### This is the developement repository for the Znote AAC project.
 # TODO 1.5:
-* TFS 1.0 House system
-* TFS 1.0 Guilds
 * TFS 1.0 LUA scripts (Shop system, first items)
 
 # TODO 1.6:
 * Recovery key
 * Email system
-* Character auction house for shop points
+* Character auction for shop points
 * Database shop offers
 * Manage shop offers without touching code
 * Live TFS 1.0 integration
 
 # Removed from TODO:
-* TFS 1.0 Livestream (Since Hani rejected to release sources for this I have no intention of adding support for it). 
+* TFS 1.0 Livestream
+Reason: Not open source, not legally available on any official free TFS distributions.

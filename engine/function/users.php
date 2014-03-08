@@ -43,15 +43,7 @@ function fetchLoosers() {
 
 // Fetch latest deaths
 function fetchLatestDeaths($from = 0, $to = 30) {
-	$array = mysql_select_multi("SELECT * FROM `player_deaths` ORDER BY `time` DESC LIMIT $from, $to;");
-	if ($array !== false) {
-		for ($i = 0; $i < count($array); $i++) {
-			$data = user_character_data($array[$i]['player_id'], 'name');
-			$array[$i]['victim'] = $data['name'];
-			unset($array[$i]['player_id']);
-		}
-	}
-	return $array;
+	return mysql_select_multi("SELECT `d`.`level`, `p`.`name` AS `victim`, `d`.`time`, `d`.`is_player`, `d`.`killed_by` FROM `player_deaths` AS `d` INNER JOIN `players` AS `p` ON `d`.`player_id` = `p`.`id` ORDER BY `time` DESC LIMIT $from, $to;");
 }
 
 // latest deaths .3 (Based on code from Hauni@otland.net).
@@ -149,17 +141,7 @@ function support_list() {
 
 // NEWS
 function fetchAllNews() {
-	$data = mysql_select_multi("SELECT * FROM `znote_news` ORDER BY `id` DESC;");
-	if ($data !== false) {
-		for ($i = 0; $i < count($data); $i++) {
-			$player = mysql_select_single("SELECT `name` FROM `players` WHERE `id`='".$data[$i]['pid']."' LIMIT 1;");
-			if ($player !== false) $data[$i]['name'] = $player['name'];
-			else $data[$i]['name'] = "Player not found.";
-			
-			unset($data[$i]['pid']);
-		}
-	}
-	return $data;
+	return mysql_select_multi("SELECT `n`.`id`, `n`.`title`, `n`.`text`, `n`.`date`, `p`.`name` FROM `znote_news` AS `n` INNER JOIN `players` AS `p` ON `n`.`pid` = `p`.`id` ORDER BY `n`.`id` DESC;");
 }
 
 // HOUSES
@@ -1290,8 +1272,8 @@ function user_name($id) { //USERNAME FROM PLAYER ID
 // Checks that character name exist
 function user_character_exist($username) {
 	$username = sanitize($username);
-	$data = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$username';");
-	return ($data !== false) ? true : false;
+	$player = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$username';");
+	return ($player !== false) ? $player['id'] : false;
 }
 
 // Checks that this email exist.
