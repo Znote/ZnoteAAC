@@ -139,7 +139,6 @@
 	// -------------- \\
 	// WEBSITE STUFF  \\
 	// -------------- \\
-
 	// Highscore configuration
 	$config['highscore'] = array(
 			'rows' => 100,
@@ -232,7 +231,11 @@
 	//----------------\\
 	// ADVANCED STUFF \\
 	//----------------\\
-	
+	// Api config
+	$config['api'] = array(
+		'debug' => false,
+	);
+
 	// Don't touch this unless you know what you are doing. (modifying this(key value) also requires modifications in OT files /XML/commands.xml).
 	$config['ingame_positions'] = array(
 		1 => 'Player',

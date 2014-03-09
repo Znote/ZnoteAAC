@@ -97,7 +97,6 @@ function url($path = false) {
 	return $protocol . $domain . $folder . '/' . $path;
 }
 
-// Get last cached
 function getCache() {
 	$results = mysql_select_single("SELECT `cached` FROM `znote`;");
 	return ($results !== false) ? $results['cached'] : false;
@@ -294,6 +293,7 @@ function getIP() {
 return $_SERVER['REMOTE_ADDR'];
 }
 
+// Deprecated, just use count($array) instead.
 function array_length($ar) {
 	$r = 1;
 	foreach($ar as $a) {
@@ -329,7 +329,6 @@ function online_id_to_name($id) {
 // Parameter: players.vocation_id. Returns: Configured vocation name.
 function vocation_id_to_name($id) {
 	$vocations = config('vocations');
-
 	return ($vocations[$id] >= 0) ? $vocations[$id] : false;
 }
 
@@ -361,7 +360,6 @@ function skillid_to_name($skillid) {
 // Parameter: players.town_id. Returns: Configured town name.
 function town_id_to_name($id) {
 	$towns = config('towns');
-	
 	return (array_key_exists($id, $towns)) ? $towns[$id] : 'Missing Town';
 }
 
