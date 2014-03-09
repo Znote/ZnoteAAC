@@ -61,7 +61,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				<li>
 					<b>Death List:</b><br>
 					<?php
-					if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') {
+					if ($config['TFSVersion'] == 'TFS_02') {
 						$array = user_fetch_deathlist($user_id);
 						if ($array) {
 							//data_dump($array, false, "Data:");
@@ -89,6 +89,34 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 								echo '<b><font color="green">This player has never died.</font></b>';
 							}
 							//Done.
+						} else if ($config['TFSVersion'] == 'TFS_10') {
+							$deaths = mysql_select_multi("SELECT 
+								`player_id`, `time`, `level`, `killed_by`, `is_player`, 
+								`mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified` 
+								FROM `player_deaths` 
+								WHERE `player_id`=$user_id ORDER BY `time` DESC LIMIT 10;");
+
+							if (!$deaths) echo '<b><font color="green">This player has never died.</font></b>';
+							else {
+								foreach ($deaths as $d) {
+									?>
+									<li>
+										<?php echo "<b>".getClock($d['time'], true, true)."</b>";
+										$lasthit = ($d['is_player']) ? "<a href='characterprofile.php?name=".$d['killed_by']."'>".$d['killed_by']."</a>" : $d['killed_by'];
+										echo ": Killed at level ".$d['level']." by $lasthit";
+										if ($d['unjustified']) echo " <font color='red' style='font-style: italic;'>(unjustified)</font>";
+										$mostdmg = ($d['mostdamage_by'] !== $d['killed_by']) ? true : false;
+										if ($mostdmg) {
+											$mostdmg = ($d['mostdamage_is_player']) ? "<a href='characterprofile.php?name=".$d['mostdamage_by']."'>".$d['mostdamage_by']."</a>" : $d['mostdamage_by'];
+											echo "<br>and by $mostdmg.";
+											if ($d['mostdamage_unjustified']) echo " <font color='red' style='font-style: italic;'>(unjustified)</font>";
+										} else echo " <b>(soloed)</b>";
+										?>
+									</li>
+									<?php
+								}
+								//data_dump($deaths, false, "Deaths:");
+							}
 						} else if ($config['TFSVersion'] == 'TFS_03') {
 							//mysql_select_single("SELECT * FROM players WHERE name='TEST DEBUG';");
 							$array = user_fetch_deathlist03($user_id);
