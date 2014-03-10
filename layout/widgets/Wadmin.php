@@ -14,6 +14,9 @@
 			<li>
 				<a href='admin_skills.php'>Admin Skills</a>
 			</li>
+			<li>
+				<a href='admin_reports.php'>Admin Reports</a>
+			</li>
 			<?php
 			$new = 0;
 			$cat = 4; //Category ID for feedback section

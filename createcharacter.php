@@ -21,7 +21,7 @@ if (empty($_POST) === false) {
 		if ($_POST['name'] === false) {
 			$errors[] = 'Your name can not contain more than 2 words.';
 		} else {
-			if (user_character_exist($_POST['name']) === true) {
+			if (user_character_exist($_POST['name']) !== false) {
 				$errors[] = 'Sorry, that character name already exist.';
 			}
 			if (!preg_match("/^[a-zA-Z_ ]+$/", $_POST['name'])) {

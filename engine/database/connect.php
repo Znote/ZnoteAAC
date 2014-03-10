@@ -95,6 +95,17 @@ CREATE TABLE IF NOT EXISTS `znote_players` (
 INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES
 ('1', '$time', '0', '. . .');
 
+CREATE TABLE IF NOT EXISTS `znote_player_reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `posx` int(6) NOT NULL,
+  `posy` int(6) NOT NULL,
+  `posz` int(6) NOT NULL,
+  `report_description` VARCHAR(255) NOT NULL,
+  `date` INT(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `znote_shop` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` int(11) NOT NULL,

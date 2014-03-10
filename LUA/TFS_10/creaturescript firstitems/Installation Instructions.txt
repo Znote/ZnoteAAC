@@ -1,0 +1,4 @@
+Step 1: Copy firstitems.lua to /data/creaturescripts/scripts/ folder
+-- Edit firstitems.lua with item IDs you want characters to start with on your server.
+
+Step 2: Restart OT server, and it should work. :)
