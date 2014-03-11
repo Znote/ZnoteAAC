@@ -12,6 +12,8 @@ $statusTypes = array(
     4 => '<font color="grey">Rejected</font>',
     5 => '<font color="green"><b>Fixed</b></font>'
 );
+// Autohide rows that have these status IDs:
+$hideStatus = array(3, 4, 5);
 
 // Fetch data from SQL
 $reportsData = mysql_select_multi("SELECT id, name, posx, posy, posz, report_description, date, status FROM znote_player_reports ORDER BY id DESC;");
@@ -19,7 +21,11 @@ $reportsData = mysql_select_multi("SELECT id, name, posx, posy, posz, report_des
 if ($reportsData !== false) {
     // Order reports array by ID for easy reference later on.
     $reports = array();
-    for ($i = 0; $i < count($reportsData); $i++) $reports[$reportsData[$i]['id']] = $reportsData[$i];
+    for ($i = 0; $i < count($reportsData); $i++) {
+        foreach ($statusTypes as $key => $value) {
+            if ($key == $reportsData[$i]['status']) $reports[$key][$reportsData[$i]['id']] = $reportsData[$i];
+        }
+    }
 }
 
 // POST logic (Update report and give player points)
@@ -36,7 +42,13 @@ if (!empty($_POST)) {
     // Update SQL
     mysql_update("UPDATE `znote_player_reports` SET `status`='$status' WHERE `id`='$reportId' LIMIT 1;");
     // Update local array representation
-    $reports[$reportId]['status'] = $status;
+    foreach ($reports as $sid => $sa) 
+        foreach ($sa as $rid => $ra) 
+            if ($reportId == $rid) {
+                $reports[$status][$reportId] = $reports[$sid][$rid];
+                $reports[$status][$reportId]['status'] = $status;
+                unset($reports[$sid][$rid]);
+            }
 
     // If we should give user price
     if ($price > 0) {
@@ -66,8 +78,8 @@ if (!empty($_POST)) {
     $reportId = getValue($_GET['id']);
 
     // Fetch the report we intend to modify
-    $report = $reports[$reportId];
-
+    foreach ($reports as $sid => $sa) foreach ($sa as $rid => $ra) if ($rid == $reportId) $report = $reports[$sid][$reportId];
+    
     // Create html form
     ?>
     <div style="width: 300px; margin: auto;">
@@ -103,34 +115,78 @@ if (!empty($_POST)) {
 if ($reportsData !== false) {
 
     // Render HTML
+    //data_dump($reports);
     ?>
     <center>
-        <h1>Reports List</h1>
-        <table class="table tbl" border="0" cellspacing="1" cellpadding="4" width="100%">
-            <tr class="yellow">
-                <td><b><font color=white><center>Info</center></font></b></td>
-                <td><b><font color=white><center>Description</center></font></b></td>
-            </tr>
-            <?php
-            foreach ($reports as $report) {
-                ?>
-                <tr>
-                    <td width="38%"> <b>Report ID:</b> #<?php echo $report['id']; ?>
-                        <br><b>Name:</b> <a href="characterprofile.php?name=<?php echo $report['name']; ?>"><?php echo $report['name']; ?></a>
-                        <br><b>Position:</b> <input type="text" disabled value="/pos <?php echo $report['posx'].', '.$report['posy'].', '.$report['posz']; ?>">
-                        <br><b>Reported:</b> <?php echo getClock($report['date'], true, true); ?>
-                        <br><b>Status:</b> <?php echo $statusTypes[$report['status']]; ?>. <a href="?action=edit&name=<?php echo $report['name'].'&id='.$report['id']; ?>">Edit</a>
-                    </td>
-                    <td>
-                        <center><?php echo $report['report_description']; ?></center>
-                    </td>
-                </tr>
-                <?php
-            }
+        <?php
+        foreach ($reports as $statusId => $statusArray) {
             ?>
-        </table>
+            <h2><?php echo $statusTypes[$statusId]; ?> (<span id="status-<?php echo $statusId; ?>">Visible</span>)</h2>
+            <table class="table tbl" border="0" cellspacing="1" cellpadding="4" width="100%">
+                <thead>
+                    <tr class="yellow" onclick="javascript:toggle('<?php echo $statusId; ?>')">
+                        <td width="38%"><b><font color=white><center>Info</center></font></b></td>
+                        <td><b><font color=white><center>Description</center></font></b></td>
+                    </tr>
+                </thead>
+                <?php
+                foreach ($statusArray as $reportId => $report) {
+                ?>
+                <tbody class="row<?php echo $report['status']; ?>">
+                    <tr>
+                        <td>
+                            <b>Report ID:</b> #<?php echo $report['id']; ?>
+                            <br><b>Name:</b> <a href="characterprofile.php?name=<?php echo $report['name']; ?>"><?php echo $report['name']; ?></a>
+                            <br><b>Position:</b> <input type="text" disabled value="/pos <?php echo $report['posx'].', '.$report['posy'].', '.$report['posz']; ?>">
+                            <br><b>Reported:</b> <?php echo getClock($report['date'], true, true); ?>
+                            <br><b>Status:</b> <?php echo $statusTypes[$report['status']]; ?>. <a href="?action=edit&name=<?php echo $report['name'].'&id='.$report['id']; ?>">Edit</a>
+                        </td>
+                        <td>
+                            <center><?php echo $report['report_description']; ?></center>
+                        </td>
+                    </tr>
+                </tbody>
+                <?php
+               }
+            ?></table><?php
+        }
+        ?>
     </center>
     <?php 
 } else echo "<h2>No reports submitted.</h2>";
-include 'layout/overall/footer.php';
 ?>
+<script type="text/javascript">
+    // Hide and show tables
+    // Written in clean javascript to make it cross-layout compatible.
+    function toggle(statusId) {
+        statusId = ''+statusId;
+        var divStatus = 'row'+statusId;
+        var msgStatus = 'status-'+statusId;
+
+        // Change visibility status
+        statusElement = document.getElementById(msgStatus);
+
+        console.log(statusElement, statusId, divStatus, msgStatus);
+
+        if (statusElement !== null) {
+            if (statusElement.innerHTML == 'Visible') statusElement.innerHTML = 'Hidden';
+            else statusElement.innerHTML = 'Visible';
+            // Show/hide elements.
+            var elements = document.getElementsByClassName(divStatus);
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].style.display == 'none') {
+                    elements[i].style.display = 'table-header-group';
+                } else {
+                    elements[i].style.display = 'none';
+                }
+            }
+        }
+    }
+
+    <?php // Hide configured tables by default
+    foreach ($hideStatus as $statusId) {
+        echo "toggle($statusId);";
+    }
+    ?>
+</script>
+<?php include 'layout/overall/footer.php'; ?>
