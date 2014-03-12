@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS `znote_player_reports` (
   `posz` int(6) NOT NULL,
   `report_description` VARCHAR(255) NOT NULL,
   `date` INT(11) NOT NULL,
+  `status` TINYINT(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
