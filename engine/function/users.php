@@ -642,7 +642,7 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 		
 		if (Config('TFSVersion') === 'TFS_02')
 		mysql_insert("INSERT INTO `bans` (`type` ,`ip` ,`mask` ,`player` ,`account` ,`time` ,`reason_id` ,`action_id` ,`comment` ,`banned_by`) VALUES ('$typeid', '$charip', '4294967295', '$charid', '$accountid', '$time', '$reasonid', '$actionid', '$comment', '$bannedby');");
-		if (Config('TFSVersion') === 'TFS_03') {
+		elseif (Config('TFSVersion') === 'TFS_03') {
 			$now = time();
 			switch ($typeid) {
 				case 1: // IP ban
@@ -665,7 +665,33 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
 			}
+		}
+		elseif (Config('TFSVersion') === 'TFS_10') {
+			$now = time();
 			
+			switch ($typeid) {
+				case 1: // IP ban
+					mysql_insert("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ('$charip', '$comment', '$now', '$time', '$bannedby');");
+				break;
+				
+				case 2: // namelock
+					mysql_insert("INSERT INTO `player_namelocks` (`player_id`, `reason`, `namelocked_at`, `namelocked_by`) VALUES ('$charid', 'comment', '$now', '$bannedby');");
+				break;
+				
+				case 3: // acc ban
+					mysql_insert("INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ('$accountid', '$comment', '$now', '$time', '$bannedby');");
+				break;
+				
+				case 4: // notation
+					data_dump(false, array('status' => false), "Function deprecated. Ban option does not exist in TFS 1.0.");
+					die();
+				break;
+				
+				case 5: // deletion
+					data_dump(false, array('status' => false), "Function deprecated. Ban option does not exist in TFS 1.0.");
+					die();
+				break;
+			}
 		}
 		
 		return true;
