@@ -27,7 +27,7 @@ if (!$compare) {
 		<tr class="yellow">
 			<td>Item</td>
 			<td>Count</td>
-			<td>Price</td>
+			<td>Price for 1</td>
 			<td>Added</td>
 			<td>By</td>
 			<td>Compare</td>
@@ -52,7 +52,7 @@ if (!$compare) {
 		<tr class="yellow">
 			<td>Item</td>
 			<td>Count</td>
-			<td>Price</td>
+			<td>Price for 1</td>
 			<td>Added</td>
 			<td>By</td>
 			<td>Compare</td>
@@ -79,7 +79,7 @@ if (!$compare) {
 
 	// First list active bids
 	$offers = mysql_select_multi("SELECT `id`, `sale`, `itemtype` AS `item_id`, `amount`, `price`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `itemtype`='$compare' ORDER BY `price` ASC;");
-	$historyOffers = mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `inserted`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_history` WHERE `itemtype`='$compare' AND `state` IN (3, 255) ORDER BY `price` ASC;");
+	$historyOffers = mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `inserted`, `expires_at` FROM `market_history` WHERE `itemtype`='$compare' AND `state`=255 ORDER BY `price` ASC;");
 	$buylist = false;
 	// Markup
 	?>
@@ -90,7 +90,7 @@ if (!$compare) {
 		<tr class="yellow">
 			<td>Item</td>
 			<td>Count</td>
-			<td>Price</td>
+			<td>Price for 1</td>
 			<td>Added</td>
 			<td>By</td>
 		</tr>
@@ -123,7 +123,7 @@ if (!$compare) {
 			<tr class="yellow">
 				<td>Item</td>
 				<td>Count</td>
-				<td>Price</td>
+				<td>Price for 1</td>
 				<td>Added</td>
 				<td>By</td>
 			</tr>
@@ -149,10 +149,8 @@ if (!$compare) {
 		<tr class="yellow">
 			<td>Item</td>
 			<td>Count</td>
-			<td>Price</td>
-			<td>Offer added</td>
-			<td>Offer expired</td>
-			<td>By</td>
+			<td>Price for 1</td>
+			<td>Offer sold</td>
 		</tr>
 		<?php
 		foreach ($historyOffers as $o) {
@@ -162,8 +160,6 @@ if (!$compare) {
 			<td><?php echo $o['amount']; ?></td>
 			<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
 			<td><?php echo getClock($o['inserted'], true, true); ?></td>
-			<td><?php echo getClock($o['expires_at'], true, true); ?></td>
-			<td><?php echo ($o['anonymous'] == 1) ? 'Anonymous' : "<a target='_BLANK' href='characterprofile.php?name=".$o['player_name']."'>".$o['player_name']."</a>"; ?></td>
 		</tr>
 		<?php
 		}
