@@ -71,7 +71,10 @@
 		'HouseListDefaultTown' => 1, // Default town id to display when visting house list page page.
 		'minimumBidSQM' => 200, // minimum bid cost on auction (per SQM)
 		'auctionPeriod' => 24 * 60 * 60, // 24 hours auction time.
-		);
+		'housesPerPlayer' => 1,
+		'requirePremium' => false,
+		'levelToBuyHouse' => 8,
+	);
 	
 	// Leave on black square in map and player should get teleported to their selected town.
 	// If chars get buggy set this position to a beginner location to force players there.
@@ -128,12 +131,12 @@
 	$config['nvForceTown'] = 0; // Force a town to no vocation even though he selected something else? 0 = no, 1 = yes.
 	$config['nvTown'] = 0; // Town id to force no vocations to get to, if nvForceTown is 1.
 	
-	// Minimum allowed character name letters. Etc 4 letters: "Kåre".
+	// Minimum allowed character name letters. Etc 4 letters: "KÃ¥re".
 	$config['minL'] = 4;
-	// Maximum allowed character name letters. Etc 20 letters: "Bobkåreolesofiesberg"
+	// Maximum allowed character name letters. Etc 20 letters: "BobkÃ¥reolesofiesberg"
 	$config['maxL'] = 20;
 	
-	// Maximum allowed character name words. Etc 2 words = "Bob Kåre", 3 words: "Bob Arne Kåre" as max char name words.
+	// Maximum allowed character name words. Etc 2 words = "Bob KÃ¥re", 3 words: "Bob Arne KÃ¥re" as max char name words.
 	$config['maxW'] = 2;
 	
 	// -------------- \\
@@ -226,7 +229,7 @@
 	// IMPORTANT! Write a character name(that exist) that will represent website bans!
 	// Or remember to create character "God Website" character exist.
 	// If you don't do this, bann from admin panel won't work properly.
-	$config['website_char'] = 'God Website';
+	$config['website_char'] = 'Luxitur';
 	
 	//----------------\\
 	// ADVANCED STUFF \\
@@ -418,7 +421,7 @@
 		'enableShopConfirmation' => true, // Verify that user wants to buy with popup
 		'useDB' => false, // Fetch offers from database, or the below config array
 		'showImage' => true,
-		'imageServer' => 'items.halfaway.net',
+		'imageServer' => 'items.znote.eu',
 		'imageType' => 'gif',
 	);
 
