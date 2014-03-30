@@ -94,7 +94,7 @@ function url($path = false) {
 	$domain   = $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != 80 ? ':' . $_SERVER['SERVER_PORT'] : null);
 	$folder   = dirname($_SERVER['SCRIPT_NAME']);
 
-	return $protocol . $domain . $folder . '/' . $path;
+	return $protocol . $domain . ($folder == '/' ? '' : $folder) . '/' . $path;
 }
 
 function getCache() {
