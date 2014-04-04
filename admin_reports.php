@@ -12,6 +12,9 @@ $statusTypes = array(
     4 => '<font color="grey">Rejected</font>',
     5 => '<font color="green"><b>Fixed</b></font>'
 );
+// Which status IDs should give option to add to changelog?
+$statusChangeLog = array(0,5);
+
 // Autohide rows that have these status IDs:
 $hideStatus = array(3, 4, 5);
 
@@ -37,10 +40,16 @@ if (!empty($_POST)) {
     $customPoints = getValue($_POST['customPoints']);
     $reportId = getValue($_POST['id']);
 
+    $changelogReportId = getValue($_POST['changelogReportId']);
+    $changelogValue = getValue($_POST['changelogValue']);
+    $changelogText = getValue($_POST['changelogText']);
+    $changelogStatus = ($changelogReportId !== false && $changelogValue === '2' && $changelogText !== false) ? true : false;
+
     if ($customPoints !== false) $price = (int)($price + $customPoints);
 
     // Update SQL
     mysql_update("UPDATE `znote_player_reports` SET `status`='$status' WHERE `id`='$reportId' LIMIT 1;");
+    echo "<h1>Report status updated to ".$statusTypes[(int)$status] ."!</h1>";
     // Update local array representation
     foreach ($reports as $sid => $sa) 
         foreach ($sa as $rid => $ra) 
@@ -50,6 +59,24 @@ if (!empty($_POST)) {
                 unset($reports[$sid][$rid]);
             }
 
+    // If we should do anything with changelog:
+    if ($changelogStatus) {
+        $time = time();
+        // Check if changelog exist (`id`, `text`, `time`, `report_id`, `status`)
+        $changelog = mysql_select_single("SELECT * FROM `znote_changelog` WHERE `report_id`='$changelogReportId' LIMIT 1;");
+        // If changelog exist
+        if ($changelog !== false) {
+            // Update it
+            mysql_update("UPDATE `znote_changelog` SET `text`='$changelogText', `time`='$time' WHERE `id`='".$changelog['id']."' LIMIT 1;");
+            echo "<h2>Changelog message updated!</h2>";
+        } else {
+            // Create it
+            mysql_insert("INSERT INTO `znote_changelog` (`text`, `time`, `report_id`, `status`) 
+                VALUES ('$changelogText', '$time', '$changelogReportId', '$status');");
+            echo "<h2>Changelog message created!</h2>";
+        }
+        
+    }
     // If we should give user price
     if ($price > 0) {
         $account = mysql_select_single("SELECT `a`.`id`, `a`.`email` FROM `accounts` AS `a` 
@@ -104,7 +131,21 @@ if (!empty($_POST)) {
                     echo "<option value='$price'>$price</option>";
                 }
                 ?>
-            </select> + <input name="customPoints" type="text" style="width: 50px;" placeholder="0"><br><br>
+            </select> + <input name="customPoints" type="text" style="width: 50px;" placeholder="0"><br>
+            <?php
+            if (in_array($report['status'], $statusChangeLog)) {
+                ?>
+                <br>
+                <input type="hidden" name="changelogReportId" value="<?php echo $report['id']; ?>">
+                Add / update changelog message? <select name="changelogValue">
+                    <option value="1">No</option>
+                    <option value="2">Yes</option>
+                </select><br>
+                <textarea rows="7" cols="40" maxlength="254" name="changelogText"></textarea>
+                <?php
+            }
+            ?>
+            <br>
             <input type="submit" value="Update Report" style="width: 100%;">
         </form>
     </div>

@@ -5,6 +5,7 @@
 
 	<li><a href="forum.php">Community</a>
 		<ul> <!-- (sub)dropdown COMMUNITY -->
+			<li><a href="market.php">Item Market</a></li>
 			<li><a href="gallery.php">Gallery</a></li>
 			<li><a href="support.php">Support</a></li>
 			<li><a href="houses.php">Houses</a></li>
@@ -27,5 +28,5 @@
 			<li><a href="guildwar.php">Guild Wars</a></li>
 		</ul>
 	<?php } ?></li>
-	
+	<li><a href="changelog.php">Changelog</a></li>
 </ul>

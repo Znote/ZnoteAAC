@@ -72,7 +72,7 @@ if (empty($_POST) === false) {
 	if ($action === 's') {
 		echo '<font color="green"><b>News successfully updated!</b></font>';
 		list($title, $text) = array(mysql_znote_escape_string($_POST['title']), mysql_znote_escape_string($_POST['text']));
-		mysql_update("UPDATE `znote_news` SET `title`='$title',`text`='$text' WHERE `id`='$id';") or die("FUCK!");
+		mysql_update("UPDATE `znote_news` SET `title`='$title',`text`='$text' WHERE `id`='$id';");
 		$cache = new Cache('engine/cache/news');
 		$news = fetchAllNews();
 		$cache->setContent($news);
