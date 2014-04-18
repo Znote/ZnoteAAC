@@ -759,6 +759,31 @@ function user_delete_character($char_id) {
 	mysql_delete("DELETE FROM `znote_players` WHERE `player_id`='$char_id';");
 }
 
+// Delete character with supplied id with a delay.
+function user_delete_character_soft($char_id) {
+	$char_id = (int)$char_id;
+	
+	$char_name = user_character_name($char_id);
+	$original_acc_id = user_character_account_id($char_name);
+	if(!user_character_pending_delete($char_name))
+		mysql_insert('INSERT INTO `znote_deleted_characters`(`original_account_id`, `character_name`, `time`, `done`) VALUES(' . $original_acc_id . ', "' . $char_name . '", (NOW() + INTERVAL ' . Config('delete_character_interval') . '), 0)');
+	else
+		return false;
+}
+
+// Check if character will be deleted soon.
+function user_character_pending_delete($char_name) {
+	$char_name = sanitize($char_name);
+	$result = mysql_select_single('SELECT `done` FROM `znote_deleted_characters` WHERE `character_name` = "' . $char_name . '"');
+	return ($result === false) ? false : !$result['done'];
+}
+
+// Get pending character deletes for supplied account id.
+function user_pending_deletes($acc_id) {
+	$acc_id = (int)$acc_id;
+	return mysql_select_multi('SELECT `id`, `character_name`, `time` FROM `znote_deleted_characters` WHERE `original_account_id` = ' . $acc_id . ' AND `done` = 0');
+}
+
 // Parameter: accounts.id returns: An array containing detailed information of every character on the account.
 // Array: [0] = name, [1] = level, [2] = vocation, [3] = town_id, [4] = lastlogin, [5] = online
 function user_character_list($account_id) {
@@ -1369,6 +1394,14 @@ function user_character_id($charname) {
 	$charname = sanitize($charname);
 	$char = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$charname';");
 	if ($char !== false) return $char['id'];
+	else return false;
+}
+
+// Get character name from character ID
+function user_character_name($charID) {
+	$charID = (int)$charID;
+	$char = mysql_select_single('SELECT `name` FROM `players` WHERE `id` = ' . $charID);
+	if ($char !== false) return $char['name'];
 	else return false;
 }
 

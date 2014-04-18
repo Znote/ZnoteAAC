@@ -205,6 +205,15 @@ CREATE TABLE IF NOT EXISTS `znote_forum_posts` (
   `updated` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `znote_deleted_characters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `original_account_id` int(11) NOT NULL,
+  `character_name` varchar(255) NOT NULL,
+  `time` datetime NOT NULL,
+  `done` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 </textarea>
 	</li>
 	<li>
