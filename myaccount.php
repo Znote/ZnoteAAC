@@ -32,13 +32,13 @@ if (!empty($_POST['selected_delete'])) {
 		if ($charid !== false) {
 			if ($config['TFSVersion'] === 'TFS_10') {
 				if (!user_is_online_10($charid)) {
-					if (guild_leader_gid($charid) === false) user_delete_character($charid);
+					if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
 					else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
 				} echo 'Character must be offline first.';
 			} else {
 				$chr_data = user_character_data($charid, 'online');
 				if ($chr_data['online'] != 1) {
-					if (guild_leader_gid($charid) === false) user_delete_character($charid);
+					if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
 					else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
 				} else echo 'Character must be offline first.';
 			}
@@ -46,6 +46,19 @@ if (!empty($_POST['selected_delete'])) {
 	}
 }
 // end
+
+#region CANCEL CHARACTER DELETE
+$undelete_id = @$_GET['cancel_delete_id'];
+if($undelete_id) {
+	$undelete_id = (int)$undelete_id;
+	$undelete_q1 = mysql_select_single('SELECT `character_name` FROM `znote_deleted_characters` WHERE `done` = 0 AND `id` = ' . $undelete_id . ' AND `original_account_id` = ' . $session_user_id . ' AND NOW() < `time`');
+	if($undelete_q1) {
+		mysql_delete('DELETE FROM `znote_deleted_characters` WHERE `id` = ' . $undelete_id);
+		echo 'Pending delete of ' . $undelete_q1['character_name'] . ' has been successfully cancelled.<br/>';
+	}
+}
+#endregion
+
 // CHANGE character name
 if (!empty($_POST['change_name'])) {
 	if (!Token::isValid($_POST['token'])) {
@@ -179,6 +192,17 @@ if (!empty($_POST['selected_comment'])) {
 } else {
 	// end
 	$char_count = user_character_list_count($session_user_id);
+	$pending_delete = user_pending_deletes($session_user_id);
+	if($pending_delete)
+		foreach($pending_delete as $delete) {
+			if(new DateTime($delete['time']) > new DateTime())
+				echo '<b>CAUTION!</b> Your character with name <b>' . $delete['character_name'] . ' will be deleted on ' . $delete['time'] . '</b>. <a href="myaccount.php?cancel_delete_id=' . $delete['id'] . '">Cancel this operation.</a><br/>';
+			else {
+				user_delete_character(user_character_id($delete['character_name']));
+				mysql_update('UPDATE `znote_deleted_characters` SET `done` = 1');
+				echo '<b>Character ' . $delete['character_name'] . ' has been deleted</b>. This operation was requested by owner of this account.';
+			}
+		}
 	?>
 	<div id="myaccount">
 		<h1>My account</h1>

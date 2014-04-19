@@ -161,6 +161,8 @@
 		'status_port' => "7171",
 		);
 
+	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed eg. 1 DAY, 2 HOUR, 3 MONTH etc. 
+
 	$config['validate_IP'] = true; // Only allow legal IP addresses to register and create character.
 	$config['salt'] = false; // Some noob 0.3.6 servers don't support salt.
 	
