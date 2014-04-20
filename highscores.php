@@ -11,7 +11,7 @@ else $type = (int)$type;
 if ($type > 9) $type = 7;
 
 // Fetch highscore page
-$page = getValue($_GET['page']);
+$page = getValue(@$_GET['page']);
 if (!$page || $page == 0) $page = 1;
 else $page = (int)$page;
 
