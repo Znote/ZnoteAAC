@@ -3,7 +3,7 @@
 $server = $config['shop']['imageServer'];
 $imageType = $config['shop']['imageType'];
 
-$compare = getValue(@$_GET['compare']);
+$compare = &$_GET['compare'];
 
 // If you are not comparing any items, present the list.
 if (!$compare) {
@@ -95,7 +95,7 @@ if (!$compare) {
 			<td>By</td>
 		</tr>
 		<?php
-		foreach ($offers as $o) {
+		foreach (($offers ? $offers : array()) as $o) {
 			$wtb = false;
 			if ($o['sale'] == 0) {
 				$wtb = true;
@@ -153,7 +153,7 @@ if (!$compare) {
 			<td>Offer sold</td>
 		</tr>
 		<?php
-		foreach ($historyOffers as $o) {
+		foreach (($historyOffers ? $historyOffers : array()) as $o) {
 		?>
 		<tr>
 			<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
