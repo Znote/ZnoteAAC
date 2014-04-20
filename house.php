@@ -14,9 +14,9 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 
 	//////////////////////
 	// Bid on house logic
-	$bid_char = getValue($_POST['char']);
-	$bid_amount = getValue($_POST['amount']);
-	if ($bid_amount !== false && $bid_char !== false) {
+	$bid_char = &$_POST['char'];
+	$bid_amount = &$_POST['amount'];
+	if ($bid_amount && $bid_char) {
 		$bid_char = (int)$bid_char;
 		$bid_amount = (int)$bid_amount;
 		$player = mysql_select_single("SELECT `id`, `account_id`, `name`, `level`, `balance` FROM `players` WHERE `id`='$bid_char' LIMIT 1;");
@@ -86,10 +86,14 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 	?>
 	<h1>House: <?php echo $house['name']; ?></h1>
 	<ul>
-		<li><b>Town</b>: <?php echo "<a href='houses.php?id=". $house['town_id'] ."'>". $config['towns'][$house['town_id']] ."</a>"; ?></li>
+		<li><b>Town</b>: 
+		<?php
+		$town_name = &$config['towns'][$house['town_id']];
+		echo "<a href='houses.php?id=". $house['town_id'] ."'>". ($town_name ? $town_name : 'Specify town id ' . $house['town_id'] . ' name in config.php first.') ."</a>";
+		?></li>
 		<li><b>Size</b>: <?php echo $house['size']; ?></li>
 		<li><b>Beds</b>: <?php echo $house['beds']; ?></li>
-		<li><b>owner</b>: <?php
+		<li><b>Owner</b>: <?php
 		if ($house['owner'] > 0) echo "<a href='characterprofile.php?name=". $house['ownername'] ."' target='_BLANK'>". $house['ownername'] ."</a>";
 		else echo "Available for auction.";
 		?></li>
