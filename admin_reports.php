@@ -1,5 +1,7 @@
-<?php require_once 'engine/init.php';
-protect_page(); admin_only($user_data);
+<?php
+require_once 'engine/init.php';
+protect_page();
+admin_only($user_data);
 include 'layout/overall/header.php';
 
 // Report status types. When a player make new report it will be default to 0.
@@ -19,16 +21,15 @@ $statusChangeLog = array(0,5);
 $hideStatus = array(3, 4, 5);
 
 // Fetch data from SQL
-$reportsData = mysql_select_multi("SELECT id, name, posx, posy, posz, report_description, date, status FROM znote_player_reports ORDER BY id DESC;");
+$reportsData = mysql_select_multi('SELECT id, name, posx, posy, posz, report_description, date, status FROM znote_player_reports ORDER BY id DESC;');
 // If sql data is not empty
 if ($reportsData !== false) {
     // Order reports array by ID for easy reference later on.
     $reports = array();
-    for ($i = 0; $i < count($reportsData); $i++) {
-        foreach ($statusTypes as $key => $value) {
-            if ($key == $reportsData[$i]['status']) $reports[$key][$reportsData[$i]['id']] = $reportsData[$i];
-        }
-    }
+    for ($i = 0; $i < count($reportsData); $i++)
+        foreach ($statusTypes as $key => $value)
+            if ($key == $reportsData[$i]['status'])
+                $reports[$key][$reportsData[$i]['id']] = $reportsData[$i];
 }
 
 // POST logic (Update report and give player points)
@@ -40,9 +41,9 @@ if (!empty($_POST)) {
     $customPoints = getValue($_POST['customPoints']);
     $reportId = getValue($_POST['id']);
 
-    $changelogReportId = getValue($_POST['changelogReportId']);
-    $changelogValue = getValue($_POST['changelogValue']);
-    $changelogText = getValue($_POST['changelogText']);
+    $changelogReportId = &$_POST['changelogReportId'];
+    $changelogValue = &$_POST['changelogValue'];
+    $changelogText = &$_POST['changelogText'];
     $changelogStatus = ($changelogReportId !== false && $changelogValue === '2' && $changelogText !== false) ? true : false;
 
     if ($customPoints !== false) $price = (int)($price + $customPoints);
@@ -101,11 +102,14 @@ if (!empty($_POST)) {
 } elseif (!empty($_GET)) {
     // Fetch GET data
     $action = getValue($_GET['action']);
-    $playerName = getValue($_GET['playerName']);
+    $playerName = getValue($_GET['name']);
     $reportId = getValue($_GET['id']);
 
     // Fetch the report we intend to modify
-    foreach ($reports as $sid => $sa) foreach ($sa as $rid => $ra) if ($rid == $reportId) $report = $reports[$sid][$reportId];
+    foreach ($reports as $sid => $sa)
+        foreach ($sa as $rid => $ra)
+            if ($rid == $reportId)
+                $report = $reports[$sid][$reportId];
     
     // Create html form
     ?>
@@ -117,19 +121,16 @@ if (!empty($_POST)) {
             <br>Set status: 
             <select name="status">
                 <?php
-                foreach ($statusTypes as $sid => $sname) {
-                    if ($sid != $report['status']) echo "<option value='$sid'>$sname</option>";
-                    else echo "<option value='$sid' selected>$sname</option>";
-                }
+                foreach ($statusTypes as $sid => $sname)
+                    echo ($sid != $report['status']) ? "<option value='$sid'>$sname</option>" : "<option value='$sid' selected>$sname</option>";
                 ?>
             </select><br>
             Give user points:
             <select name="price">
                 <option value='0'>0</option>
                 <?php
-                foreach ($config['paypal_prices'] as $price) {
+                foreach ($config['paypal_prices'] as $price)
                     echo "<option value='$price'>$price</option>";
-                }
                 ?>
             </select> + <input name="customPoints" type="text" style="width: 50px;" placeholder="0"><br>
             <?php
@@ -154,20 +155,18 @@ if (!empty($_POST)) {
 
 // If sql data is not empty
 if ($reportsData !== false) {
-
     // Render HTML
-    //data_dump($reports);
     ?>
     <center>
         <?php
         foreach ($reports as $statusId => $statusArray) {
             ?>
-            <h2><?php echo $statusTypes[$statusId]; ?> (<span id="status-<?php echo $statusId; ?>">Visible</span>)</h2>
+            <h2 class="statusType"><?php echo $statusTypes[$statusId]; ?> (<span id="status-<?php echo $statusId; ?>">Visible</span>)</h2>
             <table class="table tbl" border="0" cellspacing="1" cellpadding="4" width="100%">
                 <thead>
                     <tr class="yellow" onclick="javascript:toggle('<?php echo $statusId; ?>')">
-                        <td width="38%"><b><font color=white><center>Info</center></font></b></td>
-                        <td><b><font color=white><center>Description</center></font></b></td>
+                        <td width="38%">Info</td>
+                        <td>Description</td>
                     </tr>
                 </thead>
                 <?php
@@ -182,9 +181,7 @@ if ($reportsData !== false) {
                             <br><b>Reported:</b> <?php echo getClock($report['date'], true, true); ?>
                             <br><b>Status:</b> <?php echo $statusTypes[$report['status']]; ?>. <a href="?action=edit&name=<?php echo $report['name'].'&id='.$report['id']; ?>">Edit</a>
                         </td>
-                        <td>
-                            <center><?php echo $report['report_description']; ?></center>
-                        </td>
+                        <td><?php echo $report['report_description']; ?></td>
                     </tr>
                 </tbody>
                 <?php
@@ -196,38 +193,42 @@ if ($reportsData !== false) {
     <?php 
 } else echo "<h2>No reports submitted.</h2>";
 ?>
+<style>
+tr.yellow[onclick] td {
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+tbody[class^=row] td:last-of-type {
+    text-align: center;
+}
+</style>
 <script type="text/javascript">
     // Hide and show tables
     // Written in clean javascript to make it cross-layout compatible.
     function toggle(statusId) {
-        statusId = ''+statusId;
-        var divStatus = 'row'+statusId;
-        var msgStatus = 'status-'+statusId;
+        var divStatus = 'row' + statusId,
+            msgStatus = 'status-' + statusId;
 
         // Change visibility status
         statusElement = document.getElementById(msgStatus);
 
-        console.log(statusElement, statusId, divStatus, msgStatus);
-
-        if (statusElement !== null) {
-            if (statusElement.innerHTML == 'Visible') statusElement.innerHTML = 'Hidden';
-            else statusElement.innerHTML = 'Visible';
-            // Show/hide elements.
-            var elements = document.getElementsByClassName(divStatus);
-            for (var i = 0; i < elements.length; i++) {
-                if (elements[i].style.display == 'none') {
-                    elements[i].style.display = 'table-header-group';
-                } else {
-                    elements[i].style.display = 'none';
-                }
-            }
-        }
+        statusElement.innerHTML = (statusElement.innerHTML == 'Visible') ? 'Hidden' : 'Visible';
+        // Show/hide elements.
+        var elements = document.getElementsByClassName(divStatus);
+        for (var i = 0; i < elements.length; i++)
+            elements[i].style.display = (elements[i].style.display == 'none') ? 'table-header-group' : 'none';
     }
 
     <?php // Hide configured tables by default
-    foreach ($hideStatus as $statusId) {
+    foreach ($hideStatus as $statusId)
         echo "toggle($statusId);";
-    }
     ?>
+
+    var st = document.body.querySelectorAll('.statusType');
+    for(i = 0; i < st.length; i++)
+        st[i].addEventListener('click', function(e) {
+            toggle(e.currentTarget.querySelector('span').id.match(/(\d)+/)[0]);
+        });
 </script>
 <?php include 'layout/overall/footer.php'; ?>
