@@ -29,12 +29,83 @@ if (!empty($_POST['selected_delete'])) {
 	}
 	if (user_character_account_id($_POST['selected_delete']) === $session_user_id) {
 		$charid = user_character_id($_POST['selected_delete']);
-		$chr_data = user_character_data($charid, 'online');
-		if ($chr_data['online'] != 1) {
-			if (guild_leader_gid($charid) === false) user_delete_character($charid);
-			else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
-		} else echo 'Character must be offline first.';
+		if ($charid !== false) {
+			if ($config['TFSVersion'] === 'TFS_10') {
+				if (!user_is_online_10($charid)) {
+					if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
+					else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
+				} echo 'Character must be offline first.';
+			} else {
+				$chr_data = user_character_data($charid, 'online');
+				if ($chr_data['online'] != 1) {
+					if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
+					else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
+				} else echo 'Character must be offline first.';
+			}
+		}
 	}
+}
+// end
+
+#region CANCEL CHARACTER DELETE
+$undelete_id = @$_GET['cancel_delete_id'];
+if($undelete_id) {
+	$undelete_id = (int)$undelete_id;
+	$undelete_q1 = mysql_select_single('SELECT `character_name` FROM `znote_deleted_characters` WHERE `done` = 0 AND `id` = ' . $undelete_id . ' AND `original_account_id` = ' . $session_user_id . ' AND NOW() < `time`');
+	if($undelete_q1) {
+		mysql_delete('DELETE FROM `znote_deleted_characters` WHERE `id` = ' . $undelete_id);
+		echo 'Pending delete of ' . $undelete_q1['character_name'] . ' has been successfully cancelled.<br/>';
+	}
+}
+#endregion
+
+// CHANGE character name
+if (!empty($_POST['change_name'])) {
+	if (!Token::isValid($_POST['token'])) {
+		exit();
+	}
+	$oldname = getValue($_POST['change_name']);
+	$newname = getValue($_POST['newName']);
+	
+
+	// Check if user is online
+	$player = false;
+	if ($config['TFSVersion'] === 'TFS_10') {
+		$player = mysql_select_single("SELECT `id`, `account_id` FROM `players` WHERE `name` = '$oldname'");
+		$player['online'] = (user_is_online_10($player['id'])) ? 1 : 0;
+	} else $player = mysql_select_single("SELECT `id`, `account_id`, `online` FROM `players` WHERE `name` = '$oldname'");
+	
+	// Check if player has bough ticket
+	$order = mysql_select_single("SELECT `id`, `account_id` FROM `znote_shop_orders` WHERE `type`='4' LIMIT 1;");
+	if ($order !== false) {
+		// Check if player and account matches
+		if ($session_user_id == $player['account_id'] && $session_user_id == $order['account_id']) {
+			// Check if new name is not occupied
+			$exist = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$newname';");
+			if (!$exist) {
+				// Check if new name follow rules
+				$newname = validate_name($newname);
+				if ($newname !== false) {
+					$error = false;
+					// name restriction
+					$resname = explode(" ", $_POST['name']);
+					foreach($resname as $res) {
+						if(in_array(strtolower($res), $config['invalidNameTags'])) {
+							$error = true;
+						}
+						else if(strlen($res) == 1) {
+							$error = true;
+						}
+					}
+					if ($error === false) {
+						// Change the name!
+						mysql_update("UPDATE `players` SET `name`='$newname' WHERE `id`='".$player['id']."' LIMIT 1;");
+						mysql_delete("DELETE FROM `znote_shop_orders` WHERE `id`='".$order['id']."' LIMIT 1;");
+					} else echo "Illegal name.";
+				} else echo "Name validation failed, use another name.";
+			} else echo "The character name you wish to change to already exist.";
+		} else echo "Failed to sync your account. :|";
+	} else echo "Did not find any name change tickets, but them in our <a href='shop.php'>shop!</a>";
 }
 // end
 // Change character sex
@@ -57,8 +128,6 @@ if (!empty($_POST['change_gender'])) {
 			
 			// Fetch character tickets
 			$tickets = shop_account_gender_tickets($account_id);
-			//$tickets = mysql_result(mysql_query("SELECT `count` FROM `znote_shop_orders` WHERE `account_id`='' AND `type`='3';"), 0, 'count');
-			//$dbid = mysql_result(mysql_query("SELECT `id` FROM `znote_shop_orders` WHERE `account_id`='$account_id' AND `type`='3';"), 0, 'id');
 			if ($tickets !== false || $config['free_sex_change'] == true) {
 				// They are allowed to change gender
 				$last = false;
@@ -123,6 +192,17 @@ if (!empty($_POST['selected_comment'])) {
 } else {
 	// end
 	$char_count = user_character_list_count($session_user_id);
+	$pending_delete = user_pending_deletes($session_user_id);
+	if($pending_delete)
+		foreach($pending_delete as $delete) {
+			if(new DateTime($delete['time']) > new DateTime())
+				echo '<b>CAUTION!</b> Your character with name <b>' . $delete['character_name'] . ' will be deleted on ' . $delete['time'] . '</b>. <a href="myaccount.php?cancel_delete_id=' . $delete['id'] . '">Cancel this operation.</a><br/>';
+			else {
+				user_delete_character(user_character_id($delete['character_name']));
+				mysql_update('UPDATE `znote_deleted_characters` SET `done` = 1');
+				echo '<b>Character ' . $delete['character_name'] . ' has been deleted</b>. This operation was requested by owner of this account.';
+			}
+		}
 	?>
 	<div id="myaccount">
 		<h1>My account</h1>
@@ -211,6 +291,27 @@ if (!empty($_POST['selected_comment'])) {
 							Token::create();
 						?>
 						<input type="submit" value="Change gender" class="btn btn-info">
+					</li>
+				</ul>
+			</form>
+			<!-- FORMS TO CHANGE CHARACTER NAME-->
+			<form action="" method="post">
+				<ul>
+					<li>
+						Change character name:<br>
+						<select name="change_name" multiple="multiple">
+						<?php
+						for ($i = 0; $i < $char_count; $i++) {
+							echo '<option value="'. $characters[$i] .'">'. $characters[$i] .'</option>'; 	
+						}
+						?>
+						</select>
+						<input type="text" name="newName" placeholder="New Name">
+						<?php
+							/* Form file */
+							Token::create();
+						?>
+						<input type="submit" value="Change name" class="btn btn-info">
 					</li>
 				</ul>
 			</form>

@@ -43,15 +43,7 @@ function fetchLoosers() {
 
 // Fetch latest deaths
 function fetchLatestDeaths($from = 0, $to = 30) {
-	$array = mysql_select_multi("SELECT * FROM `player_deaths` ORDER BY `time` DESC LIMIT $from, $to;");
-	if ($array !== false) {
-		for ($i = 0; $i < count($array); $i++) {
-			$data = user_character_data($array[$i]['player_id'], 'name');
-			$array[$i]['victim'] = $data['name'];
-			unset($array[$i]['player_id']);
-		}
-	}
-	return $array;
+	return mysql_select_multi("SELECT `d`.`level`, `p`.`name` AS `victim`, `d`.`time`, `d`.`is_player`, `d`.`killed_by` FROM `player_deaths` AS `d` INNER JOIN `players` AS `p` ON `d`.`player_id` = `p`.`id` ORDER BY `time` DESC LIMIT $from, $to;");
 }
 
 // latest deaths .3 (Based on code from Hauni@otland.net).
@@ -149,13 +141,7 @@ function support_list() {
 
 // NEWS
 function fetchAllNews() {
-	$data = mysql_select_multi("SELECT * FROM `znote_news` ORDER BY `id` DESC;");
-	for ($i = 0; $i < count($data); $i++) {
-		$cd = user_character_data($data[$i]['pid'], 'name');
-		$data[$i]['name'] = $cd['name'];
-		unset($data[$i]['pid']);
-	}
-	return $data;
+	return mysql_select_multi("SELECT `n`.`id`, `n`.`title`, `n`.`text`, `n`.`date`, `p`.`name` FROM `znote_news` AS `n` INNER JOIN `players` AS `p` ON `n`.`pid` = `p`.`id` ORDER BY `n`.`id` DESC;");
 }
 
 // HOUSES
@@ -511,9 +497,9 @@ function get_guilds_list() {
 
 // Get array of player data related to a guild.
 function get_guild_players($gid) {
-	$gid = (int)$gid; // Sanitizing the parameter id
-	if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT p.rank_id, p.name, p.level, p.vocation FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';");
-	else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid';");
+    $gid = (int)$gid; // Sanitizing the parameter id
+    if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT p.rank_id, p.name, p.level, p.vocation FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';");
+    else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name;");
 }
 
 // Returns total members in a guild (integer)
@@ -656,7 +642,7 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 		
 		if (Config('TFSVersion') === 'TFS_02')
 		mysql_insert("INSERT INTO `bans` (`type` ,`ip` ,`mask` ,`player` ,`account` ,`time` ,`reason_id` ,`action_id` ,`comment` ,`banned_by`) VALUES ('$typeid', '$charip', '4294967295', '$charid', '$accountid', '$time', '$reasonid', '$actionid', '$comment', '$bannedby');");
-		if (Config('TFSVersion') === 'TFS_03') {
+		elseif (Config('TFSVersion') === 'TFS_03') {
 			$now = time();
 			switch ($typeid) {
 				case 1: // IP ban
@@ -679,7 +665,33 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
 			}
+		}
+		elseif (Config('TFSVersion') === 'TFS_10') {
+			$now = time();
 			
+			switch ($typeid) {
+				case 1: // IP ban
+					mysql_insert("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ('$charip', '$comment', '$now', '$time', '$bannedby');");
+				break;
+				
+				case 2: // namelock
+					mysql_insert("INSERT INTO `player_namelocks` (`player_id`, `reason`, `namelocked_at`, `namelocked_by`) VALUES ('$charid', 'comment', '$now', '$bannedby');");
+				break;
+				
+				case 3: // acc ban
+					mysql_insert("INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ('$accountid', '$comment', '$now', '$time', '$bannedby');");
+				break;
+				
+				case 4: // notation
+					data_dump(false, array('status' => false), "Function deprecated. Ban option does not exist in TFS 1.0.");
+					die();
+				break;
+				
+				case 5: // deletion
+					data_dump(false, array('status' => false), "Function deprecated. Ban option does not exist in TFS 1.0.");
+					die();
+				break;
+			}
 		}
 		
 		return true;
@@ -747,6 +759,31 @@ function user_delete_character($char_id) {
 	mysql_delete("DELETE FROM `znote_players` WHERE `player_id`='$char_id';");
 }
 
+// Delete character with supplied id with a delay.
+function user_delete_character_soft($char_id) {
+	$char_id = (int)$char_id;
+	
+	$char_name = user_character_name($char_id);
+	$original_acc_id = user_character_account_id($char_name);
+	if(!user_character_pending_delete($char_name))
+		mysql_insert('INSERT INTO `znote_deleted_characters`(`original_account_id`, `character_name`, `time`, `done`) VALUES(' . $original_acc_id . ', "' . $char_name . '", (NOW() + INTERVAL ' . Config('delete_character_interval') . '), 0)');
+	else
+		return false;
+}
+
+// Check if character will be deleted soon.
+function user_character_pending_delete($char_name) {
+	$char_name = sanitize($char_name);
+	$result = mysql_select_single('SELECT `done` FROM `znote_deleted_characters` WHERE `character_name` = "' . $char_name . '"');
+	return ($result === false) ? false : !$result['done'];
+}
+
+// Get pending character deletes for supplied account id.
+function user_pending_deletes($acc_id) {
+	$acc_id = (int)$acc_id;
+	return mysql_select_multi('SELECT `id`, `character_name`, `time` FROM `znote_deleted_characters` WHERE `original_account_id` = ' . $acc_id . ' AND `done` = 0');
+}
+
 // Parameter: accounts.id returns: An array containing detailed information of every character on the account.
 // Array: [0] = name, [1] = level, [2] = vocation, [3] = town_id, [4] = lastlogin, [5] = online
 function user_character_list($account_id) {
@@ -805,103 +842,35 @@ function user_character_list_count($account_id) {
 
 // END MY ACCOUNT RELATED
 
-// HIGHSCORE FUNCTIONS \\(I think I will move this to an own file later)
-function highscore_getAll() {
-	$result = array();
-	for ($i = 0; $i <= 6; $i++) {
-		$result[$i] = highscore_skills($i);
-	}
-	$result[7] = highscore_experience();
-	$result[8] = highscore_maglevel();
-
-	return $result;
-}
-
-// TFS 1.0 highscore
-function highscore_getAll_10($from = 0, $to = 30) {
-	$result = array();
-	for ($i = 0; $i <= 8; $i++) {
-		$result[$i] = highscore_getSkill_10($i, $from, $to);
-	}
-	return $result;
-}
-function highscore_getSkill_10($id = 8, $from = 0, $to = 30) {
-	$skills = array(
-		0 => 'skill_fist',
-		1 => 'skill_club',
-		2 => 'skill_sword',
-		3 => 'skill_axe',
-		4 => 'skill_dist',
-		5 => 'skill_shielding',
-		6 => 'skill_fishing',
-		8 => 'maglevel',
-		7 => 'level',
-	);
-	
-	if ($id < 7 || $id > 7) $scores = mysql_select_multi("SELECT `". $skills[$id] ."` AS `value`, `name`, `vocation` FROM `players` WHERE `group_id`<'2' ORDER BY `". $skills[$id] ."` DESC LIMIT {$from}, {$to};");
-	else $scores = mysql_select_multi("SELECT `". $skills[$id] ."` AS `level`, `experience` AS `value`, `name`, `vocation` FROM `players` WHERE `group_id`<'2' ORDER BY `experience` DESC LIMIT {$from}, {$to};");
-	for ($i = 0; $i < count($scores); $i++) $scores[$i]['vocation'] = vocation_id_to_name($scores[$i]['vocation']);
-	return $scores;
-}
-
-// Returns an array containing up to 30 best players in terms of (selected skillid). Returns player ID and skill value.
-function highscore_skills($skillid) {
-	$skillid = (int)$skillid;
-
-	$data = mysql_select_multi("SELECT `player_id`, `value` FROM `player_skills` WHERE `skillid`='$skillid' ORDER BY `value` DESC LIMIT 0, 30");
-
-	if ($data !== false) {
-		for ($i = 0; $i < count($data); $i++) {
-			// Fetch extra data from SQL players table
-			if ($skillid == 6 || $skillid == 5) $vd = mysql_select_single("SELECT `vocation`, `group_id`, `name` FROM `players` WHERE `id` = '". $data[$i]['player_id'] ."';");
-			else $vd = mysql_select_single("SELECT `group_id`, `name` FROM `players` WHERE `id` = '". $data[$i]['player_id'] ."';");
-
-			// If skillid is fish fighting, lets display vocation name instead of id.
-			if ($skillid == 6 || $skillid == 5) {
-				
-				if ($vd !== false) $data[$i]['vocation'] = vocation_id_to_name($vd['vocation']);
-				else $data[$i]['vocation'] = 'Unknown';
-			}
-
-			// Happen to every skill group
-			$data[$i]['group_id'] = $vd['group_id'];
-			$data[$i]['name'] = $vd['name'];
-			unset($data[$i]['player_id']);
-		}
-	}
-
-	return $data;
-}
-
-// Returns an array containing up to 30 best players in terms of experience. Returns name, experience, vocation and level. 
-function highscore_experience() {
-	$data = mysql_select_multi("SELECT `name`, `experience` as `value`, `vocation`, `level`, `group_id` FROM `players` WHERE `experience`>500 ORDER BY `experience` DESC LIMIT 0, 30");
-	if ($data !== false) {
-		for ($i = 0; $i < count($data); $i++) {
-			$data[$i]['vocation'] = vocation_id_to_name($data[$i]['vocation']);
-		}
+// HIGHSCORE FUNCTIONS \\
+function fetchAllScores($rows, $tfs, $g) {
+	// Return scores ordered by type
+	$data = array();
+	if ($tfs == 'TFS_10') {
+		$data[1] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_club` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `skill_club` DESC LIMIT 0, $rows;");
+		$data[2] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_sword` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `skill_sword` DESC LIMIT 0, $rows;");
+		$data[3] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_axe` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `skill_axe` DESC LIMIT 0, $rows;");
+		$data[4] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_dist` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `skill_dist` DESC LIMIT 0, $rows;");
+		$data[5] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_shielding` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `skill_shielding` DESC LIMIT 0, $rows;");
+		$data[6] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_fishing` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `skill_fishing` DESC LIMIT 0, $rows;");
+		$data[7] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `experience`, `level` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `experience` DESC LIMIT 0, $rows;");
+		$data[8] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `maglevel` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `maglevel` DESC LIMIT 0, $rows;");
+		$data[9] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_fist` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `skill_fist` DESC LIMIT 0, $rows;");
+	} else {
+		$data[9] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 0 AND `p`.`group_id` <= $g ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+		$data[1] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 1 AND `p`.`group_id` <= $g ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+		$data[2] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 2 AND `p`.`group_id` <= $g ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+		$data[3] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 3 AND `p`.`group_id` <= $g ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+		$data[4] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 4 AND `p`.`group_id` <= $g ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+		$data[5] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 5 AND `p`.`group_id` <= $g ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+		$data[6] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 6 AND `p`.`group_id` <= $g ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+		$data[7] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `experience`, `level` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `experience` DESC limit 0, $rows;");
+		$data[8] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `maglevel` AS `value` FROM `players` WHERE `group_id` <= $g ORDER BY `maglevel` DESC limit 0, $rows;");
 	}
 	return $data;
 }
-
-// Returns an array containing up to 30 best players with high magic level (returns their name and magic level)
-function highscore_maglevel() {
-	return mysql_select_multi("SELECT `name`, `maglevel` as `value`, `group_id` FROM `players` WHERE `experience`>500 ORDER BY `maglevel` DESC LIMIT 0, 30");
-}
-
-// Count how many skill entries are in the db for a certain skillid (this can relate to how many players exist). 
-function highscore_count($skillid) {
-	$data = mysql_select_single("SELECT COUNT(`player_id`) AS `count` FROM `player_skills` WHERE `skillid`='$skillid' LIMIT 0, 30");
-	return ($data !== false) ? $data['count'] : 0;
-}
-
-// Count how many players have higher exp than 500
-function highscore_experience_count() {
-	$data = mysql_select_single("SELECT COUNT(`id`) AS `count` FROM `players` WHERE `experience`>'500' LIMIT 0, 30");
-	return ($data !== false) ? $data['count'] : 0;
-}
-
 // END HIGHSCORE FUNCTIONS
+
 function user_recover($mode, $edom, $email, $character, $ip) {
 /* -- Lost account function - user_recovery --
 
@@ -1183,7 +1152,7 @@ function user_create_character($character_data) {
 	$fields_sql = implode("`, `", $fields); // Convert array into SQL compatible string
 	$data_sql = implode("', '", $data); // Convert array into SQL compatible string
 	echo 1;
-	mysql_insert("INSERT INTO `players`(`$fields_sql`) VALUES ('$data_sql');") or die("INSERT ERROR: ". mysql_error());
+	mysql_insert("INSERT INTO `players`(`$fields_sql`) VALUES ('$data_sql');");
 	
 	$created = time();
 	$charid = user_character_id($import_data['name']);
@@ -1340,7 +1309,7 @@ function user_activated($username) {
 // Checks that username exist in database
 function user_exist($username) {
 	$username = sanitize($username);
-	$data = mysql_select_single("SELECT COUNT('id') FROM `accounts` WHERE `name`='$username';");
+	$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `name`='$username';");
 	return ($data !== false) ? true : false;
 }
 
@@ -1354,8 +1323,8 @@ function user_name($id) { //USERNAME FROM PLAYER ID
 // Checks that character name exist
 function user_character_exist($username) {
 	$username = sanitize($username);
-	$data = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$username';");
-	return ($data !== false) ? true : false;
+	$player = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$username';");
+	return ($player !== false) ? $player['id'] : false;
 }
 
 // Checks that this email exist.
@@ -1425,6 +1394,14 @@ function user_character_id($charname) {
 	$charname = sanitize($charname);
 	$char = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$charname';");
 	if ($char !== false) return $char['id'];
+	else return false;
+}
+
+// Get character name from character ID
+function user_character_name($charID) {
+	$charID = (int)$charID;
+	$char = mysql_select_single('SELECT `name` FROM `players` WHERE `id` = ' . $charID);
+	if ($char !== false) return $char['name'];
 	else return false;
 }
 

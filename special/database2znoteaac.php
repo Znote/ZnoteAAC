@@ -17,42 +17,28 @@ require '../engine/function/users.php';
 	
 	// install functions
 	function fetch_all_accounts() {
-			$count = user_count_accounts();
-			$query = mysql_query("SELECT `id` FROM `accounts`");
-			
-			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_row($query) or die(mysql_error());
-				$array[] = $row[0];
-			}
-			
-			if (isset($array)) {return $array; } else {return false;}
+			return mysql_select_multi("SELECT `id` FROM `accounts`");
 	}
 	
 	function user_count_znote_accounts() {
-		return mysql_result(mysql_query("SELECT COUNT(`account_id`) from `znote_accounts`;"), 0);
+		$data = mysql_select_single("SELECT COUNT(`account_id`) AS `count` from `znote_accounts`;");
+		return ($data !== false) ? $data['count'] : 0;
 	}
 	
 	function user_character_is_compatible($pid) {
-		return mysql_result(mysql_query("SELECT COUNT(`player_id`) from `znote_players` WHERE `player_id` = '$pid';"), 0);
+		$data = mysql_select_single("SELECT COUNT(`player_id`) AS `count` from `znote_players` WHERE `player_id` = '$pid';");
+		return ($data !== false) ? $data['count'] : 0;
 	}
 	
 	function fetch_znote_accounts() {
-			$count = user_count_znote_accounts();
-			$query = mysql_query("SELECT `account_id` FROM `znote_accounts`");
-			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_row($query) or die(mysql_error());
-				$array[] = $row[0];
-			}
-			
-			if (isset($array)) {return $array; } else {return false;}
+			return mysql_select_multi("SELECT `account_id` FROM `znote_accounts`");
 	}
 	// end install functions
 	
 	// count all accounts, znote accounts, find out which accounts needs to be converted.
 	$all_account = fetch_all_accounts();
 	$znote_account = fetch_znote_accounts();
-	if (isset($all_account)) {
-		// <
+	if ($all_account !== false) {
 		if ($znote_account != false) { // If existing znote compatible account exists:
 			foreach ($all_account as $all) { // Loop through every element in znote_account array
 				if (!in_array($all, $znote_account)) {
@@ -64,7 +50,6 @@ require '../engine/function/users.php';
 				$old_accounts[] = $all;
 			}
 		}
-		// >
 	}
 	// end ^
 	
@@ -99,7 +84,7 @@ require '../engine/function/users.php';
 		foreach ($old_accounts as $old) {
 		
 			// Make acc data compatible:
-			mysql_query("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$old', '0', '$time')") or die(mysql_error());
+			mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$old', '0', '$time')");
 			$updated_acc += 1;
 			
 			// Fetch unsalted password
@@ -119,7 +104,7 @@ require '../engine/function/users.php';
 				if ($config['TFSVersion'] == 'TFS_03' && $config['salt'] === true) $p_pass = sha1($password['salt'].$p_pass);
 				
 				// Update their password so they are sha1 encrypted
-				mysql_query("UPDATE `accounts` SET `password`='$p_pass' WHERE `id`='$old';") or die(mysql_error());
+				mysql_update("UPDATE `accounts` SET `password`='$p_pass' WHERE `id`='$old';");
 				$updated_pass += 1;
 			}
 			
@@ -141,7 +126,7 @@ require '../engine/function/users.php';
 					if (user_character_is_compatible($c) == 0) {
 						// Then lets make it compatible:
 						
-						mysql_query("INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES ('$c', '$time', '0', '')") or die(mysql_error());
+						mysql_insert("INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES ('$c', '$time', '0', '')");
 						$updated_char += 1;
 						
 					}

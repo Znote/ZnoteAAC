@@ -32,9 +32,11 @@ if (!empty($_GET['warid'])) {
 		$g2c = 0; // kill count
 		
 		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') {
-			foreach ($kills as $kill) {
-				if ($kill[killerguild] == $guild1) ++$g1c;
-				if ($kill[killerguild] == $guild2) ++$g2c;
+			foreach (($kills ? $kills : array()) as $kill) {
+				if ($kill['killerguild'] == $guild1)
+					$g1c++;
+				else
+					$g2c++;
 			}
 			
 			$green = false;
@@ -55,9 +57,12 @@ if (!empty($_GET['warid'])) {
 			</li>
 			<li>
 				<?php
-				if ($green) echo 'Score: <font color="green">'. $g1c .'</font>-<font color="red">'. $g2c .'</font>';
-				else if ($g1c = $g2c) echo 'Score: <font color="orange">'. $g1c .'</font>-<font color="orange">'. $g2c .'</font>';
-				else echo 'Score: <font color="red">'. $g1c .'</font>-<font color="green">'. $g2c .'</font>';
+				if ($green)
+					echo 'Score: <font color="green">'. $g1c .'</font>-<font color="red">'. $g2c .'</font>';
+				else if ($g1c == $g2c)
+					echo 'Score: <font color="orange">'. $g1c .'</font>-<font color="orange">'. $g2c .'</font>';
+				else
+					echo 'Score: <font color="red">'. $g1c .'</font>-<font color="green">'. $g2c .'</font>';
 				?>
 			</li>
 			<?php } ?>
@@ -73,7 +78,7 @@ if (!empty($_GET['warid'])) {
 					<th>Time:</th>
 				</tr>
 					<?php
-					foreach ($kills as $kill) {
+					foreach (($kills ? $kills : array()) as $kill) {
 						echo '<tr>';
 						//echo '<td>'. get_guild_name($kill['killerguild']) .'</td>';
 						echo '<td><a href="guilds.php?name='. get_guild_name($kill['killerguild']) .'">'. get_guild_name($kill['killerguild']) .'</a></td>';
@@ -165,10 +170,18 @@ if (!empty($_GET['warid'])) {
 			</tr>
 				<?php
 				foreach ($wardata as $wars) {
+					$guild_1_kills = 0;
+					$guild_2_kills = 0;
+					foreach (($killsdata[$wars['id']] ? $killsdata[$wars['id']] : array()) as $kill) {
+						if ($kill['killerguild'] == $wars['guild1'])
+							$guild_1_kills++;
+						else
+							$guild_2_kills++;
+					}
 					$url = url("guildwar.php?warid=". $wars['id']);
 					echo '<tr class="special" onclick="javascript:window.location.href=\'' . $url . '\'">';
 					echo '<td>'. $wars['name1'] .'</td>';
-					echo '<td>'. count($killsdata[$wars['id']]) .'</td>';
+					echo '<td>'. $guild_1_kills .' - ' . $guild_2_kills . '</td>';
 					echo '<td>'. $wars['name2'] .'</td>';
 					echo '</tr>';
 				}

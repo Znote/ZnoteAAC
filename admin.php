@@ -62,23 +62,6 @@ if (empty($_POST) === false) {
 			}
 		}
 	}
-	
-	/* Give points to character
-	if (empty($_POST['points_char']) === false && empty($_POST['points_value']) === false) {
-		// fetch account id
-		$char = $_POST['points_char'];
-		$points = $_POST['points_value'];
-		$accid = user_character_account_id($char);
-		if ($points > 0) {
-			if ($accid > 0) {
-				$new_points = $points;
-				$old_points = mysql_result(mysql_query("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$accid';"), 0, 'points');
-				$new_points += $old_points;
-				$update_account = mysql_query("UPDATE `znote_accounts` SET `points`='$new_points' WHERE `account_id`='$accid'");
-				$errors[] = 'Success! Character '. $char .' has recieved '. $points .' premium points.';
-			} else $errors[] = 'Account id is invalid. (Did you write correct character name?)'. $accid;
-		} else $errors[] = 'Why the heck give a character 0 points?!';
-	}*/
 
 	// Give points to character
 	if (empty($_POST['points_char']) === false && empty($_POST['points_value']) === false) {
@@ -140,7 +123,7 @@ if (empty($errors) === false){
 <?php
 $basic = user_znote_data('version', 'installed', 'cached');
 if ($basic['version'] !== $version) {
-	mysql_query("UPDATE `znote` SET `version`='$version';") or die(mysql_error());
+	mysql_update("UPDATE `znote` SET `version`='$version';");
 	$basic = user_znote_data('version', 'installed', 'cached');
 }
 echo "Running Znote AAC Version: ". $basic['version'] .".<br>";

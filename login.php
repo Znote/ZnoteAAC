@@ -9,7 +9,7 @@ if (empty($_POST) === false) {
 	}
 	$username = $_POST['username'];
 	$password = $_POST['password'];
-	data_dump($_POST, false, "POST");
+	//data_dump($_POST, false, "POST");
 	if (empty($username) || empty($password)) {
 		$errors[] = 'You need to enter a username and password.';
 	} else if (strlen($username) > 32 || strlen($password) > 64) {

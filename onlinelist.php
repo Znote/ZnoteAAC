@@ -14,7 +14,8 @@ if ($array) {
 		</tr>
 			<?php
 			foreach ($array as $value) {
-			echo '<tr>';
+			$url = url("characterprofile.php?name=". $value['name']);
+			echo '<tr class="special" onclick="javascript:window.location.href=\'' . $url . '\'">';
 			echo '<td><a href="characterprofile.php?name='. $value['name'] .'">'. $value['name'] .'</a></td>';
 			echo '<td>'. $value['level'] .'</td>';
 			echo '<td>'. vocation_id_to_name($value['vocation']) .'</td>';

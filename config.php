@@ -14,13 +14,13 @@
 	// ------------------------ \\
 	
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'dev';
+	$config['sqlUser'] = 'daler';
 	
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'dev';
+	$config['sqlPassword'] = 'daler';
 	
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'dev';
+	$config['sqlDatabase'] = 'daler';
 	
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
@@ -33,7 +33,7 @@
 		- echo getClock($profile_data['lastlogin'], true); = from characterprofile,
 		explains when user was last logged in. */
 	function getClock($time = false, $format = false, $adjust = true) {
-		if (!$time) $time = time();
+		if ($time === false) $time = time();
 		// Date string representation
 		$date = "d F Y (H:i)"; // 15 July 2013 (13:50)
 		if ($adjust) $adjust = (1 * 3600); // Adjust to fit your timezone.
@@ -71,7 +71,10 @@
 		'HouseListDefaultTown' => 1, // Default town id to display when visting house list page page.
 		'minimumBidSQM' => 200, // minimum bid cost on auction (per SQM)
 		'auctionPeriod' => 24 * 60 * 60, // 24 hours auction time.
-		);
+		'housesPerPlayer' => 1,
+		'requirePremium' => false,
+		'levelToBuyHouse' => 8,
+	);
 	
 	// Leave on black square in map and player should get teleported to their selected town.
 	// If chars get buggy set this position to a beginner location to force players there.
@@ -128,17 +131,23 @@
 	$config['nvForceTown'] = 0; // Force a town to no vocation even though he selected something else? 0 = no, 1 = yes.
 	$config['nvTown'] = 0; // Town id to force no vocations to get to, if nvForceTown is 1.
 	
-	// Minimum allowed character name letters. Etc 4 letters: "Kåre".
+	// Minimum allowed character name letters. Etc 4 letters: "KÃ¥re".
 	$config['minL'] = 4;
-	// Maximum allowed character name letters. Etc 20 letters: "Bobkåreolesofiesberg"
+	// Maximum allowed character name letters. Etc 20 letters: "BobkÃ¥reolesofiesberg"
 	$config['maxL'] = 20;
 	
-	// Maximum allowed character name words. Etc 2 words = "Bob Kåre", 3 words: "Bob Arne Kåre" as max char name words.
+	// Maximum allowed character name words. Etc 2 words = "Bob KÃ¥re", 3 words: "Bob Arne KÃ¥re" as max char name words.
 	$config['maxW'] = 2;
 	
 	// -------------- \\
 	// WEBSITE STUFF  \\
 	// -------------- \\
+	// Highscore configuration
+	$config['highscore'] = array(
+			'rows' => 100,
+			'rowsPerPage' => 20,
+			'ignoreGroupId' => 2, // Ignore group id higher than this (staff)
+		);
 
 	// ONLY FOR TFS 0.2 (TFS 0.3/4 users don't need to care about this, as its fully loaded from db)
 	$config['house'] = array(
@@ -152,8 +161,10 @@
 		'status_port' => "7171",
 		);
 
+	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed eg. 1 DAY, 2 HOUR, 3 MONTH etc. 
+
 	$config['validate_IP'] = true; // Only allow legal IP addresses to register and create character.
-	$config['salt'] = true; // Some noob 0.3.6 servers don't support salt.
+	$config['salt'] = false; // Some noob 0.3.6 servers don't support salt.
 	
 	// Restricted names
 	$config['invalidNameTags'] = array("god", "gm", "cm", "gamemaster", "hoster", "admin", "admim", "adm", "owner", "staff");
@@ -185,7 +196,7 @@
 	$config['port'] = 7171; // Port number to connect to your OT.
 	
 	// How often do you want highscores to update?
-	$config['cache_lifespan'] = 1;//60 * 15; // 15 minutes.
+	$config['cache_lifespan'] = 5;//60 * 15; // 15 minutes.
 	
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
@@ -220,12 +231,16 @@
 	// IMPORTANT! Write a character name(that exist) that will represent website bans!
 	// Or remember to create character "God Website" character exist.
 	// If you don't do this, bann from admin panel won't work properly.
-	$config['website_char'] = 'God Website';
+	$config['website_char'] = 'Luxitur';
 	
 	//----------------\\
 	// ADVANCED STUFF \\
 	//----------------\\
-	
+	// Api config
+	$config['api'] = array(
+		'debug' => false,
+	);
+
 	// Don't touch this unless you know what you are doing. (modifying this(key value) also requires modifications in OT files /XML/commands.xml).
 	$config['ingame_positions'] = array(
 		1 => 'Player',
@@ -331,7 +346,7 @@
 		to configure flush_ip_logs if IPs are logged.
 	*/
 	
-	$config['log_ip'] = true;
+	$config['log_ip'] = false;
 	
 	// Flush IP logs each configured seconds, 60 * 15 = 15 minutes.
 	// Set to false to entirely disable ip log flush. 
@@ -386,17 +401,17 @@
 	/// PAYGOL SMS ///
 	//////////////////
 	// !!! Paygol takes 60%~ of the money, and send aprox 40% to your paypal.
-	// You can configure paygol to send each month, then they will send money to you 1 month after recieving 50+ eur.
+	// You can configure paygol to send each month, then they will send money 
+	// to you 1 month after recieving 50+ eur.
 	$config['paygol'] = array(
 		'enabled' => true,
-		'serviceID' => 40339,// Service ID from paygol.com
-		'currency' => 'EUR',
-		'price' => 5,
-		'points' => 25, // Remember to write same details in paygol.com!
-		'name' => '25 points',
+		'serviceID' => 86648,// Service ID from paygol.com
+		'currency' => 'SEK',
+		'price' => 20,
+		'points' => 20, // Remember to write same details in paygol.com!
+		'name' => '20 points',
 		'returnURL' => "http://".$_SERVER['HTTP_HOST']."/success.php",
-		'cancelURL' => "http://".$_SERVER['HTTP_HOST']."/failed.php",
-		'ipnURL' => "http://".$_SERVER['HTTP_HOST']."/paygol_ipn.php",
+		'cancelURL' => "http://".$_SERVER['HTTP_HOST']."/failed.php"
 	);
 	
 	////////////
@@ -466,6 +481,13 @@
 			'itemid' => 12666,
 			'count' => 0,
 			'describtion' => "Change character gender.",
+			'points' => 20,
+		),
+		5 => array(
+			'type' => 4,
+			'itemid' => 12666,
+			'count' => 1,
+			'describtion' => "Change character name.",
 			'points' => 20,
 		),
 	);

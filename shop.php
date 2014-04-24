@@ -23,15 +23,18 @@ if (!empty($_POST['buy'])) {
 	
 	// Verify that user can afford this offer.
 	if ($player_points >= $buy['points']) {
-		$old_points = mysql_result(mysql_query("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$cid';"), 0, 'points');
+		$data = mysql_select_single("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$cid';");
+		if (!$data) die("0: Account is not converted to work with Znote AAC");
+		$old_points = $data['points'];
 		if ((int)$old_points != (int)$player_points) die("1: Failed to equalize your points.");
 		// Remove points if they can afford
 		// Give points to user
 		$expense_points = $buy['points'];
 		$new_points = $old_points - $expense_points;
-		$update_account = mysql_query("UPDATE `znote_accounts` SET `points`='$new_points' WHERE `account_id`='$cid'");
+		$update_account = mysql_update("UPDATE `znote_accounts` SET `points`='$new_points' WHERE `account_id`='$cid'");
 		
-		$verify = mysql_result(mysql_query("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$cid';"), 0, 'points');
+		$data = mysql_select_single("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$cid';");
+		$verify = $data['points'];
 		if ((int)$old_points == (int)$verify) die("2: Failed to equalize your points.". var_dump((int)$old_points, (int)$verify, $new_points, $expense_points));
 		
 		// Do the magic (insert into db, or change sex etc)
@@ -42,15 +45,19 @@ if (!empty($_POST['buy'])) {
 			echo '<font color="green" size="4">You now have '.$buy['count'].' additional days of premium membership.</font>';
 		} else if ($buy['type'] == 3) {
 			// Character sex
-			mysql_query("INSERT INTO `znote_shop_orders` (`account_id`, `type`, `itemid`, `count`, `time`) VALUES ('$cid', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '$time')") or die(mysql_error());
+			mysql_insert("INSERT INTO `znote_shop_orders` (`account_id`, `type`, `itemid`, `count`, `time`) VALUES ('$cid', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '$time')");
 			echo '<font color="green" size="4">You now have access to change character gender on your characters. Visit <a href="myaccount.php">My Account</a> to select character and change the gender.</font>';
+		} else if ($buy['type'] == 4) {
+			// Character sex
+			mysql_insert("INSERT INTO `znote_shop_orders` (`account_id`, `type`, `itemid`, `count`, `time`) VALUES ('$cid', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '$time')");
+			echo '<font color="green" size="4">You now have access to change character name on your characters. Visit <a href="myaccount.php">My Account</a> to select character and change the name.</font>';
 		} else {
-			mysql_query("INSERT INTO `znote_shop_orders` (`account_id`, `type`, `itemid`, `count`, `time`) VALUES ('$cid', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '$time')") or die(mysql_error());
+			mysql_insert("INSERT INTO `znote_shop_orders` (`account_id`, `type`, `itemid`, `count`, `time`) VALUES ('$cid', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '$time')");
 			echo '<font color="green" size="4">Your order is ready to be delivered. Write this command in-game to get it: [!shop].<br>Make sure you are in depot and can carry it before executing the command!</font>';
 		}
 		
 		// No matter which type, we will always log it.
-		mysql_query("INSERT INTO `znote_shop_logs` (`account_id`, `player_id`, `type`, `itemid`, `count`, `points`, `time`) VALUES ('$cid', '0', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '". $buy['points'] ."', '$time')") or die(mysql_error());
+		mysql_insert("INSERT INTO `znote_shop_logs` (`account_id`, `player_id`, `type`, `itemid`, `count`, `points`, `time`) VALUES ('$cid', '0', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '". $buy['points'] ."', '$time')");
 		
 	} else echo '<font color="red" size="4">You need more points, this offer cost '.$buy['points'].' points.</font>';
 	//var_dump($buy);

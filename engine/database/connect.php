@@ -95,6 +95,27 @@ CREATE TABLE IF NOT EXISTS `znote_players` (
 INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES
 ('1', '$time', '0', '. . .');
 
+CREATE TABLE IF NOT EXISTS `znote_player_reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `posx` int(6) NOT NULL,
+  `posy` int(6) NOT NULL,
+  `posz` int(6) NOT NULL,
+  `report_description` VARCHAR(255) NOT NULL,
+  `date` INT(11) NOT NULL,
+  `status` TINYINT(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `znote_changelog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` VARCHAR(255) NOT NULL,
+  `time` INT(11) NOT NULL,
+  `report_id` INT(11) NOT NULL,
+  `status` TINYINT(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `znote_shop` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` int(11) NOT NULL,
@@ -184,6 +205,15 @@ CREATE TABLE IF NOT EXISTS `znote_forum_posts` (
   `updated` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `znote_deleted_characters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `original_account_id` int(11) NOT NULL,
+  `character_name` varchar(255) NOT NULL,
+  `time` datetime NOT NULL,
+  `done` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 </textarea>
 	</li>
 	<li>
@@ -196,16 +226,21 @@ CREATE TABLE IF NOT EXISTS `znote_forum_posts` (
 
 $connect = new mysqli($config['sqlHost'], $config['sqlUser'], $config['sqlPassword'], $config['sqlDatabase']);
 if ($connect->connect_errno) {
-    echo "Failed to connect to MySQL: (" . $connect->connect_errno . ") " . $connect->connect_error . $install;
+    die("Failed to connect to MySQL: (" . $connect->connect_errno . ") " . $connect->connect_error . $install);
 }
 
-function mysql_real_escape_string($escapestr) {
+function mysql_znote_escape_string($escapestr) {
   global $connect;
   return mysqli_real_escape_string($connect, $escapestr);
 }
 // Select single row from database
 function mysql_select_single($query) {
   global $connect;
+  global $aacQueries;
+  $aacQueries++;
+
+  global $accQueriesData;
+  $accQueriesData[] = $query;
   $result = mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_single</b> (select single row from database)<br><br>".mysqli_error($connect));
   $row = mysqli_fetch_assoc($result);
   return !empty($row) ? $row : false;
@@ -214,6 +249,10 @@ function mysql_select_single($query) {
 // Selecting multiple rows from database.
 function mysql_select_multi($query){
   global $connect;
+  global $aacQueries;
+  $aacQueries++;
+  global $accQueriesData;
+  $accQueriesData[] = $query;
   $array = array();
   $results = mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_multi</b> (select multiple rows from database)<br><br>".mysqli_error($connect));
   while($row = mysqli_fetch_assoc($results)) {
@@ -234,6 +273,10 @@ function mysql_delete($query){ voidQuery($query); }
 // Send a void query
 function voidQuery($query) {
   global $connect;
+  global $aacQueries;
+  $aacQueries++;
+  global $accQueriesData;
+  $accQueriesData[] = $query;
   mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>voidQuery</b> (voidQuery is used for update, insert or delete from database)<br><br>".mysqli_error($connect));
 }
 ?>

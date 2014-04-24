@@ -5,6 +5,9 @@ if (version_compare(phpversion(), '5.3.3', '<')) die('PHP 5.3.3 is required<br><
 $time = time();
 $version = '1.5_SVN';
 
+$aacQueries = 0;
+$accQueriesData = array();
+
 session_start();
 ob_start();
 require 'config.php';
