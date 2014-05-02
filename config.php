@@ -121,7 +121,7 @@
 	$config['maleOutfitId'] = 128;
 	$config['femaleOutfitId'] = 136;
 	$config['lookHead'] = 78;
-	$config['lookBody'] = 106;
+	$config['lookBody'] = 68;
 	$config['lookLegs'] = 58;
 	$config['lookFeet'] = 76;
 	
