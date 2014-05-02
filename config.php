@@ -119,7 +119,11 @@
 	$config['soul'] = 100;
 	
 	$config['maleOutfitId'] = 128;
-	$config['femaleOutfitId'] = 138;
+	$config['femaleOutfitId'] = 136;
+	$config['lookHead'] = 78;
+	$config['lookBody'] = 106;
+	$config['lookLegs'] = 58;
+	$config['lookFeet'] = 76;
 	
 	// No vocation info (if user select vocation id 0, we force thees configurations on him
 	$config['nvlevel'] = 1;
