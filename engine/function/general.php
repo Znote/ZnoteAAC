@@ -269,7 +269,7 @@ function format_character_name($name) {
 
 // Returns a list of players online
 function online_list() {
-	if (config('TFSVersion') == 'TFS_10') return mysql_select_multi("SELECT `o`.`player_id` AS `id`, `p`.`name` as `name`, `p`.`level` as `level`, `p`.`vocation` as `vocation` FROM `players_online` as `o` INNER JOIN `players` as `p` ON o.player_id = p.id");
+	if (config('TFSVersion') == 'TFS_10') return mysql_select_multi("SELECT `o`.`player_id` AS `id`, `p`.`name` as `name`, `p`.`level` as `level`, `p`.`vocation` as `vocation`, `g`.`name` as `gname` FROM `players_online` as `o` INNER JOIN `players` as `p` ON `o`.`player_id` = `p`.`id` LEFT JOIN `guild_membership` gm ON `o`.`player_id` = `gm`.`player_id` LEFT JOIN `guilds` g ON `gm`.`guild_id` = `g`.`id`");
 	else return mysql_select_multi("SELECT `name`, `level`, `vocation` FROM `players` WHERE `online`='1' ORDER BY `name` DESC;");
 }
 

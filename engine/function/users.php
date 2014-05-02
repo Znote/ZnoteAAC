@@ -1078,10 +1078,10 @@ function user_create_character($character_data) {
 		'health' => $cnf['health'],
 		'healthmax' => $cnf['health'],
 		'experience' => 0, /* Will automatically be configured according to level after creating this array*/
-		'lookbody' => 0, /* STARTER OUTFITS */
-		'lookfeet' => 0,
-		'lookhead' => 0,
-		'looklegs' => 0,
+		'lookbody' => $cnf['lookBody'], /* STARTER OUTFITS */
+		'lookfeet' => $cnf['lookFeet'],
+		'lookhead' => $cnf['lookHead'],
+		'looklegs' => $cnf['lookLegs'],
 		'looktype' => $outfit_type,
 		'lookaddons' => 0,
 		'maglevel' => 0,
