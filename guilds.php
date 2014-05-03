@@ -14,6 +14,8 @@ if (user_logged_in() === true) {
 			$characters[] = $value['name'];
 		}
 	}
+} else {
+	$char_count = 0;
 }
 
 if (empty($_GET['name'])) {
@@ -144,10 +146,10 @@ if (user_logged_in() === true) {
 	}
 	
 	// calculate visitor access
+	$highest_access = 0;
 	if (user_logged_in() === true) {
 		// Get visitor access in this guild
-		$highest_access = 0;
-
+		
 		foreach ($players as $player) {
 			$rid = $player['rank_id'];
 			
