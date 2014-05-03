@@ -7,9 +7,9 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 	$user_id = user_character_exist($name);
 	if ($user_id !== false) {
 		if ($config['TFSVersion'] == 'TFS_10') {
-			$profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin');
+			$profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin', 'sex');
 			$profile_data['online'] = user_is_online_10($user_id);
-		} else $profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin', 'online');
+		} else $profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin', 'online', 'sex');
 		$profile_znote_data = user_znote_character_data($user_id, 'created', 'hide_char', 'comment');
 		
 		$guild_exist = false;
@@ -23,6 +23,14 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 		<!-- PROFILE MARKUP HERE-->
 			<h1><font class="profile_font" name="profile_font_header">Profile: <?php echo $profile_data['name']; ?></font></h1>
 			<ul class="unstyled">
+				
+				<li><font class="profile_font" name="profile_font_level">Sex:<?php 
+				if ($profile_data['sex'] == 1) {
+				echo 'Male';
+				} else {
+				echo 'Female';
+				}
+				?></font></li>
 				<li><font class="profile_font" name="profile_font_level">Level: <?php echo $profile_data['level']; ?></font></li>
 				<li><font class="profile_font" name="profile_font_vocation">Vocation: <?php echo vocation_id_to_name($profile_data['vocation']); ?></font></li>
 				<?php 
