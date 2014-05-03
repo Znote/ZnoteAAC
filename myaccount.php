@@ -34,7 +34,7 @@ if (!empty($_POST['selected_delete'])) {
 				if (!user_is_online_10($charid)) {
 					if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
 					else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
-				} echo 'Character must be offline first.';
+				} else echo 'Character must be offline first.';
 			} else {
 				$chr_data = user_character_data($charid, 'online');
 				if ($chr_data['online'] != 1) {
