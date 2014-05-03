@@ -34,7 +34,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				?>
 				<li><font class="profile_font" name="profile_font_lastlogin">Last Login: <?php
 					if ($profile_data['lastlogin'] != 0) {
-						echo getClock($profile_data['lastlogin'], true, false);
+						echo getClock($profile_data['lastlogin'], true, true);
 					} else {
 						echo 'Never.';
 					}
