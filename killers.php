@@ -20,7 +20,7 @@ if ($cache->hasExpired()) {
 }
 $cache = new Cache('engine/cache/lastkillers');
 if ($cache->hasExpired()) {
-	$latests = mysql_select_multi("SELECT `p`.`name` AS `victim`, `d`.`killed_by` as `killed_by`, `d`.`time` as `time` FROM `player_deaths` as `d` INNER JOIN `players` as `p` ON d.player_id = p.id WHERE d.`is_player`='1' LIMIT 20;");
+	$latests = mysql_select_multi("SELECT `p`.`name` AS `victim`, `d`.`killed_by` as `killed_by`, `d`.`time` as `time` FROM `player_deaths` as `d` INNER JOIN `players` as `p` ON d.player_id = p.id WHERE d.`is_player`='1' ORDER BY `time` DESC LIMIT 20;");
 	if ($latests !== false) {
 		$cache->setContent($latests);
 		$cache->save();
