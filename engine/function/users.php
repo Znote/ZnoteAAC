@@ -1438,4 +1438,34 @@ function user_login_03($username, $password) {
 function user_logged_in() {
 	return (isset($_SESSION['user_id'])) ? true : false;
 }
+
+function guild_war_invitation($cid, $gid) {
+	$cid = (int)$cid;
+	$gid = (int)$gid;
+	$gname = get_guild_name($cid);
+	$ename = get_guild_name($gid);
+	$time = time();
+	mysql_insert("INSERT INTO `guild_wars` (`guild1`, `guild2`, `name1`, `name2`, `status`, `started`, `ended`) VALUES ('$cid', '$gid', '$gname', '$ename', '0', '$time', '0');");
+}
+
+function accept_war_invitation($cid, $gid) {
+	$cid = (int)$cid;
+	$gid = (int)$gid;
+	mysql_update("UPDATE `guild_wars` SET `status` = 1 WHERE `guild1` = '$cid' AND `guild2` = '$gid' AND `status` = 0;");
+}
+
+function reject_war_invitation($cid, $gid) {
+	$cid = (int)$cid;
+	$gid = (int)$gid;
+	$time = time();
+	mysql_update("UPDATE `guild_wars` SET `status` = 2, `ended` = '$time' WHERE `guild1` = '$cid' AND `guild2` = '$gid';");
+}
+
+function cancel_war_invitation($cid, $gid) {
+	$cid = (int)$cid;
+	$gid = (int)$gid;
+	$time = time();
+	mysql_update("UPDATE `guild_wars` SET `status` = 3, `ended` = '$time' WHERE `guild2` = '$cid' AND `guild1` = '$gid';");
+}
+
 ?>
