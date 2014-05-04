@@ -458,6 +458,51 @@ if ($highest_access >= 2) {
 		}
 	}
 	
+	if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10' && $config['guildwar_enabled'] === true) {
+		if (!empty($_POST['warinvite'])) {
+			if (get_guild_id($_POST['warinvite'])) {
+				$status = false;
+				$war_invite = mysql_select_single("SELECT `id` FROM `guilds` WHERE `id` = '$gid';");
+				$targetGuild = get_guild_id($_POST['warinvite']);
+				if ($war_invite !== false) {
+					foreach ($war_invite as $inv) {
+						if ($inv['id'] == $targetGuild) $status = true;
+					}
+				}
+				
+				$check_guild = get_guild_name($gid);
+				foreach ($check_guild as $guild) {
+					if ($guild['name'] == $_POST['warinvite']) $status = true;
+				}
+				
+				$wars = mysql_select_multi("SELECT `id`, `guild1`, `guild2`, `status` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild1` = '$targetGuild') AND (`guild2` = '$gid' OR `guild2` = '$targetGuild') AND `status` IN (0, 1);");
+				if ($status == false && $wars == false) {
+					guild_war_invitation($gid, $targetGuild);
+					header('Location: guilds.php?name='. $_GET['name']);
+					exit();
+				} else echo '<font color="red" size="4">This guild has already been invited to war(or you\'re trying to invite your own).</FONT>';
+			} else echo '<font color="red" size="4">That guild name does not exist.</font>';
+		}
+	
+		if (!empty($_POST['cancel_war_invite'])) {
+			cancel_war_invitation($_POST['cancel_war_invite'], $gid);
+			header('Location: guilds.php?name='. $_GET['name']);
+			exit();
+		}
+	
+		if (!empty($_POST['reject_war_invite'])) {
+			reject_war_invitation($_POST['reject_war_invite'], $gid);
+			header('Location: guilds.php?name='. $_GET['name']);
+			exit();
+		}
+	
+		if (!empty($_POST['accept_war_invite'])) {
+			accept_war_invitation($_POST['accept_war_invite'], $gid);
+			header('Location: guilds.php?name='. $_GET['name']);
+			exit();
+		}
+	}
+	
 	$members = count_guild_members($gid);
 	$ranks = get_guild_rank_data($gid);
 	?>
@@ -596,7 +641,42 @@ if ($highest_access >= 2) {
 				</li>
 			</ul>
 		</form>
-		<?php }} ?>
+		<?php } ?>
+		<?php if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10' && $config['guildwar_enabled'] === true) { ?>
+		<h2>Guild War Management:</h2>
+		<form action="" method="post">
+			<ul>
+				<li>Invite guild to war:<br>
+					<input type="text" name="warinvite" placeholder="Guild name">
+					<input type="submit" value="Invite Guild">
+				</li>
+			</ul>
+		</form>
+		<style type="text/css">
+			form {display: inline;}
+			#btnspace{margin-left:100px;}
+		</style>
+		<table id="guildsTable" class="table table-striped table-hover"><tr class="yellow"><th>Aggressor</th><th>Information</th><th>Enemy</th></tr>
+		<?php
+		$i = 0;
+		foreach(mysql_select_multi("SELECT `guild_wars`.`id`, `guild_wars`.`guild1`, `guild_wars`.`guild2`, `guild_wars`.`name1`, `guild_wars`.`name2`, `guild_wars`.`status`, `guild_wars`.`started`, `guild_wars`.`ended` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild2` = '$gid') AND `status` = 0 ORDER BY `started` DESC") as $war)
+		{
+			$i++;
+			echo '<tr><td><a href="guilds.php?name='.$war['name1'].'">'.$war['name1'].'</a></td><td>';
+			echo '<center><b>Pending invitation</b><br />Invited on ' . getClock($war['started'], true) . '.<br />';
+			if ($war['guild1'] == $gid) {
+				echo '<br /><form action="" method="post" onsubmit="return confirm(\'Are you sure you want to CANCEL this invitation?\')";><input type="hidden" name="cancel_war_invite" value="'.$war['guild2'].'" /><input type="submit" value="Cancel Invitation"></form>';
+			} else if ($war['guild2'] == $gid) {
+				echo '<br><form action="" method="post"><input type="hidden" name="accept_war_invite" value="'.$war['guild1'].'" /><input type="submit" value="Accept Invitation"></form>';
+				echo '<form action="" method="post"><input type="hidden" name="reject_war_invite" value="'.$war['guild1'].'" /><input type="submit" ID="btnspace" value="Reject Invitation"></form>';
+			}
+			echo '</center></td><td><a href="guilds.php?name='.$war['name2'].'">'.$war['name2'].'</a></td></tr>';
+		}
+	
+			if ($i == 0)
+				echo '<tr><td colspan="3"><center>Currently there are no pending invitations.</center></td></tr>';
+				echo '</table>';
+		} } ?>
 		<?php
 	}
 }
