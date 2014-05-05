@@ -671,18 +671,20 @@ if ($highest_access >= 2) {
 		<table id="guildsTable" class="table table-striped table-hover"><tr class="yellow"><th>Aggressor</th><th>Information</th><th>Enemy</th></tr>
 		<?php
 		$i = 0;
-		foreach(mysql_select_multi("SELECT `guild_wars`.`id`, `guild_wars`.`guild1`, `guild_wars`.`guild2`, `guild_wars`.`name1`, `guild_wars`.`name2`, `guild_wars`.`status`, `guild_wars`.`started`, `guild_wars`.`ended` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild2` = '$gid') AND `status` = 0 ORDER BY `started` DESC") as $war)
-		{
-			$i++;
-			echo '<tr><td><a href="guilds.php?name='.$war['name1'].'">'.$war['name1'].'</a></td><td>';
-			echo '<center><b>Pending invitation</b><br />Invited on ' . getClock($war['started'], true) . '.<br />';
-			if ($war['guild1'] == $gid) {
-				echo '<br /><form action="" method="post" onsubmit="return confirm(\'Are you sure you want to CANCEL this invitation?\')";><input type="hidden" name="cancel_war_invite" value="'.$war['guild2'].'" /><input type="submit" value="Cancel Invitation"></form>';
-			} else if ($war['guild2'] == $gid) {
-				echo '<br><form action="" method="post"><input type="hidden" name="accept_war_invite" value="'.$war['guild1'].'" /><input type="submit" value="Accept Invitation"></form>';
-				echo '<form action="" method="post"><input type="hidden" name="reject_war_invite" value="'.$war['guild1'].'" /><input type="submit" ID="btnspace" value="Reject Invitation"></form>';
+		$wars = mysql_select_multi("SELECT `guild1`, `guild2`, `name1`, `name2`, `started` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild2` = '$gid') AND `status` = 0 ORDER BY `started` DESC");
+		if (!empty($wars) || $wars !== false) {
+			foreach($wars as $war) {
+				$i++;
+				echo '<tr><td><a href="guilds.php?name='.$war['name1'].'">'.$war['name1'].'</a></td><td>';
+				echo '<center><b>Pending invitation</b><br />Invited on ' . getClock($war['started'], true) . '.<br />';
+				if ($war['guild1'] == $gid) {
+					echo '<br /><form action="" method="post"><input type="hidden" name="cancel_war_invite" value="'.$war['guild2'].'" /><input type="submit" value="Cancel Invitation"></form>';
+				} else if ($war['guild2'] == $gid) {
+					echo '<br><form action="" method="post"><input type="hidden" name="accept_war_invite" value="'.$war['guild1'].'" /><input type="submit" value="Accept Invitation"></form>';
+					echo '<form action="" method="post"><input type="hidden" name="reject_war_invite" value="'.$war['guild1'].'" /><input type="submit" ID="btnspace" value="Reject Invitation"></form>';
+				}
+				echo '</center></td><td><a href="guilds.php?name='.$war['name2'].'">'.$war['name2'].'</a></td></tr>';
 			}
-			echo '</center></td><td><a href="guilds.php?name='.$war['name2'].'">'.$war['name2'].'</a></td></tr>';
 		}
 	
 			if ($i == 0)
