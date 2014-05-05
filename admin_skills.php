@@ -31,10 +31,10 @@ if (isset($_POST['pid']) && (int)$_POST['pid'] > 0) {
 			$basecap = $config['cap'];
 		} else { // No vocation stats
 			// Fetch base level and stats:
-			$baselevel = $config['level'];
-			$basehealth = $config['health'];
-			$basemana = $config['mana'];
-			$basecap = $config['cap'];
+			$baselevel = $config['nvlevel'];
+			$basehealth = $config['nvHealth'];
+			$basemana = $config['nvMana'];
+			$basecap = $config['nvCap'];
 		}
 		
 		$levelC = $level - $baselevel;
