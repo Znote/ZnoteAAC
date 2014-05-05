@@ -4,12 +4,13 @@
 <p>In order to play, you need an compatible IP changer and a Tibia client.</p>
 
 <p>Download otland IP changer <a href="http://static0.otland.net/ipchanger.exe">HERE</a>.</p>
-<p>Download Tibia client <?php echo ($config['client'] / 100); ?> <a href="<?php echo $config['client_download']; ?>">HERE</a>.</p>
+<p>Download Tibia client <?php echo ($config['client'] / 100); ?> for windows <a href="<?php echo $config['client_download']; ?>">HERE</a>.</p>
+<p>Download Tibia client <?php echo ($config['client'] / 100); ?> for linux <a href="<?php echo $config['client_download_linux']; ?>">HERE</a>.</p>
 
 <h2>How to connect and play:</h2>
 <ol>
 	<li>
-		<a href="http://remeresmapeditor.com/rmedl.php?file=tibia<?php echo ($config['client']); ?>.exe">Download</a>, install and start the tibia client if you havent already.
+		<a href="<?php echo $config['client_download']; ?>">Download</a>, install and start the tibia client if you havent already.
 	</li>
 	<li>
 		<a href="http://static0.otland.net/ipchanger.exe">Download</a> and run the IP changer.
