@@ -44,7 +44,8 @@ This will show you the rest of the instructions as well as the mysql schema.
 
 ### This is the developement repository for the Znote AAC project.
 # TODO 1.5:
-* TFS 1.0 LUA scripts (Shop system, first items)
+* Confirm TFS 1.0 LUA scripts works (Shop system, first items)
+* Fix 1.5 milestone assigned issues.
 
 # TODO 1.6:
 * Recovery key

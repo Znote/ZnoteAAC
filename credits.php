@@ -4,7 +4,11 @@
 <p>This website is powered by the Znote AAC engine.</p>
 
 <h2>Developers:</h2>
-<p>Main developer: <a href="http://otland.net/members/znote.5993/">Znote</a>.</p>
+<p>Main: <a href="http://otland.net/members/znote.5993/">Znote</a>.
+<br>Contributor: <a href="https://github.com/Kuzirashi">Kuzirashi</a>.
+<br>Contributor: <a href="https://github.com/ninjalulz">ninjalulz</a>.
+<br>Contributor: <a href="https://github.com/att3">att3</a>.
+</p>
 
 <h3>Thanks to: (in no particular order)</h3>
 <p>
