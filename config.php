@@ -14,13 +14,13 @@
 	// ------------------------ \\
 	
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'daler';
+	$config['sqlUser'] = 'tfs10';
 	
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'daler';
+	$config['sqlPassword'] = 'tfs10';
 	
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'daler';
+	$config['sqlDatabase'] = 'tfs10';
 	
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
@@ -59,6 +59,56 @@
 		8 => 'Elite Knight',
 	);
 	
+	/* Vocation stat gains per level
+		- Ordered by vocation ID
+		- Currently used for admin_skills page. */
+	$config['vocations_gain'] = array(
+		0 => array(
+			'hp' => 5,
+			'mp' => 5,
+			'cap' => 10
+		),
+		1 => array(
+			'hp' => 5,
+			'mp' => 30,
+			'cap' => 10
+		),
+		2 => array(
+			'hp' => 5,
+			'mp' => 30,
+			'cap' => 10
+		),
+		3 => array(
+			'hp' => 10,
+			'mp' => 15,
+			'cap' => 20
+		),
+		4 => array(
+			'hp' => 15,
+			'mp' => 5,
+			'cap' => 25
+		),
+		5 => array(
+			'hp' => 5,
+			'mp' => 30,
+			'cap' => 10
+		),
+		6 => array(
+			'hp' => 5,
+			'mp' => 30,
+			'cap' => 10
+		),
+		7 => array(
+			'hp' => 10,
+			'mp' => 15,
+			'cap' => 20
+		),
+		8 => array(
+			'hp' => 15,
+			'mp' => 5,
+			'cap' => 25
+		),
+	);
 	// Town ids and names: (In RME map editor, open map, click CTRL + T to view towns, their names and their IDs. 
 	// townID => 'townName' etc: ['3'=>'Thais']
 	$config['towns'] = array(

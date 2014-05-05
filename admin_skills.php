@@ -17,6 +17,34 @@ if (isset($_POST['pid']) && (int)$_POST['pid'] > 0) {
 	if ($config['TFSVersion'] != 'TFS_10') $status = user_is_online($pid);
 	else $status = user_is_online_10($pid);
 	if (!$status) {
+		// New player level
+		$level = (int)$_POST['level'];
+		
+		// Fetch stat gain for vocation
+		$statgain = $config['vocations_gain'][(int)$_POST['vocation']];
+
+		if ((int)$_POST['vocation'] !== 0) {
+			// Fetch base level and stats:
+			$baselevel = $config['level'];
+			$basehealth = $config['health'];
+			$basemana = $config['mana'];
+			$basecap = $config['cap'];
+		} else { // No vocation stats
+			// Fetch base level and stats:
+			$baselevel = $config['level'];
+			$basehealth = $config['health'];
+			$basemana = $config['mana'];
+			$basecap = $config['cap'];
+		}
+		
+		$levelC = $level - $baselevel;
+		if ($levelC >= 1) {
+			$newhp = $basehealth + ($statgain['hp'] * $levelC);
+			$newmp = $basemana + ($statgain['mp'] * $levelC);
+			$newcap = $basecap + ($statgain['cap'] * $levelC);
+		} else die("Failed to calibrate skills. Level below $baselevel.");
+
+		// Calibrate hp/mana/cap
 		if ($config['TFSVersion'] != 'TFS_10') {
 mysql_update("UPDATE `player_skills` SET `value`='". (int)$_POST['fist'] ."' WHERE `player_id`='$pid' AND `skillid`='0' LIMIT 1;");
 mysql_update("UPDATE `player_skills` SET `value`='". (int)$_POST['club'] ."' WHERE `player_id`='$pid' AND `skillid`='1' LIMIT 1;");
@@ -26,10 +54,13 @@ mysql_update("UPDATE `player_skills` SET `value`='". (int)$_POST['dist'] ."' WHE
 mysql_update("UPDATE `player_skills` SET `value`='". (int)$_POST['shield'] ."' WHERE `player_id`='$pid' AND `skillid`='5' LIMIT 1;");
 mysql_update("UPDATE `player_skills` SET `value`='". (int)$_POST['fish'] ."' WHERE `player_id`='$pid' AND `skillid`='6' LIMIT 1;");
 mysql_update("UPDATE `players` SET `maglevel`='". (int)$_POST['magic'] ."' WHERE `id`='$pid' LIMIT 1;");
-mysql_update("UPDATE `players` SET `level`='". (int)$_POST['level'] ."' WHERE `id`='$pid' LIMIT 1;");
-mysql_update("UPDATE `players` SET `experience`='". level_to_experience((int)$_POST['level']) ."' WHERE `id`='$pid' LIMIT 1;");
+mysql_update("UPDATE `players` SET `vocation`='". (int)$_POST['vocation'] ."' WHERE `id`='$pid' LIMIT 1;");
+mysql_update("UPDATE `players` SET `level`='". $level ."' WHERE `id`='$pid' LIMIT 1;");
+mysql_update("UPDATE `players` SET `experience`='". level_to_experience($level) ."' WHERE `id`='$pid' LIMIT 1;");
+// Update HP/mana/cap accordingly to level & vocation
+mysql_update("UPDATE `players` SET `health`='". $newhp ."', `healthmax`='". $newhp ."', `mana`='". $newmp ."', `manamax`='". $newmp ."', `cap`='". $newcap ."' WHERE `id`='$pid' LIMIT 1;");
 		} else {
-			mysql_update("UPDATE `players` SET `skill_fist`='". (int)$_POST['fist'] ."', `skill_club`='". (int)$_POST['club'] ."', `skill_sword`='". (int)$_POST['sword'] ."', `skill_axe`='". (int)$_POST['axe'] ."', `skill_dist`='". (int)$_POST['dist'] ."', `skill_shielding`='". (int)$_POST['shield'] ."', `skill_fishing`='". (int)$_POST['fish'] ."', `maglevel`='". (int)$_POST['magic'] ."', `level`='". (int)$_POST['level'] ."', `experience`='". level_to_experience((int)$_POST['level']) ."' WHERE `id`='$pid' LIMIT 1;");
+			mysql_update("UPDATE `players` SET `health`='". $newhp ."', `healthmax`='". $newhp ."', `mana`='". $newmp ."', `manamax`='". $newmp ."', `cap`='". $newcap ."', `vocation`='". (int)$_POST['vocation'] ."', `skill_fist`='". (int)$_POST['fist'] ."', `skill_club`='". (int)$_POST['club'] ."', `skill_sword`='". (int)$_POST['sword'] ."', `skill_axe`='". (int)$_POST['axe'] ."', `skill_dist`='". (int)$_POST['dist'] ."', `skill_shielding`='". (int)$_POST['shield'] ."', `skill_fishing`='". (int)$_POST['fish'] ."', `maglevel`='". (int)$_POST['magic'] ."', `level`='". $level ."', `experience`='". level_to_experience($level) ."' WHERE `id`='$pid' LIMIT 1;");
 		}
 ?>
 <h1>Player skills updated!</h1>
@@ -56,11 +87,11 @@ if ($name !== false) {
 
 		if ($config['TFSVersion'] != 'TFS_10') {
 			$skills = mysql_select_multi("SELECT `value` FROM `player_skills` WHERE `player_id`='$pid' LIMIT 7;");
-			$player = mysql_select_single("SELECT `maglevel`, `level` FROM `players` WHERE `id`='$pid' LIMIT 1;");
+			$player = mysql_select_single("SELECT `maglevel`, `level`, `vocation` FROM `players` WHERE `id`='$pid' LIMIT 1;");
 			$skills[] = array('value' => $player['maglevel']);
 			$skills[] = array('value' => $player['level']);
 		} else {
-			$player = mysql_select_single("SELECT `skill_fist`, `skill_club`, `skill_sword`, `skill_axe`, `skill_dist`, `skill_shielding`, `skill_fishing`, `maglevel`, `level` FROM `players` WHERE `id`='$pid' LIMIT 1;");
+			$player = mysql_select_single("SELECT `skill_fist`, `skill_club`, `skill_sword`, `skill_axe`, `skill_dist`, `skill_shielding`, `skill_fishing`, `maglevel`, `level`, `vocation` FROM `players` WHERE `id`='$pid' LIMIT 1;");
 			$skills = array(
 				0 => array('value' => $player['skill_fist']),
 				1 => array('value' => $player['skill_club']),
@@ -71,6 +102,7 @@ if ($name !== false) {
 				6 => array('value' => $player['skill_fishing']),
 				7 => array('value' => $player['maglevel']),
 				8 => array('value' => $player['level']),
+				9 => array('value' => $player['vocation'])
 			);
 		}
 
@@ -88,6 +120,18 @@ if ($name !== false) {
 		<tr>
 			<td>
 				<input name="name" type="text" placeholder="Character name" <?php if ($name !== false) echo "value='$name' disabled";?>>
+				<br><br>
+				Vocation:<br>
+				<select name="vocation" <?php if (!$name) echo "disabled";?>>
+					<?php
+					$vocations = $config['vocations'];
+					foreach ($vocations as $vid => $vname) {
+						?>
+						<option value="<?php echo $vid; ?>" <?php if ($vid == playerSkill($skills, 9)) echo "selected"?> ><?php echo $vname; ?></option>
+						<?php
+					}
+					?>
+				</select>
 				<br><br>
 				Fist fighting:<br>
 				<input name="fist" type="text" <?php if (!$name) echo "disabled";?> value="<?php echo playerSkill($skills, 0); ?>">
