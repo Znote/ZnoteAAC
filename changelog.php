@@ -54,7 +54,7 @@ if (user_logged_in()) {
 <h1>Changelog</h1>
 <?php
 $cache = new Cache('engine/cache/changelog');
-if ($cache->hasExpired() || $updateCache === true) {
+if ($updateCache === true) {
 	$changelogs = mysql_select_multi("SELECT `id`, `text`, `time`, `report_id`, `status` FROM `znote_changelog` ORDER BY `id` DESC;");
 	
 	$cache->setContent($changelogs);
@@ -64,7 +64,7 @@ if ($cache->hasExpired() || $updateCache === true) {
 }
 if (isset($changelogs) && !empty($changelogs) && $changelogs !== false) {
 	?>
-	<table>
+	<table id="changelogTable">
 		<tr class="yellow">
 			<td>Changelogs</td>
 			<?php

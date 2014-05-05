@@ -66,15 +66,24 @@ if (!empty($_POST)) {
         // Check if changelog exist (`id`, `text`, `time`, `report_id`, `status`)
         $changelog = mysql_select_single("SELECT * FROM `znote_changelog` WHERE `report_id`='$changelogReportId' LIMIT 1;");
         // If changelog exist
+        $updatechangelog = false;
         if ($changelog !== false) {
             // Update it
             mysql_update("UPDATE `znote_changelog` SET `text`='$changelogText', `time`='$time' WHERE `id`='".$changelog['id']."' LIMIT 1;");
             echo "<h2>Changelog message updated!</h2>";
+            $updatechangelog = true;
         } else {
             // Create it
             mysql_insert("INSERT INTO `znote_changelog` (`text`, `time`, `report_id`, `status`) 
                 VALUES ('$changelogText', '$time', '$changelogReportId', '$status');");
             echo "<h2>Changelog message created!</h2>";
+            $updatechangelog = true;
+        }
+        if ($updatechangelog) {
+            // Cache changelog
+            $cache = new Cache('engine/cache/changelog');
+            $cache->setContent(mysql_select_multi("SELECT `id`, `text`, `time`, `report_id`, `status` FROM `znote_changelog` ORDER BY `id` DESC;"));
+            $cache->save();
         }
         
     }

@@ -1,6 +1,34 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
 	if ($config['allowSubPages'] && file_exists("layout/sub/index.php")) include 'layout/sub/index.php';
 	else {
+		if ($config['UseChangelogTicker']) {
+			//////////////////////
+			// Changelog ticker //
+			// Load from cache
+			$changelogCache = new Cache('engine/cache/changelog');
+			$changelogs = $changelogCache->load();
+
+			if (isset($changelogs) && !empty($changelogs) && $changelogs !== false) {
+				?>
+				<table id="changelogTable">
+					<tr class="yellow">
+						<td colspan="2">Latest Changelog Updates (<a href="changelog.php">Click here to see full changelog</a>)</td>
+					</tr>
+					<?php
+					for ($i = 0; $i < count($changelogs) && $i < 5; $i++) {
+						?>
+						<tr>
+							<td><?php echo getClock($changelogs[$i]['time'], true, true); ?></td>
+							<td><?php echo $changelogs[$i]['text']; ?></td>
+						</tr>
+						<?php
+					}
+					?>
+				</table>
+				<?php
+			} else echo "No changelogs submitted.";
+		}
+		
 		$cache = new Cache('engine/cache/news');
 		if ($cache->hasExpired()) {
 			$news = fetchAllNews();

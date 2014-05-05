@@ -196,6 +196,8 @@
 	// -------------- \\
 	// WEBSITE STUFF  \\
 	// -------------- \\
+	// Enable or disable changelog ticker in news page.
+	$config['UseChangelogTicker'] = true;
 	// Highscore configuration
 	$config['highscore'] = array(
 			'rows' => 100,
