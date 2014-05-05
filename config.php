@@ -190,12 +190,13 @@
 	
 	// What client version and server port are you using on this OT?
 	// Used for the Downloads page.
-	$config['client'] = 960; // 954 = tibia 9.54
+	$config['client'] = 1037; // 954 = tibia 9.54
 	
 	 // Download link to client. Recommended:
 	 // Select download link from remere map editor website!
 	 // See list of clients: http://remeresmapeditor.com/marklar.php?clients
-	$config['client_download'] = 'http://remeresmapeditor.com/rmedl.php?file=tibia'. $config['client'] .'.exe';
+	$config['client_download'] = 'http://clients.tibiaking.com/client/windows/'. $config['client'] .'';
+	$config['client_download_linux'] = 'http://clients.tibiaking.com/client/linux/'. $config['client'] .'';
 	
 	$config['port'] = 7171; // Port number to connect to your OT.
 	
