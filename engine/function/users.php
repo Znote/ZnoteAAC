@@ -499,7 +499,7 @@ function get_guilds_list() {
 function get_guild_players($gid) {
     $gid = (int)$gid; // Sanitizing the parameter id
     if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT p.rank_id, p.name, p.level, p.vocation FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';");
-    else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name;");
+    else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id LEFT JOIN guild_ranks AS gr ON gr.id = gm.rank_id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name");
 }
 
 // Returns total members in a guild (integer)

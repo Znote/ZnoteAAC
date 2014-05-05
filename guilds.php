@@ -24,7 +24,7 @@ if (empty($_GET['name'])) {
 
 <h1>Guild List:</h1>
 <?php
-$guilds = get_guilds_list();
+$guilds = mysql_select_multi("SELECT `id`, `name`, `creationdata`, (SELECT COUNT('guild_id') FROM `guild_membership` WHERE `guild_id`=`id`) AS `total` FROM `guilds` ORDER BY `name`;");
 if ($guilds !== false) {
 ?>
 <table id="guildsTable" class="table table-striped table-hover">
@@ -35,12 +35,11 @@ if ($guilds !== false) {
 	</tr>
 		<?php
 		foreach ($guilds as $guild) {
-			$gcount = count_guild_members($guild['id']);
-			if ($gcount >= 1) {
+			if ($guild['total'] >= 1) {
 				$url = url("guilds.php?name=". $guild['name']);
 				echo '<tr class="special" onclick="javascript:window.location.href=\'' . $url . '\'">';
 				echo '<td>'. $guild['name'] .'</td>';
-				echo '<td>'. count_guild_members($guild['id']) .'</td>';
+				echo '<td>'. $guild['total'] .'</td>';
 				echo '<td>'. getClock($guild['creationdata'], true) .'</td>';
 				echo '</tr>';
 			}
@@ -179,11 +178,24 @@ if (user_logged_in() === true) {
 		<th>Status:</th>
 	</tr>
 		<?php
+		if ($config['TFSVersion'] == 'TFS_10') {
+			$onlinelist = array();
+			$gplayers = array();
+			foreach ($players as $player) {
+				$gplayers[] = $player['id'];
+			}
+			$gplayers = join(',',$gplayers);
+			$onlinequery = mysql_select_multi("SELECT `player_id` FROM `players_online` WHERE `player_id` IN ($gplayers);");
+			if ($onlinequery !== false) foreach ($onlinequery as $online) {
+				$onlinelist[] = $online['player_id'];
+			}
+		}
+		
 		foreach ($players as $player) {
-			if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data(user_character_id($player['name']), 'online');
-			else $chardata['online'] = (user_is_online_10(user_character_id($player['name']))) ? 1 : 0;
+			if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data($player['id'], 'online');
+			else $chardata['online'] = (in_array($player['id'], $onlinelist)) ? 1 : 0;
 			echo '<tr>';
-			echo '<td>'. get_player_guild_rank($player['rank_id']) .'</td>';
+			echo '<td>'. $player['rank_name'] .'</td>';
 			echo '<td><a href="characterprofile.php?name='. $player['name'] .'">'. $player['name'] .'</a></td>';
 			echo '<td>'. $player['level'] .'</td>';
 			echo '<td>'. $config['vocations'][$player['vocation']] .'</td>';
