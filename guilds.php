@@ -672,7 +672,7 @@ if ($highest_access >= 2) {
 		<?php
 		$i = 0;
 		$wars = mysql_select_multi("SELECT `guild1`, `guild2`, `name1`, `name2`, `started` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild2` = '$gid') AND `status` = 0 ORDER BY `started` DESC");
-		if (!empty($wars) ||$wars !== false) {
+		if (!empty($wars) || $wars !== false) {
 			foreach($wars as $war) {
 				$i++;
 				echo '<tr><td><a href="guilds.php?name='.$war['name1'].'">'.$war['name1'].'</a></td><td>';
