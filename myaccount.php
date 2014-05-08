@@ -97,6 +97,17 @@ if (!empty($_POST['change_name'])) {
 							$error = true;
 						}
 					}
+					// Check name for illegal characters.
+					function checkNewNameForIllegal($name) {
+						if (preg_match('#^[\0-9åäö&()+%/*$€é,.\'"-]*$#i', $name)) {
+							return true;
+						}
+						return false;
+					}
+					if (checkNewNameForIllegal($newname)) {
+						$error = true;
+						echo 'This name contains illegal characters.';
+					}
 					if ($error === false) {
 						// Change the name!
 						mysql_update("UPDATE `players` SET `name`='$newname' WHERE `id`='".$player['id']."' LIMIT 1;");
