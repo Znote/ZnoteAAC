@@ -112,7 +112,7 @@ if (!empty($_POST['change_name'])) {
 						// Change the name!
 						mysql_update("UPDATE `players` SET `name`='$newname' WHERE `id`='".$player['id']."' LIMIT 1;");
 						mysql_delete("DELETE FROM `znote_shop_orders` WHERE `id`='".$order['id']."' LIMIT 1;");
-					} else echo "Illegal name.";
+					}
 				} else echo "Name validation failed, use another name.";
 			} else echo "The character name you wish to change to already exist.";
 		} else echo "Failed to sync your account. :|";
