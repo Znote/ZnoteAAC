@@ -611,3 +611,20 @@ hr {
 #changelogTable {
   width: 735px;
 }
+
+#progress {
+ width: 400px;
+ position: relative;
+ padding: 3px;
+}
+
+#percent {
+        position: absolute;
+        margin-left:175px;
+}
+
+#bar {
+        height: 20px;
+        background-color: green;
+        border: 1px solid black;
+}
