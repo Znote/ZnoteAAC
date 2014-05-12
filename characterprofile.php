@@ -162,7 +162,52 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				</li>
 				
 				<!-- END DEATH LIST -->
-				
+                                <!-- QUEST PROGRESSION -->
+                                <?php
+                                $firstrun = 1;
+                                if ($config['TFSVersion'] == 'TFS_10' && $config['EnableQuests'] == true)
+                                {
+                                        foreach ($config['Quests'] as $cquest)
+                                        {
+                                                $sqlquests =  mysql_select_single("SELECT `player_id`, `key`, `value` FROM player_storage WHERE `player_id` = $user_id AND `key` = $cquest[0]");
+                                                $totalquests = $totalquests + 1;
+                                                if ($cquest[0] == $sqlquests['key'] && $cquest[1] == $sqlquests['value'])
+                                                {
+                                                        $completedquests = $completedquests + 1;
+                                                }
+                                                if ($cquest[3] == 1)
+                                                {
+                                                        if ($completedquests != 0)
+                                                        {
+                                                                if ($firstrun == 1)
+                                                                {
+                                                                        echo '<li>';
+                                                                        echo '<b> Quest progression </b>';
+                                                                        echo '<table id="characterprofileQuest" class="table table-striped table-hover">';
+                                                                        echo '<tr class="yellow">';
+                                                                        echo '<th>Quest:</th>';
+                                                                        echo '<th>progression:</th>';
+                                                                        echo '</tr>';
+                                                                        $firstrun = 0;
+                                                                }
+                                                                $completed = $completedquests / $totalquests * 100;
+                                                                echo '<tr>';
+                                                                echo '<td>'. $cquest[2] .'</td>';
+                                                                echo '<td id="progress"><span id="percent">'.round($completed).'%</span><div id="bar" style="width: '.$completed.'%"></div></td>';
+                                                                echo '</tr>';
+                                                        }
+                                                        $completedquests = 0;
+                                                        $totalquests = 0;
+                                                }
+                                        }
+                                }
+                                if ($firstrun == 0)
+                                {
+                                        echo '</table>';
+                                        echo '</li>';
+                                }
+                                ?>
+                                <!-- END QUEST PROGRESSION -->				
 				<!-- CHARACTER LIST -->
 				<?php
 				if (user_character_hide($profile_data['name']) != 1 && user_character_list_count(user_character_account_id($name)) > 1) {
