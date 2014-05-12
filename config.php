@@ -45,6 +45,69 @@
 	// ------------------- \\
 	// CUSTOM SERVER STUFF \\
 	// ------------------- \\
+		
+		// Enable / disable Questlog function (true false) 
+	        $config['EnableQuests'] = true;
+
+		// array for filling questlog (Questid, max value, name, end of the quest fill 1 for the last part 0 for all others)
+	        $config['Quests'] = array(
+                array(1501,100,'Killing in the Name of',0),
+                array(1502,150,'Killing in the Name of',0),
+                array(65001,100,'Killing in the Name of',0),
+                array(65002,150,'Killing in the Name of',0),
+                array(65003,300,'Killing in the Name of',0),
+                array(65004,3,'Killing in the Name of',0),
+                array(65005,300,'Killing in the Name of',0),
+                array(65006,150,'Killing in the Name of',0),
+                array(65007,200,'Killing in the Name of',0),
+                array(65008,300,'Killing in the Name of',0),
+                array(65009,300,'Killing in the Name of',0),
+                array(65010,300,'Killing in the Name of',0),
+                array(65011,300,'Killing in the Name of',0),
+                array(65012,300,'Killing in the Name of',0),
+                array(65013,300,'Killing in the Name of',0),
+                array(65014,300,'Killing in the Name of',1),
+                array(12110,2,'The Inquisition',0),
+                array(12111,7,'The Inquisition',0),
+                array(12112,3,'The Inquisition',0),
+                array(12113,6,'The Inquisition',0),
+                array(12114,3,'The Inquisition',0),
+                array(12115,3,'The Inquisition',0),
+                array(12116,3,'The Inquisition',0),
+                array(12117,5,'The Inquisition',1),
+                array(330,3,'Sam\'s Old Backpack',1),
+                array(12121,3,'The Ape City',0),
+                array(12122,5,'The Ape City',0),
+                array(12123,3,'The Ape City',0),
+                array(12124,3,'The Ape City',0),
+                array(12125,3,'The Ape City',0),
+                array(12126,3,'The Ape City',0),
+                array(12127,4,'The Ape City',0),
+                array(12128,3,'The Ape City',0),
+                array(12129,3,'The Ape City',1),
+                array(12101,1,'The Ancient Tombs',0),
+                array(12102,1,'The Ancient Tombs',0),
+                array(12103,1,'The Ancient Tombs',0),
+                array(12104,1,'The Ancient Tombs',0),
+                array(12105,1,'The Ancient Tombs',0),
+                array(12106,1,'The Ancient Tombs',0),
+                array(12107,1,'The Ancient Tombs',1),
+                array(12022,3,'Barbarian Test Quest',0),
+                array(12022,3,'Barbarian Test Quest',0),
+                array(12022,3,'Barbarian Test Quest',1),
+                array(12025,3,'The Ice Islands Quest',0),
+                array(12026,5,'The Ice Islands Quest',0),
+                array(12027,3,'The Ice Islands Quest',0),
+                array(12028,2,'The Ice Islands Quest',0),
+                array(12029,6,'The Ice Islands Quest',0),
+                array(12030,8,'The Ice Islands Quest',0),
+                array(12031,3,'The Ice Islands Quest',0),
+                array(12032,4,'The Ice Islands Quest',0),
+                array(12033,2,'The Ice Islands Quest',0),
+                array(12034,2,'The Ice Islands Quest',0),
+                array(12035,2,'The Ice Islands Quest',0),
+                array(12036,6,'The Ice Islands Quest',1),
+
 	
 	// Vocation ids and names.
 	$config['vocations'] = array(
