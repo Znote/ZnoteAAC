@@ -106,6 +106,7 @@
                 array(12034,2,'The Ice Islands Quest',0),
                 array(12035,2,'The Ice Islands Quest',0),
                 array(12036,6,'The Ice Islands Quest',1),
+                );
 
 	// Vocation ids and names.
 	$config['vocations'] = array(
