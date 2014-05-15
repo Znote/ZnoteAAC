@@ -8,19 +8,20 @@
 	
 	$config['site_title'] = 'Znote AAC';
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
+	$config['server_path'] = 'C:\Users\Alvaro\Documents\GitHub\forgottenserver';
 	
 	// ------------------------ \\
 	// MYSQL CONNECTION DETAILS \\
 	// ------------------------ \\
 	
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'tfs10';
+	$config['sqlUser'] = 'root';
 	
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'tfs10';
+	$config['sqlPassword'] = 'djramos1';
 	
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'tfs10';
+	$config['sqlDatabase'] = 'znote';
 	
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
