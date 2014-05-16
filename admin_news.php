@@ -19,7 +19,9 @@ if (empty($_POST) === false) {
 		// fetch data
 		$char_array = user_character_list($user_data['id']);
 		?>
-		
+
+		<script src="layout/js/nicedit.js" type="text/javascript"></script>
+		<script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>
 		<form action="" method="post">
 			<input type="hidden" name="option" value="i!0">
 			Select character:<select name="selected_char">
@@ -38,20 +40,9 @@ if (empty($_POST) === false) {
 			?>
 			</select>		
 			<input type="text" name="title" value="" placeholder="Title"><br />
-			<textarea name="text" cols="75" rows="10" placeholder="Contents..."></textarea><br />
+			<textarea name="text" id="area1" cols="75" rows="10" placeholder="Contents..."></textarea><br />
 			<input type="submit" value="Create News">
 		</form>
-		<br>
-		<p>
-			[b]<b>Bold Text</b>[/b]<br>
-			[size=5]Size 5 text[/size]<br>
-			[img]<a href="http://www.imgland.net/" target="_BLANK">Direct Image Link</a>[/img]<br>
-			[center]Cented Text[/center]<br>
-			[link]<a href="http://youtube.com/" target="_BLANK">http://youtube.com/</a>[/link]<br>
-			[link=http://youtube.com/]<a href="http://youtube.com/" target="_BLANK">Click to View youtube</a>[/link]<br>
-			[color=<font color="green">GREEN</font>]<font color="green">Green Text!</font>[/color]<br>
-			[*]* Noted text [/*]
-		</p>
 
 		<?php
 		if ($count === 0) echo "<font size='6' color='red'>ERROR: NO GMs or Tutors on this account!</font>";

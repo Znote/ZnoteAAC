@@ -1,4 +1,5 @@
 <?php
+
 // Verify the PHP version, gives tutorial if fail.
 if (version_compare(phpversion(), '5.3.3', '<')) die('PHP 5.3.3 is required<br><br>WINDOWS:<br>Download and use the latest Uniform Server.<br><a href="http://www.uniformserver.com/">CLICK ME</a> to get to their website. <br> XAMPP sucks and is insecure. Kthxbye.<br><br>LINUX DEBIAN:<br>Edit /etc/apt/sources.list<br>etc if you use nano text editor, make sure you are root and do<br>nano /etc/apt/sources.list<br><br>At the bottom, add this:<br><br>deb http://packages.dotdeb.org stable all<br>deb-src http://packages.dotdeb.org stable all<br><br>save file. <br><br>Then in terminal, do these 2 commands:<br>gpg --keyserver keys.gnupg.net --recv-key 89DF5277<br><br>gpg -a --export 89DF5277 | sudo apt-key add -<br><br>And then do these 2 commands:<br><br>apt-get update<br>apt-get upgrade<br><br>You now have the latest stable PHP version.<br>');
 
@@ -16,6 +17,7 @@ require 'function/general.php';
 require 'function/users.php';
 require 'function/cache.php';
 require 'function/token.php';
+require 'function/itemparser/itemlistparser.php';
 
 if (isset($_SESSION['token'])) {
 	$_SESSION['old_token'] = $_SESSION['token'];
