@@ -19,6 +19,7 @@ if(!function_exists('curl_version')) { // If CURL isn't enabled show default ver
 	curl_setopt($curl, CURLOPT_URL, 'https://api.github.com/repos/Znote/ZnoteAAC/contributors');
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($curl, CURLOPT_USERAGENT, 'ZnoteAAC'); // GitHub requires user agent header.
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 	$contributors = json_decode(curl_exec($curl), true); // Sorted by contributions.
 
 	$CONTRIBUTORS_PER_ROW = 7;
