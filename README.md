@@ -44,6 +44,8 @@ This will show you the rest of the instructions as well as the mysql schema.
 
 7: Please note that you need PHP cURL enabled to make Paypal payments work. 
 
+8: You may need to change directory access rights of /engine/cache to allow writing.
+
 ### This is the developement repository for the Znote AAC project.
 # TODO 1.5:
 * Confirm TFS 1.0 LUA scripts works (Shop system, first items)

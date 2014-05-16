@@ -42,7 +42,7 @@ if(!function_exists('curl_version')) { // If CURL isn't enabled show default ver
 
 			echo '<div class="contributor">
 					<a href="' . $contributor['html_url'] . '">
-						<img src="' . $contributor['avatar_url'] . 'size=80" /><br/>
+						<img src="' . $contributor['avatar_url'] . 'size=80" style="width: 80px; height: 80px" /><br/>
 						<span>' . $contributor['login'] . '</span>
 					</a>
 				</div>';
