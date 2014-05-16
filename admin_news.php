@@ -1,6 +1,8 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
 protect_page();
 admin_only($user_data);
+
+
 // Recieving POST
 if (empty($_POST) === false) {
 	list($action, $id) = explode('!', sanitize($_POST['option']));
@@ -20,7 +22,7 @@ if (empty($_POST) === false) {
 		$char_array = user_character_list($user_data['id']);
 		?>
 
-		<script src="layout/js/nicedit.js" type="text/javascript"></script>
+		<script src="engine/js/nicedit.js" type="text/javascript"></script>
 		<script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>
 		<form action="" method="post">
 			<input type="hidden" name="option" value="i!0">
