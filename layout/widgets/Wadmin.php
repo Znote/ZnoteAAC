@@ -17,6 +17,9 @@
 			<li>
 				<a href='admin_reports.php'>Admin Reports</a>
 			</li>
+			<li>
+				<a href='admin_shop.php'>Admin Shop</a>
+			</li>
 			<?php
 			$new = 0;
 			$cat = 4; //Category ID for feedback section

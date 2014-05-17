@@ -933,6 +933,13 @@ function user_account_id_from_password($password) {
 	return $tmp['id'];
 }
 
+// Get account name from id.
+function user_account_id_from_name($id) {
+	$id = (int)$id;;
+	$result = mysql_select_single("SELECT `name` FROM `accounts` WHERE `id` = '" . $id . "' LIMIT 1;");
+	return $result['name'];
+}
+
 // Add additional premium days to account id
 function user_account_add_premdays($accid, $days) {
 	$accid = (int)$accid;
