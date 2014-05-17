@@ -1,4 +1,11 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
+
+	if (!isset($_GET['page'])) {
+		$page = 0;
+	} else {
+		$page = (int)$_GET['page'];
+	}
+
 	if ($config['allowSubPages'] && file_exists("layout/sub/index.php")) include 'layout/sub/index.php';
 	else {
 		if ($config['UseChangelogTicker']) {
@@ -32,7 +39,6 @@
 		$cache = new Cache('engine/cache/news');
 		if ($cache->hasExpired()) {
 			$news = fetchAllNews();
-			
 			$cache->setContent($news);
 			$cache->save();
 		} else {
@@ -41,6 +47,12 @@
 		
 		// Design and present the list
 		if ($news) {
+			
+			$total_news = count($news);
+			$row_news = $total_news / $config['news_per_page'];
+			$page_amount = ceil($total_news / $config['news_per_page']);
+			$current = $config['news_per_page'] * $page;
+
 			function TransformToBBCode($string) {
 				$tags = array(
 					'[center]{$1}[/center]' => '<center>$1</center>',
@@ -58,20 +70,40 @@
 				}
 				return $string;
 			}
-			foreach ($news as $n) {
-				?>
-				<table id="news">
-					<tr class="yellow">
-						<td class="zheadline"><?php echo getClock($n['date'], true) .' by <a href="characterprofile.php?name='. $n['name'] .'">'. $n['name'] .'</a> - <b>'. TransformToBBCode($n['title']) .'</b>'; ?></td>
-					</tr>
-					<tr>
-						<td>
-							<p><?php echo TransformToBBCode(nl2br($n['text'])); ?></p>
-						</td>
-					</tr>
-				</table>
-				<?php
+			for ($i = $current; $i < $current + $config['news_per_page']; $i++) {
+				if (isset($news[$i])) {
+					?>
+					<table id="news">
+						<tr class="yellow">
+							<td class="zheadline"><?php echo getClock($news[$i]['date'], true) .' by <a href="characterprofile.php?name='. $news[$i]['name'] .'">'. $news[$i]['name'] .'</a> - <b>'. TransformToBBCode($news[$i]['title']) .'</b>'; ?></td>
+						</tr>
+						<tr>
+							<td>
+								<p><?php echo TransformToBBCode(nl2br($news[$i]['text'])); ?></p>
+							</td>
+						</tr>
+					</table>
+					<?php
+				} 
 			}
+
+
+			echo '<select name="newspage" onchange="location = this.options[this.selectedIndex].value;">';
+
+			for ($i = 0; $i < $page_amount; $i++) {
+
+				if ($i == $page) {
+
+					echo '<option value="index.php?page='.$i.'" selected>Page '.$i.'</option>';
+
+				} else {
+
+					echo '<option value="index.php?page='.$i.'">Page '.$i.'</option>';
+				}
+			}
+			
+			echo '</select>';
+
 		} else {
 			echo '<p>No news exist.</p>';
 		}
