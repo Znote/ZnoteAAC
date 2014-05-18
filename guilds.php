@@ -167,7 +167,7 @@ if (user_logged_in() === true) {
 	// Display the specific guild page
 ?>
 
-<h1>Guild: <?php echo sanitize($_GET['name']); 
+<h1><img src="<?php logo_exists(sanitize($_GET['name'])); ?>"></img> Guild: <?php echo sanitize($_GET['name']); 
 ?> </h1>
 <table id="guildViewTable" class="table table-striped">
 	<tr class="yellow">
@@ -534,8 +534,31 @@ if ($highest_access >= 2) {
 					<?php
 				}
 			}
+
+		if ($config['use_guild_logos']) {
+
 		?>
-		
+
+			<!-- form to upload guild logo -->
+			<form action="" method="post" enctype="multipart/form-data">
+				<ul>
+					<li>Upload guild logo:<br>
+						<input type="file" name="file" id="file" accept="image/gif">
+						<input type="submit" name="submit" value="Upload guild logo">
+					</li>
+				</ul>
+			</form>
+
+		<?php 
+
+			if (!empty($_FILES['file'])) {
+
+				check_image($_FILES['file']);
+
+				echo '<br><br>';
+			}
+
+		} ?>
 		<!-- forms to invite character -->
 		<form action="" method="post">
 			<ul>
