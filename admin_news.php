@@ -6,7 +6,7 @@ admin_only($user_data);
 // Recieving POST
 if (empty($_POST) === false) {
 	list($action, $id) = explode('!', sanitize($_POST['option']));
-	
+
 	// Delete
 	if ($action === 'd') {
 		echo '<font color="green"><b>News deleted!</b></font>';
@@ -42,7 +42,7 @@ if (empty($_POST) === false) {
 			?>
 			</select>		
 			<input type="text" name="title" value="" placeholder="Title"><br />
-			<textarea name="text" id="area1" cols="75" rows="10" placeholder="Contents..."></textarea><br />
+			<textarea name="text" id="area1" cols="75" rows="10" placeholder="Contents..." style="width: 100%"></textarea><br />
 			<input type="submit" value="Create News">
 		</form>
 
@@ -77,10 +77,12 @@ if (empty($_POST) === false) {
 		$edit = array();
 		foreach ($news as $n) if ($n['id'] == $id) $edit = $n;
 		?>
+		<script src="engine/js/nicedit.js" type="text/javascript"></script>
+		<script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>
 		<form action="" method="post">
 			<input type="hidden" name="option" value="s!<?php echo $id; ?>">
 			<input type="text" name="title" value="<?php echo $edit['title']; ?>"><br />
-			<textarea name="text" cols="75" rows="10"><?php echo $edit['text']; ?></textarea><br />
+			<textarea name="text" cols="75" rows="10" style="width: 100%"><?php echo $edit['text']; ?></textarea><br />
 			<input type="submit" value="Save Changes">
 		</form>
 		<br>
