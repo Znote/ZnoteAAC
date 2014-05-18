@@ -407,4 +407,103 @@ function sanitize($data) {
 function output_errors($errors) {
 	return '<ul><li>'. implode('</li><li>', $errors) .'</li></ul>';
 }
+
+// Resize images
+
+function resize_imagex($file, $width, $height) {
+
+	list($w, $h) = getimagesize($file['tmp']);
+
+	$ratio = max($width/$w, $height/$h);
+	$h = ceil($height / $ratio);
+	$x = ($w - $width / $ratio) / 2;
+	$w = ceil($width / $ratio);
+
+	$path = 'engine/guildimg/'.$file['new_name'];
+
+	$imgString = file_get_contents($file['tmp']);
+
+	$image = imagecreatefromstring($imgString);
+	$tmp = imagecreatetruecolor($width, $height);
+	imagecopyresampled($tmp, $image,
+	    0, 0,
+	    $x, 0,
+	    $width, $height,
+	    $w, $h);
+
+	imagegif($tmp, $path);
+	imagedestroy($image);
+	imagedestroy($tmp);
+
+	return true;
+}
+
+// Guild logo upload security
+function check_image($image) {
+
+	$image_data = array('new_name' => $_GET['name'].'.gif', 'name' => $image['name'], 'tmp' => $image['tmp_name'], 'error' => $image['error'], 'size' => $image['size'], 'type' => $image['type']);
+
+	// First security check, quite useless but still do its job
+	if ($image_data['type'] === 'image/gif') {
+
+		// Second security check, lets go
+		$check = getimagesize($image_data['tmp']);
+
+		if ($check) {
+
+			// Third
+			if ($check['mime'] === 'image/gif') {
+
+				$path_info = pathinfo($image_data['name']);
+
+				// Last one
+				if ($path_info['extension'] === 'gif') {
+					
+					// Resize image
+					$img = resize_imagex($image_data, 150, 150);
+
+					if ($img) {
+
+						header('Location: guilds.php?name='. $_GET['name']);
+						exit();
+					}
+
+				} else {
+
+					header('Location: guilds.php?name='. $_GET['name']);
+					exit();
+				}
+
+			} else {
+
+				header('Location: guilds.php?name='. $_GET['name']);
+				exit();
+			}
+
+		} else {
+
+			header('Location: guilds.php?name='. $_GET['name']);
+			exit();
+		}
+
+	} else {
+
+		header('Location: guilds.php?name='. $_GET['name']);
+		exit();
+	}
+}
+
+// Check guild logo
+function logo_exists($guild) {
+
+	if (file_exists('engine/guildimg/'.$guild.'.gif')) {
+
+		echo'engine/guildimg/'.$guild.'.gif';
+
+	} else {
+
+		echo'engine/guildimg/default@logo.gif';
+	}
+}
+
 ?>

@@ -5,30 +5,30 @@
 	// TFS 0.4 = TFS_03
 	// TFS 1.0 = TFS_10 (Under developement)
 	$config['TFSVersion'] = 'TFS_10';
-	
+
 	$config['site_title'] = 'Znote AAC';
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
-	
+
 	// Path to server folder without / Example: C:\Users\Alvaro\Documents\GitHub\forgottenserver
 	$config['server_path'] = ''; 
-	
-	
+
+
 	// ------------------------ \\
 	// MYSQL CONNECTION DETAILS \\
 	// ------------------------ \\
-	
+
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
 	$config['sqlUser'] = 'tfs10';
-	
+
 	// phpmyadmin password for OT server:
 	$config['sqlPassword'] = 'tfs10';
-	
+
 	// The database name to connect to. (This is usually same as username).
 	$config['sqlDatabase'] = 'tfs10';
-	
+
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
-	
+
 	/* CLOCK FUNCTION
 		- getClock() = returns current time in numbers.
 		- getClock(time(), true) = returns current time in formatted date
@@ -124,7 +124,7 @@
 		7 => 'Royal Paladin',
 		8 => 'Elite Knight',
 	);
-	
+
 	/* Vocation stat gains per level
 		- Ordered by vocation ID
 		- Currently used for admin_skills page. */
@@ -191,7 +191,7 @@
 		'requirePremium' => false,
 		'levelToBuyHouse' => 8,
 	);
-	
+
 	// Leave on black square in map and player should get teleported to their selected town.
 	// If chars get buggy set this position to a beginner location to force players there.
 	$config['default_pos'] = array(
@@ -199,7 +199,7 @@
 		'y' => 5,
 		'z' => 2,
 	);
-	
+
 	$config['war_status'] = array(
 		0 => 'Pending..',
 		1 => 'Accepted',
@@ -208,57 +208,57 @@
 		4 => '???',
 		5 => 'Ended',
 	);
-	
+
 	/* -- SUB PAGES -- 
 		Some custom layouts/templates have custom pages, they can use
 		this sub page functionality for that.
 	*/
 	$config['allowSubPages'] = true;
-	
+
 	// ---------------- \\
 	// Create Character \\
 	// ---------------- \\
-	
+
 	// Max characters on each account:
 	$config['max_characters'] = 7;
-	
+
 	// Available character vocation users can create.
 	$config['available_vocations'] = array(1, 2, 3, 4);
-	
+
 	// Available towns (specify town ids, etc: (0, 1, 2); to display 3 town options (town id 0, 1 and 2).
 	$config['available_towns'] = array(2);
-	
+
 	$config['level'] = 8;
 	$config['health'] = 185;
 	$config['mana'] = 40;
 	$config['cap'] = 435;
 	$config['soul'] = 100;
-	
+
 	$config['maleOutfitId'] = 128;
 	$config['femaleOutfitId'] = 136;
 	$config['lookHead'] = 78;
 	$config['lookBody'] = 68;
 	$config['lookLegs'] = 58;
 	$config['lookFeet'] = 76;
-	
+
 	// No vocation info (if user select vocation id 0, we force thees configurations on him
 	$config['nvlevel'] = 1;
 	$config['nvHealth'] = 150;
 	$config['nvMana'] = 5;
 	$config['nvCap'] = 400;
 	$config['nvSoul'] = 100;
-	
+
 	$config['nvForceTown'] = 0; // Force a town to no vocation even though he selected something else? 0 = no, 1 = yes.
 	$config['nvTown'] = 0; // Town id to force no vocations to get to, if nvForceTown is 1.
-	
+
 	// Minimum allowed character name letters. Etc 4 letters: "Kåre".
 	$config['minL'] = 4;
 	// Maximum allowed character name letters. Etc 20 letters: "Bobkåreolesofiesberg"
 	$config['maxL'] = 20;
-	
+
 	// Maximum allowed character name words. Etc 2 words = "Bob Kåre", 3 words: "Bob Arne Kåre" as max char name words.
 	$config['maxW'] = 2;
-	
+
 	// -------------- \\
 	// WEBSITE STUFF  \\
 	// -------------- \\
@@ -268,7 +268,7 @@
 
 	// Enable or disable changelog ticker in news page.
 	$config['UseChangelogTicker'] = true;
-	
+
 	// Highscore configuration
 	$config['highscore'] = array(
 			'rows' => 100,
@@ -292,47 +292,50 @@
 
 	$config['validate_IP'] = true; // Only allow legal IP addresses to register and create character.
 	$config['salt'] = false; // Some noob 0.3.6 servers don't support salt.
-	
+
 	// Restricted names
 	$config['invalidNameTags'] = array("god", "gm", "cm", "gamemaster", "hoster", "admin", "admim", "adm", "owner", "staff");
-	
+
+	// Use guild logo system
+	$config['use_guild_logos'] = 4;
+
 	// Level requirement to create guild? (Just set it to 1 to allow all levels).
 	$config['create_guild_level'] = 8;
-	
+
 	// Change Gender can be purchased in shop, or perhaps you want to allow everyone to change gender for free?
 	$config['free_sex_change'] = false;
-	
+
 	// Do you need to have premium account to create a guild?
 	$config['guild_require_premium'] = false;
-	
+
 	$config['guildwar_enabled'] = true;
-	
+
 	// Use htaccess rewrite? (basically this makes website.com/username work instead of website.com/characterprofile.php?name=username
 	// Linux users needs to enable mod_rewrite php extention to make it work properly, so set it to false if your lost and using Linux.
 	$config['htwrite'] = true;
-	
+
 	// What client version and server port are you using on this OT?
 	// Used for the Downloads page.
 	$config['client'] = 1037; // 954 = tibia 9.54
-	
+
 	 // Download link to client. Recommended:
 	 // Select download link from remere map editor website!
 	 // See list of clients: http://remeresmapeditor.com/marklar.php?clients
 	$config['client_download'] = 'http://clients.tibiaking.com/client/windows/'. $config['client'] .'';
 	$config['client_download_linux'] = 'http://clients.tibiaking.com/client/linux/'. $config['client'] .'';
-	
+
 	$config['port'] = 7171; // Port number to connect to your OT.
-	
+
 	// How often do you want highscores to update?
 	$config['cache_lifespan'] = 5;//60 * 15; // 15 minutes.
-	
+
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
 		//'otland0',
 		//'otland1',
 		'znote'
 	);
-	
+
 	// Built-in FORUM
 	// Enable forum, enable guildboards, level to create threads/post in them
 	// How long do they have to wait to create thread or post?
@@ -355,12 +358,12 @@
 		'guilds' => false,
 		'guildwars' => false,
 	);
-	
+
 	// IMPORTANT! Write a character name(that exist) that will represent website bans!
 	// Or remember to create character "God Website" character exist.
 	// If you don't do this, bann from admin panel won't work properly.
 	$config['website_char'] = 'Luxitur';
-	
+
 	//----------------\\
 	// ADVANCED STUFF \\
 	//----------------\\
@@ -378,17 +381,17 @@
 		5 => 'Community Manager',
 		6 => 'God',
 	);
-	
+
 	// Enable OS advanced feautures? false = no, true = yes
 	$config['os_enabled'] = false;
-	
+
 	// What kind of computer are you hosting this website on?
 	// Available options: LINUX or WINDOWS
 	$config['os'] = 'WINDOWS';
-	
+
 	// Measure how much players are lagging in-game. (Not completed). 
 	$config['ping'] = false;
-	
+
 	// BAN STUFF - Don't touch this unless you know what you are doing.
 	// You can order the lines the way you want, from top to bot, in which order you
 	// wish for them to be displayed in admin panel. Just make sure key[#] represent your describtion.
@@ -399,7 +402,7 @@
 		5 => 'DELETE_ACCOUNT',
 		1 => 'BAN_IPADDRESS',
 	);
-	
+
 	// BAN STUFF - Don't touch this unless you know what you are doing.
 	// You can order the lines the way you want, from top to bot, in which order you
 	// wish for them to be displayed in admin panel. Just make sure key[#] represent your describtion.
@@ -412,7 +415,7 @@
 		5 => 'NR + Ban + FW',
 		6 => 'Statement Report',
 	);
-	
+
 	// Ban reasons, for changes beside default values to work with client,
 	// you also need to edit sources (tools.cpp line 1096)
 	$config['ban_reason'] = array(
@@ -439,7 +442,7 @@
 		20 => 'Excessive Unjustified Player Killing',
 		21 => 'Spoiling Auction',
 	);
-	
+
 	// BAN STUFF
 	// Ban time duration selection in admin panel
 	// seconds => describtion
@@ -453,14 +456,14 @@
 		1209600 => '2 weeks',
 		2592000 => '1 month',
 	);
-	
-	
+
+
 		// --------------- \\
 		// SECURITY STUFF  \\
 		// --------------- \\
 	$config['use_token'] = false;
 	$config['use_captcha'] = false;
-	
+
 	/*	Store visitor data
 		Store visitor data in the database, logging every IP visitng site, 
 		and how many times they have visited the site. And sometimes what
@@ -473,14 +476,14 @@
 		if table never gets flushed once in a while. So I highly recommend you
 		to configure flush_ip_logs if IPs are logged.
 	*/
-	
+
 	$config['log_ip'] = false;
-	
+
 	// Flush IP logs each configured seconds, 60 * 15 = 15 minutes.
 	// Set to false to entirely disable ip log flush. 
 	// It is important to flush for optimal performance.
 	$config['flush_ip_logs'] = 59 * 27;
-	
+
 	/*	IP SECURTY REQUIRE: $config['log_ip'] = true;
 		Configure how tight this security shall be.
 		Etc: You can max click on anything/refresh page
@@ -496,7 +499,7 @@
 		'max_character' => 1, // create char
 		'max_forum_post' => 1, // Create threads and post in forum
 	);
-	
+
 	//////////////
 	/// PAYPAL ///
 	//////////////
@@ -524,7 +527,7 @@
 		25 => 325, // +30% bonus
 		30 => 420, // +40% bonus
 	);
-	
+
 	//////////////////
 	/// PAYGOL SMS ///
 	//////////////////
@@ -541,7 +544,7 @@
 		'returnURL' => "http://".$_SERVER['HTTP_HOST']."/success.php",
 		'cancelURL' => "http://".$_SERVER['HTTP_HOST']."/failed.php"
 	);
-	
+
 	////////////
 	/// SHOP ///
 	////////////
@@ -566,7 +569,7 @@
 			// leastTime = Lowest duration of time an auctioned player has to be 
 			// sellable before auctioneer can claim character back.
 		);
-	
+
 	// If useDB is false, this array list will be used for shop offers.
 	$config['shop_offers'] = array(
 		// offer 1
@@ -577,7 +580,7 @@
 			'describtion' => "Crystal coin.", // Describtion shown on website
 			'points' => 100, // How many points this offer costs
 		),
-		
+
 		// offer 2
 		2 => array(
 			'type' => 1,
@@ -586,7 +589,7 @@
 			'describtion' => "Fire sword.",
 			'points' => 10,
 		),
-		
+
 		// offer 3
 		3 => array(
 			'type' => 2,
@@ -595,7 +598,7 @@
 			'describtion' => "Premium membership.",
 			'points' => 25,
 		),
-		
+
 		// offer 4
 		4 => array(
 			'type' => 3,

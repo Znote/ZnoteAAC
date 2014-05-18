@@ -25,6 +25,7 @@ if (!$compare) {
 	<h2>WTS: Want to sell</h2>
 	<table class="table tbl-hover">
 		<tr class="yellow">
+			<td>Item name</td>
 			<td>Item</td>
 			<td>Count</td>
 			<td>Price for 1</td>
@@ -36,6 +37,7 @@ if (!$compare) {
 		foreach (($offers['wts'] ? $offers['wts'] : array()) as $o) {
 		?>
 		<tr>
+			<td><?php getItemNameById($o['item_id']); ?></td>
 			<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 			<td><?php echo $o['amount']; ?></td>
 			<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
@@ -50,6 +52,7 @@ if (!$compare) {
 	<h2>WTB: Want to buy</h2>
 	<table class="table tbl-hover">
 		<tr class="yellow">
+			<td>Item name</td>
 			<td>Item</td>
 			<td>Count</td>
 			<td>Price for 1</td>
@@ -61,6 +64,7 @@ if (!$compare) {
 		foreach (($offers['wtb'] ? $offers['wtb'] : array()) as $o) {
 		?>
 		<tr>
+			<td><?php getItemNameById($o['item_id']); ?></td>
 			<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 			<td><?php echo $o['amount']; ?></td>
 			<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
@@ -88,6 +92,7 @@ if (!$compare) {
 	<h2>Active offers</h2>
 	<table class="table tbl-hover">
 		<tr class="yellow">
+			<td>Item name</td>
 			<td>Item</td>
 			<td>Count</td>
 			<td>Price for 1</td>
@@ -104,6 +109,7 @@ if (!$compare) {
 			} else {
 				?>
 				<tr>
+					<td><?php getItemNameById($o['item_id']); ?></td>
 					<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 					<td><?php echo $o['amount']; ?></td>
 					<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
@@ -121,6 +127,7 @@ if (!$compare) {
 		<h2>Want to buy:</h2>
 		<table class="table tbl-hover">
 			<tr class="yellow">
+				<td>Item name</td>
 				<td>Item</td>
 				<td>Count</td>
 				<td>Price for 1</td>
@@ -131,6 +138,7 @@ if (!$compare) {
 			foreach ($buylist as $o) {
 				?>
 				<tr>
+					<td><?php getItemNameById($o['item_id']); ?></td>
 					<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 					<td><?php echo $o['amount']; ?></td>
 					<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
@@ -147,6 +155,7 @@ if (!$compare) {
 	<h2>Old purchased offers</h2>
 	<table class="table tbl-hover">
 		<tr class="yellow">
+			<td>Item name</td>
 			<td>Item</td>
 			<td>Count</td>
 			<td>Price for 1</td>
@@ -156,6 +165,7 @@ if (!$compare) {
 		foreach (($historyOffers ? $historyOffers : array()) as $o) {
 		?>
 		<tr>
+			<td><?php getItemNameById($o['item_id']); ?></td>
 			<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 			<td><?php echo $o['amount']; ?></td>
 			<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
