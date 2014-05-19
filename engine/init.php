@@ -12,6 +12,12 @@ $accQueriesData = array();
 session_start();
 ob_start();
 require 'config.php';
+
+if ($config['paypal']['enabled'] || $config['zeotss']['enabled']) {
+	$curlcheck = function_exists('curl_version') ? true : false;
+	if (!$curlcheck) die("php cURL is not enabled. It is required to for paypal and ZEOTSS services.<br>1. Find your php.ini file.<br>2. Uncomment extension=php_curl<br>Restart web server.<br><br><b>If you don't want this then disable zeotss and paypal in config.php.</b>");
+}
+
 require 'database/connect.php';
 require 'function/general.php';
 require 'function/users.php';

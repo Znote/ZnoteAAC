@@ -78,7 +78,7 @@ if (isset($changelogs) && !empty($changelogs) && $changelogs !== false) {
 		foreach ($changelogs as $changelog) {
 		?>
 		<tr>
-			<td><b><?php echo getClock($changelog['time'], true, true); ?></b><br><?php echo $changelog['text']; ?></td>
+			<td><b><?php echo getClock((isset($changelog['time'])) ? $changelog['time'] : 0, true, true); ?></b><br><?php echo $changelog['text']; ?></td>
 			<?php
 			if (user_logged_in())
 				if (is_admin($user_data)) {

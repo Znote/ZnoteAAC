@@ -371,7 +371,15 @@
 	$config['api'] = array(
 		'debug' => false,
 	);
-
+	// Use Znote's External Open Tibia Services Server
+	// Currently in Alpha and is pretty useless, but will contain paypal blacklist etc in future.
+	// You can use the official server: http://zeotss.znote.eu/
+	// Or host your own private one, here is the code: https://github.com/Znote/ZEOTSS
+	$config['zeotss'] = array(
+		'enabled' => true,
+		'visitors' => true,
+		'server' => "http://zeotss.znote.eu/"
+	);
 	// Don't touch this unless you know what you are doing. (modifying this(key value) also requires modifications in OT files /XML/commands.xml).
 	$config['ingame_positions'] = array(
 		1 => 'Player',
