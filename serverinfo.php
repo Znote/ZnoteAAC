@@ -42,7 +42,7 @@ $information = array(
 
 	'World type'             => $lua_path['worldType'],
 	'Protection level'       => $lua_path['protectionLevel'],
-	'Kills to red skull'     => $lua_path['protectionLevel'],
+	'Kills to red skull'     => $lua_path['killsToRedSkull'],
 	'Kills to black skull'   => $lua_path['killsToBlackSkull'],
 	'Remove ammo'            => $lua_path['removeAmmoWhenUsingDistanceWeapon'],
 	'Remove runes' 		 	 => $lua_path['removeChargesFromRunes'],
