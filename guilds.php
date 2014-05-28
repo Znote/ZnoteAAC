@@ -490,6 +490,10 @@ if ($highest_access >= 2) {
 				$wars = mysql_select_multi("SELECT `id`, `guild1`, `guild2`, `status` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild1` = '$targetGuild') AND (`guild2` = '$gid' OR `guild2` = '$targetGuild') AND `status` IN (0, 1);");
 				if ($status == false && $wars == false) {
 					guild_war_invitation($gid, $targetGuild);
+					$limit = $_POST['limit'];
+					if (empty($limit))
+						$limit = 100;
+					mysql_insert("INSERT INTO `znote_guild_wars` (`limit`) VALUES ('$limit');");
 					header('Location: guilds.php?name='. $_GET['name']);
 					exit();
 				} else echo '<font color="red" size="4">This guild has already been invited to war(or you\'re trying to invite your own).</FONT>';
@@ -683,6 +687,7 @@ if ($highest_access >= 2) {
 			<ul>
 				<li>Invite guild to war:<br>
 					<input type="text" name="warinvite" placeholder="Guild name">
+					<input type="number" min="10" max="999" name="limit">
 					<input type="submit" value="Invite Guild">
 				</li>
 			</ul>
@@ -694,12 +699,12 @@ if ($highest_access >= 2) {
 		<table id="guildsTable" class="table table-striped table-hover"><tr class="yellow"><th>Aggressor</th><th>Information</th><th>Enemy</th></tr>
 		<?php
 		$i = 0;
-		$wars = mysql_select_multi("SELECT `guild1`, `guild2`, `name1`, `name2`, `started` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild2` = '$gid') AND `status` = 0 ORDER BY `started` DESC");
+		$wars = mysql_select_multi("SELECT `guild1`, `guild2`, `name1`, `name2`, `started`, (SELECT `limit` FROM `znote_guild_wars` WHERE `znote_guild_wars`.`id` = `guild_wars`.`id`) AS `limit` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild2` = '$gid') AND `status` = 0 ORDER BY `started` DESC");
 		if (!empty($wars) || $wars !== false) {
 			foreach($wars as $war) {
 				$i++;
 				echo '<tr><td><a href="guilds.php?name='.$war['name1'].'">'.$war['name1'].'</a></td><td>';
-				echo '<center><b>Pending invitation</b><br />Invited on ' . getClock($war['started'], true) . '.<br />';
+				echo '<center><b>Pending invitation</b><br />Invited on ' . getClock($war['started'], true) . '.<br />The frag limit is set to ' . $war['limit'] . ' frags.<br />';
 				if ($war['guild1'] == $gid) {
 					echo '<br /><form action="" method="post"><input type="hidden" name="cancel_war_invite" value="'.$war['guild2'].'" /><input type="submit" value="Cancel Invitation"></form>';
 				} else if ($war['guild2'] == $gid) {
