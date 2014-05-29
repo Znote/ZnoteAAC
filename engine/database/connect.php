@@ -214,6 +214,13 @@ CREATE TABLE IF NOT EXISTS `znote_deleted_characters` (
   `done` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `znote_guild_wars` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `limit` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`id`) REFERENCES `guild_wars` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 </textarea>
 	</li>
 	<li>
