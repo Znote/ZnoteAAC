@@ -490,9 +490,7 @@ if ($highest_access >= 2) {
 				$wars = mysql_select_multi("SELECT `id`, `guild1`, `guild2`, `status` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild1` = '$targetGuild') AND (`guild2` = '$gid' OR `guild2` = '$targetGuild') AND `status` IN (0, 1);");
 				if ($status == false && $wars == false) {
 					guild_war_invitation($gid, $targetGuild);
-					$limit = $_POST['limit'];
-					if (empty($limit))
-						$limit = 100;
+					$limit = (empty($_POST['limit'])) ? 100 : (int)$_POST['limit'];
 					mysql_insert("INSERT INTO `znote_guild_wars` (`limit`) VALUES ('$limit');");
 					header('Location: guilds.php?name='. $_GET['name']);
 					exit();
