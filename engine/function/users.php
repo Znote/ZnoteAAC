@@ -490,6 +490,12 @@ function get_guild_id($name) {
 	return ($data !== false) ? $data['id'] : false;
 }
 
+// Returns guild data from name
+function get_guild_data($name) {
+	$name = sanitize($name);
+	return mysql_select_single("SELECT `id`, `name`, `ownerid`, `creationdata`, `motd` FROM `guilds` WHERE `name`='$name' LIMIT 1;");
+}
+
 // Get complete list of guilds
 function get_guilds_list() {
 	return mysql_select_multi("SELECT `id`, `name`, `creationdata` FROM `guilds` ORDER BY `name`;");

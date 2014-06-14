@@ -76,8 +76,9 @@ if (!empty($_POST['change_name'])) {
 	} else $player = mysql_select_single("SELECT `id`, `account_id`, `online` FROM `players` WHERE `name` = '$oldname'");
 	
 	// Check if player has bough ticket
-	$order = mysql_select_single("SELECT `id`, `account_id` FROM `znote_shop_orders` WHERE `type`='4' LIMIT 1;");
+	$order = mysql_select_single("SELECT `id`, `account_id` FROM `znote_shop_orders` WHERE `type`='4' AND `account_id`='".$player['account_id']."' LIMIT 1;");
 	if ($order !== false) {
+		//data_dump($order, array($player['account_id'], $session_user_id), "data");
 		// Check if player and account matches
 		if ($session_user_id == $player['account_id'] && $session_user_id == $order['account_id']) {
 			// Check if new name is not occupied
@@ -88,7 +89,7 @@ if (!empty($_POST['change_name'])) {
 				if ($newname !== false) {
 					$error = false;
 					// name restriction
-					$resname = explode(" ", $_POST['name']);
+					$resname = explode(" ", $newname);
 					foreach($resname as $res) {
 						if(in_array(strtolower($res), $config['invalidNameTags'])) {
 							$error = true;
@@ -217,10 +218,11 @@ if (!empty($_POST['selected_comment'])) {
 	?>
 	<div id="myaccount">
 		<h1>My account</h1>
-		<p>Welcome to your account page, <?php echo $user_data['name']; ?></p>
-
+		<p>Welcome to your account page, <?php echo $user_data['name']; ?><br>
+			You have <?php echo $user_data['premdays']; ?> days remaining premium account.</p>
 		<h2>Character List: <?php echo $char_count; ?> characters.</h2>
 		<?php
+		//data_dump($user_data, false, "data");
 		// Echo character list!
 		$char_array = user_character_list($user_data['id']);
 		// Design and present the list
@@ -382,7 +384,7 @@ if ($config['zeotss']['enabled'] && $config['zeotss']['visitors']) {
 	$post_string = "longip=".ip2long($_SERVER['REMOTE_ADDR'])."&register=1";
 	curl_setopt($curl_connection, CURLOPT_POSTFIELDS, $post_string);
 	$result = curl_exec($curl_connection);
-	data_dump(false, array($result), "CURL DATA");
+	if ($config['zeotss']['debug']) data_dump(false, array($result), "CURL DATA");
 	curl_close($curl_connection);
 
 	// Check if site is registered on ZEOTSS and can use its utilities:

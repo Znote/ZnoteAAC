@@ -460,7 +460,7 @@ function check_image($image) {
 				if ($path_info['extension'] === 'gif') {
 					
 					// Resize image
-					$img = resize_imagex($image_data, 150, 150);
+					$img = resize_imagex($image_data, 100, 100);
 
 					if ($img) {
 
@@ -470,25 +470,25 @@ function check_image($image) {
 
 				} else {
 
-					header('Location: guilds.php?name='. $_GET['name']);
+					header('Location: guilds.php?error=Only gif images accepted, you uploaded:['.$path_info['extension'].'].&name='. $_GET['name']);
 					exit();
 				}
 
 			} else {
 
-				header('Location: guilds.php?name='. $_GET['name']);
+				header('Location: guilds.php?error=Only gif images accepted, you uploaded:['.$check['mime'].'].&name='. $_GET['name']);
 				exit();
 			}
 
 		} else {
 
-			header('Location: guilds.php?name='. $_GET['name']);
+			header('Location: guilds.php?error=Uploaded image is invalid.&name='. $_GET['name']);
 			exit();
 		}
 
 	} else {
 
-		header('Location: guilds.php?name='. $_GET['name']);
+		header('Location: guilds.php?error=Only gif images are accepted, you uploaded:['.$image_data['type'].'].&name='. $_GET['name']);
 		exit();
 	}
 }
