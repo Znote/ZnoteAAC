@@ -168,8 +168,17 @@ if (user_logged_in() === true) {
 	// Display the specific guild page
 ?>
 
-<h1><img src="<?php logo_exists(sanitize($_GET['name'])); ?>"></img> Guild: <?php echo sanitize($_GET['name']); 
-?> </h1>
+<div id="guildTitleDiv">
+	<?php if ($config['use_guild_logos']): ?>
+	<div id="guildImageDiv" style="float: left; margin-right: 10px;">
+		<img style="max-width: 100px; max-height: 100px;" src="<?php logo_exists(sanitize($_GET['name'])); ?>"></img>
+	</div>
+	<?php endif; ?>
+	<div id="guildDescription">
+		<h1>Guild: <?php echo sanitize($_GET['name']); ?></h1>
+		<p>Motive of the Guild</p>
+	</div>
+</div>
 <table id="guildViewTable" class="table table-striped">
 	<tr class="yellow">
 		<th>Rank:</th>
@@ -191,7 +200,7 @@ if (user_logged_in() === true) {
 				$onlinelist[] = $online['player_id'];
 			}
 		}
-		
+
 		foreach ($players as $player) {
 			if ($config['TFSVersion'] !== 'TFS_10') {
 				if ($isOtx) {

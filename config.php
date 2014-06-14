@@ -299,7 +299,7 @@
 	$config['invalidNameTags'] = array("god", "gm", "cm", "gamemaster", "hoster", "admin", "admim", "adm", "owner", "staff");
 
 	// Use guild logo system
-	$config['use_guild_logos'] = 4;
+	$config['use_guild_logos'] = true;
 
 	// Level requirement to create guild? (Just set it to 1 to allow all levels).
 	$config['create_guild_level'] = 8;
