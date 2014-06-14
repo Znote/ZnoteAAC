@@ -4,7 +4,9 @@
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
 	// TFS 0.4 = TFS_03
 	// TFS 1.0 = TFS_10 (Under developement)
-	$config['TFSVersion'] = 'TFS_10';
+	$config['TFSVersion'] = 'TFS_03';
+	// As far as I know, OTX is based on TFS_03, so make sure TFS version is configured TFS_03
+	$config['CustomVersion'] = 'OTX'; // Not using OTX? Replace 'OTX' with: false
 
 	$config['site_title'] = 'Znote AAC';
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
@@ -18,13 +20,13 @@
 	// ------------------------ \\
 
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'tfs10';
+	$config['sqlUser'] = 'otx03';
 
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'tfs10';
+	$config['sqlPassword'] = 'otx03';
 
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'tfs10';
+	$config['sqlDatabase'] = 'otx03';
 
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = 'localhost';
@@ -333,7 +335,7 @@
 	$config['page_admin_access'] = array(
 		//'otland0',
 		//'otland1',
-		'znote'
+		//'znote'
 	);
 
 	// Built-in FORUM
@@ -376,7 +378,7 @@
 	// You can use the official server: http://zeotss.znote.eu/
 	// Or host your own private one, here is the code: https://github.com/Znote/ZEOTSS
 	$config['zeotss'] = array(
-		'enabled' => true,
+		'enabled' => false,
 		'visitors' => true,
 		'server' => "http://zeotss.znote.eu/"
 	);

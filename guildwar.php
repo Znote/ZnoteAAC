@@ -5,6 +5,7 @@ if ($config['guildwar_enabled'] === false) {
 	header('Location: guilds.php');
 	exit();
 }
+$isOtx = ($config['CustomVersion'] == 'OTX') ? true : false;
 include 'layout/overall/header.php';
 
 if (!empty($_GET['warid'])) {
@@ -18,8 +19,6 @@ if (!empty($_GET['warid'])) {
 		// Kills data for this specific war entry
 		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $kills = get_war_kills($warid);
 		else if ($config['TFSVersion'] == 'TFS_03') $kills = get_war_kills03($warid);
-		// XDXD
-		
 		?>
 		<h1><?php echo $war['name1']; ?> - VERSUS - <?php echo $war['name2']; ?></h1>
 		
@@ -153,7 +152,6 @@ if (!empty($_GET['warid'])) {
 	//echo $wardata[0]['name1'];
 	//die(var_dump($wardata));
 	if ($wardata != false) {
-	
 	// kills data
 	$killsdata = array(); // killsdata[guildid] => array(warid) => array info about the selected war entry
 	foreach ($wardata as $wars) {
@@ -173,7 +171,8 @@ if (!empty($_GET['warid'])) {
 					$guild_1_kills = 0;
 					$guild_2_kills = 0;
 					foreach (($killsdata[$wars['id']] ? $killsdata[$wars['id']] : array()) as $kill) {
-						if ($kill['killerguild'] == $wars['guild1'])
+
+						if ($isOtx && $kill['guild_id'] == $wars['guild1'] || !$isOtx && $kill['killerguild'] == $wars['guild1'])
 							$guild_1_kills++;
 						else
 							$guild_2_kills++;

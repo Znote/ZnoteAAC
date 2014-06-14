@@ -1,5 +1,6 @@
 <?php require_once 'engine/init.php';
 if ($config['require_login']['guilds']) protect_page();
+$isOtx = ($config['CustomVersion'] == 'OTX') ? true : false;
 include 'layout/overall/header.php';
 
 if (user_logged_in() === true) {
@@ -192,9 +193,16 @@ if (user_logged_in() === true) {
 		}
 		
 		foreach ($players as $player) {
-			if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data($player['id'], 'online');
-			else $chardata['online'] = (in_array($player['id'], $onlinelist)) ? 1 : 0;
+			if ($config['TFSVersion'] !== 'TFS_10') {
+				if ($isOtx) {
+					$chardata = mysql_select_single("SELECT `online` FROM `players` WHERE `name`='".$player['name']."' LIMIT 1;");
+				} else $chardata = user_character_data($player['id'], 'online');
+			} else $chardata['online'] = (in_array($player['id'], $onlinelist)) ? 1 : 0;
 			echo '<tr>';
+			if ($isOtx) {
+				$rankdata = mysql_select_single("SELECT `name` FROM `guild_ranks` WHERE `id`='".$player['rank_id']."' LIMIT 1;");
+				$player['rank_name'] = $rankdata['name'];
+			}
 			echo '<td>'. $player['rank_name'] .'</td>';
 			echo '<td><a href="characterprofile.php?name='. $player['name'] .'">'. $player['name'] .'</a></td>';
 			echo '<td>'. $player['level'] .'</td>';
