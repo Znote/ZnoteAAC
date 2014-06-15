@@ -5,9 +5,7 @@ if ($config['log_ip']) {
 }
 
 // Fetch highscore type
-$type = getValue($_GET['type']);
-if (!$type) $type = 7;
-else $type = (int)$type;
+$type = (isset($_GET['type'])) ? (int)getValue($_GET['type']) : 7;
 if ($type > 9) $type = 7;
 
 // Fetch highscore page
