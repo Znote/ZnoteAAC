@@ -131,7 +131,7 @@ if (!empty($_POST['change_gender'])) {
 		$account_id = user_character_account_id($char_name);
 		
 		if ($config['TFSVersion'] == 'TFS_10') {
-			$chr_data = user_is_online_10($user_id);
+			$chr_data = user_is_online_10($char_id);
 		} else $chr_data = user_character_data($char_id, 'online');
 		
 		if ($chr_data['online'] != 1) {

@@ -44,11 +44,11 @@ if (!empty($_POST['buy'])) {
 			user_account_add_premdays($cid, $buy['count']);
 			echo '<font color="green" size="4">You now have '.$buy['count'].' additional days of premium membership.</font>';
 		} else if ($buy['type'] == 3) {
-			// Character sex
+			// Character Gender
 			mysql_insert("INSERT INTO `znote_shop_orders` (`account_id`, `type`, `itemid`, `count`, `time`) VALUES ('$cid', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '$time')");
 			echo '<font color="green" size="4">You now have access to change character gender on your characters. Visit <a href="myaccount.php">My Account</a> to select character and change the gender.</font>';
 		} else if ($buy['type'] == 4) {
-			// Character sex
+			// Character Name
 			mysql_insert("INSERT INTO `znote_shop_orders` (`account_id`, `type`, `itemid`, `count`, `time`) VALUES ('$cid', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '$time')");
 			echo '<font color="green" size="4">You now have access to change character name on your characters. Visit <a href="myaccount.php">My Account</a> to select character and change the name.</font>';
 		} else {
