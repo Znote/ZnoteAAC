@@ -369,22 +369,36 @@ if ($highest_access >= 2) {
 	}
 	if (!empty($_POST['invite'])) {
 		if (user_character_exist($_POST['invite'])) {
-			// 
-			$status = false;
-			if ($inv_data !== false) {
-				foreach ($inv_data as $inv) {
-					if ($inv['player_id'] == user_character_id($_POST['invite'])) $status = true;
-				}
-			}
-			foreach ($players as $player) {
-				if ($player['name'] == $_POST['invite']) $status = true;
-			}
+			// Make sure they are not in another guild
 			
-			if ($status == false) {
-				guild_invite_player(user_character_id($_POST['invite']), $gid);
-				header('Location: guilds.php?name='. $_GET['name']);
-				exit();
-			} else echo '<font color="red" size="4">That character is already invited(or a member) on this guild.</font>';
+			if ($config['TFSVersion'] != 'TFS_10') {
+				$charname = sanitize($_POST['invite']);
+				$playerdata = mysql_select_single("SELECT `id`, `rank_id` FROM `players` WHERE `name`='$charname' LIMIT 1;");
+				$charid = $playerdata['id'];
+				$membership = ($playerdata['rank_id'] > 0) ? true : false;
+			} else {
+				$charid = user_character_id($_POST['invite']);
+				$membership = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='$charid' LIMIT 1;");
+			}
+			if (!$membership) {
+				// 
+				$status = false;
+				if ($inv_data !== false) {
+					foreach ($inv_data as $inv) {
+						if ($inv['player_id'] == user_character_id($_POST['invite'])) $status = true;
+					}
+				}
+				foreach ($players as $player) {
+					if ($player['name'] == $_POST['invite']) $status = true;
+				}
+				
+				if ($status == false) {
+					guild_invite_player($charid, $gid);
+					header('Location: guilds.php?name='. $_GET['name']);
+					exit();
+				} else echo '<font color="red" size="4">That character is already invited(or a member) on this guild.</font>';
+			} else echo '<font color="red" size="4">That character is already in a guild.</font>';
+
 		} else echo '<font color="red" size="4">That character name does not exist.</font>';
 	}
 	// Guild Message (motd)
