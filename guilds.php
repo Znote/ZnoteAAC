@@ -205,18 +205,12 @@ if (user_logged_in() === true) {
 				$onlinelist[] = $online['player_id'];
 			}
 		}
-
+		//data_dump($players, false, "Data");
 		foreach ($players as $player) {
 			if ($config['TFSVersion'] !== 'TFS_10') {
-				if ($isOtx) {
-					$chardata = mysql_select_single("SELECT `online` FROM `players` WHERE `name`='".$player['name']."' LIMIT 1;");
-				} else $chardata = user_character_data($player['id'], 'online');
+				$chardata['online'] = $player['online'];
 			} else $chardata['online'] = (in_array($player['id'], $onlinelist)) ? 1 : 0;
 			echo '<tr>';
-			if ($isOtx) {
-				$rankdata = mysql_select_single("SELECT `name` FROM `guild_ranks` WHERE `id`='".$player['rank_id']."' LIMIT 1;");
-				$player['rank_name'] = $rankdata['name'];
-			}
 			echo '<td>'. $player['rank_name'] .'</td>';
 			echo '<td><a href="characterprofile.php?name='. $player['name'] .'">'. $player['name'] .'</a></td>';
 			echo '<td>'. $player['level'] .'</td>';
@@ -776,40 +770,44 @@ if ($highest_access >= 2) {
 ?>
 <!-- end leader-->
 <?php
-if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $wardata = get_guild_wars();
-else if ($config['TFSVersion'] == 'TFS_03') $wardata = get_guild_wars03();
-else die("Can't recognize TFS version. It has to be either TFS_02 or TFS_03. Correct this in config.php");
-$war_exist = false;
-if ($wardata !== false) {
-	foreach ($wardata as $wars) {
-		if ($wars['guild1'] == $gid || $wars['guild2'] == $gid) $war_exist = true;
+if ($config['guildwar_enabled'] === true) {
+	if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $wardata = get_guild_wars();
+	else if ($config['TFSVersion'] == 'TFS_03') $wardata = get_guild_wars03();
+	else die("Can't recognize TFS version. It has to be either TFS_02 or TFS_03. Correct this in config.php");
+	$war_exist = false;
+	if ($wardata !== false) {
+		foreach ($wardata as $wars) {
+			if ($wars['guild1'] == $gid || $wars['guild2'] == $gid) $war_exist = true;
+		}
+	}
+	if ($war_exist) {
+		?>
+		<h2>War overview:</h2>
+		<table>
+			<tr class="yellow">
+				<td>Attacker:</td>
+				<td>Defender:</td>
+				<td>status:</td>
+				<td>started:</td>
+			</tr>
+				<?php
+				foreach ($wardata as $wars) {
+					if ($wars['guild1'] == $gid || $wars['guild2'] == $gid) {
+						$url = url("guildwar.php?warid=". $wars['id']);
+						echo '<tr class="special" onclick="javascript:window.location.href=\'' . $url . '\'">';
+						echo '<td>'. $wars['name1'] .'</td>';
+						echo '<td>'. $wars['name2'] .'</td>';
+						echo '<td>'. $config['war_status'][$wars['status']] .'</td>';
+						echo '<td>'. getClock($wars['started'], true) .'</td>';
+						echo '</tr>';
+					}
+				}
+				?>
+		</table>
+		<?php 
 	}
 }
-if ($war_exist && $config['guildwar_enabled'] === true) {
 ?>
-<h2>War overview:</h2>
-<table>
-	<tr class="yellow">
-		<td>Attacker:</td>
-		<td>Defender:</td>
-		<td>status:</td>
-		<td>started:</td>
-	</tr>
-		<?php
-		foreach ($wardata as $wars) {
-			if ($wars['guild1'] == $gid || $wars['guild2'] == $gid) {
-				$url = url("guildwar.php?warid=". $wars['id']);
-				echo '<tr class="special" onclick="javascript:window.location.href=\'' . $url . '\'">';
-				echo '<td>'. $wars['name1'] .'</td>';
-				echo '<td>'. $wars['name2'] .'</td>';
-				echo '<td>'. $config['war_status'][$wars['status']] .'</td>';
-				echo '<td>'. getClock($wars['started'], true) .'</td>';
-				echo '</tr>';
-			}
-		}
-		?>
-</table>
-<?php } ?>
 <!-- leave guild with character -->
 <?php
 $bool = false;
