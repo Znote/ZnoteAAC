@@ -29,7 +29,7 @@
 	$config['sqlDatabase'] = 'tfs10';
 
 	// Hostname is usually localhost or 127.0.0.1.
-	$config['sqlHost'] = 'localhost';
+	$config['sqlHost'] = '127.0.0.1';
 
 	/* CLOCK FUNCTION
 		- getClock() = returns current time in numbers.
@@ -310,7 +310,7 @@
 	// Do you need to have premium account to create a guild?
 	$config['guild_require_premium'] = false;
 
-	$config['guildwar_enabled'] = true;
+	$config['guildwar_enabled'] = false;
 
 	// Use htaccess rewrite? (basically this makes website.com/username work instead of website.com/characterprofile.php?name=username
 	// Linux users needs to enable mod_rewrite php extention to make it work properly, so set it to false if your lost and using Linux.
@@ -323,7 +323,7 @@
 	 // Download link to client. Recommended:
 	 // Select download link from remere map editor website!
 	 // See list of clients: http://remeresmapeditor.com/marklar.php?clients
-	$config['client_download'] = 'http://clients.tibiaking.com/client/windows/'. $config['client'] .'';
+	$config['client_download'] = 'http://clients.halfaway.net/clients.php?tibia='. $config['client'] .'';
 	$config['client_download_linux'] = 'http://clients.tibiaking.com/client/linux/'. $config['client'] .'';
 
 	$config['port'] = 7171; // Port number to connect to your OT.
