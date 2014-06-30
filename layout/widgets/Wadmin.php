@@ -18,6 +18,9 @@
 				<a href='admin_reports.php'>Admin Reports</a>
 			</li>
 			<li>
+				<a href='admin_helpdesk.php'>Admin Helpdesk</a>
+			</li>
+			<li>
 				<a href='admin_shop.php'>Admin Shop</a>
 			</li>
 			<?php
