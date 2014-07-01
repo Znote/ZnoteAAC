@@ -2,9 +2,12 @@
 protect_page();
 admin_only($user_data);
 
-if (isset($_GET['view'])) {
+// Declare as int
+$view = (int)$_GET['view'];
+if ($view){
 
 	if (!empty($_POST['reply_text'])) {
+	sanitize($_POST['reply_text']);
 
 		// Save ticket reply on database
 		$query = array(
@@ -13,6 +16,9 @@ if (isset($_GET['view'])) {
 			'message' =>	$_POST['reply_text'],
 			'created' =>	time(),
 		);
+
+		//Sanitize array
+		array_walk($query, 'array_sanitize');
 		
 	$fields = '`'. implode('`, `', array_keys($query)) .'`';
 	$data = '\''. implode('\', \'', $query) .'\'';
@@ -21,7 +27,7 @@ if (isset($_GET['view'])) {
 
 		}
 
-$ticketData = mysql_select_single("SELECT * FROM znote_tickets WHERE id=". addslashes($_GET['view']));
+$ticketData = mysql_select_single("SELECT * FROM znote_tickets WHERE id=". addslashes((int)$_GET['view']));
 
 	?>
 <h1>View Ticket #<?php echo $ticketData['id']; ?></h1>
@@ -46,7 +52,7 @@ $ticketData = mysql_select_single("SELECT * FROM znote_tickets WHERE id=". addsl
 				</table>
 
 				<?php
-				$replies = mysql_select_multi("SELECT * FROM znote_tickets_replies WHERE tid='". $_GET['view'] ."' ORDER BY `created`;");
+				$replies = mysql_select_multi("SELECT * FROM znote_tickets_replies WHERE tid='". addslashes((int)$_GET['view']) ."' ORDER BY `created`;");
 				if ($replies !== false) {
 					foreach($replies as $reply) {
 						?>
