@@ -7,9 +7,11 @@ if (user_logged_in() === false) {
 
 include 'layout/overall/header.php';
 
-if (isset($_GET['view'])) {
+$view = (int)$_GET['view'];
+if ($view) {
 
 	if (!empty($_POST['reply_text'])) {
+	sanitize($_POST['reply_text']);
 
 		// Save ticket reply on database
 		$query = array(
@@ -18,6 +20,9 @@ if (isset($_GET['view'])) {
 			'message' =>	$_POST['reply_text'],
 			'created' =>	time(),
 		);
+
+		//Sanitize array
+		array_walk($query, 'array_sanitize');
 		
 	$fields = '`'. implode('`, `', array_keys($query)) .'`';
 	$data = '\''. implode('\', \'', $query) .'\'';
@@ -26,7 +31,7 @@ if (isset($_GET['view'])) {
 
 		}
 
-$ticketData = mysql_select_single("SELECT * FROM znote_tickets WHERE id=". addslashes($_GET['view']));
+$ticketData = mysql_select_single("SELECT * FROM znote_tickets WHERE id=". addslashes((int)$_GET['view']));
 
 if($ticketData['owner'] != $session_user_id){
 echo 'You can not view this ticket!';
@@ -55,7 +60,7 @@ die;
 				</table>
 
 				<?php
-				$replies = mysql_select_multi("SELECT * FROM znote_tickets_replies WHERE tid='". $_GET['view'] ."' ORDER BY `created`;");
+				$replies = mysql_select_multi("SELECT * FROM znote_tickets_replies WHERE tid='". (int)$_GET['view'] ."' ORDER BY `created`;");
 				if ($replies !== false) {
 					foreach($replies as $reply) {
 						?>
@@ -174,6 +179,10 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 			'creation' =>	time(),
 			'status'  =>	'Open'
 		);
+
+
+		//Sanitize array
+		array_walk($query, 'array_sanitize');
 		
 	$fields = '`'. implode('`, `', array_keys($query)) .'`';
 	$data = '\''. implode('\', \'', $query) .'\'';
@@ -181,7 +190,6 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 
 		header('Location: helpdesk.php?success');
 		exit();
-		//End register
 		
 	} else if (empty($errors) === false){
 		echo '<font color="red"><b>';
