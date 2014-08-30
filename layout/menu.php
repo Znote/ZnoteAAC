@@ -8,6 +8,7 @@
 			<li><a href="market.php">Item Market</a></li>
 			<li><a href="gallery.php">Gallery</a></li>
 			<li><a href="support.php">Support</a></li>
+			<li><a href="helpdesk.php">Helpdesk</a></li>
 			<li><a href="houses.php">Houses</a></li>
 			<li><a href="deaths.php">Deaths</a></li>
 			<li><a href="killers.php">Killers</a></li>
