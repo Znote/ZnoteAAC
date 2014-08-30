@@ -275,7 +275,7 @@
 	$config['highscore'] = array(
 			'rows' => 100,
 			'rowsPerPage' => 20,
-			'ignoreGroupId' => 2, // Ignore group id higher than this (staff)
+			'ignoreGroupId' => 2, // Ignore this and higher group ids (staff)
 		);
 
 	// ONLY FOR TFS 0.2 (TFS 0.3/4 users don't need to care about this, as its fully loaded from db)

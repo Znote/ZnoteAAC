@@ -64,7 +64,7 @@ if ($scores) {
 		</select>
 		<select name="page">
 			<?php
-			$pages = (int)($highscore['rows'] / $highscore['rowsPerPage']) + 1;
+			$pages = (int)($highscore['rows'] / $highscore['rowsPerPage']);
 			for ($i = 0; $i < $pages; $i++) {
 				$x = $i + 1;
 				if ($x == $page) echo "<option value='".$x."' selected>Page: ".$x."</option>";
