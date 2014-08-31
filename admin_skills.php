@@ -90,6 +90,7 @@ if ($name !== false) {
 			$player = mysql_select_single("SELECT `maglevel`, `level`, `vocation` FROM `players` WHERE `id`='$pid' LIMIT 1;");
 			$skills[] = array('value' => $player['maglevel']);
 			$skills[] = array('value' => $player['level']);
+			$skills[] = array('value' => $player['vocation']);
 		} else {
 			$player = mysql_select_single("SELECT `skill_fist`, `skill_club`, `skill_sword`, `skill_axe`, `skill_dist`, `skill_shielding`, `skill_fishing`, `maglevel`, `level`, `vocation` FROM `players` WHERE `id`='$pid' LIMIT 1;");
 			$skills = array(
