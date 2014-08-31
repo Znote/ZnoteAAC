@@ -55,7 +55,7 @@
 	        $config['EnableQuests'] = false;
 
 	// array for filling questlog (Questid, max value, name, end of the quest fill 1 for the last part 0 for all others)
-	$config['Quests'] = array(
+	$config['quests'] = array(
 		array(1501,100,"Killing in the Name of",0),
 		array(1502,150,"Killing in the Name of",0),
 		array(65001,100,"Killing in the Name of",0),
@@ -232,8 +232,8 @@
 
 	$config['level'] = 8;
 	$config['health'] = 185;
-	$config['mana'] = 40;
-	$config['cap'] = 435;
+	$config['mana'] = 35;
+	$config['cap'] = 470;
 	$config['soul'] = 100;
 
 	$config['maleOutfitId'] = 128;
