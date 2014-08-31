@@ -13,7 +13,7 @@
 		foreach ($title as $word) {
 			if ($word !== $title[count($title) - 1]) echo $word .' ';
 		}
-	  }
+	  } else echo $config['site_title'];
 	  ?><span class="logo_colour"><?php
 	  
 	  if (count($title) > 1) {
