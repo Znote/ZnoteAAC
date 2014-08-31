@@ -213,6 +213,7 @@ if (!empty($_POST['selected_comment'])) {
 				user_delete_character(user_character_id($delete['character_name']));
 				mysql_update('UPDATE `znote_deleted_characters` SET `done` = 1');
 				echo '<b>Character ' . $delete['character_name'] . ' has been deleted</b>. This operation was requested by owner of this account.';
+				$char_count--;
 			}
 		}
 	?>
