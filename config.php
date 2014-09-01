@@ -232,7 +232,7 @@
 
 	$config['level'] = 8;
 	$config['health'] = 185;
-	$config['mana'] = 35;
+	$config['mana'] = 40;
 	$config['cap'] = 470;
 	$config['soul'] = 100;
 
@@ -348,6 +348,7 @@
 		'level' => 5,
 		'cooldownPost' => 1,//60,
 		'cooldownCreate' => 1,//180,
+		'newPostsBumpThreads' => true,
 		'hidden' => '<font color="orange">[H]</font>',
 		'closed' => '<font color="red">[C]</font>',
 		'sticky' => '<font color="green">[S]</font>',
