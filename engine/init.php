@@ -113,4 +113,31 @@ if ($config['log_ip']) {
 	//var_dump($v_activity, $v_register, $v_highscore, $v_c_char, $v_s_char, $v_form);
 	//echo ' <--- IP logging activity past 10 seconds.';
 }
+
+// Sub page override system
+if ($config['allowSubPages']) {
+	require_once 'layout/sub.php';
+	$filename = explode('/', $_SERVER['PHP_SELF']);
+	$filename = $filename[count($filename)-1];
+	if (isset($subpages) && !empty($subpages)) {
+		foreach ($subpages as $page) {
+			if ($page['override'] && $page['file'] === $filename) {
+				require_once 'layout/overall/header.php';
+				require_once 'layout/sub/'.$page['file'];
+				require_once 'layout/overall/footer.php';
+				exit;
+			}
+		}
+	} else {
+		?>
+		<div style="background-color: white; padding: 20px; width: 100%; float:left;">
+			<h2 style="color: black;">Old layout!</h2>
+			<p style="color: black;">The layout is running an outdated sub system which is not compatible with this version of Znote AAC.</p>
+			<p style="color: black;">The file /layout/sub.php is outdated.
+			<br>Please update it to look like <a style="color: orange;" target="_BLANK" href="https://github.com/Znote/ZnoteAAC/blob/master/layout/sub.php">THIS.</a>
+			</p>
+		</div>
+		<?php
+	}
+}
 ?>
