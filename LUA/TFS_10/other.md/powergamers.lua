@@ -11,7 +11,7 @@ end
 --	<globalevent name="PowerGamers" interval="15000" script="powergamers.lua"/>
 
 -- SQL  (remember to remove all -- before executing)--
---ALTER TABLE `players` ADD `exphist_lastexp` BIGINT( 255 ) NOT NULL DEFAULT '0', 
+--ALTER TABLE `znote_players` ADD `exphist_lastexp` BIGINT( 255 ) NOT NULL DEFAULT '0', 
 --ADD `exphist1` BIGINT( 255 ) NOT NULL DEFAULT '0', 
 --ADD `exphist2` BIGINT( 255 ) NOT NULL DEFAULT '0', 
 --ADD `exphist3` BIGINT( 255 ) NOT NULL DEFAULT '0', 
@@ -21,4 +21,4 @@ end
 --ADD `exphist7` BIGINT( 255 ) NOT NULL DEFAULT '0', 
 
 -- after that execute --
--- UPDATE `players` SET `exphist_lastexp`=`players`.`experience`  
+-- UPDATE `znote_players` SET `exphist_lastexp`=`players`.`experience`  
