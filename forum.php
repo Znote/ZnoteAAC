@@ -369,6 +369,7 @@ if (!empty($_GET)) {
 
 			if ($access) {
 				mysql_insert("INSERT INTO `znote_forum_posts` (`thread_id`, `player_id`, `player_name`, `text`, `created`, `updated`) VALUES ('$reply_thread', '$reply_cid', '". $charData[$reply_cid]['name'] ."', '$reply_text', '". time() ."', '". time() ."');");
+				if ($config['forum']['newPostsBumpThreads']) mysql_update("UPDATE `znote_forum_threads` SET `updated`='". time() ."' WHERE `id`='$reply_thread';");
 			} else echo '<p><b><font color="red">You don\'t have permission to post on this thread. [Thread: Closed]</font></b></p>';
 		} else {
 			?>
@@ -434,7 +435,7 @@ if (!empty($_GET)) {
 		//if ($thread === false) $access = false;
 
 		if ($access) {
-			mysql_update("UPDATE `znote_forum_posts` SET `text`='$update_post_text' WHERE `id`='$update_post_id';");
+			mysql_update("UPDATE `znote_forum_posts` SET `text`='$update_post_text', `updated`='". time() ."' WHERE `id`='$update_post_id';");
 			echo '<h1>post has been updated.</h1>';
 		} else echo "<p><font color='red'>Your permission to edit this post has been denied.</font></p>";
 	}
