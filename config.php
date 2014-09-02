@@ -113,6 +113,15 @@
 		array(12035,2,"The Ice Islands Quest",0),
 		array(12036,6,"The Ice Islands Quest",1),
 	);
+	
+	// TFS 1.0 powergamers
+ 	//Before enabling powergamers, make sure that you have added LUA files and SQL querys to your server. 
+ 	//can be found at "lua>TFS 1.0" folder.
+ 	$config['powergamers_enabled'] = true;  //True = working, false = page disabled
+ 	$config['powergamers'] = array(
+ 	'limit' => 20, //Number of players visible on the page
+ 	);
+
 
 	// Vocation ids and names.
 	$config['vocations'] = array(
