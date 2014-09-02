@@ -21,4 +21,4 @@ end
 --ADD `exphist7` BIGINT( 255 ) NOT NULL DEFAULT '0', 
 
 -- after that execute --
--- UPDATE `znote_players` SET `exphist_lastexp`=`players`.`experience`  
+-- UPDATE `znote_players` `a` INNER JOIN  `players` `b` SET `a`.`exphist_lastexp`=`b`.`experience`
