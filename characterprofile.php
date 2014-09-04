@@ -87,7 +87,43 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 					?></li>
 				<li><font class="profile_font" name="profile_font_created">Created: <?php echo getClock($profile_znote_data['created'], true); ?></font></li>
 				<li><font class="profile_font" name="profile_font_comment">Comment:</font> <br><textarea name="profile_comment_textarea" cols="70" rows="10" readonly="readonly" class="span12"><?php echo $profile_znote_data['comment']; ?></textarea></li>
-				<!-- DEATH LIST -->
+			
+<h3 class="header-ok">Achievements</h3>
+<div id="accordion">
+  <h3>Show/hide player achievements</h3>
+  <div>
+<table class="table table-striped table-bordered">
+<tbody>
+<style>
+#secondD {
+margin-left:0px;
+}
+</style>
+	<?php
+   	foreach ($config['achievements'] as $key => $achiv) {
+	$uery = mysql_select_single("SELECT `player_id`, `value`, `key` FROM `player_storage` WHERE `player_id`='$user_id' AND `key`='$key' LIMIT 1;");
+	foreach ($uery as $luery) 
+		if (($luery) == $key)
+		{
+			if (!array_key_exists(($achiv), $config['achievements'])) {
+			echo '<tr><td width="17%">' .$achiv[0]. '</td><td>' .$achiv[1]. '</td>';
+			if ($achiv['secret'] == true) {
+			echo '<td><img id="secondD" src="http://img04.imgland.net/PuMz0mVqSG.gif"></td>';
+			echo '<td>'. $achiv['points'] .'</td>';
+				} else {
+			echo '<td></td><td>'. $achiv['points'] .'</td>';	
+			}
+			echo '<tr>';
+			}
+		}
+	}	
+ ?>
+</tbody>
+</table>
+</div></div>
+<br>
+
+			<!-- DEATH LIST -->
 				<li>
 					<b>Death List:</b><br>
 					<?php
