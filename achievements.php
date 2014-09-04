@@ -3,7 +3,7 @@ if ($config['Ach'] == true) {
 ?>
 <center><h3>Achievements on <?php echo $config['site_title'] ?></h3></center>
 <div class="panel-body">
-<table id="addonMakersTable" class="table table-striped table-bordered table-condensed">
+<table class="table table-striped table-bordered table-condensed">
 <tr>
 <td width="10%">Grade</td>
 <td width="17%">Name</td>
