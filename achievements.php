@@ -1,5 +1,5 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
-
+if ($config['Ach'] == true) {
 ?>
 <center><h3>Achievements on <?php echo $config['site_title'] ?></h3></center>
 <div class="panel-body">
@@ -54,4 +54,8 @@ echo '</tr>';
 </div>
 <?php
 include 'layout/overall/footer.php';
+}
+else{
+echo 'This page has been disabled, this page can be enabled at config';
+}
 ?>
