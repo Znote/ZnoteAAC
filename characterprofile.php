@@ -48,12 +48,13 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 					}
 					
 				?></font></li>
-			<tr><td>Achievement Points</td><td><?php 
+			<li>Achievement Points: <?php 
 			$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`='$user_id'");
 			foreach ($achievementPoints as $achievement) 
 			{ 
 			echo $achievement; 
-			} ?></td></tr>
+			} 
+			?></li>
 				<?php		$houses = array();
 			$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `town_id` FROM `houses` WHERE `owner` = $user_id ;");
 			if ($houses !== false) {
@@ -63,14 +64,13 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 						$playerlist[] = $h['owner'];
 						
 				if ($profile_data['id'] = $h['owner']) { ?>
-			<tr><td>House:</td>
-			<td><?php echo $h['name']; ?>, <?php 
+			<li>House: <?php echo $h['name']; ?>, <?php 
 				foreach ($config['towns'] as $key=>$value) {
 					if ($key == $h['town_id']) {
 						echo $value;
 					}
-				} ?></td></tr>
-				<li><font class="profile_font" name="profile_font_status">Status:</font> <?php 
+				} ?></li>
+				<li><font class="profile_font" name="profile_font_status">Status:</font> <?php }}
 						if ($config['TFSVersion'] == 'TFS_10') {
 							if ($profile_data['online']) {
 								echo '<font class="profile_font" name="profile_font_online" color="green"><b>ONLINE</b></font>';
