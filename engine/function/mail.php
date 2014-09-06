@@ -3,7 +3,7 @@ class Mail {
 	protected $_config = false;
 
 	/**
-	 * @param  string $file
+	 * @param  array $config
 	 * @access public
 	 * @return void
 	**/
@@ -14,9 +14,9 @@ class Mail {
 	/**
 	 * Sets the cache expiration limit (IMPORTANT NOTE: seconds, NOT ms!).
 	 *
-	 * @param  integer $span
+	 * @param  string $to, string $title, string $text, string $accname
 	 * @access public
-	 * @return void
+	 * @return boolean
 	**/
 	public function sendMail($to, $title, $text, $accname = '') {
 		//SMTP needs accurate times, and the PHP time zone MUST be set
