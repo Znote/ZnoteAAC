@@ -476,6 +476,9 @@
 	$config['use_token'] = false;
 	$config['use_captcha'] = false;
 
+	// Session prefix, if you are hosting multiple sites, make the session name different to avoid conflict.
+	$config['session_prefix'] = 'znote_';
+
 	/*	Store visitor data
 		Store visitor data in the database, logging every IP visitng site, 
 		and how many times they have visited the site. And sometimes what

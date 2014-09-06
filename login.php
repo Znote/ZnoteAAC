@@ -30,10 +30,10 @@ if (empty($_POST) === false) {
 		if ($login === false) {
 			$errors[] = 'Username and password combination is wrong.';
 		} else {
-		$_SESSION['user_id'] = $login;
+		setSession('user_id', $login);
 		
 		// if IP is not set (etc acc created before Znote AAC was in use)
-		$znote_data = user_znote_account_data($_SESSION['user_id']);
+		$znote_data = user_znote_account_data($login);
 		if ($znote_data['ip'] == 0) {
 			$update_data = array(
 			'ip' => ip2long(getIP()),

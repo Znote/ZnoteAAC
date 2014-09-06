@@ -994,7 +994,7 @@ function user_update_account($update_data) {
 		$update[] = '`'. $field .'` = \''. $data .'\'';
 	}
 	
-	$user_id = sanitize($_SESSION['user_id']);
+	$user_id = (int)getSession('user_id');
 	
 	mysql_update("UPDATE `accounts` SET ". implode(', ', $update) ." WHERE `id`=". $user_id .";");
 }
@@ -1008,7 +1008,7 @@ function user_update_znote_account($update_data) {
 		$update[] = '`'. $field .'` = \''. $data .'\'';
 	}
 	
-	$user_id = sanitize($_SESSION['user_id']);
+	$user_id = (int)getSession('user_id');
 	
 	mysql_update("UPDATE `znote_accounts` SET ". implode(', ', $update) ." WHERE `account_id`=". $user_id .";");
 }
@@ -1449,7 +1449,7 @@ function user_login_03($username, $password) {
 
 // Verify that user is logged in
 function user_logged_in() {
-	return (isset($_SESSION['user_id'])) ? true : false;
+	return (getSession('user_id') !== false) ? true : false;
 }
 
 function guild_war_invitation($cid, $gid) {
