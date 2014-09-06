@@ -30,20 +30,33 @@ if (empty($_POST) === false) {
 		if ($login === false) {
 			$errors[] = 'Username and password combination is wrong.';
 		} else {
-		setSession('user_id', $login);
-		
-		// if IP is not set (etc acc created before Znote AAC was in use)
-		$znote_data = user_znote_account_data($login);
-		if ($znote_data['ip'] == 0) {
-			$update_data = array(
-			'ip' => ip2long(getIP()),
-			);
-			user_update_znote_account($update_data);
-		}
-		
-		// Send them to myaccount.php
-		header('Location: myaccount.php');
-		exit();
+			// Check if user have access to login
+			$status = false;
+			if ($config['mailserver']['register']) {
+				$authenticate = mysql_select_single("SELECT `id` FROM `znote_accounts` WHERE `account_id`='$login' AND `active`='1' LIMIT 1;");
+				if ($authenticate !== false) {
+					$status = true;
+				} else {
+					$errors[] = "Your account is not activated. An email should have been sent to you when you registered. Please find it and click the activation link to activate your account.";
+				}
+			} else $status = true;
+			
+			if ($status) {
+				setSession('user_id', $login);
+			
+				// if IP is not set (etc acc created before Znote AAC was in use)
+				$znote_data = user_znote_account_data($login);
+				if ($znote_data['ip'] == 0) {
+					$update_data = array(
+					'ip' => ip2long(getIP()),
+					);
+					user_update_znote_account($update_data);
+				}
+				
+				// Send them to myaccount.php
+				header('Location: myaccount.php');
+				exit();
+			}
 		}
 	}
 } else {

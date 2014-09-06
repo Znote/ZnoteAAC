@@ -374,6 +374,23 @@
 	$config['api'] = array(
 		'debug' => false,
 	);
+
+	// Email Server configurations (SMTP)
+	/* Download PHPMailer: https://github.com/PHPMailer/PHPMailer/archive/master.zip
+		Extract to Znote AAC directory (where this config.php file is located)
+		Rename the folder to "PHPMailer". Then configure this with your SMTP mail settings from your email provider.
+	*/
+	$config['mailserver'] = array(
+		'register' => false, // Send activation mail
+		'accountRecovery' => false, // Recover username or password through mail
+		'host' => "mailserver.znote.eu", // Outgoing mail server host.
+		'securityType' => 'ssl', // ssl or tls
+		'port' => 465, // SMTP port number - likely to be 465(ssl) or 587(tls)
+		'username' => 'noreply@znote.eu', // Likely the email address
+		'password' => 'emailpassword', // The password.
+		'debug' => false, // Enable debugging if you have problems and are looking for errors.
+		'fromName' => $config['site_title'],
+	);
 	// Use Znote's External Open Tibia Services Server
 	// Currently in Alpha and is pretty useless, but will contain paypal blacklist etc in future.
 	// You can use the official server: http://zeotss.znote.eu/

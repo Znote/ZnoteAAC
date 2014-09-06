@@ -1042,7 +1042,7 @@ function user_character_set_hide($char_id, $value) {
 }
 
 // CREATE ACCOUNT
-function user_create_account($register_data) {
+function user_create_account($register_data, $maildata) {
 	array_walk($register_data, 'array_sanitize');
 	
 	if (config('TFSVersion') == 'TFS_03' && config('salt') === true) {
@@ -1064,10 +1064,25 @@ function user_create_account($register_data) {
 	mysql_insert("INSERT INTO `accounts` ($fields) VALUES ($data)");
 	
 	$account_id = user_id($register_data['name']);
-	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$account_id', '$ip', '$created')");
+	$activeKey = rand(100000000,999999999);
+	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `activekey`) VALUES ('$account_id', '$ip', '$created', '$activeKey')");
 	
-	//TO-DO: mail server and verification.
-	// http://www.web-development-blog.com/archives/send-e-mail-messages-via-smtp-with-phpmailer-and-gmail/
+	if ($maildata['register']) {
+
+		$thisurl = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		$thisurl .= "?authenticate&u=".$account_id."&k=".$activeKey;
+
+		$mailer = new Mail($maildata);
+
+		$title = "Please authenticate your account at $_SERVER[HTTP_HOST].";
+		
+		$body = "<h1>Please click on the following link to authenticate your account:</h1>";
+		$body .= "<p><a href='$thisurl'>$thisurl</a></p>";
+		$body .= "<p>Thank you for registering and enjoy your stay at $maildata[fromName].</p>";
+		$body .= "<hr><p>I am an automatic no-reply e-mail. Any emails sent back to me will be ignored.</p>";
+		
+		$mailer->sendMail($register_data['email'], $title, $body, $register_data['name']);
+	}
 }
 
 // CREATE CHARACTER
