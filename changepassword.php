@@ -35,8 +35,6 @@ if (empty($_POST) === false) {
 	} else {
 		$errors[] = 'Your current password is incorrect.';
 	}
-	
-	print_r($errors);
 }
 
 include 'layout/overall/header.php'; ?>

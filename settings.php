@@ -24,8 +24,6 @@ if (empty($_POST) === false) {
 			$errors[] = 'That email address is already in use.';
 		}
 	}
-	
-	print_r($errors);
 }
 ?>
 <h1>Settings</h1>
