@@ -30,6 +30,8 @@ CREATE TABLE IF NOT EXISTS `znote_accounts` (
   `created` int(10) NOT NULL,
   `points` int(10) DEFAULT 0,
   `cooldown` int(10) DEFAULT 0,
+  `active` tinyint(4) NOT NULL DEFAULT '0',
+  `activekey` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
