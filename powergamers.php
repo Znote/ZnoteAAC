@@ -59,7 +59,7 @@ if($znotePlayers)
 		echo '<td><center>'. $number_of_rows . '.</center></td>';
 		echo '<td><b>' .$player['name']. '</b>';
 		echo '<br> ' .$player['level']. ' '.htmlspecialchars(vocation_id_to_name($player['vocation'])).' ';
-		echo '<td><center>'.coloured_value($player['exphist1'] + $player['exphist2'] + $player['exphist3']).'</center></td>';
+		echo '<td><center>'.coloured_value($player['exphist1'] + $player['exphist2'] + $player['exphist3'] + $player['experience'] - $player['exphist_lastexp']).'</center></td>';
 		echo '<td><center>'.coloured_value($player['exphist3']).'</center></td><td><center>'.coloured_value($player['exphist2']).'</center></td><td><center>'.coloured_value($player['exphist1']).'</center></td><td><center>'.coloured_value($player['experience']-$player['exphist_lastexp']).'</center></td></tr>';	$number_of_rows++;
 	}
 echo '</table><br></div>';
