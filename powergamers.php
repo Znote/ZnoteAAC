@@ -36,7 +36,7 @@ function coloured_value($valuein)
 }
 
 if(empty($type))
-	$znotePlayers = mysql_select_multi('SELECT * FROM `players` JOIN `znote_players` ON `players`.`id` = `znote_players`.`id`  WHERE `group_id` < 2 ORDER BY `exphist_lastexp` DESC LIMIT ' . $limit);
+	$znotePlayers = mysql_select_multi('SELECT `a`.`id`, `b`.`player_id`, `a`.`name`, `a`.`vocation`, `a`.`level`, `a`.`group_id`, `a`.`experience`, `b`.`exphist_lastexp`, `b`.`exphist1`, `b`.`exphist2`, `b`.`exphist3`, `b`.`exphist4`, `b`.`exphist5`, `b`.`exphist6`, `b`.`exphist7`,   (`a`.`experience` - `b`.`exphist_lastexp`)  AS `expdiff` FROM `players` `a` JOIN `znote_players` `b` ON `a`.`id` = `b`.`player_id`  WHERE `a`.`group_id` < 2 ORDER BY `expdiff` DESC LIMIT '.$limit);
 elseif($type >= 1 && $type <= 3)
 	$znotePlayers = mysql_select_multi('SELECT * FROM `znote_players` JOIN `players` ON `znote_players`.`id` = `players`.`id` WHERE `group_id` < 2 ORDER BY `exphist' . (int) $type . '` DESC LIMIT '.$limit);
 echo '<CENTER><H2>Ranking of powergamers</H2></CENTER>
@@ -60,8 +60,7 @@ if($znotePlayers)
 		echo '<td><b>' .$player['name']. '</b>';
 		echo '<br> ' .$player['level']. ' '.htmlspecialchars(vocation_id_to_name($player['vocation'])).' ';
 		echo '<td><center>'.coloured_value($player['exphist1'] + $player['exphist2'] + $player['exphist3']).'</center></td>';
-		echo '<td><center>'.coloured_value($player['exphist3']).'</center></td><td><center>'.coloured_value($player['exphist2']).'</center></td><td><center>'.coloured_value($player['exphist1']).'</center></td><td><center>'.coloured_value($player['exphist_lastexp']).'</center></td></tr>';
-		$number_of_rows++;
+		echo '<td><center>'.coloured_value($player['exphist3']).'</center></td><td><center>'.coloured_value($player['exphist2']).'</center></td><td><center>'.coloured_value($player['exphist1']).'</center></td><td><center>'.coloured_value($player['experience']-$player['exphist_lastexp']).'</center></td></tr>';	$number_of_rows++;
 	}
 echo '</table><br></div>';
 ?>
