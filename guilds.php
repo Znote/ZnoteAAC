@@ -212,7 +212,11 @@ if (user_logged_in() === true) {
 			} else $chardata['online'] = (in_array($player['id'], $onlinelist)) ? 1 : 0;
 			echo '<tr>';
 			echo '<td>'. $player['rank_name'] .'</td>';
-			echo '<td><a href="characterprofile.php?name='. $player['name'] .'">'. $player['name'] .'</a></td>';
+			echo '<td><a href="characterprofile.php?name='. $player['name'] .'">'. $player['name'] .'</a>';
+			if (!empty($player['guildnick'])) {
+				echo ' ('. $player['guildnick'] .')';
+			}
+			echo '</td>';
 			echo '<td>'. $player['level'] .'</td>';
 			echo '<td>'. $config['vocations'][$player['vocation']] .'</td>';
 			if ($chardata['online'] == 1) echo '<td> <b><font color="green"> Online </font></b></td>';
@@ -340,6 +344,26 @@ if (user_logged_in() === true) {
 	
 if ($highest_access >= 2) {
 	// Guild leader stuff
+	
+	// Change Guild Nick
+	if (!empty($_POST['player_guildnick'])) {
+		$p_cid = user_character_id($_POST['player_guildnick']);
+		$p_guild = get_player_guild_data($p_cid);
+		if (preg_match("/^[a-zA-Z_ ]+$/", $_POST['guildnick']) || empty($_POST['guildnick'])) { 
+			// Only allow normal symbols as guild nick
+			$p_nick = sanitize($_POST['guildnick']);
+			if ($p_guild['guild_id'] == $gid) {
+				if ($config['TFSVersion'] !== 'TFS_10') $chardata = user_character_data($p_cid, 'online');
+				else $chardata['online'] = (user_is_online_10($p_cid)) ? 1 : 0;
+				if ($chardata['online'] == 0) {
+					if ($config['TFSVersion'] !== 'TFS_10') update_player_guildnick($p_cid, $p_nick);
+					else update_player_guildnick_10($p_cid, $p_nick);
+					header('Location: guilds.php?name='. $_GET['name']);
+					exit();
+				} else echo '<font color="red" size="4">Character not offline.</font>';
+			}       
+		} else echo '<font color="red" size="4">Character guild nick may only contain a-z, A-Z and spaces.</font>';
+	}
 	
 	// Promote character to guild position
 	if (!empty($_POST['promote_character']) && !empty($_POST['promote_position'])) {
@@ -617,6 +641,33 @@ if ($highest_access >= 2) {
 				</li>
 			</ul>
 		</form>
+		<!-- FORMS TO CHANGE GUILD NICK -->
+		<form action="" method="post">
+			<ul>
+				<li>
+					Change Guild Nick:<br>
+					<select name="player_guildnick">
+					<?php
+					//$gid = get_guild_id($_GET['name']);
+					//$players = get_guild_players($gid);
+					foreach ($players as $player) {
+						$pl_data = get_player_guild_data(user_character_id($player['name']));
+						if ($pl_data['rank_level'] != 3) {
+							echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>'; 
+						} else {
+							if ($highest_access == 3) {
+								echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>'; 
+							}
+						}
+					}
+					?>
+					</select>
+					<input type="text" name="guildnick" maxlength="15" placeholder="leave blank to erase">
+					<input type="submit" value="Change Nick">
+				</li>
+			</ul>
+		</form>
+		<!-- END FORMS TO CHANGE GUILD NICK -->
 		<?php if ($members > 1) { ?>
 		<!-- FORMS TO PROMOTE CHARACTER-->
 		<form action="" method="post">

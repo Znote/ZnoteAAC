@@ -240,8 +240,9 @@ function shop_account_gender_tickets($accid) {
 // GUILDS
 //
 function guild_remove_member($cid) {
-	$cid = (int)$cid;
-	mysql_update("UPDATE `players` SET `rank_id`='0' WHERE `id`=$cid");
+    $cid = (int)$cid;
+    mysql_update("UPDATE `players` SET `rank_id`='0' WHERE `id`=$cid");
+    mysql_update("UPDATE `players` SET `guildnick`= NULL WHERE `id`=$cid");
 }
 function guild_remove_member_10($cid) {
 	$cid = (int)$cid;
@@ -329,8 +330,9 @@ function guild_delete($gid) {
 
 // Player leave guild
 function guild_player_leave($cid) {
-	$cid = (int)$cid;
-	mysql_update("UPDATE `players` SET `rank_id`='0' WHERE `id`=$cid LIMIT 1;");
+    $cid = (int)$cid;
+    mysql_update("UPDATE `players` SET `rank_id`='0' WHERE `id`=$cid LIMIT 1;");
+    mysql_update("UPDATE `players` SET `guildnick`= NULL WHERE `id`=$cid");
 }
 function guild_player_leave_10($cid) {
 	$cid = (int)$cid;
@@ -407,6 +409,27 @@ function update_player_guild_position_10($cid, $rid) {
 	$cid = (int)$cid;
 	$rid = (int)$rid;
 	mysql_update("UPDATE `guild_membership` SET `rank_id`='$rid' WHERE `player_id`=$cid");
+}
+
+// Update player's guild nick
+function update_player_guildnick($cid, $nick) {
+    $cid = (int)$cid;
+    $nick = sanitize($nick);
+    if (!empty($nick)) { 
+
+    mysql_update("UPDATE `players` SET `guildnick`='$nick' WHERE `id`=$cid");
+    } else {
+    mysql_update("UPDATE `players` SET `guildnick`= NULL WHERE `id`=$cid");
+    }
+}
+function update_player_guildnick_10($cid, $nick) {
+    $cid = (int)$cid;
+    $nick = sanitize($nick);
+    if (!empty($nick)) { 
+    mysql_update("UPDATE `guild_membership` SET `nick`='$nick' WHERE `player_id`=$cid");
+    } else {
+    mysql_update("UPDATE `guild_membership` SET `nick`= NULL WHERE `player_id`=$cid");
+    }
 }
 
 // Get guild data, using guild id.
@@ -505,8 +528,8 @@ function get_guilds_list() {
 // Get array of player data related to a guild.
 function get_guild_players($gid) {
     $gid = (int)$gid; // Sanitizing the parameter id
-    if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT p.rank_id, p.name, p.level, p.vocation, p.online, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid' ORDER BY gr.id, p.name;");
-    else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id LEFT JOIN guild_ranks AS gr ON gr.id = gm.rank_id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name");
+    if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT p.rank_id, p.name, p.level, p.guildnick, p.vocation, p.online, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid' ORDER BY gr.id, p.name;");
+    else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id, gm.nick AS `guildnick`, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id LEFT JOIN guild_ranks AS gr ON gr.id = gm.rank_id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name");
 }
 
 // Returns total members in a guild (integer)
