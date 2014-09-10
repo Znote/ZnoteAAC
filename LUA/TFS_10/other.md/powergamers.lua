@@ -10,7 +10,7 @@ end
 
 -- TFS 1.0 (globalevents.xml)
 --	<!-- Power Gamers -->
---	<globalevent name="PowerGamers" interval="15000" script="powergamers.lua"/>
+--	<globalevent name="PowerGamers" interval="60000" script="powergamers.lua"/>
 
 -- SQL  (remember to remove all (--) before executing)--
 --ALTER TABLE `znote_players` ADD `exphist_lastexp` BIGINT( 255 ) NOT NULL DEFAULT '0', 
