@@ -1,16 +1,14 @@
 <?php
 require_once 'engine/init.php';
 include 'layout/overall/header.php'; 
-$toponline = $config['toponline'];
-$limit = $toponline['limit'];
 
-if ($config['toponline_enabled'] === false) {
+if (!$config['toponline']['enabled']) {
 echo 'This page has been disabled at config.php.';
 include 'layout/overall/footer.php';
 	exit();
 }
+$limit = $config['toponline']['limit'];
 $type = $_GET['type'];
-
 
 function onlineTimeTotal($value)
 {
@@ -43,7 +41,7 @@ elseif($type == "sum")
 elseif($type >= 1 && $type <= 4)
 	$znotePlayers = mysql_select_multi('SELECT * FROM `znote_players` AS `z` JOIN `players` AS `p` WHERE `p`.`id`=`z`.`player_id` and `p`.`group_id` < 3 ORDER BY `onlinetime' . (int) $type . '` DESC LIMIT '.$limit);
 	
-echo '<CENTER><H2>Most online on server name</H2></CENTER>
+echo '<CENTER><H2>Most online on Dalerium</H2></CENTER>
 <BR>
 <table class="table table-striped">
 		<td><center><b>#</b></center></td>
