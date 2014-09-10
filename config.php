@@ -241,13 +241,18 @@
 	'secret' => true),
 	);	
 	
-	// TFS 1.0 powergamers
+	// TFS 1.0 powergamers and toponline
  	//Before enabling powergamers, make sure that you have added LUA files and SQL querys to your server. 
  	//can be found at "lua>TFS 1.0" folder.
  	$config['powergamers_enabled'] = true;  //True = working, false = page disabled
  	$config['powergamers'] = array(
  	'limit' => 20, //Number of players visible on the page
  	);
+ 	
+ 	$config['toponline_enabled'] = true;  //True = working, false = page disabled
+ 	$config['toponline'] = array(
+ 	'limit' => 20, //Number of players that it will show.
+ 		);
 
 
 	// Vocation ids and names.
