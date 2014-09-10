@@ -4,7 +4,7 @@ function onThink(interval, lastExecution, thinkInterval)
 		db.query("UPDATE `znote_players` SET `onlinetime7`=`onlinetime6`, `onlinetime6`=`onlinetime5`, `onlinetime5`=`onlinetime4`, `onlinetime4`=`onlinetime3`, `onlinetime3`=`onlinetime2`, `onlinetime2`=`onlinetime1`, `onlinetime1`=`onlinetimetoday`, `onlinetimetoday`=0;")
 		db.query("UPDATE `znote_players` `a` INNER JOIN `players` `b` ON `a`.`id`=`b`.`player_id` SET `a`.`exphist7`=`a`.`exphist6`,  `a`.`exphist6`=`a`.`exphist5`, `a`.`exphist5`=`a`.`exphist4`, `a`.`exphist4`=`a`.`exphist3`, `a`.`exphist3`=`a`.`exphist2`, `a`.`exphist2`=`a`.`exphist1`, `a`.`exphist1`=`b`.`experience`-`a`.`exphist_lastexp`, `a`.`exphist_lastexp`=`b`.`experience`;")
 	end
-	db.query("UPDATE `znote_players` SET `onlinetimetoday` = `onlinetimetoday` + 60, `onlinetimeall` = `onlinetimeall` + 60 WHERE `id` IN (SELECT `player_id` FROM `players_online` WHERE `players_online`.`player_id` = `players`.`id`)")
+	db.query("UPDATE `znote_players` SET `onlinetimetoday` = `onlinetimetoday` + 60, `onlinetimeall` = `onlinetimeall` + 60 WHERE `player_id` IN (SELECT `player_id` FROM `players_online` WHERE `players_online`.`player_id` = `znote_players`.`player_id`)")
 	return true
 end
 
