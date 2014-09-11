@@ -53,12 +53,13 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 					
 				?></font></li>
 				<!-- Achievement start -->
-				<?php 
+				<?php if ($config['Ach'] == true) { 
 				foreach ($achievementPoints as $achievement) 
 				{
 					if ($achievement > 0) //if player doesn't have any achievement points it won't echo the line below.
 					echo '<tr><td>Achievement Points</td><td>' .$achievement. '				</td></tr>';
-				}	
+				}
+				}
 				?>
 				<!-- Achievement end -->
 				<?php		$houses = array();
