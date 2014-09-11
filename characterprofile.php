@@ -48,6 +48,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 					}
 					
 				?></font></li>
+				<!-- Achievements start -->
 				<?php if ($config['Ach'] == true) { ?>
 			<li>Achievement Points: <?php 
 			$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`='$user_id'");
@@ -56,6 +57,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 			echo $achievement. '</li>'; 
 			} 
 			}?>
+			<!-- Achievements end -->
 				<?php		$houses = array();
 			$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `town_id` FROM `houses` WHERE `owner` = $user_id ;");
 			if ($houses !== false) {
@@ -88,7 +90,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 					?></li>
 				<li><font class="profile_font" name="profile_font_created">Created: <?php echo getClock($profile_znote_data['created'], true); ?></font></li>
 				<li><font class="profile_font" name="profile_font_comment">Comment:</font> <br><textarea name="profile_comment_textarea" cols="70" rows="10" readonly="readonly" class="span12"><?php echo $profile_znote_data['comment']; ?></textarea></li>
-
+	<!-- Achievements start -->
 <?php if ($config['Ach'] == true) { ?>			
 <h3 class="header-ok">Achievements</h3>
 <div id="accordion">
@@ -125,7 +127,7 @@ margin-left:0px;
 </div></div>
 <br>
 <?php } ?>
-
+	<!-- Achievements end --
 			<!-- DEATH LIST -->
 				<li>
 					<b>Death List:</b><br>
