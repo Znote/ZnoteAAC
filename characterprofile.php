@@ -127,7 +127,7 @@ margin-left:0px;
 </div></div>
 <br>
 <?php } ?>
-	<!-- Achievements end --
+	<!-- Achievements end -->
 			<!-- DEATH LIST -->
 				<li>
 					<b>Death List:</b><br>
