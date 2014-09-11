@@ -41,7 +41,7 @@ elseif($type == "sum")
 elseif($type >= 1 && $type <= 4)
 	$znotePlayers = mysql_select_multi('SELECT * FROM `znote_players` AS `z` JOIN `players` AS `p` WHERE `p`.`id`=`z`.`player_id` and `p`.`group_id` < 3 ORDER BY `onlinetime' . (int) $type . '` DESC LIMIT '.$limit);
 	
-echo '<CENTER><H2>Most online on Server name</H2></CENTER>
+echo '<CENTER><H2>Most online on <?php echo $config['site_title'] ?></H2></CENTER>
 <BR>
 <table class="table table-striped">
 		<td><center><b>#</b></center></td>
