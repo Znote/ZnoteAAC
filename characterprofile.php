@@ -9,6 +9,9 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 		if ($config['TFSVersion'] == 'TFS_10') {
 			$profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin', 'sex');
 			$profile_data['online'] = user_is_online_10($user_id);
+			if ($config['Ach'] == true) {
+				$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`='$user_id'");
+			}
 		} else $profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin', 'online', 'sex');
 		$profile_znote_data = user_znote_character_data($user_id, 'created', 'hide_char', 'comment');
 		
@@ -18,6 +21,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 			$guild = get_player_guild_data($user_id);
 			$guild_name = get_guild_name($guild['guild_id']);
 		}
+		
 		?>
 		
 		<!-- PROFILE MARKUP HERE-->
@@ -48,16 +52,15 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 					}
 					
 				?></font></li>
-				<!-- Achievements start -->
-				<?php if ($config['Ach'] == true) { ?>
-			<li>Achievement Points: <?php 
-			$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`='$user_id'");
-			foreach ($achievementPoints as $achievement) 
-			{ 
-			echo $achievement. '</li>'; 
-			} 
-			}?>
-			<!-- Achievements end -->
+				<!-- Achievement start -->
+				<?php 
+				foreach ($achievementPoints as $achievement) 
+				{
+					if ($achievement > 0) //if player doesn't have any achievement points it won't echo the line below.
+					echo '<tr><td>Achievement Points</td><td>' .$achievement. '				</td></tr>';
+				}	
+				?>
+				<!-- Achievement end -->
 				<?php		$houses = array();
 			$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `town_id` FROM `houses` WHERE `owner` = $user_id ;");
 			if ($houses !== false) {
