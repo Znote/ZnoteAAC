@@ -85,7 +85,6 @@ if ($latests) {
 } else echo 'No player kills exist.';
 
 } else if ($config['TFSVersion'] == 'TFS_03') {
-	/////////
 	$cache = new Cache('engine/cache/killers');
 	if ($cache->hasExpired()) {
 		$deaths = fetchLatestDeaths_03(30, true);
@@ -94,25 +93,25 @@ if ($latests) {
 	} else {
 		$deaths = $cache->load();
 	}
-	?>
 
-	<h1>Latest Killers</h1>
-	<table id="deathsTable" class="table table-striped">
-		<tr class="yellow">
-			<th>Killer</th>
-			<th>Time</th>
-			<th>Victim</th>
-		</tr>
-		<?php foreach ($deaths as $death) { 
-			echo '<tr>';
-			echo "<td><a href='characterprofile.php?name=". $death['killed_by'] ."'>". $death['killed_by'] ."</a></td>";
-			echo "<td>". getClock($death['time'], true) ."</td>";
-			echo "<td>At level ". $death['level'] .": <a href='characterprofile.php?name=". $death['victim'] ."'>". $death['victim'] ."</a></td>";
-			echo '</tr>';
-		} ?>
-	</table>
-
-	<?php
-	/////////
+	if ($deaths && !empty($deaths)) {
+	?>	
+		<h1>Latest Killers</h1>
+		<table id="deathsTable" class="table table-striped">
+			<tr class="yellow">
+				<th>Killer</th>
+				<th>Time</th>
+				<th>Victim</th>
+			</tr>
+			<?php foreach ($deaths as $death) { 
+				echo '<tr>';
+				echo "<td><a href='characterprofile.php?name=". $death['killed_by'] ."'>". $death['killed_by'] ."</a></td>";
+				echo "<td>". getClock($death['time'], true) ."</td>";
+				echo "<td>At level ". $death['level'] .": <a href='characterprofile.php?name=". $death['victim'] ."'>". $death['victim'] ."</a></td>";
+				echo '</tr>';
+			} ?>
+		</table>
+		<?php
+	} else echo 'No player deaths exist.';
 }
 include 'layout/overall/footer.php'; ?>
