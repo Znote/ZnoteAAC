@@ -113,6 +113,149 @@
 		array(12035,2,"The Ice Islands Quest",0),
 		array(12036,6,"The Ice Islands Quest",1),
 	);
+	
+	//Achivements based on "https://github.com/PrinterLUA/FORGOTTENSERVER-ORTS/blob/master/data/lib/achievements_lib.lua"  (TFS 1.0)
+	$config['Ach'] = false;
+	$config['achievements'] = array(
+	35000 => array(
+	'First Dragon', //name
+	'Rumours say that you will never forget your first Dragon', //comment
+	'points' => '1', //points
+	'img' => 'http://www.tibia-wiki.net/images/Dragon.gif', //img link or folder (example)> 'images/dragon.png'
+	),
+	
+	35001 => array(
+	'Uniwheel',
+	'You\'re probably one of the very few people with this classic and unique ride, hope it doesn\'t break anytime soon.', //comment
+	'points' => '1', //points
+	'img' => 'http://img1.wikia.nocookie.net/__cb20140214234600/tibia/en/images/e/e5/Uniwheel.gif', //img link or folder (example)> 'images/dragon.png'
+	'secret' => true
+	),
+	
+    30001 => array(
+	'Allow Cookies?', 
+	'With a perfectly harmless smile you fooled all of those wicecrackers into eating your exploding cookies. Consider a boy or girl scout outfit next time to make the trick even better.', 
+	'points' => '10', // 1-3 points (1star), 4-6 points(2 stars), 7-9 points(3 stars), 10 points => (4 stars)
+	'secret' => true // show "secret" image
+	),
+    30002 => array(
+	'Backpack Tourist',
+	'If someone lost a random thing in a random place, you\'re probably a good person to ask and go find it, even if you don\'t know what and where.',
+	'points' => '7'
+	),
+    30003 => array(
+	'Bearhugger',
+	'Warm, furry and cuddly - though that same bear you just hugged would probably rip you into pieces if he had been conscious, he reminded you of that old teddy bear which always slept in your bed when you were still small.', 
+	'points' => '4'
+	),
+    30004 => array(
+	'Bone Brother',
+	'You\'ve joined the undead bone brothers - making death your enemy and your weapon as well. Devouring what\'s weak and leaving space for what\'s strong is your primary goal.',
+	'points' => '1'
+	),
+    30005 => array(
+	'Chorister',
+	'Lalalala... you now know the cult\'s hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics.', 
+	'points' => '1'
+	),
+    30006 => array(
+	'Fountain of Life',
+	'You found and took a sip from the Fountain of Life. Thought it didn\'t grant you eternal life, you feel changed and somehow at peace.', 
+	'points' => '1',
+	'secret' => true
+	),
+    30007 => array(
+	'Here, Fishy Fishy!',
+	'Ah, the smell of the sea! Standing at the shore and casting a line is one of your favourite activities. For you, fishing is relaxing - and at the same time, providing easy food. Perfect!', 
+	'points' => '1'
+	),
+    30008 => array(
+	'Honorary Barbarian',
+	'You\'ve hugged bears, pushed mammoths and proved your drinking skills. And even though you have a slight hangover, a partially fractured rib and some greasy hair on your tongue, you\'re quite proud to call yourself a honorary barbarian from now on.', 
+	'points' => '1'
+	),
+    30009 => array(
+	'Huntsman',
+	'You\'re familiar with hunting tasks and have carried out quite a few already. A bright career as hunter for the Paw & Fur society lies ahead!',
+	'points' => '2'
+	),
+    300010 => array(
+	'Just in Time',
+	'You\'re a fast runner and are good at delivering wares which are bound to decay just in the nick of time, even if you can\'t use any means of transportation or if your hands get cold or smelly in the process.', 
+	'points' => '1'
+	),
+    30011 => array(
+	'Matchmaker',
+	'You don\'t believe in romance to be a coincidence or in love at first sight. In fact - love potions, bouquets of flowers and cheesy poems do the trick much better than ever could. Keep those hormones flowing!', 
+	'points' => '1',
+	'secret' => true
+	),
+    30012 => array(
+	'Nightmare Knight',
+	'You follow the path of dreams and that of responsibility without self-centered power. Free from greed and selfishness, you help others without expecting a reward.',
+	'points' => '1',
+	'secret' => true
+	),
+    30013 => array(
+	'Party Animal',
+	'Oh my god, it\'s a paaaaaaaaaaaarty! You\'re always in for fun, friends and booze and love being the center of attention. There\'s endless reasons to celebrate! Woohoo!',
+	'points' => '1',
+	'secret' => true
+	),
+    30014 => array(
+	'Secret Agent',
+	'Pack your spy gear and get ready for some dangerous missions in service of a secret agency. You\'ve shown you want to - but can you really do it? Time will tell.', 
+	'points' => '1',
+	'secret' => true
+	),
+    30015 => array(
+	'Talented Dancer',
+	'You\'re a lord or lady of the dance - and not afraid to use your skills to impress tribal gods. One step to the left, one jump to the right, twist and shout!',
+	'points' => '1'
+	),
+    30016 => array(
+	'Territorial',
+	'Your map is your friend - always in your back pocket and covered with countless marks of interesting and useful locations. One could say that you might be lost without it - but luckily there\'s no way to take it from you.',
+	'points' => '1'
+	),
+    30017 => array(
+	'Worm Whacker',
+	'Weehee! Whack those worms! You sure know how to handle a big hammer.', 
+	'points' => '1',
+	'secret' => true
+	),
+    30018 => array(
+	'Allowance Collector',
+	'You certainly have your ways when it comes to acquiring money. Many of them are pink and paved with broken fragments of porcelain.',
+	'points' => '1'
+	),
+    30019 => array(
+	'Amateur Actor',
+	'You helped bringing Princess Buttercup, Doctor Dumbness and Lucky the Wonder Dog to life - and will probably dream of them tonight, since you memorised your lines perfectly. What a .. special piece of.. screenplay.', 
+	'points' => '2'
+	),
+    30020 => array(
+	'Animal Activist',
+	'Phasellus lacinia odio dolor, in elementum mauris dapibus a. Vivamus nec gravida libero, ac pretium eros. Nam in dictum ealesuada sodales. Nullam eget ex sit amet urna fringilla molestie. Aliquam lobortis urna eros, vel elementum metus accumsan eu. Nulla porttitor in lacus vel ullamcorper.',
+	'points' => '2',
+	'secret' => true),
+	);	
+	
+	// TFS 1.0 powergamers and top online
+ 	//Before enabling powergamers, make sure that you have added LUA files and possible cloums to your server. 
+ 	//files can be found at Lua folder.
+ 	
+	$config['powergamers'] = array(
+		'enabled' => true, // Enable or disable page
+		'limit' => 20, //Number of players that it will show.
+	);
+		
+	$config['toponline'] = array(
+		'enabled' => true, // Enable or disable page
+		'limit' => 20, //Number of players that it will show.
+	);
+
+
 
 	// Vocation ids and names.
 	$config['vocations'] = array(
@@ -296,8 +439,8 @@
 	$config['salt'] = false; // Some noob 0.3.6 servers don't support salt.
 
 	// Restricted names
-	$config['invalidNameTags'] = array("god", "gm", "cm", "gamemaster", "hoster", "admin", "admim", "adm", "owner", "staff");
-
+	$config['invalidNameTags'] = array("owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god","anal","ass","fuck","sex","hitler", "pussy","dick","rape","cm","gm","amazon","valkyrie","carrion worm","rotworm","rotworm queen","cockroach","kongra","merlkin","sibang","crystal spider","giant spider","poison spider","scorpion","spider","tarantula","achad","axeitus headbanger","bloodpaw","bovinus","colerian the barbarian","cursed gladiator","frostfur","orcus the cruel","rocky","the hairy one","avalanche","drasilla","grimgor guteater","kreebosh the exile","slim","spirit of earth","spirit of fire","spirit of water","the dark dancer","the hag","darakan the executioner","deathbringer","fallen mooh'tah master ghar","gnorre chyllson","norgle glacierbeard","svoren the mad","the masked marauder","the obliverator","the pit lord","webster","barbarian bloodwalker","barbarian brutetamer","barbarian headsplitter","barbarian skullhunter","bear","panda","polar bear","braindeath","beholder","elder beholder","gazer","chicken","dire penguin","flamingo","parrot","penguin","seagull","terror bird","bazir","infernatil","thul","munster","son of verminor","xenia","zoralurk","big boss trolliver","foreman kneebiter","mad technomancer","man in the cave","lord of the elements","the count","the plasmother","dracola","the abomination","the handmaiden","mr. punish","the countess sorrow","the imperor","massacre","apocalypse","brutus bloodbeard","deadeye devious","demodras","dharalion","fernfang","ferumbras","general murius","ghazbaran","grorlam","lethal lissy","morgaroth","necropharus","orshabaal","ron the ripper","the evil eye","the horned fox","the old widow","tiquandas revenge","apprentice sheng","dog","hellhound","war wolf","winter wolf","wolf","chakoya toolshaper","chakoya tribewarden","chakoya windcaller","blood crab","crab","frost giant","frost giantess","ice golem","yeti","acolyte of the cult","adept of the cult","enlightened of the cult","novice of the cult","ungreez","dark torturer","demon","destroyer","diabolic imp","fire devil","fury","hand of cursed fate","juggernaut","nightmare","plaguesmith","blue djinn","efreet","admin","green djinn","marid","frost dragon","wyrm","sea serpent","dragon lord","dragon","hydra","dragon hatchling","dragon lord hatchling","frost dragon hatchling","dwarf geomancer","dwarf guard","dwarf soldier","dwarf","dworc fleshhunter","dworc venomsniper","dworc voodoomaster","elephant","mammoth","elf arcanist","elf scout","elf","charged energy elemental","energy elemental","massive energy elemental","overcharged energy elemental","energy overlord","cat","lion","tiger","azure frog","coral frog","crimson frog","green frog","orchid frog","toad","jagged earth elemental","muddy earth elemental","earth elemental","massive earth elemental","earth overlord","gargoyle","stone golem","ghost","phantasm","phantasm","pirate ghost","spectre","cyclops smith","cyclops drone","behemoth","cyclops","slick water elemental","roaring water elemental","ice overlord","water elemental","massive water elemental","ancient scarab","butterfly","bug","centipede","exp bug","larva","scarab","wasp","lizard sentinel","lizard snakecharmer","lizard templar","minotaur archer","minotaur guard","minotaur mage","minotaur","squirrel","goblin demon","badger","bat","deer","the halloween hare","hyaena","pig","rabbit","silver rabbit","skunk","wisp","dark monk","monk","tha exp carrier","necromancer","priestess","orc berserker","orc leader","orc rider","orc shaman","orc spearman","orc warlord","orc warrior","orc","goblin leader","goblin scavenger","goblin","goblin assassin","assasin","bandit","black knight","hero","hunter","nomad","smuggler","stalker","poacher","wild warrior","ashmunrah","dipthrah","mahrdis","morguthis","omruc","rahemos","thalas","vashresamun","pirate buccaneer","pirate corsair","pirate cutthroat","pirate marauder","carniphila","spit nettle","fire overlord","massive fire elemental","blistering fire elemental","blazing fire elemental","fire elemental","hellfire fighter","quara constrictor scout","quara hydromancer scout","quara mantassin scout","quara pincher scout","quara predator scout","quara constrictor","quara hydromancer","quara mantassin","quara pincher","quara predator","cave rat","rat","cobra","crocodile","serpent spawn","snake","wyvern","black sheep","sheep","mimic","betrayed wraith","bonebeast","demon skeleton","lost soul","pirate skeleton","skeleton","skeleton warrior","undead dragon","defiler","slime2","slime","bog raider","ice witch","warlock","witch","bones","fluffy","grynch clan goblin","hacker","minishabaal","primitive","tibia bug","undead minion","annihilon","hellgorak","latrivan","madareth","zugurosh","ushuriel","golgordan","thornback tortoise","tortoise","eye of the seven","deathslicer","flamethrower","magicthrower","plaguethrower","poisonthrower","shredderthrower","troll champion","frost troll","island troll","swamp troll","troll","banshee","blightwalker","crypt shambler","ghoul","lich","mummy","vampire","grim reaper","frost dragon","mercenary","zathroth","goshnar","durin","demora","orc champion","dracula","alezzo","prince almirith","elf warlord","magebomb","nightmare scion");
+		
 	// Use guild logo system
 	$config['use_guild_logos'] = true;
 
