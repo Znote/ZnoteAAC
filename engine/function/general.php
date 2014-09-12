@@ -383,11 +383,19 @@ function logged_in_redirect() {
 }
 
 function protect_page() {
-	if (user_logged_in() === false) {
-		header('Location: protected.php');
-		exit();
-	}
+        if ($config['enablemail'] == true) {
+                if (user_logged_in() === false or user_activated() === false) {
+                        header('Location: protected.php');
+                        exit();
+                }
+        } else {
+                if (user_logged_in() === false) {
+                        header('Location: protected.php');
+                        exit();
+                }
+        }
 }
+
 
 // When function is called, you will be redirected to protect_page and deny access to rest of page, as long as you are not admin.
 function admin_only($user_data) {	
