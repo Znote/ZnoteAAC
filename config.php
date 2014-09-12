@@ -31,6 +31,18 @@
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = '127.0.0.1';
 
+        // ------------------------ \\
+        // MAIL CONNECTION DETAILS  \\
+        // ------------------------ \\
+
+        $config['enablemail'] = false; //true/false
+        $config['smtpserver'] = 'mail.example.com';
+        $config['smtpport'] = '25';
+        $config['mailfrom'] = 'admin@example.comm';
+        $config['mailusername'] = '';
+        $config['mailpassword'] = '';
+
+
 	/* CLOCK FUNCTION
 		- getClock() = returns current time in numbers.
 		- getClock(time(), true) = returns current time in formatted date
