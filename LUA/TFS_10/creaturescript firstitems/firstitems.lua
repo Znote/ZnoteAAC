@@ -1,77 +1,72 @@
+-- With Rookgaard
+
+--[[
+local firstItems = {2050, 2382}
+
 function onLogin(cid)
-	local storage = 30055 -- storage value
-	
-	local sorcItems = {
-			2460, -- Brass helmet
-			2465, -- Brass armor
-			2190, -- Wand of vortex
-			2511, -- Brass shield
-			2478, -- Brass legs
-			2643, -- Leather boots
-			1988, -- Brown backpack
-			2050 -- torch
-		}
-	local druidItems = {
-			2460, -- Brass helmet
-			2465, -- Brass armor
-			2511, -- Brass shield
-			2182, -- Snakebite rod
-			2478, -- Brass legs
-			2643, -- Leather boots
-			1988, -- Brown backpack
-			2050 -- torch
-		}
-	local pallyItems = {
-			2460, -- Brass helmet
-			2465, -- Brass armor
-			2456, -- Bow
-			2478, -- Brass legs
-			2643, -- Leather boots
-			1988, -- Brown backpack
-		}
-	local kinaItems = {
-			2460, -- Brass helmet
-			2465, -- Brass armor
-			2511, -- Brass shield
-			2412, -- Katana
-			2478, -- Brass legs
-			2643, -- Leather boots
-			1988, -- Brown backpack
-			2050 -- torch
-		}
-	
-	if getPlayerStorageValue(cid, storage) == -1 then
-		setPlayerStorageValue(cid, storage, 1)
-		if getPlayerVocation(cid) == 1 then
-			-- Sorcerer
-			for i = 1, table.getn(sorcItems), 1 do
-				doPlayerAddItem(cid, sorcItems[i], 1, FALSE)
-			end
-		
-		elseif getPlayerVocation(cid) == 2 then
-			-- Druid
-			for i = 1, table.getn(druidItems), 1 do
-				doPlayerAddItem(cid, druidItems[i], 1, FALSE)
-			end
-		
-		elseif getPlayerVocation(cid) == 3 then
-			-- Paladin
-			for i = 1, table.getn(pallyItems), 1 do
-				doPlayerAddItem(cid, pallyItems[i], 1, FALSE)
-			end
-			-- 8 arrows
-			doPlayerAddItem(cid, 2544, 8, FALSE)
-		
-		elseif getPlayerVocation(cid) == 4 then
-			-- Knight
-			for i = 1, table.getn(kinaItems), 1 do
-				doPlayerAddItem(cid, kinaItems[i], 1, FALSE)
-			end
+	local player = Player(cid)
+	if player:getLastLoginSaved() <= 0 then
+		for i = 1, #firstItems do
+			player:addItem(firstItems[i], 1)
 		end
-		
-		-- Common for all
-		doPlayerAddItem(cid, 2674, 5, FALSE) -- 5 apples
-		doPlayerAddItem(cid, 2120, 1, FALSE) -- 1 rope
+		player:addItem(player:getSex() == 0 and 2651 or 2650, 1)
+		player:addItem(1987, 1)
+		player:addItem(2674, 1)
+	end
+	return true
+end
+]]--
+
+-- Without Rookgaard
+local config = {
+		[1] = {
+				--equipment spellbook, wand of vortex, magician's robe, mage hat, studded legs, leather boots, scarf
+				items = {{2175, 1}, {2190, 1}, {8819, 1}, {8820, 1}, {2468, 1}, {2643, 1}, {2661, 1}},
+				--container rope, shovel, mana potion
+				container = {{2120, 1}, {2554, 1}, {7620, 1}}
+		},
+		[2] = {
+				--equipment spellbook, snakebite rod, magician's robe, mage hat, studded legs, leather boots scarf
+				items = {{2175, 1}, {2182, 1}, {8819, 1}, {8820, 1}, {2468, 1}, {2643, 1}, {2661, 1}},
+				--container rope, shovel, mana potion
+				container = {{2120, 1}, {2554, 1}, {7620, 1}}
+		},
+		[3] = {
+				--equipment dwrven shield, 5 spear, ranger's cloak, ranger legs scarf, legion helmet
+				items = {{2525, 1}, {2389, 5}, {2660, 1}, {8923, 1}, {2643, 1}, {2661, 1}, {2480, 1}},
+				--container rope, shovel, health potion, bow, 50 arrow
+				container = {{2120, 1}, {2554, 1}, {7618, 1}, {2456, 1}, {2544, 50}}
+		},
+		[4] = {
+				--equipment dwarven shield, steel axe, brass armor, brass helmet, brass legs scarf
+				items = {{2525, 1}, {8601, 1}, {2465, 1}, {2460, 1}, {2478, 1}, {2643, 1}, {2661, 1}},
+				--container jagged sword, daramian mace, rope, shovel, health potion
+				container = {{8602, 1}, {2439, 1}, {2120, 1}, {2554, 1}, {7618, 1}}
+		}
+}
+
+function onLogin(cid)
+	local player = Player(cid)
+	local targetVocation = config[player:getVocation():getId()]
+	if not targetVocation then
+		return true
+	end
+
+	if player:getLastLoginSaved() ~= 0 then
+		return true
+	end
+
+	for i = 1, #targetVocation.items do
+		player:addItem(targetVocation.items[i][1], targetVocation.items[i][2])
+	end
+
+	local backpack = player:addItem(1988)
+	if not backpack then
+		return true
+	end
+
+	for i = 1, #targetVocation.container do
+		backpack:addItem(targetVocation.container[i][1], targetVocation.container[i][2])
 	end
 	return true
 end
