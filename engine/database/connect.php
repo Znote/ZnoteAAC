@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `znote_shop` (
   `type` int(11) NOT NULL,
   `itemid` int(11) DEFAULT NULL,
   `count` int(11) NOT NULL DEFAULT '1',
-  `describtion` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
   `points` int(11) NOT NULL DEFAULT '10',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

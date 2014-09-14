@@ -9,7 +9,7 @@ if ($logged_in === true) {
 		<form action="" method="post">
 			Image URL:<br /><input type="text" name="image" size="70"><br />
 			Image Title:<br /><input type="text" name="title" size="70"><br />
-			Image Describtion:<br /><textarea name="desc" cols="55" rows="15"></textarea><br />
+			Image Description:<br /><textarea name="desc" cols="55" rows="15"></textarea><br />
 			<input type="submit" name="Submit" value="Post Image Article">
 		</form>
 		<?php
@@ -101,5 +101,5 @@ echo $url;
 $url = explode("!", $url);
 <a href="<?php echo 'http://'. $url[0] .'.imgland.net/'. $url[1] .'.'. $url[2]; ?>"><img src="<?php echo 'http://'. $url[0] .'.imgland.net/'. $url[1] .'.'. $url[2]; ?>" width="650"/></a>
 echo time();
-//insertImage(2, "Yaay!", "Super describtion!", "1!pxpmul!jpg");
+//insertImage(2, "Yaay!", "Super description!", "1!pxpmul!jpg");
 */?>

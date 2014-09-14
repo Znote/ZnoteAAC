@@ -2,14 +2,14 @@
 function onSay(cid, words, param)
 	local storage = 54073 -- Make sure to select non-used storage. This is used to prevent SQL load attacks.
 	local cooldown = 15 -- in seconds.
-	
-	if getPlayerStorageValue(cid, storage) <= os.time() then
-		setPlayerStorageValue(cid, storage, os.time() + cooldown)
-		local accid = getAccountNumberByPlayerName(getCreatureName(cid))
-		
+	local player = Player(cid)
+
+	if player:getStorageValue(storage) <= os.time() then
+		player:setStorageValue(storage, os.time() + cooldown)
+
 		-- Create the query
-		local orderQuery = db.storeQuery("SELECT `id`, `type`, `itemid`, `count` FROM `znote_shop_orders` WHERE `account_id` = " .. accid .. " LIMIT 1;")
-		
+		local orderQuery = db.storeQuery("SELECT `id`, `type`, `itemid`, `count` FROM `znote_shop_orders` WHERE `account_id` = " .. player:getAccountId() .. " LIMIT 1;")
+
 		-- Detect if we got any results
 		if orderQuery ~= false then
 			-- Fetch order values
@@ -18,19 +18,17 @@ function onSay(cid, words, param)
 			local q_itemid = result.getDataInt(orderQuery, "itemid")
 			local q_count = result.getDataInt(orderQuery, "count")
 			result.free(orderQuery)
-			
+
 			-- ORDER TYPE 1 (Regular item shop products)
 			if q_type == 1 then
 				-- Get wheight
-				local playerCap = getPlayerFreeCap(cid)
-				local itemweight = getItemWeight(q_itemid, q_count)
-					if playerCap >= itemweight then
-						db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
-						doPlayerAddItem(cid, q_itemid, q_count)
-						doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have recieved ".. q_count .." "..getItemName(q_itemid).."(s)!")
-					else
-						doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "Need more CAP!")
-					end
+				if player:getFreeCapacity() >= ItemType(q_itemid):getWeight(q_count) then
+					db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
+					player:addItem(q_itemid, q_count)
+					player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received " .. q_count .. " x " .. ItemType(q_itemid):getName() .. "!")
+				else
+					player:sendTextMessage(MESSAGE_STATUS_WARNING, "Need more CAP!")
+				end
 			end
 			-- Add custom order types here
 			-- Type 2 is reserved for premium days and is handled on website, not needed here.
@@ -39,11 +37,10 @@ function onSay(cid, words, param)
 			-- if q_type == 4 then
 			-- end
 		else
-			doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "You have no orders.")
+			player:sendTextMessage(MESSAGE_STATUS_WARNING, "You have no orders.")
 		end
-		
 	else
-		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Can only be executed once every "..cooldown.." seconds. Remaining cooldown: ".. getPlayerStorageValue(cid, storage) - os.time())
+		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "Can only be executed once every " .. cooldown .. " seconds. Remaining cooldown: " .. player:getStorageValue(storage) - os.time())
 	end
 	return false
 end

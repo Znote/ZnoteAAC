@@ -86,7 +86,7 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 					end
 					
 					if guildKills1 >= fragLimit or guildKills2 >= fragLimit then
-						broadcastMessage(string.format("%s has just won the war against %s.", killerGuild:getName(), playerGuild:getName()), MESSAGE_EVENT_ADVANCE)
+						Game.broadcastMessage(string.format("%s has just won the war against %s.", killerGuild:getName(), playerGuild:getName()), MESSAGE_EVENT_ADVANCE)
 						db.query("UPDATE `guild_wars` SET `status` = 4, `ended` = " .. os.time() .. " WHERE `status` = 1 AND `id` = " .. warId)
 					end
 				end

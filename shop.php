@@ -95,7 +95,7 @@ if ($config['shop_auction']['characterAuction']) {
 		<?php
 		foreach ($shop_list as $key => $offers) {
 		echo '<tr class="special">';
-		echo '<td>'. $offers['describtion'] .'</td>';
+		echo '<td>'. $offers['description'] .'</td>';
 		if ($config['shop']['showImage']) echo '<td><img src="http://'. $config['shop']['imageServer'] .'/'. $offers['itemid'] .'.'. $config['shop']['imageType'] .'" alt="img"></td>';
 		if ($offers['type'] == 2) echo '<td>'. $offers['count'] .' Days</td>';
 		else if ($offers['type'] == 3 && $offers['count'] == 0) echo '<td>Unlimited</td>';
@@ -105,7 +105,7 @@ if ($config['shop_auction']['characterAuction']) {
 		?>
 		<form action="" method="POST">
 			<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
-			<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['describtion']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
+			<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
 		</form>
 		<?php
 		echo '</td>';
