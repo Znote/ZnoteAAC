@@ -240,8 +240,8 @@ function shop_account_gender_tickets($accid) {
 // GUILDS
 //
 function guild_remove_member($cid) {
-    $cid = (int)$cid;
-    mysql_update("UPDATE `players` SET `rank_id`='0', `guildnick`= NULL WHERE `id`=$cid");
+        $cid = (int)$cid;
+        mysql_update("UPDATE `players` SET `rank_id`='0', `guildnick`= NULL WHERE `id`=$cid");
 }
 function guild_remove_member_10($cid) {
 	$cid = (int)$cid;
