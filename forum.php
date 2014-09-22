@@ -1,5 +1,11 @@
 
-<?php require_once 'engine/init.php'; include 'layout/overall/header.php';
+<?php require_once 'engine/init.php'; include 'layout/overall/header.php'; ?>
+<style media="screen" type="text/css">
+form {
+    display: inline;
+}
+</style>
+<?php
 protect_page();
 error_reporting(E_ALL ^ E_NOTICE);
 if (!$config['forum']['enabled']) admin_only($user_data);
@@ -7,11 +13,11 @@ if (!$config['forum']['enabled']) admin_only($user_data);
 	---		Znote AAC forum 	---
 	-------------------------------
 	Created by Znote.
-	Version 1.2.
+	Version 1.3 modified by Peonso
 
-	Changelog (1.0 --> 1.2):
-	- Updated to the new date/clock time system
-	- Bootstrap design support.
+	Changelog (1.2 --> 1.3):
+	- Updated whole design
+	- Bootstrap design support messed up
 */
 // BBCODE support:
 function TransformToBBCode($string) {
@@ -39,6 +45,16 @@ Function PlayerHaveAccess($yourChars, $playerName){
 	}
 	return $access;
 }
+
+// forum layout by peonso functions
+			function border_class($bc) {
+				if ($bc === 1) {
+				echo 'class="lightborder"';
+				} else {
+				echo 'class="darkborder"';
+				}
+			}
+// END of forum layout by peonso functons	
 
 // Start page init
 $admin = is_admin($user_data);
@@ -229,12 +245,15 @@ if ($admin && !empty($_POST)) {
 			<form action="" method="post">
 				<input type="hidden" name="admin_category_id" value="<?php echo $category['id']; ?>">
 				<table class="updateTable table table-striped">
-					<tr>
+					<tr><td colspan="2">
+						Edit Board</td>
+					</tr>
+					<tr class="darkborder">
 						<td><label for="admin_category_name">Board name:</label></td>
 						<td><input name="admin_category_name" value="<?php echo $category['name']; ?>" class="span12"></td>
 
 					</tr>
-					<tr>
+					<tr class="darkborder">
 						<td><label for="admin_category_access">Required Access:</label></td>
 						<td>
 							<select name="admin_category_access" class="span12">
@@ -247,7 +266,7 @@ if ($admin && !empty($_POST)) {
 							</select>
 						</td>
 					</tr>
-					<tr>
+					<tr class="darkborder">
 						<td><label for="admin_category_closed">Closed:</label></td>
 						<td>
 							<select name="admin_category_closed" class="span12">
@@ -260,7 +279,7 @@ if ($admin && !empty($_POST)) {
 							</select>
 						</td>
 					</tr>
-					<tr>
+					<tr class="darkborder">
 						<td><label for="admin_category_hidden">Hidden:</label></td>
 						<td>
 							<select name="admin_category_hidden" class="span12">
@@ -273,7 +292,7 @@ if ($admin && !empty($_POST)) {
 							</select>
 						</td>
 					</tr>
-					<tr>
+					<tr class="darkborder">
 						<td><label for="admin_category_guild_id">Guild id:</label></td>
 						<td>
 							<select name="admin_category_guild_id" class="span12">
@@ -284,11 +303,12 @@ if ($admin && !empty($_POST)) {
 							</select>
 						</td>
 					</tr>
-					<tr>
-						<td colspan="2"><input type="submit" name="admin_update_category" value="Update Board" style="width: 100%; height: 30px;" class="btn btn-success"></td>
+					<tr class="darkborder">
+						<td colspan="2"><input type="submit" name="admin_update_category" value="Update Board" class="btn btn-success"></td>
 					</tr>
 				</table>
 			</form>
+			<br>
 			<?php
 		} else echo '<h2>Category not found.</h2>';
 		
@@ -369,7 +389,7 @@ if (!empty($_GET)) {
 
 			if ($access) {
 				mysql_insert("INSERT INTO `znote_forum_posts` (`thread_id`, `player_id`, `player_name`, `text`, `created`, `updated`) VALUES ('$reply_thread', '$reply_cid', '". $charData[$reply_cid]['name'] ."', '$reply_text', '". time() ."', '". time() ."');");
-				if ($config['forum']['newPostsBumpThreads']) mysql_update("UPDATE `znote_forum_threads` SET `updated`='". time() ."' WHERE `id`='$reply_thread';");
+				mysql_update("UPDATE `znote_forum_threads` SET `updated`='". time() ."' WHERE `id`='$reply_thread';");
 			} else echo '<p><b><font color="red">You don\'t have permission to post on this thread. [Thread: Closed]</font></b></p>';
 		} else {
 			?>
@@ -471,11 +491,16 @@ if (!empty($_GET)) {
 		if ($access) {
 			?>
 			<h1>Edit Post</h1>
+			<table>
+			<tr><td>Edit Post</td></tr>
+			<tr><td>
 			<form type="" method="post">
 				<input name="update_post_id" type="hidden" value="<?php echo $post['id']; ?>">
-				<textarea name="update_post_text" style="width: 610px; height: 300px"><?php echo $post['text']; ?></textarea><br>
+				<textarea name="update_post_text" style="width: 610px; height: 300px"><?php echo $post['text']; ?></textarea><br><br>
 				<input type="submit" value="Update Post" class="btn btn-success">
 			</form>
+			</td></tr>
+			</table>
 			<?php
 		} else echo '<p><b><font color="red">You don\'t have permission to edit this post.</font></b></p>';
 	} else
@@ -493,12 +518,17 @@ if (!empty($_GET)) {
 		if ($access) {
 			?>
 			<h1>Edit Thread</h1>
+			<table>
+			<tr><td>Edit Thread</td></tr>
+			<tr><td>
 			<form type="" method="post">
 				<input name="update_thread_id" type="hidden" value="<?php echo $thread['id']; ?>">
 				<input name="update_thread_title" type="text" value="<?php echo $thread['title']; ?>" style="width: 500px;"><br><br>
-				<textarea name="update_thread_text" style="width: 610px; height: 300px"><?php echo $thread['text']; ?></textarea><br>
+				<textarea name="update_thread_text" style="width: 610px; height: 300px"><?php echo $thread['text']; ?></textarea><br><br>
 				<input type="submit" value="Update Thread" class="btn btn-success">
 			</form>
+			</td></tr>
+			</table>
 			<?php
 		} else echo '<p><b><font color="red">Edit access denied.</font></b></p>';
 	} else
@@ -529,42 +559,55 @@ if (!empty($_GET)) {
 
 
 			if ($access) {
+				$bordercolor = 1;
 				?>
-				<font>LinkMap: <a href="forum.php">Forum</a> - <a href="?cat=<?php echo $getCat; ?>"><?php echo $getForum; ?></a></font><br>
-				<font size="5" id="ThreadTitle">Viewing thread: <?php echo "<a href='?forum=". $getForum ."&cat=". $getCat ."&thread=". $threadData['id'] ."'>". $threadData['title'] ."</a>"; ?></font>
+				<strong><a href='forum.php'>Forum</a> &raquo; <a href="?cat=<?php echo $getCat; ?>"><?php echo $getForum; ?></a> &raquo; <?php echo $threadData['title'];?></strong><br>
+				<br>
+				<font size="4" id="ThreadTitle"><strong><?php echo $threadData['title']; ?></strong></font><br>
+				<!--<span style="font-size:85%;opacity:.5;">Thread in '<?php echo $getForum; ?>' started by <?php echo $threadData['player_name'];?>, <?php echo date("j M Y", $threadData['created']) ?>.</span><br>-->
+
 				<table class="znoteTable ThreadTable table table-striped">
-					<tr class="yellow">
-						<th>
-							<?php 
-								echo getClock($threadData['created'], true); 
-							?>
-							 - Created by: 
-							 <?php 
-							 	echo "<a href='characterprofile.php?name=". $threadData['player_name'] ."'>". $threadData['player_name'] ."</a>";
-							 ?>
-						</th>
-					</tr>
 					<tr>
-						<td>
+						<th width="23%"><span style="font-size:85%;">Author</span></th>
+						<th></th>
+					</tr>
+				
+					<tr <?php border_class($bordercolor);?>>
+						<td valign="top"><?php echo "<a href='characterprofile.php?name=". $threadData['player_name'] ."'>". $threadData['player_name'] ."</a>";?><br>
+						<span style="font-size:85%"><?php 
+						$profile_name = sanitize($threadData['player_name']);
+						$profile_data = mysql_select_single("SELECT `name`, `group_id`, `vocation`, `level` FROM `players` WHERE `name` = '$profile_name' ;");  
+						
+						if ($profile_data['group_id'] > 1) {
+							foreach ($config['ingame_positions'] as $key=>$value) {
+								if ($key == $profile_data['group_id']) {
+									echo $value;
+									echo '<br>';
+								}
+							} 
+						}?>
+						<br>
+						Vocation: <?php echo vocation_id_to_name($profile_data['vocation']); ?><br>
+						Level: <?php echo $profile_data['level']; ?><br><br></span>
+						</td>
+						<td valign="top">
 							<p><?php echo nl2br(TransformToBBCode($threadData['text'])); ?></p>
 						</td>
 					</tr>
-				</table>
-				<hr class="bighr">
+					<tr <?php border_class($bordercolor);?> height="30px">
+						<td valign="top">
+							<span style="font-size:75%;"><?php echo getClock($threadData['created'], true); ?></span>
+						</td>
+						<td align="right">
 				<?php
 				if ($admin || $leader) {
 					// PlayerHaveAccess($yourChars, $thread['player_name']) || 
 					// $yourChars
 					?>
-					<table class="adminTable table">
-						<tr>
-							<td>
-								<form action="" method="post">
+						<form action="" method="post">
 									<input type="hidden" name="admin_thread_id" value="<?php echo $threadData['id']; ?>">
 									<input type="submit" name="admin_thread_delete" value="Delete Thread" class="btn btn-danger">
 								</form>
-							</td>
-							<td>
 								<?php if ($threadData['closed'] == 0) { ?>
 									<form action="" method="post">
 										<input type="hidden" name="admin_thread_id" value="<?php echo $threadData['id']; ?>">
@@ -576,10 +619,8 @@ if (!empty($_GET)) {
 										<input type="submit" name="admin_thread_open" value="Open Thread" class="btn btn-success">
 									</form>
 								<?php } ?>
-							</td>
-							<td>
 								<?php if ($threadData['sticky'] == 0) { ?>
-									<form action="" method="post">
+								<form action="" method="post">
 										<input type="hidden" name="admin_thread_id" value="<?php echo $threadData['id']; ?>">
 										<input type="submit" name="admin_thread_sticky" value="Stick thread" class="btn btn-info">
 									</form>
@@ -589,60 +630,68 @@ if (!empty($_GET)) {
 										<input type="submit" name="admin_thread_unstick" value="Unstick thread" class="btn btn-primary">
 									</form>
 								<?php } ?>
-							</td>
-							<td>
 								<form action="" method="post">
 									<input type="hidden" name="edit_thread_id" value="<?php echo $threadData['id']; ?>">
 									<input type="submit" name="edit_thread" value="Edit Thread" class="btn btn-warning">
 								</form>
-							</td>
-						</tr>
-					</table>
 					<?php
 				} else {
 					if ($threadData['closed'] == 0 && PlayerHaveAccess($yourChars, $threadData['player_name'])) {
 						?>
-						<table class="editThread">
-							<tr>
-								<td>
 									<form action="" method="post">
 										<input type="hidden" name="edit_thread_id" value="<?php echo $threadData['id']; ?>">
 										<input type="submit" name="edit_thread" value="Edit Thread" class="btn btn-info">
 									</form>
-								</td>
-							</tr>
-						</table>
 						<?php
 					}
 				}
 				?>
+						</td>
+					</tr>				
 				<?php
 				// Display replies... (copy table above and edit each post)
 				$posts = mysql_select_multi("SELECT `id`, `player_name`, `text`, `created`, `updated` FROM `znote_forum_posts` WHERE `thread_id`='". $threadData['id'] ."' ORDER BY `created`;");
 				if ($posts !== false) {
 					foreach($posts as $post) {
+						if ($bordercolor === 1) {
+						$bordercolor = 0;
+						} else {
+						$bordercolor = 1;
+						}
 						?>
-						<table class="znoteTable ThreadTable table table-striped">
-							<tr class="yellow">
-								<th>
-									<?php 
-										echo getClock($post['created'], true); 
-									?>
-									 - Posted by: 
-									 <?php 
-									 	echo "<a href='characterprofile.php?name=". $post['player_name'] ."'>". $post['player_name'] ."</a>";
-									 ?>
-								</th>
-							</tr>
-							<tr>
-								<td>
+							<tr <?php border_class($bordercolor);?>>
+								<td valign="top"><?php echo "<a href='characterprofile.php?name=". $post['player_name'] ."'>". $post['player_name'] ."</a>";?><br>
+						<span style="font-size:85%"><?php 
+						$post_name = sanitize($post['player_name']);
+						$post_data = mysql_select_single("SELECT `name`, `group_id`, `vocation`, `level` FROM `players` WHERE `name` = '$post_name' ;");  
+
+						if ($post_data['group_id'] > 1) {
+							foreach ($config['ingame_positions'] as $key=>$value) {
+								if ($key == $post_data['group_id']) {
+									echo $value;
+									echo '<br>';
+								}
+							} 
+						}?>
+						<br>
+						Vocation: <?php echo vocation_id_to_name($post_data['vocation']); ?><br>
+						Level: <?php echo $post_data['level']; ?><br><br></span>
+						</td>
+
+								<td valign="top">
 									<p><?php echo nl2br(TransformToBBCode($post['text'])); ?></p>
 								</td>
 							</tr>
-						</table>
-						<hr class="bighr">
+							<tr <?php border_class($bordercolor);?> height="30px">
+								<td valign="top">
+									<span style="font-size:75%;"><?php echo getClock($post['created'], true); ?></span>
+								</td>
+								<td  align="right">
+
+
 						<?php
 						if (PlayerHaveAccess($yourChars, $post['player_name']) || $admin) {
+							?><?php
 							if ($admin) {
 								?>
 								<form action="" method="post" class="postButton">
@@ -659,21 +708,27 @@ if (!empty($_GET)) {
 								</form>
 								<?php
 							}
+							?><?php
 						}
+						?></td></tr><?php
 					}
 				}
+				?></table><br><?php
 
 				// Quick Reply
 				if ($charCount > 0) {
 					if ($threadData['closed'] == 0 || $yourAccess > 3) {
 						?>
+						<table>
+						<tr><td>Quick Reply</td></tr>
+						<tr class="darkborder"><td>
 						<form action="" method="post">
-							<input name="reply_thread" type="hidden" value="<?php echo $threadData['id']; ?>"><br>
-
-<p style="font-size: 13px; padding-left: 10px; padding-top: 10px; height: 5px; width: 600px; border-top: 1px solid black;"><b>[b]Bold Text[/b]</b>, [img]<a href="http://www.imgland.net/">Direct Image Link</a>[/img], [center]Cented Text[/center],<br> [link]<a href="http://youtube.com/" target="_BLANK">http://youtube.com/</a>[/link], [color=<font color="green">GREEN</font>]<font color="green">Green Text!</font>[/color], [*] - Dotted [/*]</p><br>
-
+							<input name="reply_thread" type="hidden" value="<?php echo $threadData['id']; ?>">
+							<abbr title="[b]Bold Text[/b], [img]Direct Image Link[/img], [center]Cented Text[/center], [link]http://youtube.com/ [/link], [color=GREEN]Green Text![/color], [*] - Dotted [/*]"><a>BB Code info</a></abbr>
+							<br>
+							<br>
 							<textarea class="forumReply" name="reply_text" style="width: 610px; height: 150px"></textarea><br>
-							<select name="reply_cid" multiple="multiple">
+							<select name="reply_cid">
 								<?php
 								foreach($yourChars as $char) {
 									echo "<option value='". $char['id'] ."'>". $char['name'] ."</option>";
@@ -682,6 +737,8 @@ if (!empty($_GET)) {
 							</select>
 							<input name="" type="submit" value="Post Reply" class="btn btn-primary">
 						</form>
+						</td></tr>
+						</table>
 						<?php
 					} else echo '<p><b>You don\'t have permission to post on this thread. [Thread: Closed]</b></p>';
 				} else {
@@ -690,14 +747,13 @@ if (!empty($_GET)) {
 			} else echo "<p><font color='red'>Your permission to access this thread has been denied.</font></p>";
 		} else {
 			?>
-			<h1>Thread unavailable</h1>
-			<p>Thread is unavailable for you, or do not exist any more.
+			<p>Thread is unavailable for you, or do not exist any more.<br>
 				<?php
 				if ($_GET['cat'] > 0 && !empty($_GET['forum'])) {
 					$tmpCat = getValue($_GET['cat']);
 					$tmpCatName = getValue($_GET['forum']);
 					?>
-					<br><a href="forum.php?forum=<?php echo $tmpCatName; ?>&cat=<?php echo $tmpCat; ?>">Go back to: <?php echo $tmpCatName; ?></a></p>
+					<br>Go back to: <a href="forum.php?forum=<?php echo $tmpCatName; ?>&cat=<?php echo $tmpCat; ?>"><?php echo $tmpCatName; ?></a></p>
 					<?php
 				} else {
 					?>
@@ -730,15 +786,15 @@ if (!empty($_GET)) {
 			}
 
 			if ($access) {
-				?>
-				<h1>Create new thread</h1>
+				?><table><tr><td>
+				<b>Create new thread</b></td></tr></table><p>
 				<form type="" method="post">
 					<input type="text" disabled value="<?php echo $charData[$new_thread_cid]['name']; ?>" style="width: 100px;">
 					<input name="create_thread_cid" type="hidden" value="<?php echo $new_thread_cid; ?>">
 					<input name="create_thread_category" type="hidden" value="<?php echo $new_thread_category; ?>">
-					<input name="create_thread_title" type="text" placeholder="Thread title" style="width: 500px;"><br><br>
-					<textarea name="create_thread_text" style="width: 610px; height: 300px" placeholder="Thread text"></textarea><br>
-					<input type="submit" value="Create Thread" class="btn btn-success">
+					<input name="create_thread_title" type="text" placeholder="Thread Subject" style="width: 592px;"><br><br>
+					<textarea name="create_thread_text" style="width: 100%; height: 250px" placeholder="Message"></textarea><br>
+					<br><input type="submit" value="Create Thread" class="btn btn-success">
 				</form>
 				<?php
 			} else echo '<p><b><font color="red">Permission to create thread denied.</font></b></p>';
@@ -762,19 +818,22 @@ if (!empty($_GET)) {
 		if ($category !== false) {
 			// TODO : Verify guild access
 			//foreach($charData)
-			echo "<h1><a href='forum.php'>Forum</a> Board: ". $category['name'] ."</h1>";
+			echo "<strong><a href='forum.php'>Forum</a> &raquo; ". $category['name'] ."</strong><br><br>";
+			echo "<font size='4' id='ThreadTitle'><strong>". $category['name'] ."</strong></font><br>";
 
 			// Threads
 			//  - id - forum_id - player_id - player_name - title - text - created - updated - sticky - hidden - closed
-			$threads = mysql_select_multi("SELECT `id`, `player_name`, `title`, `sticky`, `closed` FROM `znote_forum_threads` WHERE `forum_id`='$getCat' ORDER BY `sticky` DESC, `updated` DESC;");
+			$threads = mysql_select_multi("SELECT `id`, `player_name`, `title`, `sticky`, `closed`, `updated` FROM `znote_forum_threads` WHERE `forum_id`='$getCat' ORDER BY `sticky` DESC, `updated` DESC;");
 
 			///// HTML \\\\\
 			if ($threads !== false) {
 				?>
 				<table class="znoteTable table table-bordered table-striped table-hover" id="forumThreadTable">
 					<tr class="yellow">
-						<th width="80%">Title</th>
-						<th width="20%">By</th>
+						<td width="40%">Title</td>
+						<td width="20%">Author</td>
+						<td width="5%">Replies</td>
+						<td width="20%">Last Post</td>
 					</tr>
 					<?php
 					foreach($threads as $thread) {
@@ -787,26 +846,46 @@ if (!empty($_GET)) {
 
 						if ($access) {
 							?>
-							<tr class="special">
+							<tr>
+								<td>
 								<?php
-								$url = url("forum.php?forum=". $category['name'] ."&cat=". $getCat ."&thread=". $thread['id']);
-								echo '<td onclick="javascript:window.location.href=\'' . $url . '\'">';
-								?>
-								<!--<td>-->
-									<?php
 									if ($thread['sticky'] == 1) echo $config['forum']['sticky'],' ';
 									if ($thread['closed'] == 1) echo $config['forum']['closed'],' ';
-									echo $thread['title'];
-									?>
-								</td>
-								<?php
-								$url = url("characterprofile.php?name=". $thread['player_name']);
-								echo '<td onclick="javascript:window.location.href=\'' . $url . '\'">';
+									$url = url("forum.php?forum=". $category['name'] ."&cat=". $getCat ."&thread=". $thread['id']);
 								?>
-								<!--<td>-->
-									<?php
-									echo $thread['player_name'];
-									?>
+								<a href="<?php echo $url;?>"><?php echo $thread['title'];?></a>
+								</td>
+								<td>
+								<?php
+									$url = url("characterprofile.php?name=". $thread['player_name']);
+								?>
+								<a href="<?php echo $url;?>"><?php echo $thread['player_name'];?></a>
+								</td>
+								<td>
+								<?php
+									$threadid = $thread['id'];
+									$posts = mysql_select_multi("SELECT `player_name`, `updated` FROM `znote_forum_posts` WHERE `thread_id`=$threadid ORDER BY `updated` DESC");
+									if (!empty($posts)) { 
+										$replies = count($posts);
+										foreach($posts as $post) {
+											$lastposter = $post['player_name'];
+											$lastpostdate = $post['updated'];
+											break; 
+										}
+									} else {
+										$replies = 0;
+										$lastposter = $thread['player_name'];
+										$lastpostdate = $thread['updated'];
+									}
+									echo $replies;
+								?>
+								</td>
+								<td>
+								<?php
+								$url = url("characterprofile.php?name=". $lastposter);
+								?>
+								<span style="font-size:75%;"><?php echo getClock($lastpostdate, true); ?><br>
+								by <a href="<?php echo $url;?>"><?php echo $lastposter;?></a></span>
 								</td>
 							</tr>
 							<?php
@@ -814,6 +893,7 @@ if (!empty($_GET)) {
 					}
 					?>
 				</table>
+				<br>
 				<?php
 			} else echo 'Board is empty, no threads exist yet.';
 
@@ -822,9 +902,12 @@ if (!empty($_GET)) {
 			if ($charCount > 0) {
 				if ($category['closed'] == 0  || $admin) {
 					?>
+					<table>
+					<tr><td>Create new thread</td></tr>
+					<tr><td>
 					<form action="" method="post">
 						<input type="hidden" value="<?php echo $getCat; ?>" name="new_thread_category">
-						<select name="new_thread_cid" multiple="multiple">
+						<select name="new_thread_cid">
 							<?php
 							foreach($yourChars as $char) {
 								echo "<option value='". $char['id'] ."'>". $char['name'] ."</option>";
@@ -833,6 +916,8 @@ if (!empty($_GET)) {
 						</select>
 						<input type="submit" value="Create new thread" class="btn btn-primary">
 					</form>
+					</td></tr>
+					</table>
 					<?php
 				} else echo '<p>This board is closed.</p>';
 			} else echo "<p>You must have a character on your account that is level ". $config['forum']['level'] ."+ to create new threads.</p>";
@@ -849,9 +934,13 @@ if (!empty($_GET)) {
 	
 	$guildboard = false;
 	?>
+	<strong>Forum</strong><br>
 	<table class="znoteTable table table-striped table-hover" id="forumCategoryTable">
 		<tr class="yellow">
-			<th>Forum Boards</th>
+			<td width="35%"><?php echo $config['site_title']; ?> Boards</td>
+			<td width="10%">Threads</td>
+			<td width="10%">Posts</td>
+			<td>Last Post</td>
 			<?php
 			$guild = false;
 			foreach($charData as $char) {
@@ -869,8 +958,8 @@ if (!empty($_GET)) {
 				}
 				if ($admin) {
 					?>
-					<th>Edit</th>
-					<th>Delete</th>
+					<td>Edit</td>
+					<td>Delete</td>
 					<?php
 				}
 			}
@@ -893,29 +982,64 @@ if (!empty($_GET)) {
 				}
 				*/
 				if ($access) {
+				
 					$url = url("forum.php?cat=". $category['id']);
-					echo '<tr class="special">';
-					echo '<td onclick="javascript:window.location.href=\'' . $url . '\'">';
+					echo "<td>";
 					if ($category['closed'] == 1) echo $config['forum']['closed'],' ';
 					if ($category['hidden'] == 1) echo $config['forum']['hidden'],' ';
 					if ($category['guild_id'] > 0) {
 						echo "[". $guildName[$category['guild_id']] ."] ";
 					}
-					echo $category['name'] ."</td>";
+					echo "<a href=". $url .">". $category['name'] ."</a></td>";
+
+					$categoryid = $category['id'];
+					$threads = mysql_select_multi("SELECT `id`, `player_name`, `updated` FROM `znote_forum_threads` WHERE `forum_id`=$categoryid ORDER BY `updated` ASC");
+					(!empty($threads)) ? ($threadscount = count($threads)) : $threadscount = 0;
+					$replies = 0;
+					foreach ($threads as $thread) {
+						$threadid = $thread['id'];
+						$posts = mysql_select_multi("SELECT `player_name`, `updated` FROM `znote_forum_posts` WHERE `thread_id`=$threadid ORDER BY `updated` DESC");
+						if (!empty($posts)) { 
+							$newreplies = count($posts);
+							foreach($posts as $post) {
+								$lastposter = $post['player_name'];
+								$lastpostdate = $post['updated'];
+								break; 
+							}
+						} else {
+							$lastposter = $thread['player_name'];
+							$lastpostdate = $thread['updated'];
+							$newreplies = 0;
+						}
+						$replies = $replies + $newreplies;
+					}
+					echo "<td>". $threadscount ."</td>";
+					
+					echo "<td>". $replies ."</td>";
+					
+					echo "<td>";
+					if ($threadscount > 0) {
+					$url = url("characterprofile.php?name=". $lastposter);
+					echo "<span style='font-size:75%;'>". getClock($lastpostdate, true). "<br>";
+					echo "by <a href='". $url ."'>". $lastposter ."</a></span>";
+					} else {
+					echo "<span style='font-size:75%;'>no post</span>";
+					}
+					echo "</td>";
 					
 					// Admin columns
 					if ($admin) {
 						?>
-						<td style="margin: 0px; padding: 0px; width: 100px;">
+						<td style="margin: 0px; padding: 0px; width: 50px;">
 							<form action="" method="post">
 								<input type="hidden" name="admin_category_id" value="<?php echo $category['id']; ?>">
 								<input type="submit" name="admin_category_edit" value="Edit" style="margin: 0px; padding: 0px; width: 50px; height: 22px;" class="btn btn-warning">
 							</form>
 						</td>
-						<td style="margin: 0px; padding: 0px; width: 100px;">
+						<td style="margin: 0px; padding: 0px; width: 50px;">
 							<form action="" method="post">
 								<input type="hidden" name="admin_category_id" value="<?php echo $category['id']; ?>">
-								<input type="submit" name="admin_category_delete" value="Delete" style="margin: 0px; padding: 0px; width: 75px; height: 22px;" class="btn btn-danger">
+								<input type="submit" name="admin_category_delete" value="Delete" style="margin: 0px; padding: 0px; width: 75px; height: 22px;" class="btn btn-danger needconfirmation">
 							</form>
 						</td>
 						<?php
@@ -926,14 +1050,17 @@ if (!empty($_GET)) {
 		}
 		?>
 	</table>
-	<hr class="bighr">
+
 	<?php
 	if ($guildboard !== false && $guild || $guildboard !== false && $admin) {
 		//
 		?>
 		<table class="table table-striped table-hover znoteTable" id="forumCategoryTable">
 			<tr class="yellow">
-				<th>Guild Boards</th>
+				<td width="35%">Guild Boards</td>
+				<td width="10%">Threads</td>
+				<td width="10%">Posts</td>
+				<td>Last Post</td>
 				<?php
 				foreach($charData as $char) {
 					if ($char['guild'] > 0) $guild = true;
@@ -950,8 +1077,8 @@ if (!empty($_GET)) {
 					}
 					if ($admin) {
 						?>
-						<th width="100">Edit</th>
-						<th width="100">Delete</th>
+						<td width="100">Edit</td>
+						<td width="100">Delete</td>
 						<?php
 					}
 				}
@@ -968,15 +1095,50 @@ if (!empty($_GET)) {
 					}
 				}
 				if ($access || $admin) {
+				
 					$url = url("forum.php?cat=". $board['id']);
-					echo '<tr class="special">';
-					echo '<td onclick="javascript:window.location.href=\'' . $url . '\'">';
+					echo "<td>";
 					if ($board['closed'] == 1) echo $config['forum']['closed'],' ';
 					if ($board['hidden'] == 1) echo $config['forum']['hidden'],' ';
 					if ($board['guild_id'] > 0) {
-						echo "[". $guildName[$board['guild_id']] ."] ";
+						echo "[". $board['name'] ."] ";
 					}
-					echo $board['name'] ."</td>";
+					echo "<a href=". $url .">". $guildName[$board['guild_id']] ."</a></td>";
+					
+					$categoryid = $board['id'];
+					$threads = mysql_select_multi("SELECT `id`, `player_name`, `updated` FROM `znote_forum_threads` WHERE `forum_id`=$categoryid ORDER BY `updated` ASC");
+					(!empty($threads)) ? ($threadscount = count($threads)) : $threadscount = 0;
+					$replies = 0;
+					foreach ($threads as $thread) {
+						$threadid = $thread['id'];
+						$posts = mysql_select_multi("SELECT `player_name`, `updated` FROM `znote_forum_posts` WHERE `thread_id`=$threadid ORDER BY `updated` DESC");
+						if (!empty($posts)) { 
+							$newreplies = count($posts);
+							foreach($posts as $post) {
+								$lastposter = $post['player_name'];
+								$lastpostdate = $post['updated'];
+								break; 
+							}
+						} else {
+							$lastposter = $thread['player_name'];
+							$lastpostdate = $thread['updated'];
+							$newreplies = 0;
+						}
+						$replies = $replies + $newreplies;
+					}
+					echo "<td>". $threadscount ."</td>";
+					
+					echo "<td>". $replies ."</td>";
+					
+					echo "<td>";
+					if ($threadscount > 0) {
+					$url = url("characterprofile.php?name=". $lastposter);
+					echo "<span style='font-size:75%;'>". getClock($lastpostdate, true). "<br>";
+					echo "by <a href='". $url ."'>". $lastposter ."</a></span>";
+					} else {
+					echo "<span style='font-size:75%;'>no post</span>";
+					}
+					echo "</td>";
 					
 					// Admin columns
 					if ($admin) {
@@ -990,7 +1152,7 @@ if (!empty($_GET)) {
 						<td style="margin: 0px; padding: 0px; width: 100px;">
 							<form action="" method="post">
 								<input type="hidden" name="admin_category_id" value="<?php echo $board['id']; ?>">
-								<input type="submit" name="admin_category_delete" value="Delete" style="margin: 0px; padding: 0px; width: 75px; height: 22px;" class="btn btn-danger">
+								<input type="submit" name="admin_category_delete" value="Delete" style="margin: 0px; padding: 0px; width: 75px; height: 22px;" class="btn btn-danger needconfirmation">
 							</form>
 						</td>
 						<?php
@@ -1005,7 +1167,9 @@ if (!empty($_GET)) {
 	}
 	if ($admin) {
 		?>
-		<h2>Create board:</h2>
+		<table>
+		<tr><td>Create board:</td></tr>
+		<tr class="darkborder"><td>
 		<form action="" method="post">
 			<input type="text" name="admin_board_create_name" placeholder="Board name"><br><br>
 			
@@ -1038,6 +1202,21 @@ if (!empty($_GET)) {
 			
 			<input type="submit" value="Create Board" class="btn btn-primary">
 		</form>
+		</td></tr></table>
+					<script src="engine/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+			<script>
+			    $(document).ready(function(){
+			        $(".needconfirmation").each(function(e){
+			            $(this).click(function(e){
+			                var itemname = $(this).attr("data-item-name");
+							var r = confirm("Do you really want to DELETE this forum"+$('#admin_category_delete').find("#admin_category_id").text()+"?")
+							if(r == false){
+								e.preventDefault();
+							}			
+			            });
+			        });
+			    });
+			</script>
 		<?php
 	}
 
