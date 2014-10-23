@@ -628,3 +628,25 @@ hr {
         background-color: green;
         border: 1px solid black;
 }
+
+/* ///////////\/\\\\\\\\\\\
+   //  Znote YOUTUBE BB  \\
+   ///////////\/\\\\\\\\\\\ */
+
+div.youtube {
+  width: 100%;
+  max-width: 560px;
+}
+
+div.aspectratio {
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  position: relative;
+}
+
+div.aspectratio > iframe {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  width: 100%;
+  height: 100%;
+}

@@ -23,6 +23,7 @@ function TransformToBBCode($string) {
 		'[link={$1}]{$2}[/link]'   => '<a href="$1" target="_BLANK">$2</a>',
 		'[color={$1}]{$2}[/color]' => '<font color="$1">$2</font>',
 		'[*]{$1}[/*]' => '<li>$1</li>',
+		'[youtube]{$1}[/youtube]' => '<div class="youtube"><div class="aspectratio"><iframe src="//www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe></div></div>',
 	);
 
 	foreach ($tags as $tag => $value) {
