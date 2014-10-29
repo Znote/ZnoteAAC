@@ -1,4 +1,7 @@
 <?php
+	if (gethostbyaddr($_SERVER['REMOTE_ADDR']) !== 'notify.paypal.com') {
+		exit();
+	}
 
 	// Require the functions to connect to database and fetch config values
 	require 'config.php';
