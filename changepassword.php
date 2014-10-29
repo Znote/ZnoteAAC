@@ -29,8 +29,8 @@ if (empty($_POST) === false) {
 			$errors[] = 'Your new passwords do not match.';
 		} else if (strlen($_POST['new_password']) < 6) {
 			$errors[] = 'Your new passwords must be at least 6 characters.';
-		} else if (strlen($_POST['new_password']) > 32) {
-			$errors[] = 'Your new passwords must be less than 33 characters.';
+		} else if (strlen($_POST['new_password']) > 100) {
+			$errors[] = 'Your new passwords must be less than 100 characters.';
 		}
 	} else {
 		$errors[] = 'Your current password is incorrect.';

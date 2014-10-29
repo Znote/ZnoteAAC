@@ -57,8 +57,8 @@ if (empty($_POST) === false) {
 		if (strlen($_POST['password']) < 6) {
 			$errors[] = 'Your password must be at least 6 characters.';
 		}
-		if (strlen($_POST['password']) > 33) {
-			$errors[] = 'Your password must be less than 33 characters.';
+		if (strlen($_POST['password']) > 100) {
+			$errors[] = 'Your password must be less than 100 characters.';
 		}
 		if ($_POST['password'] !== $_POST['password_again']) {
 			$errors[] = 'Your passwords do not match.';
