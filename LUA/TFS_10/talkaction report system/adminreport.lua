@@ -10,7 +10,7 @@ function onSay(cid, words, param, channel)
 	end
 	if player:getStorageValue(storage) <= os.time() then
 		player:sendTextMessage(MESSAGE_INFO_DESCR, "Your report has been received successfully!")
-		db.query("INSERT INTO `znote_player_reports` (`id` ,`name` ,`posx` ,`posy` ,`posz` ,`report_description` ,`date`)VALUES (NULL ,  '" .. player:getName() .. "',  '" .. player:getPosition().x .. "',  '" .. player:getPosition().y .. "',  '" .. player:getPosition().z .. "',  " .. db.escapeString(param) .. ",  '" .. os.time() .. "')")
+		db.query("INSERT INTO `znote_player_reports` (`id` ,`name` ,`posx` ,`posy` ,`posz` ,`report_description` ,`date`)VALUES (NULL ,  " .. db.escapeString(player:getName()) .. ",  '" .. player:getPosition().x .. "',  '" .. player:getPosition().y .. "',  '" .. player:getPosition().z .. "',  " .. db.escapeString(param) .. ",  '" .. os.time() .. "')")
 		player:setStorageValue(storage, os.time() + delaytime)
 	else
 		player:sendTextMessage(MESSAGE_STATUS_WARNING, "You have to wait " .. player:getStorageValue(storage) - os.time() .. " seconds to report again.")
