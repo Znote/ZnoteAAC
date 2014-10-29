@@ -65,9 +65,9 @@
 	$payment_status   = $_POST['payment_status'];
 	$payment_amount   = $_POST['mc_gross'];
 	$payment_currency = $_POST['mc_currency'];
-	$txn_id           = $_POST['txn_id'];
-	$receiver_email   = $_POST['receiver_email'];
-	$payer_email      = $_POST['payer_email'];
+	$txn_id           = getValue($_POST['txn_id']);
+	$receiver_email   = getValue($_POST['receiver_email']);
+	$payer_email      = getValue($_POST['payer_email']);
 	$custom           = (int)$_POST['custom'];
 
 	$connectedIp = $_SERVER['REMOTE_ADDR'];
