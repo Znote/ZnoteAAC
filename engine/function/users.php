@@ -1233,7 +1233,7 @@ function user_count_accounts() {
 */
 function user_character_data($user_id) {
 	$data = array();
-	$user_id = sanitize($user_id);
+	$user_id = (int)$user_id;
 	$func_num_args = func_num_args();
 	$func_get_args = func_get_args();
 	if ($func_num_args > 1)  {

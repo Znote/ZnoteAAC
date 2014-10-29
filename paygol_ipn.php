@@ -10,18 +10,18 @@ if(!in_array($_SERVER['REMOTE_ADDR'],
 }
 
 // get the variables from PayGol system
-$message_id	= $_GET['message_id'];
-$service_id	= $_GET['service_id'];
-$shortcode	= $_GET['shortcode'];
-$keyword	= $_GET['keyword'];
-$message	= $_GET['message'];
-$sender	 = $_GET['sender'];
-$operator	= $_GET['operator'];
-$country	= $_GET['country'];
-$custom	 = $_GET['custom'];
-$points	 = $_GET['points'];
-$price	 = $_GET['price'];
-$currency	= $_GET['currency'];
+$message_id	= getValue($_GET['message_id']);
+$service_id	= getValue($_GET['service_id']);
+$shortcode	= getValue($_GET['shortcode']);
+$keyword	= getValue($_GET['keyword']);
+$message	= getValue($_GET['message']);
+$sender	 = getValue($_GET['sender']);
+$operator	= getValue($_GET['operator']);
+$country	= getValue($_GET['country']);
+$custom	 = getValue($_GET['custom']);
+$points	 = getValue($_GET['points']);
+$price	 = getValue($_GET['price']);
+$currency	= getValue($_GET['currency']);
 
 $paygol = $config['paygol'];
 $new_points = $paygol['points'];
