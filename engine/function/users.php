@@ -443,7 +443,7 @@ function create_guild($cid, $name) {
 	$time = time();
 	
 	// Create the guild
-	mysql_insert("INSERT INTO `guilds` (`name`, `ownerid`, `creationdata`, `motd`) VALUES ('$name', '$cid', '$time', 'The guild has been created!');");
+	mysql_insert("INSERT INTO `guilds` (`name`, `ownerid`, `creationdata`, `motd`) VALUES ('$name', '$cid', '$time', '');");
 
 	// Get guild id
 	$gid = get_guild_id($name);
@@ -528,6 +528,21 @@ function get_guild_players($gid) {
     $gid = (int)$gid; // Sanitizing the parameter id
     if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT p.rank_id, p.name, p.level, p.guildnick, p.vocation, p.online, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid' ORDER BY gr.id, p.name;");
     else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id, gm.nick AS `guildnick`, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id LEFT JOIN guild_ranks AS gr ON gr.id = gm.rank_id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name");
+}
+
+// Get guild level data (avg level, total level, count of players)
+function get_guild_level_data($gid) {
+	$gid = (int)$gid;
+	$data = (config('TFSVersion') !== 'TFS_10') ? mysql_select_multi("SELECT p.level FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';") : mysql_select_multi("SELECT p.level, FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name;");
+	$members = 0;
+	$totallevels = 0;
+	if ($data !== false) {
+		foreach ($data as $player) {
+			$members++;
+			$totallevels += $player['level'];
+		}
+		return array('avg' => (int)($totallevels / $members), 'total' => $totallevels, 'players' => $members);
+	} else return false;
 }
 
 // Returns total members in a guild (integer)

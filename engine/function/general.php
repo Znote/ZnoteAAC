@@ -503,7 +503,7 @@ function check_image($image) {
 
 // Check guild logo
 function logo_exists($guild) {
-
+	$guild = sanitize($guild);
 	if (file_exists('engine/guildimg/'.$guild.'.gif')) {
 
 		echo'engine/guildimg/'.$guild.'.gif';

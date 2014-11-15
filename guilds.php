@@ -1,6 +1,26 @@
 <?php require_once 'engine/init.php';
 if ($config['require_login']['guilds']) protect_page();
 $isOtx = ($config['CustomVersion'] == 'OTX') ? true : false;
+
+function guild_list($TFSVersion) {
+	$cache = new Cache('engine/cache/guildlist');
+	if ($cache->hasExpired()) {
+		if ($TFSVersion != 'TFS_10') $guilds = mysql_select_multi("SELECT `t`.`id`, `t`.`name`, `t`.`creationdata`, `motd`, (SELECT count(p.rank_id) FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =`t`.`id`) AS `total` FROM `guilds` as `t` ORDER BY `t`.`name`;");
+		else $guilds = mysql_select_multi("SELECT `id`, `name`, `creationdata`, `motd`, (SELECT COUNT('guild_id') FROM `guild_membership` WHERE `guild_id`=`id`) AS `total` FROM `guilds` ORDER BY `name`;");
+		
+		// Add level data info to guilds
+		if ($guilds !== false) 
+			for ($i = 0; $i < count($guilds); $i++) 
+				$guilds[$i]['level'] = get_guild_level_data($guilds[$i]['id']);
+
+		$cache->setContent($guilds);
+		$cache->save();
+	} else {
+		$guilds = $cache->load();
+	}
+	return $guilds;
+}
+
 include 'layout/overall/header.php';
 
 if (user_logged_in() === true) {
@@ -21,31 +41,42 @@ if (user_logged_in() === true) {
 
 if (empty($_GET['name'])) {
 // Display the guild list
-?>
 
-<h1>Guild List:</h1>
-<?php
 //data_dump($guild, false, "guild data");
-if ($config['TFSVersion'] != 'TFS_10') $guilds = mysql_select_multi("SELECT `t`.`id`, `t`.`name`, `t`.`creationdata`, (SELECT count(p.rank_id) FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =`t`.`id`) AS `total` FROM `guilds` as `t` ORDER BY `t`.`name`;");
-else $guilds = mysql_select_multi("SELECT `id`, `name`, `creationdata`, (SELECT COUNT('guild_id') FROM `guild_membership` WHERE `guild_id`=`id`) AS `total` FROM `guilds` ORDER BY `name`;");
 
-if ($guilds !== false) {
+$guilds = guild_list($config['TFSVersion']);
+
+if (isset($guilds) && !empty($guilds) && $guilds !== false) {
+	//data_dump($guilds, false, "Guilds");
 ?>
 <table id="guildsTable" class="table table-striped table-hover">
 	<tr class="yellow">
-		<th>Guild name:</th>
-		<th>Members:</th>
-		<th>Founded:</th>
+		<th>Logo</th>
+		<th>Description</th>
+		<th>Guild data</th>
+		<!-- <th>Founded:</th> -->
 	</tr>
 		<?php
 		foreach ($guilds as $guild) {
 			if ($guild['total'] >= 1) {
 				$url = url("guilds.php?name=". $guild['name']);
-				echo '<tr class="special" onclick="javascript:window.location.href=\'' . $url . '\'">';
-				echo '<td>'. $guild['name'] .'</td>';
-				echo '<td>'. $guild['total'] .'</td>';
-				echo '<td>'. getClock($guild['creationdata'], true) .'</td>';
-				echo '</tr>';
+				?>
+				<tr class="special" onclick="javascript:window.location.href='<?php echo $url; ?>'">
+					<td style="width: 100px;">
+						<img style="max-height: 100px; margin: auto; display: block;" src="<?php logo_exists($guild['name']); ?>">
+					</td>
+					<td>
+						<b><?php echo $guild['name']; ?></b>
+						<?php if (strlen($guild['motd']) > 0) echo '<br>'.$guild['motd']; ?>
+					</td>
+					<td>
+						<?php echo "Total members: ".$guild['level']['players']; ?>
+						<br><?php echo "Average level: ".$guild['level']['avg'].""; ?>
+						<br><?php echo "Guild level: ".$guild['level']['total']; ?>
+					</td>
+				</tr>
+				<?php
+				//echo '<td>'. getClock($guild['creationdata'], true) .'</td>';
 			}
 		}
 		?>
@@ -87,6 +118,8 @@ if (user_logged_in() === true) {
 								$gid = get_guild_id($guildname);
 								if ($gid === false) {
 									create_guild($user_id, $guildname);
+									// Re-cache the guild list
+									$guilds = guild_list($config['TFSVersion']);
 									header('Location: success.php');
 									exit();
 								} else echo 'A guild with that name already exist.';
@@ -176,7 +209,7 @@ if (user_logged_in() === true) {
 	<?php echo (isset($_GET['error'])) ? "<font size='5' color='red'>".sanitize($_GET['error'])."</font><br><br>" : ""; ?>
 	<?php if ($config['use_guild_logos']): ?>
 	<div id="guildImageDiv" style="float: left; margin-right: 10px;">
-		<img style="max-width: 100px; max-height: 100px;" src="<?php logo_exists(sanitize($_GET['name'])); ?>"></img>
+		<img style="max-width: 100px; max-height: 100px;" src="<?php logo_exists(sanitize($_GET['name'])); ?>">
 	</div>
 	<?php endif; ?>
 	<div id="guildDescription">
