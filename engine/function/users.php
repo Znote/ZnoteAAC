@@ -808,7 +808,7 @@ function user_delete_character_soft($char_id) {
 	$char_name = user_character_name($char_id);
 	$original_acc_id = user_character_account_id($char_name);
 	if(!user_character_pending_delete($char_name))
-		mysql_insert('INSERT INTO `znote_deleted_characters`(`original_account_id`, `character_name`, `time`, `done`) VALUES(' . $original_acc_id . ', "' . $char_name . '", (NOW() + INTERVAL ' . Config('delete_character_interval') . '), 0)');
+		mysql_insert('INSERT INTO `znote_deleted_characters`(`original_account_id`, `character_name`, `time`, `done`) VALUES(' . $original_acc_id . ', "' . $char_name . '", (NOW() + INTERVAL ' . config('delete_character_interval') . '), 0)');
 	else
 		return false;
 }
