@@ -533,7 +533,7 @@ function get_guild_players($gid) {
 // Get guild level data (avg level, total level, count of players)
 function get_guild_level_data($gid) {
 	$gid = (int)$gid;
-	$data = (config('TFSVersion') !== 'TFS_10') ? mysql_select_multi("SELECT p.level FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';") : mysql_select_multi("SELECT p.level, FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name;");
+	$data = (config('TFSVersion') !== 'TFS_10') ? mysql_select_multi("SELECT p.level FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';") : mysql_select_multi("SELECT p.level FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name;");
 	$members = 0;
 	$totallevels = 0;
 	if ($data !== false) {
