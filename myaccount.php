@@ -119,7 +119,7 @@ if (!empty($_POST['selected_character'])) {
 							} else echo 'Name validation failed, use another name.';
 						} else echo 'The character name you wish to change to already exist.';
 					} else echo 'Failed to sync your account. :|';
-				} else echo 'Did not find any name change tickets, but them in our <a href="shop.php">shop!</a>';
+				} else echo 'Did not find any name change tickets, buy them in our <a href="shop.php">shop!</a>';
 				break;
 			// end
 			// Change character sex
