@@ -82,23 +82,25 @@ require '../engine/function/users.php';
 	if (isset($old_accounts) && $old_accounts !== false) {
 		$time = time();
 		foreach ($old_accounts as $old) {
-		
+			// Get acc id
+			$old_id = $old['id'];
+
 			// Make acc data compatible:
-			mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$old', '0', '$time')");
+			mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$old_id', '0', '$time')");
 			$updated_acc += 1;
 			
 			// Fetch unsalted password
 			if ($config['TFSVersion'] == 'TFS_03' && $config['salt'] === true) {
-				$password = user_data($old, 'password', 'salt');
+				$password = user_data($old_id, 'password', 'salt');
 				$p_pass = str_replace($password['salt'],"",$password['password']);
 			}
 			if ($config['TFSVersion'] == 'TFS_02' || $config['salt'] === false) {
-				$password = user_data($old, 'password');
+				$password = user_data($old_id, 'password');
 				$p_pass = $password['password'];
 			}
 			
 			// Verify lenght of password is less than 28 characters (most likely a plain password)
-			if (strlen($p_pass) < 28 && $old > 1) {
+			if (strlen($p_pass) < 28 && $old_id > 1) {
 				// encrypt it with sha1
 				if ($config['TFSVersion'] == 'TFS_02' || $config['salt'] === false) $p_pass = sha1($p_pass);
 				if ($config['TFSVersion'] == 'TFS_03' && $config['salt'] === true) $p_pass = sha1($password['salt'].$p_pass);
