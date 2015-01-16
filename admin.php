@@ -50,7 +50,7 @@ if (empty($_POST) === false) {
 			$acc_id = user_character_account_id($_POST['reset_pass']);
 			
 			if ($acc_id != $session_user_id) {
-				if ($config['TFSVersion'] == 'TFS_02') {
+				if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') {
 					user_change_password($acc_id, $_POST['new_pass']);
 				} else if ($config['TFSVersion'] == 'TFS_03') {
 					user_change_password03($acc_id, $_POST['new_pass']);
