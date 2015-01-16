@@ -28,7 +28,7 @@ if (empty($_POST) === false) {
 				$errors[] = 'Your name may only contain a-z, A-Z and spaces.';
 			}
 			if (strlen($_POST['name']) < $config['minL'] || strlen($_POST['name']) > $config['maxL']) {
-				$errors[] = 'Your character name must be between 4 - 20 characters long.';
+				$errors[] = 'Your character name must be between ' . $config['minL'] . ' - ' . $config['maxL'] . ' characters long.';
 			}
 			// name restriction
 			$resname = explode(" ", $_POST['name']);
