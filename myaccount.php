@@ -37,6 +37,7 @@ if (!empty($_POST['selected_character'])) {
 				}
 				break;
 			// end
+
 			// Hide character
 			case 'toggle_hide':
 				$hide = (user_character_hide($char_name) == 1 ? 0 : 1);
@@ -45,6 +46,7 @@ if (!empty($_POST['selected_character'])) {
 				}
 				break;
 			// end
+
 			// DELETE character
 			case 'delete_character':
 				if (user_character_account_id($char_name) === $session_user_id) {
@@ -66,62 +68,76 @@ if (!empty($_POST['selected_character'])) {
 				}
 				break;
 			// end
+
 			// CHANGE character name
 			case 'change_name':
 				$oldname = $char_name;
-				$newname = getValue($_POST['newName']);
+				$newname = isset($_POST['newName']) ? getValue($_POST['newName']) : '';
 
-				// Check if user is online
 				$player = false;
 				if ($config['TFSVersion'] === 'TFS_10') {
 					$player = mysql_select_single("SELECT `id`, `account_id` FROM `players` WHERE `name` = '$oldname'");
 					$player['online'] = (user_is_online_10($player['id'])) ? 1 : 0;
 				} else $player = mysql_select_single("SELECT `id`, `account_id`, `online` FROM `players` WHERE `name` = '$oldname'");
 
+				// Check if user is online
+				if ($player['online'] == 1) {
+					$errors[] = 'Character must be offline first.';
+				}
+
 				// Check if player has bough ticket
-				$order = mysql_select_single("SELECT `id`, `account_id` FROM `znote_shop_orders` WHERE `type`='4' LIMIT 1;");
-				if ($order !== false) {
-					// Check if player and account matches
-					if ($session_user_id == $player['account_id'] && $session_user_id == $order['account_id']) {
-						// Check if new name is not occupied
-						$exist = mysql_select_single("SELECT `id` FROM `players` WHERE `name`='$newname';");
-						if (!$exist) {
-							// Check if new name follow rules
-							$newname = validate_name($newname);
-							if ($newname !== false) {
-								$error = false;
-								// name restriction
-								$resname = explode(" ", $_POST['name']);
-								foreach($resname as $res) {
-									if(in_array(strtolower($res), $config['invalidNameTags'])) {
-										$error = true;
-									}
-									else if(strlen($res) == 1) {
-										$error = true;
-									}
-								}
-								// Check name for illegal characters.
-								function checkNewNameForIllegal($name) {
-									if (preg_match('#^[\0-9åäö&()+%/*$€é,.\'"-]*$#i', $name)) {
-										return true;
-									}
-									return false;
-								}
-								if (checkNewNameForIllegal($newname)) {
-									$error = true;
-									echo 'This name contains illegal characters.';
-								}
-								if ($error === false) {
-									// Change the name!
-									mysql_update("UPDATE `players` SET `name`='$newname' WHERE `id`='".$player['id']."' LIMIT 1;");
-									mysql_delete("DELETE FROM `znote_shop_orders` WHERE `id`='".$order['id']."' LIMIT 1;");
-								}
-							} else echo 'Name validation failed, use another name.';
-						} else echo 'The character name you wish to change to already exist.';
-					} else echo 'Failed to sync your account. :|';
-				} else echo 'Did not find any name change tickets, buy them in our <a href="shop.php">shop!</a>';
+				$accountId = $player['account_id'];
+				$order = mysql_select_single("SELECT `id`, `account_id` FROM `znote_shop_orders` WHERE `type`='4' AND `account_id` = '$accountId' LIMIT 1;");
+				if ($order === false) {
+					$errors[] = 'Did not find any name change tickets, buy them in our <a href="shop.php">shop!</a>';
+				}
+
+				// Check if player and account matches
+				if ($session_user_id != $accountId || $session_user_id != $order['account_id']) {
+					$errors[] = 'Failed to sync your account. :|';
+				}
+
+				$newname = validate_name($newname);
+				if ($newname === false) {
+					$errors[] = 'Your name can not contain more than 2 words.';
+				} else {
+					if (empty($newname)) {
+						$errors[] = 'Please enter a name!';
+					} else if (user_character_exist($newname) !== false) {
+						$errors[] = 'Sorry, that character name already exist.';
+					} else if (!preg_match("/^[a-zA-Z_ ]+$/", $newname)) {
+						$errors[] = 'Your name may only contain a-z, A-Z and spaces.';
+					} else if (strlen($newname) < $config['minL'] || strlen($newname) > $config['maxL']) {
+						$errors[] = 'Your character name must be between ' . $config['minL'] . ' - ' . $config['maxL'] . ' characters long.';
+					} else if (!ctype_upper($newname{0})) {
+						$errors[] = 'The first letter of a name has to be a capital letter!';
+					}
+
+					// name restriction
+					$resname = explode(" ", $_POST['newName']);
+					foreach($resname as $res) {
+						if(in_array(strtolower($res), $config['invalidNameTags'])) {
+							$errors[] = 'Your username contains a restricted word.';
+						} else if(strlen($res) == 1) {
+							$errors[] = 'Too short words in your name.';
+						}
+					}
+				}
+
+				if (!empty($newname) && empty($errors)) {
+					echo 'You have successfully changed your character name to ' . $newname . '.';
+					mysql_update("UPDATE `players` SET `name`='$newname' WHERE `id`='".$player['id']."' LIMIT 1;");
+					mysql_delete("DELETE FROM `znote_shop_orders` WHERE `id`='".$order['id']."' LIMIT 1;");
+
+				} else if (!empty($errors)) {
+					echo '<font color="red"><b>';
+					echo output_errors($errors);
+					echo '</b></font>';
+				}
+
 				break;
 			// end
+
 			// Change character sex
 			case 'change_gender':
 				if (user_character_account_id($char_name) === $session_user_id) {
@@ -129,9 +145,8 @@ if (!empty($_POST['selected_character'])) {
 					$account_id = user_character_account_id($char_name);
 
 					if ($config['TFSVersion'] == 'TFS_10') {
-						$chr_data = user_is_online_10($char_id);
+						$chr_data['online'] = user_is_online_10($char_id) ? 1 : 0;
 					} else $chr_data = user_character_data($char_id, 'online');
-
 					if ($chr_data['online'] != 1) {
 						// Verify that we are not messing around with data
 						if ($account_id != $user_data['id']) die("wtf? Something went wrong, try relogging.");
@@ -171,6 +186,7 @@ if (!empty($_POST['selected_character'])) {
 				}
 				break;
 			// end
+
 			// Change character comment PAGE1:
 			case 'change_comment':
 				$render_page = false; // Regular "myaccount" page should not render
@@ -247,9 +263,9 @@ if ($render_page) {
 				}
 			?>
 			</table>
-			<table class="table">
-				<!-- FORMS TO EDIT CHARACTER-->
-				<form action="" method="post">
+			<!-- FORMS TO EDIT CHARACTER-->
+			<form action="" method="post">
+				<table class="table">
 					<tr>
 						<td>
 							<select id="selected_character" name="selected_character" class="form-control">
@@ -282,8 +298,8 @@ if ($render_page) {
 							<input id="submit_button" type="submit" value="Submit" class="btn btn-primary btn-block"></input>
 						</td>
 					</tr>
-				</form>
-			</table>
+				</table>
+			</form>
 			<?php
 		} else {
 			echo 'You don\'t have any characters. Why don\'t you <a href="createcharacter.php">create one</a>?';
