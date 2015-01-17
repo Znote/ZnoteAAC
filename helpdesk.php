@@ -29,7 +29,13 @@ if ($view !== false) {
 		die;
 	}
 	?>
-	<h1>View Ticket #<?php echo $ticketData['id']; ?></h1>
+	<h1>View Ticket #
+	<?php 
+		echo $ticketData['id'];
+		if ($ticketData['status'] === 'CLOSED') {
+			echo '<span style="color:red">[CLOSED]</SPAN>';
+		}
+	?></h1>
 	<table class="znoteTable ThreadTable table table-striped">
 		<tr class="yellow">
 			<th>
@@ -76,11 +82,14 @@ if ($view !== false) {
 		}
 	}
 	?>
-	<form action="" method="post">
-		<input type="hidden" name="username" value="<?php echo $ticketData['username']; ?>"><br>
-		<textarea class="forumReply" name="reply_text" style="width: 610px; height: 150px"></textarea><br>
-		<input name="" type="submit" value="Post Reply" class="btn btn-primary">
-	</form>
+
+	<?php if ($ticketData['status'] !== 'CLOSED') { ?>
+		<form action="" method="post">
+			<input type="hidden" name="username" value="<?php echo $ticketData['username']; ?>"><br>
+			<textarea class="forumReply" name="reply_text" style="width: 610px; height: 150px"></textarea><br>
+			<input name="" type="submit" value="Post Reply" class="btn btn-primary">
+		</form>
+	<?php } ?>
 	<?php
 } else {
 

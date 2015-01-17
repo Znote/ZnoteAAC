@@ -239,12 +239,14 @@ if (user_logged_in() === true) {
 			}
 		}
 		//data_dump($players, false, "Data");
+		$rankName = '';
 		foreach ($players as $player) {
 			if ($config['TFSVersion'] !== 'TFS_10') {
 				$chardata['online'] = $player['online'];
 			} else $chardata['online'] = (in_array($player['id'], $onlinelist)) ? 1 : 0;
 			echo '<tr>';
-			echo '<td>'. $player['rank_name'] .'</td>';
+			echo '<td>' . ($rankName !== $player['rank_name'] ? $player['rank_name'] : '') . '</td>';
+			$rankName = $player['rank_name'];
 			echo '<td><a href="characterprofile.php?name='. $player['name'] .'">'. $player['name'] .'</a>';
 			if (!empty($player['guildnick'])) {
 				echo ' ('. $player['guildnick'] .')';
