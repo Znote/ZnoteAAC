@@ -82,7 +82,7 @@ if (empty($_POST) === false) {
 <h1>Register Account</h1>
 <?php
 if (isset($_GET['success']) && empty($_GET['success'])) {
-	if ($config['mailserver']) {
+	if ($config['mailserver']['register']) {
 		?>
 		<h1>Email authentication required</h1>
 		<p>We have sent you an email with an activation link to your submitted email address.</p>
