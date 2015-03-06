@@ -41,9 +41,9 @@ if (!empty($_POST)) {
     $customPoints = getValue($_POST['customPoints']);
     $reportId = getValue($_POST['id']);
 
-    $changelogReportId = &$_POST['changelogReportId'];
+    $changelogReportId = (int)$_POST['changelogReportId'];
     $changelogValue = &$_POST['changelogValue'];
-    $changelogText = &$_POST['changelogText'];
+    $changelogText = getValue($_POST['changelogText']);
     $changelogStatus = ($changelogReportId !== false && $changelogValue === '2' && $changelogText !== false) ? true : false;
 
     if ($customPoints !== false) $price = (int)($price + $customPoints);

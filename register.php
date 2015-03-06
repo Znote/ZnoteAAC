@@ -57,8 +57,8 @@ if (empty($_POST) === false) {
 		if (strlen($_POST['password']) < 6) {
 			$errors[] = 'Your password must be at least 6 characters.';
 		}
-		if (strlen($_POST['password']) > 33) {
-			$errors[] = 'Your password must be less than 33 characters.';
+		if (strlen($_POST['password']) > 100) {
+			$errors[] = 'Your password must be less than 100 characters.';
 		}
 		if ($_POST['password'] !== $_POST['password_again']) {
 			$errors[] = 'Your passwords do not match.';
@@ -82,7 +82,27 @@ if (empty($_POST) === false) {
 <h1>Register Account</h1>
 <?php
 if (isset($_GET['success']) && empty($_GET['success'])) {
-	echo 'Congratulations! Your account has been created. You may now login to create a character.';
+	if ($config['mailserver']['register']) {
+		?>
+		<h1>Email authentication required</h1>
+		<p>We have sent you an email with an activation link to your submitted email address.</p>
+		<p>If you can't find the email within 5 minutes, check your junk/trash inbox as it may be mislocated there.</p>
+		<?php
+	} else echo 'Congratulations! Your account has been created. You may now login to create a character.';
+} elseif (isset($_GET['authenticate']) && empty($_GET['authenticate'])) {
+	// Authenticate user, fetch user id and activation key
+	$auid = (isset($_GET['u']) && (int)$_GET['u'] > 0) ? (int)$_GET['u'] : false;
+	$akey = (isset($_GET['k']) && (int)$_GET['k'] > 0) ? (int)$_GET['k'] : false;
+	// Find a match
+	$user = mysql_select_single("SELECT `id` FROM `znote_accounts` WHERE `account_id`='$auid' AND `activekey`='$akey' AND `active`='0' LIMIT 1;");
+	if ($user !== false) {
+		$user = $user['id'];
+		// Enable the account to login
+		mysql_update("UPDATE `znote_accounts` SET `active`='1' WHERE `id`='$user' LIMIT 1;");
+		echo '<h1>Congratulations!</h1> <p>Your account has been created. You may now login to create a character.</p>';
+	} else {
+		echo '<h1>Authentication failed</h1> <p>Either the activation link is wrong, or your account is already activated.</p>';
+	}
 } else {
 	if (empty($_POST) === false && empty($errors) === true) {
 		if ($config['log_ip']) {
@@ -97,8 +117,8 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 			'created'	=>	time()
 		);
 		
-		user_create_account($register_data);
-		header('Location: register.php?success');
+		user_create_account($register_data, $config['mailserver']);
+		if (!$config['mailserver']['debug']) header('Location: register.php?success');
 		exit();
 		//End register
 		

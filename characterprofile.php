@@ -51,84 +51,100 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 						echo 'Never.';
 					}
 					
-				?></font></li>
+				?></font>
+				</li>
 				<!-- Achievement start -->
-				<?php if ($config['Ach'] == true) { 
-				foreach ($achievementPoints as $achievement) 
-				{
-					if ($achievement > 0) //if player doesn't have any achievement points it won't echo the line below.
-					echo '<tr><td>Achievement Points</td><td>' .$achievement. '				</td></tr>';
-				}
+				<?php 
+				if ($config['Ach'] == true) { 
+					foreach ($achievementPoints as $achievement) {
+						if ($achievement > 0) //if player doesn't have any achievement points it won't echo the line below.
+							echo '<li>Achievement Points: ' .$achievement. '</li>';
+					}
 				}
 				?>
 				<!-- Achievement end -->
-				<?php		$houses = array();
-			$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `town_id` FROM `houses` WHERE `owner` = $user_id ;");
-			if ($houses !== false) {
-				$playerlist = array();
-				foreach ($houses as $h)
-					if ($h['owner'] > 0)
-						$playerlist[] = $h['owner'];
-						
-				if ($profile_data['id'] = $h['owner']) { ?>
-			<li>House: <?php echo $h['name']; ?>, <?php 
-				foreach ($config['towns'] as $key=>$value) {
-					if ($key == $h['town_id']) {
-						echo $value;
-					}
-				} ?></li>
-				<li><font class="profile_font" name="profile_font_status">Status:</font> <?php }}
-						if ($config['TFSVersion'] == 'TFS_10') {
-							if ($profile_data['online']) {
-								echo '<font class="profile_font" name="profile_font_online" color="green"><b>ONLINE</b></font>';
-							} else {
-								echo '<font class="profile_font" name="profile_font_online" color="red"><b>OFFLINE</b></font>';
-							}
-						} else {
-							if ($profile_data['online'] == 1) {
-								echo '<font class="profile_font" name="profile_font_online" color="green"><b>ONLINE</b></font>';
-							} else {
-								echo '<font class="profile_font" name="profile_font_online" color="red"><b>OFFLINE</b></font>';
+				<!-- Display house start -->
+				<?php
+				if ($config['TFSVersion'] !== 'TFS_02') {
+					$townid = ($config['TFSVersion'] === 'TFS_03') ? 'town' : 'town_id';
+					$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `$townid` AS `town_id` FROM `houses` WHERE `owner` = $user_id;");
+					if ($houses !== false) {
+						$playerlist = array();
+						foreach ($houses as $h) {
+							if ($h['owner'] > 0)
+								$playerlist[] = $h['owner'];
+								
+							if ($profile_data['id'] = $h['owner']) {
+								?>
+								<li>House: <?php echo $h['name']; ?>, <?php 
+									foreach ($config['towns'] as $key=>$value) {
+										if ($key == $h['town_id']) {
+											echo $value;
+										}
+									}
+								 ?>
+								</li>
+								<?php
 							}
 						}
-					?></li>
+					}
+				}
+				?>
+				<!-- Display house end -->
+				<li><font class="profile_font" name="profile_font_status">Status:</font> <?php
+				if ($config['TFSVersion'] == 'TFS_10') {
+					if ($profile_data['online']) {
+						echo '<font class="profile_font" name="profile_font_online" color="green"><b>ONLINE</b></font>';
+					} else {
+						echo '<font class="profile_font" name="profile_font_online" color="red"><b>OFFLINE</b></font>';
+					}
+				} else {
+					if ($profile_data['online'] == 1) {
+						echo '<font class="profile_font" name="profile_font_online" color="green"><b>ONLINE</b></font>';
+					} else {
+						echo '<font class="profile_font" name="profile_font_online" color="red"><b>OFFLINE</b></font>';
+					}
+				}
+				?>
+				</li>
 				<li><font class="profile_font" name="profile_font_created">Created: <?php echo getClock($profile_znote_data['created'], true); ?></font></li>
 				<li><font class="profile_font" name="profile_font_comment">Comment:</font> <br><textarea name="profile_comment_textarea" cols="70" rows="10" readonly="readonly" class="span12"><?php echo $profile_znote_data['comment']; ?></textarea></li>
-	<!-- Achievements start -->
-<?php if ($config['Ach'] == true) { ?>			
-<h3 class="header-ok">Achievements</h3>
-<div id="accordion">
-  <h3>Show/hide player achievements</h3>
-  <div>
-<table class="table table-striped table-bordered">
-<tbody>
-<style>
-#secondD {
-margin-left:0px;
-}
-</style>
-	<?php
-   	foreach ($config['achievements'] as $key => $achiv) {
-	$uery = mysql_select_single("SELECT `player_id`, `value`, `key` FROM `player_storage` WHERE `player_id`='$user_id' AND `key`='$key' LIMIT 1;");
-	foreach ($uery as $luery) 
-		if (($luery) == $key)
-		{
-			if (!array_key_exists(($achiv), $config['achievements'])) {
-			echo '<tr><td width="17%">' .$achiv[0]. '</td><td>' .$achiv[1]. '</td>';
-			if ($achiv['secret'] == true) {
-			echo '<td><img id="secondD" src="http://img04.imgland.net/PuMz0mVqSG.gif"></td>';
-			echo '<td>'. $achiv['points'] .'</td>';
-				} else {
-			echo '<td></td><td>'. $achiv['points'] .'</td>';	
-			}
-			echo '<tr>';
-			}
-		}
-	}	
- ?>
-</tbody>
-</table>
-</div></div>
+<!-- Achievements start -->
+<?php if ($config['Ach']) { ?>			
+	<h3 class="header-ok">Achievements</h3>
+	<div id="accordion">
+		<h3>Show/hide player achievements</h3>
+			<div>
+				<table class="table table-striped table-bordered">
+					<tbody>
+						<style>
+							#secondD {
+								margin-left:0px;
+							}
+						</style>
+						<?php
+						foreach ($config['achievements'] as $key => $achiv) {
+							$uery = mysql_select_single("SELECT `player_id`, `value`, `key` FROM `player_storage` WHERE `player_id`='$user_id' AND `key`='$key' LIMIT 1;");
+							if (!empty($uery) || $uery !== false) {
+								foreach ($uery as $luery) {
+									if ($luery == $key) {
+										if (!array_key_exists($key, $achiv)) {
+											echo '<tr><td width="17%">' .$achiv[0]. '</td><td>' .$achiv[1]. '</td>';
+											if (!isset($achiv['secret'])) {
+												echo '<td><img id="secondD" src="http://img04.imgland.net/PuMz0mVqSG.gif"></td>';
+											}
+											echo '<td>'. $achiv['points'] .'</td>';
+											echo '<tr>';
+										}
+									}
+								}
+							}
+						}
+						?>
+				</tbody>
+			</table>
+		</div>
+	</div>
 <br>
 <?php } ?>
 	<!-- Achievements end -->

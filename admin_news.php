@@ -41,7 +41,7 @@ if (empty($_POST) === false) {
 			}
 			?>
 			</select>		
-			<input type="text" name="title" value="" placeholder="Title"><br />
+			<input type="text" name="title" value="" placeholder="Title"> [youtube]wK0w0x62PjA[/youtube] <br />
 			<textarea name="text" id="area1" cols="75" rows="10" placeholder="Contents..." style="width: 100%"></textarea><br />
 			<input type="submit" value="Create News">
 		</form>

@@ -1,4 +1,12 @@
 <?php
+function setSession($key, $data) {
+	global $sessionPrefix;
+	$_SESSION[$sessionPrefix.$key] = $data;
+}
+function getSession($key) {
+	global $sessionPrefix;
+	return (isset($_SESSION[$sessionPrefix.$key])) ? $_SESSION[$sessionPrefix.$key] : false;
+}
 // Fetch and sanitize POST and GET values
 function getValue($value) {
 	return (!empty($value)) ? sanitize($value) : false;
@@ -152,7 +160,7 @@ function znote_visitor_insert_detailed_data($type) {
 	$time = time();
 	$ip = ip2long(getIP());
 	if (user_logged_in()) {
-		$acc = $_SESSION['user_id'];
+		$acc = (int)getSession('user_id');
 		mysql_insert("INSERT INTO `znote_visitors_details` (`ip`, `time`, `type`, `account_id`) VALUES ('$ip', '$time', '$type', '$acc')");
 	} else mysql_insert("INSERT INTO `znote_visitors_details` (`ip`, `time`, `type`, `account_id`) VALUES ('$ip', '$time', '$type', '0')");
 }
@@ -495,7 +503,7 @@ function check_image($image) {
 
 // Check guild logo
 function logo_exists($guild) {
-
+	$guild = sanitize($guild);
 	if (file_exists('engine/guildimg/'.$guild.'.gif')) {
 
 		echo'engine/guildimg/'.$guild.'.gif';
