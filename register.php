@@ -162,8 +162,8 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 				<h2>Server Rules</h2>
 				<p>The golden rule: Have fun.</p>
 				<p>If you get pwn3d, don't hate the game.</p>
-				<p>No <a href='http://en.wikipedia.org/wiki/Cheating' target="_blank">cheating</a> allowed.</p>
-				<p>No <a href='http://en.wikipedia.org/wiki/Internet_bot' target="_blank">botting</a> allowed.</p>
+				<p>No <a href='http://en.wikipedia.org/wiki/Cheating_in_video_games' target="_blank">cheating</a> allowed.</p>
+				<p>No <a href='http://en.wikipedia.org/wiki/Video_game_bot' target="_blank">botting</a> allowed.</p>
 				<p>The staff can delete, ban, do whatever they want with your account and your <br>
 					submitted information. (Including exposing and logging your IP).</p>
 				<p></p>
