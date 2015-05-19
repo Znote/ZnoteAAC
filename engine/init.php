@@ -1,5 +1,10 @@
 <?php if (version_compare(phpversion(), '5.3.3', '<')) die('PHP version 5.3.3 or higher is required.');
 
+$l_time = microtime();
+$l_time = explode(' ', $l_time);
+$l_time = $l_time[1] + $l_time[0];
+$l_start = $l_time;
+
 $time = time();
 $version = '1.5_SVN';
 
