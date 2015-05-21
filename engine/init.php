@@ -5,6 +5,15 @@ $l_time = explode(' ', $l_time);
 $l_time = $l_time[1] + $l_time[0];
 $l_start = $l_time;
 
+function elapsedTime($l_start = false, $l_time = false) {
+	if ($l_start === false) global $l_start;
+	if ($l_time === false) global $l_time;
+	
+	$l_time = explode(' ', microtime());
+	$l_finish = $l_time[1] + $l_time[0];
+	return round(($l_finish - $l_start), 4);
+}
+
 $time = time();
 $version = '1.5_SVN';
 
