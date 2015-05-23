@@ -3,6 +3,12 @@
 // Autofetch API modules
 $directory = 'modules';
 $plugins = array();
+
+// Load base
+$plugins['base'] = array(
+	'player' => 'test.php'
+);
+
 $iterator = new DirectoryIterator($directory);
 foreach($iterator as $entity) {
 	if($entity->isDot())

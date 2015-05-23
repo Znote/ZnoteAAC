@@ -1,5 +1,5 @@
   <?php
-//data_dump($accQueriesData, false, "Done Queries");
+data_dump($accQueriesData, false, "Done Queries");
   ?>
       </div>
     </div>

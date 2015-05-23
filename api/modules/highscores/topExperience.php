@@ -4,9 +4,7 @@
 $response['version']['module'] = 1;
 
 // Fetch number of rows
-$rows = getValue($_GET['rows']);
-if (!$rows || $rows == 0) $rows = 10;
-else $rows = (int)$rows;
+$rows = (isset($_GET['rows']) && (int)$_GET['rows'] > 0) ? (int)getValue($_GET['rows']) : 10;
 
 // Show which configuration is used
 $response['config']['rows'] = $rows;
