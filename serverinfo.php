@@ -14,7 +14,7 @@ if (file_exists($config['server_path'].'/config.lua')) {
 			echo 'Couldn\'t locate stages.xml';
 		}
 	} else {
-		if (file_exists($config['server_path'].'/data/xml/stages.xml')) {
+		if (file_exists($config['server_path'].'/data/XML/stages.xml')) {
 			$stages_path = simplexml_load_file($config['server_path'].'/data/XML/stages.xml');
 		} else {
 			echo 'Couldn\'t locate stages.xml';
