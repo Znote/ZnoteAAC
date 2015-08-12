@@ -1088,9 +1088,11 @@ function user_create_account($register_data, $maildata) {
 	
 	$ip = $register_data['ip'];
 	$created = $register_data['created'];
+	$flag = $register_data['flag'];
 	
 	unset($register_data['ip']);
 	unset($register_data['created']);
+	unset($register_data['flag']);
 	
 	if (config('TFSVersion') == 'TFS_10') $register_data['creation'] = $created;
 
@@ -1101,7 +1103,7 @@ function user_create_account($register_data, $maildata) {
 	
 	$account_id = user_id($register_data['name']);
 	$activeKey = rand(100000000,999999999);
-	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `activekey`) VALUES ('$account_id', '$ip', '$created', '$activeKey')");
+	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `activekey`, `flag`) VALUES ('$account_id', '$ip', '$created', '$activeKey', '$flag')");
 	
 	if ($maildata['register']) {
 
