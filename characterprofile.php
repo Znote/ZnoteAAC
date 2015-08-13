@@ -5,15 +5,18 @@ if ($config['log_ip']) {
 if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 	$name = $_GET['name'];
 	$user_id = user_character_exist($name);
+	
 	if ($user_id !== false) {
+		
 		if ($config['TFSVersion'] == 'TFS_10') {
-			$profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin', 'sex');
+			$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'vocation', 'lastlogin', 'sex');
 			$profile_data['online'] = user_is_online_10($user_id);
 			if ($config['Ach'] == true) {
 				$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`='$user_id'");
 			}
-		} else $profile_data = user_character_data($user_id, 'name', 'level', 'vocation', 'lastlogin', 'online', 'sex');
+		} else $profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'vocation', 'lastlogin', 'online', 'sex');
 		$profile_znote_data = user_znote_character_data($user_id, 'created', 'hide_char', 'comment');
+		$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
 		
 		$guild_exist = false;
 		if (get_character_guild_rank($user_id) > 0) {
@@ -27,7 +30,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 		<!-- PROFILE MARKUP HERE-->
 			<h1><font class="profile_font" name="profile_font_header">Profile: <?php echo $profile_data['name']; ?></font></h1>
 			<ul class="unstyled">
-				
+				<li><font class="profile_font" name="profile_font_country">Country: <?php echo '<img src="\flags\\' . $account_data['flag'] . '.png">'; ?></font></li>
 				<li><font class="profile_font" name="profile_font_level">Sex:<?php 
 				if ($profile_data['sex'] == 1) {
 				echo 'Male';
