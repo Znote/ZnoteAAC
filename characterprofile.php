@@ -159,6 +159,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 					}
 				}
 				?>
+				
 				<!-- Display house end -->
 				<li><font class="profile_font" name="profile_font_status">Status:</font> <?php
 				if ($config['TFSVersion'] == 'TFS_10') 
@@ -185,11 +186,22 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 				}
 				?>
 				</li>
+				
 				<!-- Player created -->
 				<li><font class="profile_font" name="profile_font_created">Created: <?php echo getClock($profile_znote_data['created'], true); ?></font></li>
 				
 				<!-- Player Comment -->
-				<li><font class="profile_font" name="profile_font_comment">Comment:</font> <br><textarea name="profile_comment_textarea" cols="70" rows="10" readonly="readonly" class="span12"><?php echo $profile_znote_data['comment']; ?></textarea></li>
+				<?php
+				//if player doesnt have set a comment dont show it.
+				if (!empty($profile_znote_data['comment']))
+				{ ?>
+					<li>
+						<font class="profile_font" name="profile_font_comment">Comment:</font><br>
+						<textarea name="profile_comment_textarea" cols="70" rows="10" readonly="readonly" class="span12"><?php echo $profile_znote_data['comment']; ?></textarea>
+					</li>
+				<?php
+				}
+				?>
 				
 				<!-- Character information by Znote -->
 				<table cellspacing="1" cellpadding="4" style="width:540px;">
