@@ -185,8 +185,57 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 				}
 				?>
 				</li>
+				<!-- Player created -->
 				<li><font class="profile_font" name="profile_font_created">Created: <?php echo getClock($profile_znote_data['created'], true); ?></font></li>
+				
+				<!-- Player Comment -->
 				<li><font class="profile_font" name="profile_font_comment">Comment:</font> <br><textarea name="profile_comment_textarea" cols="70" rows="10" readonly="readonly" class="span12"><?php echo $profile_znote_data['comment']; ?></textarea></li>
+				
+				<!-- Character information by Znote -->
+				<table cellspacing="1" cellpadding="4" style="width:540px;">
+					<tr>
+						<td bgcolor="#F1E0C6" align="left" width="20%">
+							<b>Player HP:</b>
+						</td>
+						<td bgcolor="#F1E0C6" align="left">
+							<?php echo $profile_data['health'] . ' / ' . $profile_data['healthmax']; ?>
+							<div style="width: 100%; height: 3px; border: 1px solid #000;">
+								<div style="background: red; width: <?php echo (int)($profile_data['health'] / $profile_data['healthmax'] * 100); ?>%; height: 3px;"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td bgcolor="#D4C0A1" align="left">
+							<b>Player MP:</b>
+						</td>
+						<td bgcolor="#D4C0A1" align="left">
+							<?php echo $profile_data['mana'] . ' / ' . $profile_data['manamax']; ?>
+							<div style="width: 100%; height: 3px; border: 1px solid #000;">
+								<div style="background: blue; width: <?php echo (int)($profile_data['mana'] / $profile_data['manamax'] * 100); ?>%; height: 3px;"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td bgcolor="#D4C0A1" align="left">
+							<b>Player XP:</b>
+						</td>
+						<td bgcolor="#D4C0A1" align="left">
+							<?php echo number_format($profile_data['experience']); ?> Experience.
+						</td>
+					</tr>
+					<tr>
+						<td bgcolor="#F1E0C6" align="left">
+							<b>To Next Lvl:</b>
+						</td>
+						<td bgcolor="#F1E0C6" align="left">
+							Need <b><?php echo number_format((int)(level_to_experience($profile_data['level'] + 1) - $profile_data['experience'])); ?> experience (<?php echo (100 - (int)max(0, min(100, ($profile_data['experience'] - level_to_experience($profile_data['level'])) / (level_to_experience($profile_data['level'] + 1) - level_to_experience($profile_data['level'])) * 100))); ?>%)</b> to Level <b><?php echo (int)$profile_data['level'] + 1; ?></b>.
+							<div title="99.320604545 %" style="width: 100%; height: 3px; border: 1px solid #000;">
+								<div style="background: red; width: <?php echo (int)max(0, min(100, ($profile_data['experience'] - level_to_experience($profile_data['level'])) / (level_to_experience($profile_data['level'] + 1) - level_to_experience($profile_data['level'])) * 100)); ?>%; height: 3px;"></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<!-- END Character information by Znote -->
 				
 				<!-- Achievements start -->
 				<?php if ($config['Ach']) 
