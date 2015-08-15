@@ -439,6 +439,9 @@
 
 	// Use guild logo system
 	$config['use_guild_logos'] = true;
+	
+	// Use country flags
+	$config['country_flags'] = false;
 
 	// Level requirement to create guild? (Just set it to 1 to allow all levels).
 	$config['create_guild_level'] = 8;

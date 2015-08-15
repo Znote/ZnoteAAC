@@ -1,8 +1,6 @@
 <?php
 require_once 'engine/init.php';
-if (user_logged_in() === false) {
-	header('Location: register.php');
-}
+protect_page();
 include 'layout/overall/header.php';
 
 $view = (isset($_GET['view']) && (int)$_GET['view'] > 0) ? (int)$_GET['view'] : false;
