@@ -7,6 +7,14 @@
 	require 'config.php';
 	require 'engine/database/connect.php';
 	
+	// Fetch and sanitize POST and GET values
+	function getValue($value) {
+		return (!empty($value)) ? sanitize($value) : false;
+	}
+	function sanitize($data) {
+		return htmlentities(strip_tags(mysql_znote_escape_string($data)));
+	}
+	
 	function VerifyPaypalIPN(array $IPN = null){
 		if(empty($IPN)){
 			$IPN = $_POST;

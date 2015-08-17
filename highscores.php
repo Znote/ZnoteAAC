@@ -64,7 +64,7 @@ if ($scores) {
 		</select>
 		<select name="page">
 			<?php
-			$pages = (int)($highscore['rows'] / $highscore['rowsPerPage']);
+			$pages = ceil(min(($highscore['rows'] / $highscore['rowsPerPage']), (count($scores[$type]) / $highscore['rowsPerPage'])));
 			for ($i = 0; $i < $pages; $i++) {
 				$x = $i + 1;
 				if ($x == $page) echo "<option value='".$x."' selected>Page: ".$x."</option>";
@@ -83,12 +83,15 @@ if ($scores) {
 			<?php if ($type === 7) echo "<td>Points</td>"; ?>
 		</tr>
 		<?php
+		
 		for ($i = 0; $i < count($scores[$type]); $i++) {
 			if (pageCheck($i, $page, $rowsPerPage)) {
+				$profile_data = user_character_data($scores[$type][$i]['id'], 'account_id');
+				$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
 				?>
 				<tr>
 					<td><?php echo $i+1; ?></td>
-					<td><a href="characterprofile.php?name=<?php echo $scores[$type][$i]['name']; ?>"><?php echo $scores[$type][$i]['name']; ?></a></td>
+					<td><?php echo '<img src="\flags\\' . $account_data['flag'] . '.png">  '; ?><a href="characterprofile.php?name=<?php echo $scores[$type][$i]['name']; ?>"><?php echo $scores[$type][$i]['name']; ?></a></td>
 					<td><?php echo vocation_id_to_name($scores[$type][$i]['vocation']); ?></td>
 					<td><?php echo $scores[$type][$i]['value']; ?></td>
 					<?php if ($type === 7) echo "<td>". $scores[$type][$i]['experience'] ."</td>"; ?>

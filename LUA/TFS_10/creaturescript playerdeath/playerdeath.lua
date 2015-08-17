@@ -1,6 +1,37 @@
 local deathListEnabled = true
 local maxDeathRecords = 5
 
+local function sendWarStatus(guildId, enemyGuildId, warId, playerName, killerName)
+	local guild, enemyGuild = Guild(guildId), Guild(enemyGuildId)
+	if not guild or not enemyGuild then
+		return
+	end
+
+	local resultId = db.storeQuery("SELECT `guild_wars`.`id`, (SELECT `limit` FROM `znote_guild_wars` WHERE `znote_guild_wars`.`id` = `guild_wars`.`id`) AS `limit`, (SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild1`) guild1_kills, (SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild2`) guild2_kills FROM `guild_wars` WHERE (`guild1` = " .. guildId .. " OR `guild2` = " .. guildId .. ") AND `status` = 1 AND `id` = " .. warId)
+	if resultId then
+
+		local guild1_kills = result.getDataInt(resultId, "guild1_kills")
+		local guild2_kills = result.getDataInt(resultId, "guild2_kills")
+		local limit = result.getDataInt(resultId, "limit")
+		result.free(resultId)
+
+		local members = guild:getMembersOnline()
+		for i = 1, #members do
+			members[i]:sendChannelMessage("", string.format("%s was killed by %s. The new score is %d:%d frags (limit: %d)", playerName, killerName, guild1_kills, guild2_kills, limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
+		end
+
+		local enemyMembers = enemyGuild:getMembersOnline()
+		for i = 1, #enemyMembers do
+			enemyMembers[i]:sendChannelMessage("", string.format("%s was killed by %s. The new score is %d:%d frags (limit: %d)", playerName, killerName, guild1_kills, guild2_kills, limit), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD)
+		end
+
+		if guild1_kills >= limit or guild2_kills >= limit then
+			db.query("UPDATE `guild_wars` SET `status` = 4, `ended` = " .. os.time() .. " WHERE `status` = 1 AND `id` = " .. warId)
+			Game.broadcastMessage(string.format("%s has just won the war against %s.", guild:getName(), enemyGuild:getName()), MESSAGE_EVENT_ADVANCE)
+		end
+	end
+end
+
 function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjustified)
 	local player = Player(cid)
 
@@ -11,7 +42,7 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 
 	local byPlayer = 0
 	local killerCreature = Creature(killer)
-	if killerCreature == nil then
+	if not killerCreature then
 		killerName = "field item"
 	else
 		if killerCreature:isPlayer() then
@@ -23,7 +54,7 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 				byPlayer = 1
 			end
 		end
-		killerName = killerCreature:getName()
+		killerName = killerCreature:isMonster() and killerCreature:getType():getNameDescription() or killerCreature:getName()
 	end
 
 	local byPlayerMostDamage = 0
@@ -40,7 +71,7 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 				byPlayerMostDamage = 1
 			end
 		end
-		mostDamageName = mostDamageKiller:getName()
+		mostDamageName = mostDamageKiller:isMonster() and mostDamageKiller:getType():getNameDescription() or mostDamageKiller:getName()
 	end
 
 	local playerGuid = player:getGuid()
@@ -64,31 +95,23 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 	end
 
 	if byPlayer == 1 then
-		local playerGuild = player:getGuild()
-		if playerGuild then
+		local targetGuild = player:getGuild()
+		targetGuild = targetGuild and targetGuild:getId() or 0
+		if targetGuild ~= 0 then
 			local killerGuild = killerCreature:getGuild()
-			if playerGuild ~= killerGuild and isInWar(cid, killerCreature) then
+			killerGuild = killerGuild and killerGuild:getId() or 0
+			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(cid, killerCreature) then
 				local warId = false
-				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild:getId() .. " AND `guild2` = " .. playerGuild:getId() .. ") OR (`guild1` = " .. playerGuild:getId() .. " AND `guild2` = " .. killerGuild:getId() .. "))")
+				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR (`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId ~= false then
 					warId = result.getDataInt(resultId, "id")
 					result.free(resultId)
 				end
 
 				if warId ~= false then
-					db.query("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(player:getName()) .. ", " .. killerGuild:getId() .. ", " .. playerGuild:getId() .. ", " .. os.time() .. ", " .. warId .. ")")
-					local wars = db.storeQuery("SELECT `guild_wars`.`id`, (SELECT `limit` FROM `znote_guild_wars` WHERE `znote_guild_wars`.`id` = `guild_wars`.`id`) AS `limit`, (SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild1`) guild1_kills, (SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild2`) guild2_kills FROM `guild_wars` WHERE (`guild1` = " .. killerGuild:getId() .. " OR `guild2` = " .. killerGuild:getId() .. ") AND `id` = " .. warId .. " AND `status` = 1")
-					if wars ~= false then
-						guildKills1 = result.getDataInt(wars, "guild1_kills")
-						guildKills2 = result.getDataInt(wars, "guild2_kills")
-						fragLimit = result.getDataInt(wars, "limit")
-						result.free(wars)
-					end
-					
-					if guildKills1 >= fragLimit or guildKills2 >= fragLimit then
-						Game.broadcastMessage(string.format("%s has just won the war against %s.", killerGuild:getName(), playerGuild:getName()), MESSAGE_EVENT_ADVANCE)
-						db.query("UPDATE `guild_wars` SET `status` = 4, `ended` = " .. os.time() .. " WHERE `status` = 1 AND `id` = " .. warId)
-					end
+					local playerName = player:getName()
+					db.query("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(playerName) .. ", " .. killerGuild .. ", " .. targetGuild .. ", " .. os.time() .. ", " .. warId .. ")")
+					addEvent(sendWarStatus, 1000, killerGuild, targetGuild, warId, playerName, killerName)
 				end
 			end
 		end

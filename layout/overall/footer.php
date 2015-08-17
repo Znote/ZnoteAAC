@@ -1,6 +1,3 @@
-  <?php
-//data_dump($accQueriesData, false, "Done Queries");
-  ?>
       </div>
     </div>
     <?php include 'layout/footer.php'; ?>

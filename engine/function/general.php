@@ -1,4 +1,5 @@
 <?php
+
 function setSession($key, $data) {
 	global $sessionPrefix;
 	$_SESSION[$sessionPrefix.$key] = $data;
@@ -220,27 +221,14 @@ function remaining_seconds_to_clock($seconds) {
 	return date("(H:i)",time() + $seconds);
 }
 
-// Returns false if name contains more than configured max words, returns name otherwise.
+/**
+ * Check if name contains more than configured max words
+ *
+ * @param string $string
+ * @return string|boolean
+ */
 function validate_name($string) {
-	//edit: make sure only one space separates words: 
-	//(found this regex through a search and havent tested it)
-	$string  = preg_replace("/\\s+/", " ", $string);
-
-	//trim off beginning and end spaces;
-	$string = trim($string);
-
-	//get an array of the words
-	$wordArray = explode(" ", $string);
-
-	//get the word count
-	$wordCount = sizeof($wordArray);
-
-	//see if its too big
-	if($wordCount > config('maxW')) {
-		return false;
-	} else {
-		return $string;
-	}
+	return (str_word_count(trim($string)) > config('maxW')) ? false : trim($string);
 }
 
 // Checks if an IPv4(or localhost IPv6) address is valid

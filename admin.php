@@ -28,7 +28,7 @@ if (empty($_POST) === false) {
 			}
 			
 		} else {
-			$errors[] = 'Character '. $_POST['ban_char'] .' does not exist.';
+			$errors[] = 'Character '. getValue($_POST['ban_char']) .' does not exist.';
 		}
 	}
 	
@@ -37,9 +37,9 @@ if (empty($_POST) === false) {
 	if (empty($_POST['del_name']) === false) {
 		if (user_character_exist($_POST['del_name'])) {
 			user_delete_character(user_character_id($_POST['del_name']));
-			$errors[] = 'Character '. $_POST['del_name'] .' permanently deleted.';
+			$errors[] = 'Character '. getValue($_POST['del_name']) .' permanently deleted.';
 		} else {
-			$errors[] = 'Character '. $_POST['del_name'] .' does not exist.';
+			$errors[] = 'Character '. getValue($_POST['del_name']) .' does not exist.';
 		}
 	}
 	
@@ -55,7 +55,7 @@ if (empty($_POST) === false) {
 				} else if ($config['TFSVersion'] == 'TFS_03') {
 					user_change_password03($acc_id, $_POST['new_pass']);
 				}
-				$errors[] = 'The password to the account of character name: '. $_POST['reset_pass'] .' has been set to: '. $_POST['new_pass'] .'.';
+				$errors[] = 'The password to the account of character name: '. getValue($_POST['reset_pass']) .' has been set to: '. getValue($_POST['new_pass']) .'.';
 			} else {
 				header('Location: changepassword.php');
 				exit();
@@ -100,10 +100,10 @@ if (empty($_POST) === false) {
 						$pos = $value;
 					}
 				}
-				$errors[] = 'Character '. $_POST['position_name'] .' recieved the ingame position: '. $pos .'.';
+				$errors[] = 'Character '. getValue($_POST['position_name']) .' recieved the ingame position: '. $pos .'.';
 			}
 		} else {
-			$errors[] = 'Character '. $_POST['position_name'] .' does not exist.';
+			$errors[] = 'Character '. getValue($_POST['position_name']) .' does not exist.';
 		}
 	}
 	

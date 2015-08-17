@@ -439,6 +439,9 @@
 
 	// Use guild logo system
 	$config['use_guild_logos'] = true;
+	
+	// Use country flags
+	$config['country_flags'] = false;
 
 	// Level requirement to create guild? (Just set it to 1 to allow all levels).
 	$config['create_guild_level'] = 8;
@@ -462,8 +465,8 @@
 	 // Download link to client. Recommended:
 	 // Select download link from remere map editor website!
 	 // See list of clients: http://remeresmapeditor.com/marklar.php?clients
-	$config['client_download'] = 'http://clients.tibiaking.com/download/windows/'. $config['client'] .'';
-	$config['client_download_linux'] = 'http://clients.tibiaking.com/download/linux/'. $config['client'] .'';
+	$config['client_download'] = 'http://clients.halfaway.net/windows.php?tibia='. $config['client'] .'';
+	$config['client_download_linux'] = 'http://clients.halfaway.net/linux.php?tibia='. $config['client'] .'';
 
 	$config['port'] = 7171; // Port number to connect to your OT.
 

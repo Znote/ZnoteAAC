@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `znote_accounts` (
   `cooldown` int(10) DEFAULT 0,
   `active` tinyint(4) NOT NULL DEFAULT '0',
   `activekey` int(11) NOT NULL,
+  `flag` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
@@ -271,7 +272,7 @@ function mysql_select_single($query) {
   $aacQueries++;
 
   global $accQueriesData;
-  $accQueriesData[] = $query;
+  $accQueriesData[] = "[" . elapsedTime() . "] " . $query;
   $result = mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_single</b> (select single row from database)<br><br>".mysqli_error($connect));
   $row = mysqli_fetch_assoc($result);
   return !empty($row) ? $row : false;
@@ -283,7 +284,7 @@ function mysql_select_multi($query){
   global $aacQueries;
   $aacQueries++;
   global $accQueriesData;
-  $accQueriesData[] = $query;
+  $accQueriesData[] = "[" . elapsedTime() . "] " . $query;
   $array = array();
   $results = mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>select_multi</b> (select multiple rows from database)<br><br>".mysqli_error($connect));
   while($row = mysqli_fetch_assoc($results)) {
@@ -307,7 +308,7 @@ function voidQuery($query) {
   global $aacQueries;
   $aacQueries++;
   global $accQueriesData;
-  $accQueriesData[] = $query;
+  $accQueriesData[] = "[" . elapsedTime() . "] " . $query;
   mysqli_query($connect,$query) or die(var_dump($query)."<br>(query - <font color='red'>SQL error</font>) <br>Type: <b>voidQuery</b> (voidQuery is used for update, insert or delete from database)<br><br>".mysqli_error($connect));
 }
 ?>
