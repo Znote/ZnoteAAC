@@ -9,6 +9,14 @@ if(!in_array($_SERVER['REMOTE_ADDR'],
   die("Error: Unknown IP");
 }
 
+// Fetch and sanitize POST and GET values
+function getValue($value) {
+	return (!empty($value)) ? sanitize($value) : false;
+}
+function sanitize($data) {
+	return htmlentities(strip_tags(mysql_znote_escape_string($data)));
+}
+
 // get the variables from PayGol system
 $message_id	= getValue($_GET['message_id']);
 $service_id	= getValue($_GET['service_id']);
