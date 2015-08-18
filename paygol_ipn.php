@@ -3,7 +3,8 @@ require 'config.php';
 require 'engine/database/connect.php';
 
 // check that the request comes from PayGol server
-if(!in_array($_SERVER['REMOTE_ADDR'], array('109.70.3.48', '109.70.3.146', '109.70.3.58'))) {
+if(!in_array($_SERVER['REMOTE_ADDR'],
+	array('109.70.3.48', '109.70.3.146', '109.70.3.58'))) {
 	header("HTTP/1.0 403 Forbidden");
 	die("Error: Unknown IP");
 }
