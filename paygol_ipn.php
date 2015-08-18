@@ -4,9 +4,17 @@ require 'engine/database/connect.php';
 
 // check that the request comes from PayGol server
 if(!in_array($_SERVER['REMOTE_ADDR'],
-  array('109.70.3.48', '109.70.3.146', '109.70.3.58'))) {
-  header("HTTP/1.0 403 Forbidden");
-  die("Error: Unknown IP");
+	array('109.70.3.48', '109.70.3.146', '109.70.3.58'))) {
+	header("HTTP/1.0 403 Forbidden");
+	die("Error: Unknown IP");
+}
+
+// Fetch and sanitize POST and GET values
+function getValue($value) {
+	return (!empty($value)) ? sanitize($value) : false;
+}
+function sanitize($data) {
+	return htmlentities(strip_tags(mysql_znote_escape_string($data)));
 }
 
 // get the variables from PayGol system
@@ -23,12 +31,18 @@ $points	 = getValue($_GET['points']);
 $price	 = getValue($_GET['price']);
 $currency	= getValue($_GET['currency']);
 
+// config paygol settings
 $paygol = $config['paygol'];
-$new_points = $paygol['points'];
 
+// Check if request serviceID is the same as it is in config
+if($service_id != $paygol['serviceID']) {
+	header("HTTP/1.0 403 Forbidden");
+	die("Error: serviceID does not match.");
+}
+
+$new_points = $paygol['points'];
 // Update logs:
 mysql_insert("INSERT INTO `znote_paygol` VALUES ('', '$custom', '$price', '$new_points', '$message_id', '$service_id', '$shortcode', '$keyword', '$message', '$sender', '$operator', '$country', '$currency')");
-
 // Fetch points
 $account = mysql_select_single("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$custom';");
 // Calculate new points
