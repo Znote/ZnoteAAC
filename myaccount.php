@@ -229,7 +229,7 @@ if ($render_page) {
 				echo '<b>CAUTION!</b> Your character with name <b>' . $delete['character_name'] . ' will be deleted on ' . $delete['time'] . '</b>. <a href="myaccount.php?cancel_delete_id=' . $delete['id'] . '">Cancel this operation.</a><br/>';
 			else {
 				user_delete_character(user_character_id($delete['character_name']));
-				mysql_update('UPDATE `znote_deleted_characters` SET `done` = 1');
+				mysql_update('UPDATE `znote_deleted_characters` SET `done` = 1 WHERE `id` = '. $delete['id']. '');
 				echo '<b>Character ' . $delete['character_name'] . ' has been deleted</b>. This operation was requested by owner of this account.';
 				$char_count--;
 			}
