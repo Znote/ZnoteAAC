@@ -46,7 +46,7 @@ Token::generate();
 if (user_logged_in() === true) {
 	$session_user_id = getSession('user_id');
 	$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premdays');
-	$user_znote_data = user_znote_account_data($session_user_id, 'ip', 'created', 'points', 'cooldown');
+	$user_znote_data = user_znote_account_data($session_user_id, 'ip', 'created', 'points', 'cooldown', 'flag');
 }
 $errors = array();
 // Log IP
