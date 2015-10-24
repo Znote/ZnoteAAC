@@ -17,7 +17,12 @@ require '../engine/function/users.php';
 	
 	// install functions
 	function fetch_all_accounts() {
-			return mysql_select_multi("SELECT `id` FROM `accounts`");
+		$results = mysql_select_multi("SELECT `id` FROM `accounts`");
+		$accounts = array();
+		foreach ($results as $row) {
+			$accounts[] = $row['id'];
+		}
+		return (count($accounts) > 0) ? $accounts : false;
 	}
 	
 	function user_count_znote_accounts() {
@@ -31,7 +36,12 @@ require '../engine/function/users.php';
 	}
 	
 	function fetch_znote_accounts() {
-			return mysql_select_multi("SELECT `account_id` FROM `znote_accounts`");
+		$results = mysql_select_multi("SELECT `account_id` FROM `znote_accounts`");
+		$accounts = array();
+		foreach ($results as $row) {
+			$accounts[] = $row['account_id'];
+		}
+		return (count($accounts) > 0) ? $accounts : false;
 	}
 	// end install functions
 	
@@ -39,7 +49,7 @@ require '../engine/function/users.php';
 	$all_account = fetch_all_accounts();
 	$znote_account = fetch_znote_accounts();
 	if ($all_account !== false) {
-		if ($znote_account != false) { // If existing znote compatible account exists:
+		if ($znote_account !== false) { // If existing znote compatible account exists:
 			foreach ($all_account as $all) { // Loop through every element in znote_account array
 				if (!in_array($all, $znote_account)) {
 					$old_accounts[] = $all;
@@ -58,7 +68,7 @@ require '../engine/function/users.php';
 		echo '<br>';
 		echo 'Total accounts detected: '. count($all_account) .'.';
 		
-		if (isset($znote_account)) {
+		if (isset($znote_account) && $znote_account !== false) {
 			echo '<br>';
 			echo 'Znote compatible accounts detected: '. count($znote_account) .'.';
 			
@@ -82,25 +92,23 @@ require '../engine/function/users.php';
 	if (isset($old_accounts) && $old_accounts !== false) {
 		$time = time();
 		foreach ($old_accounts as $old) {
-			// Get acc id
-			$old_id = $old['id'];
 
 			// Make acc data compatible:
-			mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$old_id', '0', '$time')");
+			mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$old', '0', '$time')");
 			$updated_acc += 1;
 			
 			// Fetch unsalted password
 			if ($config['TFSVersion'] == 'TFS_03' && $config['salt'] === true) {
-				$password = user_data($old_id, 'password', 'salt');
+				$password = user_data($old, 'password', 'salt');
 				$p_pass = str_replace($password['salt'],"",$password['password']);
 			}
 			if ($config['TFSVersion'] == 'TFS_02' || $config['salt'] === false) {
-				$password = user_data($old_id, 'password');
+				$password = user_data($old, 'password');
 				$p_pass = $password['password'];
 			}
 			
 			// Verify lenght of password is less than 28 characters (most likely a plain password)
-			if (strlen($p_pass) < 28 && $old_id > 1) {
+			if (strlen($p_pass) < 28 && $old > 1) {
 				// encrypt it with sha1
 				if ($config['TFSVersion'] == 'TFS_02' || $config['salt'] === false) $p_pass = sha1($p_pass);
 				if ($config['TFSVersion'] == 'TFS_03' && $config['salt'] === true) $p_pass = sha1($password['salt'].$p_pass);
@@ -125,10 +133,10 @@ require '../engine/function/users.php';
 				// Lets loop through the character list
 				foreach ($chars as $c) {
 					// Is character not compatible yet?
-					if (user_character_is_compatible($c) == 0) {
+					if (user_character_is_compatible($c['id']) == 0) {
 						// Then lets make it compatible:
-						
-						mysql_insert("INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES ('$c', '$time', '0', '')");
+						$cid =  $c['id'];
+						mysql_insert("INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES ('$cid', '$time', '0', '')");
 						$updated_char += 1;
 						
 					}
