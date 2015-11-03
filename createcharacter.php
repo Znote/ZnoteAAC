@@ -136,18 +136,22 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 					<!-- Available towns to select from when creating character -->
 					Town:<br>
 					<select name="selected_town">
-					<?php foreach ($config['available_towns'] as $tid) { ?>
-					<option value="<?php echo $tid; ?>"><?php echo town_id_to_name($tid); ?></option>
-					<?php } ?>
+						<?php 
+						foreach ($available_towns as $tid): 
+							?>
+							<option value="<?php echo $tid; ?>"><?php echo town_id_to_name($tid); ?></option>
+							<?php 
+						endforeach; 
+						?>
 					</select>
 				</li>
 				<?php
 			else:
 				?>
-				<input type="hidden" name="selected_town" value="<?php echo end($config['available_towns']); ?>">
+				<input type="hidden" name="selected_town" value="<?php echo end($available_towns); ?>">
 				<?php 
 			endif;
-			
+
 			/* Form file */
 			Token::create();
 			?>
