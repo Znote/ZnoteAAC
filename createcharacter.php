@@ -128,18 +128,28 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 				<option value="0">Female(girl)</option>
 				</select>
 			</li>
-			<li>
-				<!-- Available towns to select from when creating character -->
-				Town:<br>
-				<select name="selected_town">
-				<?php foreach ($config['available_towns'] as $tid) { ?>
-				<option value="<?php echo $tid; ?>"><?php echo town_id_to_name($tid); ?></option>
-				<?php } ?>
-				</select>
-			</li>
 			<?php
-				/* Form file */
-				Token::create();
+			$available_towns = $config['available_towns'];
+			if (count($available_towns) > 1):
+				?>
+				<li>
+					<!-- Available towns to select from when creating character -->
+					Town:<br>
+					<select name="selected_town">
+					<?php foreach ($config['available_towns'] as $tid) { ?>
+					<option value="<?php echo $tid; ?>"><?php echo town_id_to_name($tid); ?></option>
+					<?php } ?>
+					</select>
+				</li>
+				<?php
+			else:
+				?>
+				<input type="hidden" name="selected_town" value="<?php echo end($config['available_towns']); ?>">
+				<?php 
+			endif;
+			
+			/* Form file */
+			Token::create();
 			?>
 			<li>
 				<input type="submit" value="Create Character">
