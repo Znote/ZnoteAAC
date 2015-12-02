@@ -16,7 +16,7 @@ if ($logged_in === true) {
 	}
 	if (!empty($_POST['image']) && !empty($_POST['title']) && !empty($_POST['desc'])) {
 		$image = sanitize($_POST['image']);
-		$image = str_replace("www", "", str_replace(":", "", str_replace("/", "", str_replace(".", "!", str_replace("ii.gl", "", str_replace("http", "", $image))))));
+		$image = str_replace("www", "", str_replace(":", "", str_replace("/", "", str_replace(".", "!", str_replace("1m.yt", "", str_replace("http", "", $image))))));
 		$title = sanitize($_POST['title']);
 		$desc = sanitize($_POST['desc']);
 		
@@ -35,7 +35,7 @@ if ($logged_in === true) {
 			</tr>
 			<tr>
 				<td>
-<a href="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>" target="_BLANK"><img class="galleryImage" src="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>"/></a>
+					<a href="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>" target="_BLANK"><img class="galleryImage" src="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>"/></a>
 				</td>
 			</tr>
 			<tr>
@@ -73,7 +73,7 @@ if (empty($_POST)) {
 				</tr>
 				<tr>
 					<td>
-<a href="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>" target="_BLANK"><img class="galleryImage" src="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>"/></a>
+						<a href="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>" target="_BLANK"><img class="galleryImage" src="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>"/></a>
 					</td>
 				</tr>
 				<tr>

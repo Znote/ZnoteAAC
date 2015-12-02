@@ -47,7 +47,7 @@ if ($images != false) {
 			</tr>
 			<tr>
 				<td>
-<a href="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
+					<a href="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
 				</td>
 			</tr>
 			<tr>
@@ -75,7 +75,7 @@ if ($images != false) {
 			</tr>
 			<tr>
 				<td>
-<a href="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
+					<a href="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
 				</td>
 			</tr>
 			<tr>
@@ -103,7 +103,7 @@ if ($images != false) {
 			</tr>
 			<tr>
 				<td>
-<a href="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.ii.gl/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
+					<a href="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
 				</td>
 			</tr>
 			<tr>
