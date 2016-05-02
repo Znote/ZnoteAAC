@@ -107,6 +107,34 @@ if (empty($_POST) === false) {
 		}
 	}
 	
+	// Teleport Player
+	if (in_array($_POST['from'], ['all', 'only'])) {
+		$from = $_POST['from'];
+		if ($from === 'only') {
+			if (empty($_POST['player_name']) || !user_character_exist($_POST['player_name'])) {
+				$errors[] = 'Character '. getValue($_POST['player_name']) .' does not exist.';
+			}
+		}
+
+		if (!sizeof($errors)) {
+			$to = $_POST['to'];
+			$teleportQuery = 'UPDATE `players` SET ';
+
+			if ($to == 'home') {
+				$teleportQuery .= '`posx` = 0, `posy` = 0, `posz` = 0 ';
+			} else if ($to == 'town') {
+				$teleportQuery .= '`posx` = 0, `posy` = 0, `posz` = 0, `town_id` = ' . (int) getValue($_POST['town']) . ' ';
+			} else if ($to == 'xyz') {
+				$teleportQuery .= '`posx` = ' . (int) getValue($_POST['x']) . ', `posy` = ' . (int) getValue($_POST['y']) . ', `posz` = ' . (int) getValue($_POST['z']) . ' ';
+			}
+
+			if ($from === 'only') {
+				$teleportQuery .= ' WHERE `name` = \'' . getValue($_POST['player_name']). '\'';
+			}
+
+			mysql_update($teleportQuery);
+		}
+	}
 // If empty post
 }
 
@@ -235,6 +263,62 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 			<input type="text" name="points_char" placeholder="Character name">
 			<input type="text" name="points_value" placeholder="Points">
 			<input type="submit" value="Give Points">
+		</form>
+	</li>
+	<li>
+		<b>Teleport Player</b>
+		<form action="" method="post">
+			<table>
+				<tr>
+					<td>Type:</td>
+					<td>
+						<select name="from">
+							<option value="all">All</option>
+							<option value="only">Only</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Player</td>
+					<td><input type="text" name="player_name" placeholder="Player Name"></td>
+				</tr>
+				<tr>
+					<td>To</td>
+					<td>
+						<select name="to">
+							<option value="home">Hometown</option>
+							<option value="town">Specific Town</option>
+							<option value="xyz">Specific Position</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Town</td>
+					<td>
+					<select name="town">
+						<?php
+							foreach($config['towns'] as $townId => $townName) {
+								echo '<option value="' . $townId . '">' . $townName . '</option>';
+							}
+						?>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Position</td>
+					<td>
+						<input type="text" name="x" placeholder="Position X">
+						<input type="text" name="y" placeholder="Position Y">
+						<input type="text" name="z" placeholder="Position Z">
+					</td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td><input type="submit" value="teleport"></td></td>
+				</tr>
+				</tr>
+			</table>
 		</form>
 	</li>
 </ul>
