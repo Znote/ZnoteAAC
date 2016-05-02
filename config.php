@@ -707,6 +707,32 @@
 		30 => 420, // +40% bonus
 	);
 
+	/////////////////
+	/// PAGSEGURO ///
+	/////////////////
+	// Write your pagseguro address here, and what currency you want to recieve money in.
+	$config['pagseguro'] = array(
+		'enabled' => true,
+		'sandbox' => false,
+		'email' => '', // Example: pagseguro@mail.com
+		'token' => '',
+		'currency' => 'BRL',
+		'product_name' => '',
+		'price' => 100, // 1 real
+		'ipn' => "http://".$_SERVER['HTTP_HOST']."/pagseguro_ipn.php",
+		'urls' => array(
+			'www' => 'pagseguro.uol.com.br',
+			'ws'  => 'ws.pagseguro.uol.com.br',
+			'stc' => 'stc.pagseguro.uol.com.br'
+		)
+	);
+
+	if ($config['pagseguro']['sandbox']) {
+		$config['pagseguro']['urls'] = array_map(function ($item) {
+			return str_replace('pagseguro', 'sandbox.pagseguro', $item);
+		}, $config['pagseguro']['urls']);
+	}
+
 	//////////////////
 	/// PAYGOL SMS ///
 	//////////////////
