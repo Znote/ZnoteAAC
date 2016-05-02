@@ -1,4 +1,8 @@
 <?php
+	if (!defined('ZNOTE_OS')) {
+		$isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+		define('ZNOTE_OS', ($isWindows) ? 'WINDOWS' : 'LINUX');
+	}
 	// Available options: TFS_02, TFS_03
 	// TFS 0.2 = TFS_02
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
@@ -565,7 +569,7 @@
 
 	// What kind of computer are you hosting this website on?
 	// Available options: LINUX or WINDOWS
-	$config['os'] = 'WINDOWS';
+	$config['os'] = ZNOTE_OS;
 
 	// Measure how much players are lagging in-game. (Not completed).
 	$config['ping'] = false;
