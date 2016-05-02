@@ -3,6 +3,7 @@ protect_page();
 include 'layout/overall/header.php'; 
 
 // Import from config:
+$pagseguro = $config['pagseguro'];
 $paypal = $config['paypal'];
 $prices = $config['paypal_prices'];
 
