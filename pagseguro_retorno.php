@@ -38,7 +38,7 @@
 				  `notification_code` varchar(40) NOT NULL,
 				  `details` text NOT NULL,
 				  `receive_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-				  PRIMARY KEY (`id`),
+				  PRIMARY KEY (`id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 	*/
 
