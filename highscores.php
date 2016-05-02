@@ -89,7 +89,7 @@ if ($scores) {
 				$profile_data = user_character_data($scores[$type][$i]['id'], 'account_id');
 
 				$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
-				if ($config['country_flags'] === true && count($account_data['flag']) > 1) $flag = '<img src="\flags\\' . $account_data['flag'] . '.png">  ';
+				if ($config['country_flags'] === true && count($account_data['flag']) > 1) $flag = '<img src="flags/' . $account_data['flag'] . '.png">  ';
 				else $flag = '';
 				?>
 				<tr>

@@ -51,7 +51,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 				if ($config['country_flags'])
 				{ ?>
 					<!-- Player country data -->
-					<li><font class="profile_font" name="profile_font_country">Country: <?php echo '<img src="\flags\\' . $account_data['flag'] . '.png">'; ?></font></li><?php
+					<li><font class="profile_font" name="profile_font_country">Country: <?php echo '<img src="flags/' . $account_data['flag'] . '.png">'; ?></font></li><?php
 				} ?>
 				
 				<!-- Player male / female -->
