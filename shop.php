@@ -2,6 +2,10 @@
 protect_page();
 include 'layout/overall/header.php'; 
 
+if (isset($_GET['callback']) && $_GET['callback'] === 'processing') {
+	echo '<script>alert("Seu pagamento está sendo processado pelo PagSeguro...");</script>';
+}
+
 // Import from config:
 $shop = $config['shop'];
 $shop_list = $config['shop_offers'];
