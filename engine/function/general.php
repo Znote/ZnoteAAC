@@ -328,6 +328,12 @@ function vocation_id_to_name($id) {
 	return ($vocations[$id] >= 0) ? $vocations[$id] : false;
 }
 
+// Parameter: players.group_id. Returns: Configured group name.
+function group_id_to_name($id) {
+	$positions = config('ingame_positions');
+	return ($positions[$id] >= 0) ? $positions[$id] : false;
+}
+
 function gender_exist($gender) {
 	// Range of allowed gender ids, fromid toid
 	if ($gender >= 0 && $gender <= 1) {

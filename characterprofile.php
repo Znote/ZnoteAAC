@@ -14,7 +14,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 	{	
 		if ($config['TFSVersion'] == 'TFS_10') 
 		{
-			$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin');
+			$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin');
 			$profile_data['online'] = user_is_online_10($user_id);
 			
 			if ($config['Ach']) 
@@ -25,7 +25,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 		} 
 		else 
 		{
-			$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex');
+			$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex');
 		}
 		
 		$profile_znote_data = user_znote_character_data($user_id, 'created', 'hide_char', 'comment');
@@ -54,6 +54,11 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 					<li><font class="profile_font" name="profile_font_country">Country: <?php echo '<img src="flags/' . $account_data['flag'] . '.png">'; ?></font></li><?php
 				} ?>
 				
+				<!-- Player Position -->
+				<?php if ($profile_data['group_id'] > 1) { ?>
+				<li><font class="profile_font" name="profile_font_position">Position: <?php echo group_id_to_name($profile_data['group_id']); ?></font></li>
+				<?php } ?>
+
 				<!-- Player male / female -->
 				<li>
 					<font class="profile_font" name="profile_font_level">Sex: 
