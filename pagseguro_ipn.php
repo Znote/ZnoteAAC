@@ -73,17 +73,19 @@
 
 	$rawPayment = VerifyPagseguroIPN($notificationCode);
 	$payment = simplexml_load_string($rawPayment);
+	$paymentStatus = (int) $paymentStatus;
+	$paymentCode = sanitize($paymentCode);
 
 	report($notificationCode, $rawPayment);
 
 	// Updating Payment Status
-	mysql_update('UPDATE `znote_pagseguro` SET `payment_status` = ' . ($payment->status) . ' WHERE `transaction` = \'' . $payment->code . '\' ');
+	mysql_update('UPDATE `znote_pagseguro` SET `payment_status` = ' . $paymentStatus . ' WHERE `transaction` = \'' . $paymentCode . '\' ');
 
 	// Check that the payment_status is Completed
-	if ($payment->status == 3) {
+	if ($paymentStatus == 3) {
 
 		// Check that transaction has not been previously processed
-		$transaction = mysql_select_single('SELECT `transaction`, `completed` FROM `znote_pagseguro` WHERE `transaction`= \'' . $payment->code .'\'');
+		$transaction = mysql_select_single('SELECT `transaction`, `completed` FROM `znote_pagseguro` WHERE `transaction`= \'' . $paymentCode .'\'');
 		$status = true;
 		$custom = (int) $payment->reference;
 
@@ -97,7 +99,7 @@
 
 		if ($status) {
 			// transaction log
-			mysql_update('UPDATE `znote_pagseguro` SET `completed` = 1 WHERE `transaction` = \'' . $payment->code . '\'');
+			mysql_update('UPDATE `znote_pagseguro` SET `completed` = 1 WHERE `transaction` = \'' . $paymentCode . '\'');
 
 			// Process payment
 			$data = mysql_select_single("SELECT `points` AS `old_points` FROM `znote_accounts` WHERE `account_id`='$custom';");
@@ -106,7 +108,7 @@
 			$new_points = $data['old_points'] + $item->quantity;
 			mysql_update("UPDATE `znote_accounts` SET `points`='$new_points' WHERE `account_id`='$custom'");
 		}
-	} else if ($payment->status == 7) {
-		mysql_update('UPDATE `znote_pagseguro` SET `completed` = 1 WHERE `transaction` = \'' . $payment->code . '\' ');
+	} else if ($paymentStatus == 7) {
+		mysql_update('UPDATE `znote_pagseguro` SET `completed` = 1 WHERE `transaction` = \'' . $paymentCode . '\' ');
 	}
 ?>

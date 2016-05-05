@@ -96,12 +96,13 @@
 	$rawTransaction = VerifyPagseguroIPN($transactionCode);
 	$transaction = simplexml_load_string($rawTransaction);
 
-	$completed = ($transaction->status != 7) ? 0 : 1;
+	$transactionStatus = (int) $transaction->status;
+	$completed = ($transactionStatus != 7) ? 0 : 1;
 
 	$custom = (int) $transaction->reference;
 	$item = $transaction->items->item[0];
 	$points = $item->quantity;
-	$price = $item->quantity * ($pagseguro['price'] / 100);
-	mysql_insert('INSERT INTO `znote_pagseguro` VALUES (null, \'' . $transaction->code . '\', ' . $custom . ', \'' . $price . '\', \'' . $points . '\', ' . $transaction->status . ', ' . $completed . ')');
+	$price = $points * ($pagseguro['price'] / 100);
+	mysql_insert('INSERT INTO `znote_pagseguro` VALUES (null, \'' . sanitize($transaction->code) . '\', ' . $custom . ', \'' . $price . '\', \'' . $points . '\', ' . $transactionStatus . ', ' . $completed . ')');
 
 	header('Location: shop.php?callback=processing');
