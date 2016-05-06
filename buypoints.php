@@ -3,6 +3,7 @@ protect_page();
 include 'layout/overall/header.php'; 
 
 // Import from config:
+$pagseguro = $config['pagseguro'];
 $paypal = $config['paypal'];
 $prices = $config['paypal_prices'];
 
@@ -55,6 +56,25 @@ if ($paypal['enabled']) {
 <?php } ?>
 
 <?php
+if ($config['pagseguro']['enabled'] == true) {
+?>
+	<h2>Buy points using Pagseguro:</h2>
+	<form target="pagseguro" action="https://<?=$pagseguro['urls']['www']?>/checkout/checkout.jhtml" method="post">
+		<input type="hidden" name="email_cobranca" value="<?=$pagseguro['email']?>">
+		<input type="hidden" name="tipo" value="CP">
+		<input type="hidden" name="moeda" value="<?=$pagseguro['currency']?>">
+		<input type="hidden" name="ref_transacao" value="<?php echo (int)$session_user_id; ?>">
+		<input type="hidden" name="item_id_1" value="1">
+		<input type="hidden" name="item_descr_1" value="<?=$pagseguro['product_name']?>">
+		<input type="number" name="item_quant_1" min="1" step="4" value="1">
+		<input type="hidden" name="item_peso_1" value="0">
+		<input type="hidden" name="item_valor_1" value="<?=$pagseguro['price']?>">
+		<input type="submit" value="  PURCHASE  ">
+	</form>
+	<br>
+<?php } ?>
+
+<?php
 if ($config['paygol']['enabled'] == true) {
 ?>
 <!-- PayGol Form using Post method -->
@@ -73,5 +93,5 @@ if ($config['paygol']['enabled'] == true) {
 </form>
 <?php }
 
-if (!$config['paypal']['enabled'] && !$config['paygol']['enabled']) echo '<h1>Buy Points system disabled.</h1><p>Sorry, this functionality is disabled.</p>';
+if (!$config['paypal']['enabled'] && !$config['paygol']['enabled'] && !$config['pagseguro']['enabled']) echo '<h1>Buy Points system disabled.</h1><p>Sorry, this functionality is disabled.</p>';
 include 'layout/overall/footer.php'; ?>
