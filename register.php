@@ -112,7 +112,7 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 			'password'	=>	$_POST['password'],
 			'email'		=>	$_POST['email'],
 			'created'	=>	time(),
-			'ip'		=>	ip2long(getIP()),
+			'ip'		=>	getIPLong(),
 			'flag'		=> 	$_POST['flag']
 		);
 		

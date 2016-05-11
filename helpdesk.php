@@ -165,7 +165,7 @@ if ($view !== false) {
 				'username'=>	getValue($_POST['username']),
 				'subject' =>	getValue($_POST['subject']),
 				'message' =>	getValue($_POST['message']),
-				'ip'	  =>	ip2long(getIP()),
+				'ip'	  =>	getIPLong(),
 				'creation' =>	time(),
 				'status'  =>	'Open'
 			);

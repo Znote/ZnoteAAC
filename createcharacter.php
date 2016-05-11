@@ -90,7 +90,7 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 			'vocation'	=>	$_POST['selected_vocation'],
 			'town_id'	=>	$_POST['selected_town'],
 			'sex'		=>	$_POST['selected_gender'],
-			'lastip'	=>	ip2long(getIP()),
+			'lastip'	=>	getIPLong(),
 			'created'	=>	time()
 		);
 		

@@ -348,7 +348,7 @@ if ($config['zeotss']['enabled'] && $config['zeotss']['visitors']) {
 	curl_setopt($curl_connection, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl_connection, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($curl_connection, CURLOPT_FOLLOWLOCATION, 0);
-	$post_string = "longip=".ip2long($_SERVER['REMOTE_ADDR'])."&register=1";
+	$post_string = "longip=".getIPLong()."&register=1";
 	curl_setopt($curl_connection, CURLOPT_POSTFIELDS, $post_string);
 	$result = curl_exec($curl_connection);
 	if ($config['zeotss']['debug']) data_dump(false, array($result), "CURL DATA");

@@ -124,7 +124,7 @@ function znote_visitors_get_data() {
 // Set visitor basic data
 function znote_visitor_set_data($visitor_data) {
 	$exist = false;
-	$ip = ip2long(getIP());
+	$ip = getIPLong();
 	
 	foreach ((array)$visitor_data as $row) {
 		if ($ip == $row['ip']) {
@@ -159,7 +159,7 @@ function znote_visitor_insert_detailed_data($type) {
 	type 4 = search character
 	*/
 	$time = time();
-	$ip = ip2long(getIP());
+	$ip = getIPLong();
 	if (user_logged_in()) {
 		$acc = (int)getSession('user_id');
 		mysql_insert("INSERT INTO `znote_visitors_details` (`ip`, `time`, `type`, `account_id`) VALUES ('$ip', '$time', '$type', '$acc')");
@@ -168,7 +168,7 @@ function znote_visitor_insert_detailed_data($type) {
 
 function something () {
 	// Make acc data compatible:
-	$ip = ip2long(getIP());
+	$ip = getIPLong();
 }
 
 // Secret token
@@ -233,9 +233,9 @@ function validate_name($string) {
 
 // Checks if an IPv4(or localhost IPv6) address is valid
 function validate_ip($ip) {
-	$ipL = ip2long($ip);
+	$ipL = safeIp2Long($ip);
 	$ipR = long2ip($ipL);
-	
+
 	if ($ip === $ipR) {
 		return true;
 	} elseif ($ip=='::1')  {
@@ -269,6 +269,7 @@ function online_list() {
 	else return mysql_select_multi("SELECT `p`.`name` as `name`, `p`.`level` as `level`, `p`.`vocation` as `vocation`, `g`.`name` as `gname` FROM `players` p LEFT JOIN `guild_ranks` gr ON `gr`.`id` = `p`.`rank_id` LEFT JOIN `guilds` g ON `gr`.`guild_id` = `g`.`id` WHERE `p`.`online` = '1' ORDER BY `p`.`name` DESC;");
 }
 
+
 // Gets you the actual IP address even from users behind ISP proxies and so on.
 function getIP() {
 	/*
@@ -287,6 +288,15 @@ function getIP() {
     $IP = $_SERVER['REMOTE_ADDR'];
   } */
 return $_SERVER['REMOTE_ADDR'];
+}
+
+function safeIp2Long($ip) {
+	return sprintf('%u', ip2long($ip));
+}
+
+// Gets you the actual IP address even from users in long type
+function getIPLong() {
+	return safeIp2Long(getIP());
 }
 
 // Deprecated, just use count($array) instead.
