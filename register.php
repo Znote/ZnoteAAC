@@ -37,9 +37,6 @@ if (empty($_POST) === false) {
 		if ($isNoob) {
 			$errors[] = 'This account name is blocked for registration.';
 		}
-		if (strtolower($_POST['username']) === true) {
-			$errors[] = 'Sorry, that username already exist.';
-		}
 		if (preg_match("/^[a-zA-Z0-9]+$/", $_POST['username']) == false) {
 			$errors[] = 'Your account name can only contain characters a-z, A-Z and 0-9.';
 		}
