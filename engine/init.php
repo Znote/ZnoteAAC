@@ -79,7 +79,7 @@ if ($config['log_ip']) {
 	$v_form = 0;
 	foreach ((array)$visitor_detailed as $v_d) {
 		// Activity
-		if ($v_d['ip'] == ip2long(getIP())) {
+		if ($v_d['ip'] == getIPLong()) {
 			// count each type of visit			
 			switch ($v_d['type']) {
 				case 0: // max activity

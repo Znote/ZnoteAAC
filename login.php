@@ -48,7 +48,7 @@ if (empty($_POST) === false) {
 				$znote_data = user_znote_account_data($login);
 				if ($znote_data['ip'] == 0) {
 					$update_data = array(
-					'ip' => ip2long(getIP()),
+					'ip' => getIPLong(),
 					);
 					user_update_znote_account($update_data);
 				}
