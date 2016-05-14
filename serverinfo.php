@@ -5,23 +5,14 @@ Here you will find all basic information about <?php echo '<b>'.$config['site_ti
 <?php
 
 // Check if PATH is correct
-if (file_exists($config['server_path'].'/config.lua')) {
-	// Checks OS from config.php ($config['os'])
-	if ($config['os'] == 'LINUX') {
-		if (file_exists($config['server_path'].'/data/XML/stages.xml')) {
-			$stages_path = simplexml_load_file($config['server_path'].'/data/XML/stages.xml');
-		} else {
-			echo 'Couldn\'t locate stages.xml';
-		}
-	} else {
-		if (file_exists($config['server_path'].'/data/XML/stages.xml')) {
-			$stages_path = simplexml_load_file($config['server_path'].'/data/XML/stages.xml');
-		} else {
-			echo 'Couldn\'t locate stages.xml';
-		}
+$lua_path = getConfigLua();
+if ($lua_path && is_array($lua_path)) {
+	if (!file_exists($config['server_path'].'/data/XML/stages.xml')) {
+		echo 'Couldn\'t locate stages.xml';
+		return;
 	}
-	
-	$lua_path = parse_ini_file($config['server_path'].'/config.lua');
+
+	$stages_path = simplexml_load_file($config['server_path'].'/data/XML/stages.xml');
 	echo '<h2>Server rates</h2>';
 	if ($stages_path->config['enabled'] != 0) {
 		// Stages are beeing used
@@ -37,7 +28,7 @@ if (file_exists($config['server_path'].'/config.lua')) {
 			}
 		}
 		echo '</tbody></table>';
-		
+
 	} else {
 		// Not using stages
 		echo "<table class='table table-striped table-hover'>
@@ -50,7 +41,7 @@ if (file_exists($config['server_path'].'/config.lua')) {
 		<tr><td><center>x".$lua_path['rateSkill']."</center></td><td><center>x".$lua_path['rateMagic']."</center></td><td><center>x".$lua_path['rateLoot']."</center></td></tr>
 		</tbody></table>";
 
-	// General info 
+	// General info
 	$information = array(
 		'World type'             => $lua_path['worldType'],
 		'Protection level'       => $lua_path['protectionLevel'],
@@ -73,7 +64,7 @@ if (file_exists($config['server_path'].'/config.lua')) {
 	echo '</ul>';
 
 } else {
-	echo '<h1>Invliad PATH, please check your config file</h1>';
+	echo '<h1>Cannot find the file <strong>config.lua</strong></h1>';
 }
 
 include 'layout/overall/footer.php'; ?>
