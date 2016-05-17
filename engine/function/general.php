@@ -40,6 +40,23 @@ function data_dump($print = false, $var = false, $title = false) {
 	echo '</pre><br>';
 }
 
+function getConfigLua() {
+	$filename = config('server_path') . '/config.lua';
+	if (!file_exists($filename)) {
+		return;
+	}
+	$contents = file_get_contents($filename);
+	$array = explode("\n", $contents);
+	$output = [];
+	foreach ($array as $arr) {
+		if (strpos($arr, '--') !== 0) {
+		$output[] = $arr;
+		}
+	}
+	$ini = implode("\n", $output);
+	return parse_ini_string($ini);
+}
+
 function accountAccess($accountId, $TFS) {
 	$accountId = (int)$accountId;
 	$access = 0;
