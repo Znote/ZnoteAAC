@@ -8,6 +8,10 @@ if ($config['log_ip']) {
 $type = (isset($_GET['type'])) ? (int)getValue($_GET['type']) : 7;
 if ($type > 9) $type = 7;
 
+// Fetch highscore vocation
+$vocation = (isset($_GET['vocation'])) ? (int)getValue($_GET['vocation']) : -1;
+if ($vocation > 8) $vocation = -1;
+
 // Fetch highscore page
 $page = getValue(@$_GET['page']);
 if (!$page || $page == 0) $page = 1;
@@ -39,7 +43,7 @@ function pageCheck($index, $page, $rowPerPage) {
 
 $cache = new Cache('engine/cache/highscores');
 if ($cache->hasExpired()) {
-	$scores = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId']);
+	$scores = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId'], $vocation);
 	
 	$cache->setContent($scores);
 	$cache->save();
@@ -49,7 +53,7 @@ if ($cache->hasExpired()) {
 
 if ($scores) {
 	?>
-	<h1>Ranking for <?php echo skillName($type); ?>.</h1>
+	<h1>Ranking for <?php echo skillName($type) .", ". (($vocation < 0) ? 'any vocation' : vocation_id_to_name($vocation)) ?>.</h1>
 	<form action="" method="GET">
 		<select name="type">
 			<option value="7" <?php if ($type == 7) echo "selected"; ?>>Experience</option>
@@ -61,6 +65,17 @@ if ($scores) {
 			<option value="4" <?php if ($type == 4) echo "selected"; ?>>Distance</option>
 			<option value="6" <?php if ($type == 6) echo "selected"; ?>>Fish</option>
 			<option value="9" <?php if ($type == 9) echo "selected"; ?>>Fist</option>
+		</select>
+		<select name="vocation">
+			<option value="-1" <?php if ($vocation < 0) echo "selected"; ?>>Any vocation</option>
+
+			<?php
+			foreach (config('vocations') as $v_id => $v_name) {
+				$selected = ($vocation == $v_id) ? " selected" : NULL;
+
+				echo '<option value="'. $v_id .'"'. $selected .'>'. $v_name .'</option>';
+			}
+			?>
 		</select>
 		<select name="page">
 			<?php
