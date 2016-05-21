@@ -891,7 +891,7 @@ function fetchAllScores($rows, $tfs, $g, $v = -1) {
 	if ($tfs == 'TFS_10') {
 
 		// Generate SQL WHERE-clause for vocation if $v is set
-		$v = ($v > 0) ? 'AND `vocation` = '. intval($v) : NULL;
+		$v = ($v > -1) ? 'AND `vocation` = '. intval($v) : NULL;
 
 		$data[1] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_club` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_club` DESC LIMIT 0, $rows;");
 		$data[2] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_sword` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_sword` DESC LIMIT 0, $rows;");
@@ -905,7 +905,7 @@ function fetchAllScores($rows, $tfs, $g, $v = -1) {
 	} else {
 
 		// Generate SQL WHERE-clause for vocation if $v is set
-		$v = ($v > 0) ? 'AND `p`.`vocation` = '. intval($v) : NULL;
+		$v = ($v > -1) ? 'AND `p`.`vocation` = '. intval($v) : NULL;
 
 		$data[9] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 0 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
 		$data[1] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 1 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
