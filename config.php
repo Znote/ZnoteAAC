@@ -16,7 +16,7 @@
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
 
 	// Path to server folder without / Example: C:\Users\Alvaro\Documents\GitHub\forgottenserver
-	$config['server_path'] = '';
+	$config['server_path'] = ''; 
 
 
 	// ------------------------ \\
@@ -39,7 +39,7 @@
 		- getClock() = returns current time in numbers.
 		- getClock(time(), true) = returns current time in formatted date
 		- getClock(false, true) = same as above
-		- getClock(false, true, false) = get current time, don't adjust timezone
+		- getClock(false, true, false) = get current time, don't adjust timezone 
 		- echo getClock($profile_data['lastlogin'], true); = from characterprofile,
 		explains when user was last logged in. */
 	function getClock($time = false, $format = false, $adjust = true) {
@@ -55,7 +55,7 @@
 	// ------------------- \\
 	// CUSTOM SERVER STUFF \\
 	// ------------------- \\
-	// Enable / disable Questlog function (true / false)
+	// Enable / disable Questlog function (true / false) 
 			$config['EnableQuests'] = false;
 
 	// array for filling questlog (Questid, max value, name, end of the quest fill 1 for the last part 0 for all others)
@@ -135,8 +135,8 @@
 	'secret' => true
 	),
 	30001 => array(
-	'Allow Cookies?',
-	'With a perfectly harmless smile you fooled all of those wicecrackers into eating your exploding cookies. Consider a boy or girl scout outfit next time to make the trick even better.',
+	'Allow Cookies?', 
+	'With a perfectly harmless smile you fooled all of those wicecrackers into eating your exploding cookies. Consider a boy or girl scout outfit next time to make the trick even better.', 
 	'points' => '10', // 1-3 points (1star), 4-6 points(2 stars), 7-9 points(3 stars), 10 points => (4 stars)
 	'secret' => true // show "secret" image
 	),
@@ -147,7 +147,7 @@
 	),
 	30003 => array(
 	'Bearhugger',
-	'Warm, furry and cuddly - though that same bear you just hugged would probably rip you into pieces if he had been conscious, he reminded you of that old teddy bear which always slept in your bed when you were still small.',
+	'Warm, furry and cuddly - though that same bear you just hugged would probably rip you into pieces if he had been conscious, he reminded you of that old teddy bear which always slept in your bed when you were still small.', 
 	'points' => '4'
 	),
 	30004 => array(
@@ -157,23 +157,23 @@
 	),
 	30005 => array(
 	'Chorister',
-	'Lalalala... you now know the cult\'s hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics.',
+	'Lalalala... you now know the cult\'s hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics.', 
 	'points' => '1'
 	),
 	30006 => array(
 	'Fountain of Life',
-	'You found and took a sip from the Fountain of Life. Thought it didn\'t grant you eternal life, you feel changed and somehow at peace.',
+	'You found and took a sip from the Fountain of Life. Thought it didn\'t grant you eternal life, you feel changed and somehow at peace.', 
 	'points' => '1',
 	'secret' => true
 	),
 	30007 => array(
 	'Here, Fishy Fishy!',
-	'Ah, the smell of the sea! Standing at the shore and casting a line is one of your favourite activities. For you, fishing is relaxing - and at the same time, providing easy food. Perfect!',
+	'Ah, the smell of the sea! Standing at the shore and casting a line is one of your favourite activities. For you, fishing is relaxing - and at the same time, providing easy food. Perfect!', 
 	'points' => '1'
 	),
 	30008 => array(
 	'Honorary Barbarian',
-	'You\'ve hugged bears, pushed mammoths and proved your drinking skills. And even though you have a slight hangover, a partially fractured rib and some greasy hair on your tongue, you\'re quite proud to call yourself a honorary barbarian from now on.',
+	'You\'ve hugged bears, pushed mammoths and proved your drinking skills. And even though you have a slight hangover, a partially fractured rib and some greasy hair on your tongue, you\'re quite proud to call yourself a honorary barbarian from now on.', 
 	'points' => '1'
 	),
 	30009 => array(
@@ -183,12 +183,12 @@
 	),
 	300010 => array(
 	'Just in Time',
-	'You\'re a fast runner and are good at delivering wares which are bound to decay just in the nick of time, even if you can\'t use any means of transportation or if your hands get cold or smelly in the process.',
+	'You\'re a fast runner and are good at delivering wares which are bound to decay just in the nick of time, even if you can\'t use any means of transportation or if your hands get cold or smelly in the process.', 
 	'points' => '1'
 	),
 	30011 => array(
 	'Matchmaker',
-	'You don\'t believe in romance to be a coincidence or in love at first sight. In fact - love potions, bouquets of flowers and cheesy poems do the trick much better than ever could. Keep those hormones flowing!',
+	'You don\'t believe in romance to be a coincidence or in love at first sight. In fact - love potions, bouquets of flowers and cheesy poems do the trick much better than ever could. Keep those hormones flowing!', 
 	'points' => '1',
 	'secret' => true
 	),
@@ -206,7 +206,7 @@
 	),
 	30014 => array(
 	'Secret Agent',
-	'Pack your spy gear and get ready for some dangerous missions in service of a secret agency. You\'ve shown you want to - but can you really do it? Time will tell.',
+	'Pack your spy gear and get ready for some dangerous missions in service of a secret agency. You\'ve shown you want to - but can you really do it? Time will tell.', 
 	'points' => '1',
 	'secret' => true
 	),
@@ -222,7 +222,7 @@
 	),
 	30017 => array(
 	'Worm Whacker',
-	'Weehee! Whack those worms! You sure know how to handle a big hammer.',
+	'Weehee! Whack those worms! You sure know how to handle a big hammer.', 
 	'points' => '1',
 	'secret' => true
 	),
@@ -233,7 +233,7 @@
 	),
 	30019 => array(
 	'Amateur Actor',
-	'You helped bringing Princess Buttercup, Doctor Dumbness and Lucky the Wonder Dog to life - and will probably dream of them tonight, since you memorised your lines perfectly. What a .. special piece of.. screenplay.',
+	'You helped bringing Princess Buttercup, Doctor Dumbness and Lucky the Wonder Dog to life - and will probably dream of them tonight, since you memorised your lines perfectly. What a .. special piece of.. screenplay.', 
 	'points' => '2'
 	),
 	30020 => array(
@@ -246,7 +246,7 @@
 	// TFS 1.0 powergamers and top online
 	//Before enabling powergamers, make sure that you have added LUA files and possible cloums to your server.
 	//files can be found at Lua folder.
-
+	
 	$config['powergamers'] = array(
 		'enabled' => true, // Enable or disable page
 		'limit' => 20, //Number of players that it will show.
@@ -354,7 +354,7 @@
 		5 => 'Ended',
 	);
 
-	/* -- SUB PAGES --
+	/* -- SUB PAGES -- 
 		Some custom layouts/templates have custom pages, they can use
 		this sub page functionality for that.
 	*/
@@ -433,7 +433,7 @@
 		'status_port' => "7171",
 		);
 
-	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed eg. 1 DAY, 2 HOUR, 3 MONTH etc.
+	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed eg. 1 DAY, 2 HOUR, 3 MONTH etc. 
 
 	$config['validate_IP'] = true; // Only allow legal IP addresses to register and create character.
 	$config['salt'] = false; // Some noob 0.3.6 servers don't support salt.
@@ -443,7 +443,7 @@
 
 	// Use guild logo system
 	$config['use_guild_logos'] = true;
-
+	
 	// Use country flags
 	$config['country_flags'] = false;
 
@@ -537,13 +537,6 @@
 		'debug' => false, // Enable debugging if you have problems and are looking for errors.
 		'fromName' => $config['site_title'],
 	);
-	//Recovery System by ElGovanni (https://github.com/ElGovanni) //know as Burczyk
-	$config['recovery_key'] = array(
-		'enabled' => true,
-		'length' => 10, 		//less or equal value from database (default is: 20)
-		'send_to_mail' => true,
-		'change_email_by_recovery' => true,
-	);
 	// Use Znote's External Open Tibia Services Server
 	// Currently in Alpha and is pretty useless, but will contain paypal blacklist etc in future.
 	// You can use the official server: http://zeotss.znote.eu/
@@ -571,7 +564,7 @@
 	// Available options: LINUX or WINDOWS
 	$config['os'] = ZNOTE_OS;
 
-	// Measure how much players are lagging in-game. (Not completed).
+	// Measure how much players are lagging in-game. (Not completed). 
 	$config['ping'] = false;
 
 	// BAN STUFF - Don't touch this unless you know what you are doing.
@@ -649,13 +642,13 @@
 	$config['session_prefix'] = 'znote_';
 
 	/*	Store visitor data
-		Store visitor data in the database, logging every IP visitng site,
+		Store visitor data in the database, logging every IP visitng site, 
 		and how many times they have visited the site. And sometimes what
 		they do on the site.
-
+		
 		This helps to prevent POST SPAM (like register 1000 accounts in a few seconds)
 		and other things which can stress and slow down the server.
-
+		
 		The only downside is that database can get pretty fed up with much IP data
 		if table never gets flushed once in a while. So I highly recommend you
 		to configure flush_ip_logs if IPs are logged.
@@ -663,7 +656,7 @@
 	$config['log_ip'] = false;
 
 	// Flush IP logs each configured seconds, 60 * 15 = 15 minutes.
-	// Set to false to entirely disable ip log flush.
+	// Set to false to entirely disable ip log flush. 
 	// It is important to flush for optimal performance.
 	$config['flush_ip_logs'] = 59 * 27;
 

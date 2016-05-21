@@ -19,7 +19,7 @@
 				Token::create();
 			?>
 		<center>	<h3><a href="register.php">New account</a></h3>
-		<font size="1">- <a href="lostaccount.php" title="recovery access to login">Problems with logging?</a></font></center>
+		<font size="1">- Lost <a href="recovery.php?mode=username">username</a> or <a href="recovery.php?mode=password">password</a>?</font></center>
 		</ul>
 		</form>
 	</div>
