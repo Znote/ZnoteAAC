@@ -98,7 +98,7 @@ if ($scores) {
 			<?php if ($type === 7) echo "<td>Points</td>"; ?>
 		</tr>
 		<?php
-
+		
 		for ($i = 0; $i < count($scores[$type]); $i++) {
 			if (pageCheck($i, $page, $rowsPerPage)) {
 				$profile_data = user_character_data($scores[$type][$i]['id'], 'account_id');
