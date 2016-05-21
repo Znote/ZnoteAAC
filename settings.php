@@ -8,21 +8,20 @@ if (empty($_POST) === false) {
 	/* Token used for cross site scripting security */
 	if (!Token::isValid($_POST['token'])) {
 		$errors[] = 'Token is invalid.';
-	} elseif(isset($_POST['create_rkey'])!=true){
-		$required_fields = array('new_email', 'new_flag');
-		foreach($_POST as $key=>$value) {
-			if (empty($value) && in_array($key, $required_fields) === true) {
-				$errors[] = 'You need to fill in all fields.';
-				break 1;
-			}
+	}
+	$required_fields = array('new_email', 'new_flag');
+	foreach($_POST as $key=>$value) {
+		if (empty($value) && in_array($key, $required_fields) === true) {
+			$errors[] = 'You need to fill in all fields.';
+			break 1;
 		}
-
-		if (empty($errors) === true) {
-			if (filter_var($_POST['new_email'], FILTER_VALIDATE_EMAIL) === false) {
-				$errors[] = 'A valid email address is required.';
-			} else if (user_email_exist($_POST['new_email']) === true && $user_data['email'] !== $_POST['new_email']) {
-				$errors[] = 'That email address is already in use.';
-			}
+	}
+	
+	if (empty($errors) === true) {
+		if (filter_var($_POST['new_email'], FILTER_VALIDATE_EMAIL) === false) {
+			$errors[] = 'A valid email address is required.';
+		} else if (user_email_exist($_POST['new_email']) === true && $user_data['email'] !== $_POST['new_email']) {
+			$errors[] = 'That email address is already in use.';
 		}
 	}
 }
@@ -30,54 +29,28 @@ if (empty($_POST) === false) {
 <h1>Settings</h1>
 
 <?php
-if(isset($_POST['create_rkey']) && $config['recovery_key']['enabled']) {
-		$acceptedChars = '123456789ZXCVBNMASDFGHJKLQWERTYUIOPzxcvbnmasdfghjklqwertyuiop';
-		$randomString = NULL;
-		for($i=0; $i < $config['recovery_key']['length']; $i++) {
-			$cnum[$i] = $acceptedChars{mt_rand(0, 60)};
-			$randomString .= $cnum[$i];
-		}
-
-		$update_data = array(
-			'key' => $randomString,
-			'reckey_created' => time()
-		);
-		user_update_account($update_data);
-			if($config['recovery_key']['send_to_mail']) {
-				$mailer = new Mail($config['mailserver']);
-				$title = "You have created recovery key for $_SERVER[HTTP_HOST].";
-				$body = "<h1>Please save it in safe place:</h1>";
-				$body .= "<p>$randomString</p>";
-				$body .= "<p>Thank you for stay safe and enjoy at".$config['mailserver']['fromName']."</p>";
-				$body .= "<hr><p>I am an automatic no-reply e-mail. Any emails sent back to me will be ignored.</p>";
-				$mailer->sendMail($user_data['email'], $title, $body, $user_data['name']);
-			}
-			echo "<p>Your new recovery key is: ".$randomString;
-			if($config['recovery_key']['send_to_mail'])
-				echo '<br>Duplicate has been send to your e-mail address: '.$user_data['email'];
-			echo '</p>';
-} elseif (isset($_GET['success']) === true && empty($_GET['success']) === true) {
+if (isset($_GET['success']) === true && empty($_GET['success']) === true) {
 	echo 'Your settings have been updated.';
 } else {
 	if (empty($_POST) === false && empty($errors) === true) {
 		$update_data = array(
 			'email' => $_POST['new_email'],
 		);
-
+		
 		$update_znote_data = array(
 			'flag' => getValue($_POST['new_flag']),
 		);
-
+		
 		user_update_account($update_data);
 		user_update_znote_account($update_znote_data);
 		header('Location: settings.php?success');
 		exit();
-
+		
 	} else if (empty($errors) === false) {
 		echo output_errors($errors);
 	}
 	?>
-
+	
 	<form action="" method="post">
 		<ul>
 			<li>
@@ -109,22 +82,6 @@ if(isset($_POST['create_rkey']) && $config['recovery_key']['enabled']) {
 			</li>
 		</ul>
 	</form>
-	<?php
-		if($config['recovery_key']['enabled']){
-			$query = mysql_select_single("SELECT `reckey_created` FROM `accounts` WHERE `id` = '$session_user_id'");
-			echo '<h2>Recovery Key</h2>';
-			if($query['reckey_created'] !=0){
-				echo '<input type="text" name="rkey" value="'.gmdate('Y-m-d', $query['reckey_created']).'" disabled>';
-				echo '<button disabled>Create</button>';
-			}
-			else{
-	 ?>
-	<form action="" method="post">
-		<input type="text" name="rkey" value="" disabled>
-			<?php Token::create(); ?>
-		<button name="create_rkey" type="submit">Create</button>
-	</form>
-	<?php }} ?>
 	<script>
 		function selectCurrentFlag(flag) {
 			document.getElementById("flag_select").value = flag != null ? flag : "";
