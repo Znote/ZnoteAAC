@@ -10,7 +10,7 @@ if (isset($_GET['callback']) && $_GET['callback'] === 'processing') {
 $shop = $config['shop'];
 $shop_list = $config['shop_offers'];
 
-if (!empty($_POST['buy'])) {
+if (!empty($_POST['buy']) && $_SESSION['shop_session'] == $_POST['session']) {
 	$time = time();
 	$player_points = (int)$user_znote_data['points'];
 	$cid = (int)$user_data['id'];
@@ -73,7 +73,7 @@ if ($shop['enabled']) {
 
 <h1>Shop Offers</h1>
 <?php
-if (!empty($_POST['buy'])) {
+if (!empty($_POST['buy']) && $_SESSION['shop_session'] == $_POST['session']) {
 	if ($user_znote_data['points'] >= $buy['points']) {
 		?><td>You have <?php echo (int)($user_znote_data['points'] - $buy['points']); ?> points. (<a href="buypoints.php">Buy points</a>).</td><?php
 	} else {
@@ -109,6 +109,7 @@ if ($config['shop_auction']['characterAuction']) {
 		?>
 		<form action="" method="POST">
 			<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
+			<input type="hidden" name="session" value="<?php echo time(); ?>">
 			<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
 		</form>
 		<?php
@@ -135,6 +136,10 @@ if ($config['shop_auction']['characterAuction']) {
     });
 </script>
 <?php }
+
+	// Store current timestamp to prevent page-reload from processing old purchase
+	$_SESSION['shop_session'] = time();
+
 } else echo '<h1>Buy Points system disabled.</h1><p>Sorry, this functionality is disabled.</p>';
 include 'layout/overall/footer.php'; ?>
 
