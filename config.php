@@ -532,7 +532,8 @@
 		'host' => "mailserver.znote.eu", // Outgoing mail server host.
 		'securityType' => 'ssl', // ssl or tls
 		'port' => 465, // SMTP port number - likely to be 465(ssl) or 587(tls)
-		'username' => 'noreply@znote.eu', // Likely the email address
+		'email' => 'noreply@znote.eu', 
+		'username' => 'noreply@znote.eu', // Likely the same as email
 		'password' => 'emailpassword', // The password.
 		'debug' => false, // Enable debugging if you have problems and are looking for errors.
 		'fromName' => $config['site_title'],

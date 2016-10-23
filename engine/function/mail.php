@@ -57,7 +57,7 @@ class Mail {
 		$mail->Password = $this->_config['password'];
 
 		//Set who the message is to be sent from
-		$mail->setFrom($this->_config['username'], $this->_config['fromName']);
+		$mail->setFrom($this->_config['email'], $this->_config['fromName']);
 
 		//Set who the message is to be sent to
 		$mail->addAddress($to, $accname);
