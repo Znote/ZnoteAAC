@@ -10,9 +10,9 @@ local function sendWarStatus(guildId, enemyGuildId, warId, playerName, killerNam
 	local resultId = db.storeQuery("SELECT `guild_wars`.`id`, (SELECT `limit` FROM `znote_guild_wars` WHERE `znote_guild_wars`.`id` = `guild_wars`.`id`) AS `limit`, (SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild1`) guild1_kills, (SELECT COUNT(1) FROM `guildwar_kills` WHERE `guildwar_kills`.`warid` = `guild_wars`.`id` AND `guildwar_kills`.`killerguild` = `guild_wars`.`guild2`) guild2_kills FROM `guild_wars` WHERE (`guild1` = " .. guildId .. " OR `guild2` = " .. guildId .. ") AND `status` = 1 AND `id` = " .. warId)
 	if resultId then
 
-		local guild1_kills = result.getDataInt(resultId, "guild1_kills")
-		local guild2_kills = result.getDataInt(resultId, "guild2_kills")
-		local limit = result.getDataInt(resultId, "limit")
+		local guild1_kills = result.getNumber(resultId, "guild1_kills")
+		local guild2_kills = result.getNumber(resultId, "guild2_kills")
+		local limit = result.getNumber(resultId, "limit")
 		result.free(resultId)
 
 		local members = guild:getMembersOnline()
@@ -75,7 +75,7 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 	end
 
 	local playerGuid = player:getGuid()
-	db.query("INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) VALUES (" .. playerGuid .. ", " .. os.time() .. ", " .. player:getLevel() .. ", " .. db.escapeString(killerName) .. ", " .. byPlayer .. ", " .. db.escapeString(mostDamageName) .. ", " .. byPlayerMostDamage .. ", " .. unjustified .. ", " .. mostDamage_unjustified .. ")")
+	db.query("INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) VALUES (" .. playerGuid .. ", " .. os.time() .. ", " .. player:getLevel() .. ", " .. db.escapeString(killerName) .. ", " .. byPlayer .. ", " .. db.escapeString(mostDamageName) .. ", " .. byPlayerMostDamage .. ", " .. (unjustified and 1 or 0) .. ", " .. (mostDamage_unjustified and 1 or 0) .. ")")
 	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
 
 	local deathRecords = 0
@@ -104,7 +104,7 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 				local warId = false
 				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR (`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId ~= false then
-					warId = result.getDataInt(resultId, "id")
+					warId = result.getNumber(resultId, "id")
 					result.free(resultId)
 				end
 

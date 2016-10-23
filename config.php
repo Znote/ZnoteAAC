@@ -351,7 +351,7 @@
 		1 => 'Accepted',
 		2 => 'Rejected',
 		3 => 'Cancelled',
-		4 => '???',
+		4 => 'Ended by kill limit',
 		5 => 'Ended',
 	);
 
