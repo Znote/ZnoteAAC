@@ -14,6 +14,7 @@
 
 	$config['site_title'] = 'Znote AAC';
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
+	$config['site_url'] = "http://znote.dev";
 
 	// Path to server folder without / Example: C:\Users\Alvaro\Documents\GitHub\forgottenserver
 	$config['server_path'] = ''; 

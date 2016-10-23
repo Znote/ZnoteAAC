@@ -116,11 +116,8 @@ function calculate_discount($orig, $new) {
 
 // Proper URLs
 function url($path = false) {
-	$protocol = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://';
-	$domain   = $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != 80 ? ':' . $_SERVER['SERVER_PORT'] : null);
 	$folder   = dirname($_SERVER['SCRIPT_NAME']);
-
-	return $protocol . $domain . ($folder == '/' ? '' : $folder) . '/' . $path;
+	return config('site_url') . '/' . $path;
 }
 
 function getCache() {
