@@ -24,13 +24,13 @@
 	// ------------------------ \\
 
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
-	$config['sqlUser'] = 'tfs10';
+	$config['sqlUser'] = 'tfs13';
 
 	// phpmyadmin password for OT server:
-	$config['sqlPassword'] = 'tfs10';
+	$config['sqlPassword'] = 'tfs13';
 
 	// The database name to connect to. (This is usually same as username).
-	$config['sqlDatabase'] = 'tfs10';
+	$config['sqlDatabase'] = 'tfs13';
 
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = '127.0.0.1';
@@ -464,7 +464,7 @@
 
 	// What client version and server port are you using on this OT?
 	// Used for the Downloads page.
-	$config['client'] = 1041; // 954 = tibia 9.54
+	$config['client'] = 1098; // 954 = tibia 9.54
 
 	 // Download link to client. Recommended:
 	 // Select download link from remere map editor website!
@@ -481,7 +481,7 @@
 	$config['page_admin_access'] = array(
 		//'otland0',
 		//'otland1',
-		'znote'
+		'testing'
 	);
 
 	// Built-in FORUM
@@ -543,7 +543,7 @@
 	// Or host your own private one, here is the code: https://github.com/Znote/ZEOTSS
 	$config['zeotss'] = array(
 		'enabled' => false,
-		'visitors' => true,
+		'visitors' => false,
 		'debug' => false,
 		'server' => "http://zeotss.znote.eu/"
 	);
@@ -682,7 +682,7 @@
 
 	// Write your paypal address here, and what currency you want to recieve money in.
 	$config['paypal'] = array(
-		'enabled' => true,
+		'enabled' => false,
 		'email' => 'stefan_brannfjell@live.no', // Example: paypal@mail.com
 		'currency' => 'EUR',
 		'points_per_currency' => 10, // 1 currency = ? points? [ONLY used to calculate bonuses]
@@ -764,7 +764,7 @@
 	/// Let players sell characters.
 	/////////
 	$config['shop_auction'] = array(
-			'characterAuction' => true, // Enable/disable this system
+			'characterAuction' => false, // Enable/disable this system
 			'requiredLevel' => 50, // Minimum level of sold character
 			'leastValue' => 10, // Lowest donation points a char can be sold for.
 			'leastTime' => 24, // In hours. False to disable.

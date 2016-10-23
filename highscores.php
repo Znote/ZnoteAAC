@@ -98,23 +98,30 @@ if ($scores) {
 			<?php if ($type === 7) echo "<td>Points</td>"; ?>
 		</tr>
 		<?php
-		
 		for ($i = 0; $i < count($scores[$type]); $i++) {
-			if (pageCheck($i, $page, $rowsPerPage)) {
-				$profile_data = user_character_data($scores[$type][$i]['id'], 'account_id');
-
-				$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
-				if ($config['country_flags'] === true && count($account_data['flag']) > 1) $flag = '<img src="flags/' . $account_data['flag'] . '.png">  ';
-				else $flag = '';
+			if ($scores[$type] === false) {
 				?>
 				<tr>
-					<td><?php echo $i+1; ?></td>
-					<td><?php echo $flag; ?><a href="characterprofile.php?name=<?php echo $scores[$type][$i]['name']; ?>"><?php echo $scores[$type][$i]['name']; ?></a></td>
-					<td><?php echo vocation_id_to_name($scores[$type][$i]['vocation']); ?></td>
-					<td><?php echo $scores[$type][$i]['value']; ?></td>
-					<?php if ($type === 7) echo "<td>". $scores[$type][$i]['experience'] ."</td>"; ?>
+					<td colspan="5">Nothing to show here yet.</td>
 				</tr>
 				<?php
+			} else {
+				if (pageCheck($i, $page, $rowsPerPage)) {
+					$profile_data = user_character_data($scores[$type][$i]['id'], 'account_id');
+
+					$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
+					if ($config['country_flags'] === true && count($account_data['flag']) > 1) $flag = '<img src="flags/' . $account_data['flag'] . '.png">  ';
+					else $flag = '';
+					?>
+					<tr>
+						<td><?php echo $i+1; ?></td>
+						<td><?php echo $flag; ?><a href="characterprofile.php?name=<?php echo $scores[$type][$i]['name']; ?>"><?php echo $scores[$type][$i]['name']; ?></a></td>
+						<td><?php echo vocation_id_to_name($scores[$type][$i]['vocation']); ?></td>
+						<td><?php echo $scores[$type][$i]['value']; ?></td>
+						<?php if ($type === 7) echo "<td>". $scores[$type][$i]['experience'] ."</td>"; ?>
+					</tr>
+					<?php
+				}
 			}
 		}
 		?>

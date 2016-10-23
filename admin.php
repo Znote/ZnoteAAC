@@ -108,7 +108,7 @@ if (empty($_POST) === false) {
 	}
 	
 	// Teleport Player
-	if (in_array($_POST['from'], ['all', 'only'])) {
+	if (isset($_POST['from']) && in_array($_POST['from'], ['all', 'only'])) {
 		$from = $_POST['from'];
 		if ($from === 'only') {
 			if (empty($_POST['player_name']) || !user_character_exist($_POST['player_name'])) {
@@ -160,13 +160,13 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 </p>
 <ul>
 	<li>
-		<b>Permanently Delete/erase character from database:</b> 
+		<b>Permanently delete/erase character from database:</b> 
 		<form type="submit" action="" method="post">
 			<input type="text" name="del_name" placeholder="Character name...">
 		</form>
 	</li>
 	<li>
-		<b>Ban/violate :3 character and/or his account:</b>
+		<b>Ban character and/or account:</b>
 		<form action="" method="post">
 			<table style="background-color:lightblue;">
 				<!-- row 1 -->
