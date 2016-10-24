@@ -18,7 +18,7 @@ $install = "
 <ol>
 	<li>
 		<p>
-			Make sure you have imported TFS database. (OTdir/forgottenserver.sql OR OTdir/schemas/mysql.sql)
+			Make sure you have imported TFS database. (OTdir/schema.sql OR OTdir/schemas/mysql.sql OR OTdir/forgottenserver.sql)
 		</p>
 	</li>
 	<li>
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `znote` (
   `installed` int(10) NOT NULL,
   `cached` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB;
 
 INSERT INTO `znote` (`version`, `installed`) VALUES
 ('$version', '$time');
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `znote_accounts` (
   `activekey` int(11) NOT NULL DEFAULT '0',
   `flag` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB;
 
 INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES
 ('1', '0', '$time');
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `znote_news` (
   `date` int(11) NOT NULL,
   `pid` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `znote_images` (
   `image` varchar(30) NOT NULL,
   `account_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_paypal` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `znote_paypal` (
   `price` int(11) NOT NULL,
   `points` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_paygol` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `znote_paygol` (
   `country` varchar(255) NOT NULL,
   `currency` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_players` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -105,10 +105,10 @@ CREATE TABLE IF NOT EXISTS `znote_players` (
   `hide_char` tinyint(4) NOT NULL,
   `comment` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES
-('1', '$time', '0', '. . .');
+('1', '$time', '0', '');
 
 CREATE TABLE IF NOT EXISTS `znote_player_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `znote_player_reports` (
   `date` INT(11) NOT NULL,
   `status` TINYINT(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_changelog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `znote_changelog` (
   `report_id` INT(11) NOT NULL,
   `status` TINYINT(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_shop` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `znote_shop` (
   `description` varchar(255) NOT NULL,
   `points` int(11) NOT NULL DEFAULT '10',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_shop_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `znote_shop_logs` (
   `points` int(11) NOT NULL,
   `time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_shop_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -161,14 +161,14 @@ CREATE TABLE IF NOT EXISTS `znote_shop_orders` (
   `count` int(11) NOT NULL,
   `time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_visitors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` int(11) NOT NULL,
   `value` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_visitors_details` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `znote_visitors_details` (
   `type` tinyint(4) NOT NULL,
   `account_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_forum` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS `znote_forum` (
   `hidden` tinyint(4) NOT NULL,
   `guild_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`) VALUES
 ('Staff Board', '4', '0', '0', '0'),
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `znote_forum_threads` (
   `hidden` tinyint(4) NOT NULL,
   `closed` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_forum_posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `znote_forum_posts` (
   `created` int(11) NOT NULL,
   `updated` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_deleted_characters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -228,14 +228,14 @@ CREATE TABLE IF NOT EXISTS `znote_deleted_characters` (
   `time` datetime NOT NULL,
   `done` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_guild_wars` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `limit` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   FOREIGN KEY (`id`) REFERENCES `guild_wars` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_tickets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `znote_tickets` (
   `creation` int(11) NOT NULL,
   `status` varchar(20) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_tickets_replies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -256,7 +256,13 @@ CREATE TABLE IF NOT EXISTS `znote_tickets_replies` (
   `message` text CHARACTER SET latin1 NOT NULL,
   `created` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `znote_global_storage` (
+  `key` VARCHAR(32) NOT NULL,
+  `value` TEXT NOT NULL,
+  UNIQUE (`key`)
+) ENGINE=InnoDB;
 
 </textarea>
 	</li>
