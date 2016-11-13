@@ -58,7 +58,7 @@ if (empty($_POST) === false) {
 					if ($query['secret'] !== NULL) {
 
 						// Validate the secret first to make sure all is good.
-						if (TokenAuth6238::verify($query['znote_secret'], $authcode) !== true) {
+						if (TokenAuth6238::verify($query['secret'], $authcode) !== true) {
 							$errors[] = "Submitted Two-Factor Authentication token is wrong.";
 							$errors[] = "Make sure to type the correct token from your mobile authenticator.";
 							$status = false;
