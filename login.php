@@ -8,7 +8,7 @@ if (empty($_POST) === false) {
 	if ($config['log_ip']) {
 		znote_visitor_insert_detailed_data(5);
 	}
-	
+
 	$username = $_POST['username'];
 	$password = $_POST['password'];
 
@@ -24,7 +24,7 @@ if (empty($_POST) === false) {
 		Token::debug($_POST['token']);
 		$errors[] = 'Token is invalid.';
 	} else {
-		
+
 		// Starting loging
 		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $login = user_login($username, $password);
 		else if ($config['TFSVersion'] == 'TFS_03') $login = user_login_03($username, $password);
@@ -42,7 +42,7 @@ if (empty($_POST) === false) {
 					$errors[] = "Your account is not activated. An email should have been sent to you when you registered. Please find it and click the activation link to activate your account.";
 				}
 			} else $status = true;
-			
+
 			if ($status) {
 				// Regular login success, now lets check authentication token code
 				if ($config['TFSVersion'] == 'TFS_10' && $config['twoFactorAuthenticator']) {
@@ -53,7 +53,7 @@ if (empty($_POST) === false) {
 
 					// Load secret values from db
 					$query = mysql_select_single("SELECT `a`.`secret` AS `secret`, `za`.`secret` AS `znote_secret` FROM `accounts` AS `a` INNER JOIN `znote_accounts` AS `za` ON `a`.`id` = `za`.`account_id` WHERE `a`.`id`='".(int)$login."' LIMIT 1;");
-					
+
 					// If account table HAS a secret, we need to validate it
 					if ($query['secret'] !== NULL) {
 
@@ -72,7 +72,7 @@ if (empty($_POST) === false) {
 							// Validate the secret first to make sure all is good.
 							if (TokenAuth6238::verify($query['znote_secret'], $authcode)) {
 								// Success, enable the 2FA system
-								mysql_update("UPDATE `accounts` SET `secret`= '$authcode' WHERE `id`='$login';");
+								mysql_update("UPDATE `accounts` SET `secret`= '".$query['znote_secret']."' WHERE `id`='$login';");
 							} else {
 								$errors[] = "Activating Two-Factor authentication failed.";
 								$errors[] = "Try to login without token and configure your app properly.";
@@ -83,10 +83,10 @@ if (empty($_POST) === false) {
 						}
 					}
 				} // End tfs 1.0+ with 2FA auth
-				
+
 				if ($status) {
 					setSession('user_id', $login);
-					
+
 					// if IP is not set (etc acc created before Znote AAC was in use)
 					$znote_data = user_znote_account_data($login);
 					if ($znote_data['ip'] == 0) {
@@ -95,7 +95,7 @@ if (empty($_POST) === false) {
 						);
 						user_update_znote_account($update_data);
 					}
-					
+
 					// Send them to myaccount.php
 					header('Location: myaccount.php');
 					exit();
