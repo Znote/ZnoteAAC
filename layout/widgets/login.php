@@ -12,6 +12,10 @@
 				<input type="password" name="password">
 			</li>
 			<li>
+				Token: <br>
+				<input type="password" name="authcode">
+			</li>
+			<li>
 				<input type="submit" value="Log in">
 			</li>
 			<?php

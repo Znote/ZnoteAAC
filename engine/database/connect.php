@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `znote_accounts` (
   `active` tinyint(4) NOT NULL DEFAULT '0',
   `activekey` int(11) NOT NULL DEFAULT '0',
   `flag` varchar(20) NOT NULL,
+  `secret` char(16) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 

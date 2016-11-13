@@ -3,6 +3,7 @@
 		$isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 		define('ZNOTE_OS', ($isWindows) ? 'WINDOWS' : 'LINUX');
 	}
+	
 	// Available options: TFS_02, TFS_03
 	// TFS 0.2 = TFS_02
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
@@ -19,7 +20,6 @@
 	// Path to server folder without / Example: C:\Users\Alvaro\Documents\GitHub\forgottenserver
 	$config['server_path'] = ''; 
 
-
 	// ------------------------ \\
 	// MYSQL CONNECTION DETAILS \\
 	// ------------------------ \\
@@ -35,6 +35,10 @@
 
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = '127.0.0.1';
+
+	// QR code authenticator Only works with TFS 1.2+
+	$config['twoFactorAuthenticator'] = true;
+	// You can use the mobile phone app "authy" with this.
 
 	/* CLOCK FUNCTION
 		- getClock() = returns current time in numbers.
@@ -57,8 +61,8 @@
 	// CUSTOM SERVER STUFF \\
 	// ------------------- \\
 	// Enable / disable Questlog function (true / false) 
-			$config['EnableQuests'] = false;
-
+	$config['EnableQuests'] = false;
+	
 	// array for filling questlog (Questid, max value, name, end of the quest fill 1 for the last part 0 for all others)
 	$config['quests'] = array(
 		array(1501,100,"Killing in the Name of",0),
@@ -324,8 +328,26 @@
 	// Town ids and names: (In RME map editor, open map, click CTRL + T to view towns, their names and their IDs.
 	// townID => 'townName' etc: ['3'=>'Thais']
 	$config['towns'] = array(
-		2 => 'Thyrfing',
-		3 => 'Town 3',
+		1 => 'Venore',
+		2 => 'Thais',
+		3 => 'Kazordoon',
+		4 => 'Carlin',
+		5 => "Ab'Dendriel",
+		6 => 'Rookgaard',
+		7 => 'Liberty Bay',
+		8 => 'Port Hope',
+		9 => 'Ankrahmun',
+		10 => 'Darashia',
+		11 => 'Edron',
+		12 => 'Svargrond',
+		13 => 'Yalahar',
+		14 => 'Farmine',
+		28 => 'Gray Beach',
+		29 => 'Roshamuul',
+		30 => 'Rookgaard Tutorial Island',
+		31 => 'Isle of Solitude',
+		32 => 'Island Of Destiny',
+		33 => 'Rathleton'
 	);
 
 	// - TFS 1.0 ONLY -- HOUSE AUCTION SYSTEM!
@@ -372,7 +394,7 @@
 	$config['available_vocations'] = array(1, 2, 3, 4);
 
 	// Available towns (specify town ids, etc: (0, 1, 2); to display 3 town options (town id 0, 1 and 2).
-	$config['available_towns'] = array(2);
+	$config['available_towns'] = array(1,2,4,5);
 
 	$config['level'] = 8;
 	$config['health'] = 185;
@@ -436,8 +458,8 @@
 
 	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed eg. 1 DAY, 2 HOUR, 3 MONTH etc. 
 
-	$config['validate_IP'] = true; // Only allow legal IP addresses to register and create character.
-	$config['salt'] = false; // Some noob 0.3.6 servers don't support salt.
+	$config['validate_IP'] = true;
+	$config['salt'] = false;
 
 	// Restricted names
 	$config['invalidNameTags'] = array("owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "amazon", "valkyrie", "carrion worm", "rotworm", "rotworm queen", "cockroach", "kongra", "merlkin", "sibang", "crystal spider", "giant spider", "poison spider", "scorpion", "spider", "tarantula", "achad", "axeitus headbanger", "bloodpaw", "bovinus", "colerian the barbarian", "cursed gladiator", "frostfur", "orcus the cruel", "rocky", "the hairy one", "avalanche", "drasilla", "grimgor guteater", "kreebosh the exile", "slim", "spirit of earth", "spirit of fire", "spirit of water", "the dark dancer", "the hag", "darakan the executioner", "deathbringer", "fallen mooh'tah master ghar", "gnorre chyllson", "norgle glacierbeard", "svoren the mad", "the masked marauder", "the obliverator", "the pit lord", "webster", "barbarian bloodwalker", "barbarian brutetamer", "barbarian headsplitter", "barbarian skullhunter", "bear", "panda", "polar bear", "braindeath", "beholder", "elder beholder", "gazer", "chicken", "dire penguin", "flamingo", "parrot", "penguin", "seagull", "terror bird", "bazir", "infernatil", "thul", "munster", "son of verminor", "xenia", "zoralurk", "big boss trolliver", "foreman kneebiter", "mad technomancer", "man in the cave", "lord of the elements", "the count", "the plasmother", "dracola", "the abomination", "the handmaiden", "mr. punish", "the countess sorrow", "the imperor", "massacre", "apocalypse", "brutus bloodbeard", "deadeye devious", "demodras", "dharalion", "fernfang", "ferumbras", "general murius", "ghazbaran", "grorlam", "lethal lissy", "morgaroth", "necropharus", "orshabaal", "ron the ripper", "the evil eye", "the horned fox", "the old widow", "tiquandas revenge", "apprentice sheng", "dog", "hellhound", "war wolf", "winter wolf", "wolf", "chakoya toolshaper", "chakoya tribewarden", "chakoya windcaller", "blood crab", "crab", "frost giant", "frost giantess", "ice golem", "yeti", "acolyte of the cult", "adept of the cult", "enlightened of the cult", "novice of the cult", "ungreez", "dark torturer", "demon", "destroyer", "diabolic imp", "fire devil", "fury", "hand of cursed fate", "juggernaut", "nightmare", "plaguesmith", "blue djinn", "efreet", "admin", "green djinn", "marid", "frost dragon", "wyrm", "sea serpent", "dragon lord", "dragon", "hydra", "dragon hatchling", "dragon lord hatchling", "frost dragon hatchling", "dwarf geomancer", "dwarf guard", "dwarf soldier", "dwarf", "dworc fleshhunter", "dworc venomsniper", "dworc voodoomaster", "elephant", "mammoth", "elf arcanist", "elf scout", "elf", "charged energy elemental", "energy elemental", "massive energy elemental", "overcharged energy elemental", "energy overlord", "cat", "lion", "tiger", "azure frog", "coral frog", "crimson frog", "green frog", "orchid frog", "toad", "jagged earth elemental", "muddy earth elemental", "earth elemental", "massive earth elemental", "earth overlord", "gargoyle", "stone golem", "ghost", "phantasm", "phantasm", "pirate ghost", "spectre", "cyclops smith", "cyclops drone", "behemoth", "cyclops", "slick water elemental", "roaring water elemental", "ice overlord", "water elemental", "massive water elemental", "ancient scarab", "butterfly", "bug", "centipede", "exp bug", "larva", "scarab", "wasp", "lizard sentinel", "lizard snakecharmer", "lizard templar", "minotaur archer", "minotaur guard", "minotaur mage", "minotaur", "squirrel", "goblin demon", "badger", "bat", "deer", "the halloween hare", "hyaena", "pig", "rabbit", "silver rabbit", "skunk", "wisp", "dark monk", "monk", "tha exp carrier", "necromancer", "priestess", "orc berserker", "orc leader", "orc rider", "orc shaman", "orc spearman", "orc warlord", "orc warrior", "orc", "goblin leader", "goblin scavenger", "goblin", "goblin assassin", "assasin", "bandit", "black knight", "hero", "hunter", "nomad", "smuggler", "stalker", "poacher", "wild warrior", "ashmunrah", "dipthrah", "mahrdis", "morguthis", "omruc", "rahemos", "thalas", "vashresamun", "pirate buccaneer", "pirate corsair", "pirate cutthroat", "pirate marauder", "carniphila", "spit nettle", "fire overlord", "massive fire elemental", "blistering fire elemental", "blazing fire elemental", "fire elemental", "hellfire fighter", "quara constrictor scout", "quara hydromancer scout", "quara mantassin scout", "quara pincher scout", "quara predator scout", "quara constrictor", "quara hydromancer", "quara mantassin", "quara pincher", "quara predator", "cave rat", "rat", "cobra", "crocodile", "serpent spawn", "snake", "wyvern", "black sheep", "sheep", "mimic", "betrayed wraith", "bonebeast", "demon skeleton", "lost soul", "pirate skeleton", "skeleton", "skeleton warrior", "undead dragon", "defiler", "slime2", "slime", "bog raider", "ice witch", "warlock", "witch", "bones", "fluffy", "grynch clan goblin", "hacker", "minishabaal", "primitive", "tibia bug", "undead minion", "annihilon", "hellgorak", "latrivan", "madareth", "zugurosh", "ushuriel", "golgordan", "thornback tortoise", "tortoise", "eye of the seven", "deathslicer", "flamethrower", "magicthrower", "plaguethrower", "poisonthrower", "shredderthrower", "troll champion", "frost troll", "island troll", "swamp troll", "troll", "banshee", "blightwalker", "crypt shambler", "ghoul", "lich", "mummy", "vampire", "grim reaper", "frost dragon", "mercenary", "zathroth", "goshnar", "durin", "demora", "orc champion", "dracula", "alezzo", "prince almirith", "elf warlord", "magebomb", "nightmare scion");
@@ -480,9 +502,8 @@
 
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
-		//'otland0',
-		//'otland1',
-		'testing'
+		'accountname',
+		'secondaccountname',
 	);
 
 	// Built-in FORUM

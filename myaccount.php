@@ -241,6 +241,14 @@ if ($render_page) {
 		<h1>My account</h1>
 		<p>Welcome to your account page, <?php echo $user_data['name']; ?><br>
 			You have <?php echo $user_data['premdays']; ?> days remaining premium account.</p>
+		<?php
+		if ($config['TFSVersion'] === 'TFS_10' && $config['twoFactorAuthenticator']) {
+
+			$query = mysql_select_single("SELECT `secret` FROM `accounts` WHERE `id`='".(int)$session_user_id."' LIMIT 1;");
+			$status = ($query['secret'] === NULL) ? false : true;
+			?><p>Account security with Two-factor Authentication: <a href="twofa.php"><?php echo ($status) ? 'Enabled' : 'Disabled'; ?></a></p><?php
+		}
+		?>
 		<h2>Character List: <?php echo $char_count; ?> characters.</h2>
 		<?php
 		// Echo character list!
