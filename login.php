@@ -26,24 +26,21 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 		$password = SHA1($jsonObject->password);
 		$token = (isset($jsonObject->token)) ? sanitize($jsonObject->token) : false;
 		
-		$twofa = ($config['twoFactorAuthenticator'] === true) ? true : false;
-		$fields = ($twofa) ? '`id`, `secret`' : '`id`';
+		$fields = '`id`, `premdays`';
+		if ($config['twoFactorAuthenticator']) $fields .= ', `secret`';
 
 		$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `name`='{$username}' AND `password`='{$password}' LIMIT 1;");
 		if ($account === false) {
 			jsonError('Wrong username and/or password.');
 		}
 
-		if ($twofa) {
-			if ($account['secret'] !== null) {
-				if ($token === false) {
-					jsonError('Submit a valid two-factor authentication token.', 6);
-				} else {
-					require_once("engine/function/rfc6238.php");
-					if (TokenAuth6238::verify($account['secret'], $token) !== true) {
-						jsonError('Two-factor authentication failed, token is wrong.', 6);
-					} else {
-					}
+		if ($config['twoFactorAuthenticator'] === true && $account['secret'] !== null) {
+			if ($token === false) {
+				jsonError('Submit a valid two-factor authentication token.', 6);
+			} else {
+				require_once("engine/function/rfc6238.php");
+				if (TokenAuth6238::verify($account['secret'], $token) !== true) {
+					jsonError('Two-factor authentication failed, token is wrong.', 6);
 				}
 			}
 		}
@@ -51,21 +48,22 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 		$players = mysql_select_multi("SELECT `name` FROM `players` WHERE `account_id`='".$account['id']."';");
 		if ($players !== false) {
 
+			$gameserver = $config['gameserver'];
 			$response = array(
 				'session' => array(
 					'sessionkey' => $username."\n".$jsonObject->password."\n".$token."\n".floor(time() / 30),
 					'lastlogintime' => 0,
-					'ispremium' => false, // ($Premdays > 0 || $freePremium ? "true" : "false")
-					'premiumuntil' => 0, // ($freePremium ? "0" : time() + ($Premdays * 86400))
+					'ispremium' => ($account['premdays'] > 0) ? true : false,
+					'premiumuntil' => time() + ($account['premdays'] * 86400),
 					'status' => 'active'
 				),
 				'playdata' => array(
 					'worlds' => array(
 						array(
 							'id' => 1,
-							'name' => 'OTserv',
-							'externaladdress' => $_SERVER["SERVER_ADDR"],
-							'externalport' => 7172,
+							'name' => $gameserver['name'],
+							'externaladdress' => $gameserver['ip'],
+							'externalport' => $gameserver['port'],
 							'previewstate' => 0
 						)
 					),

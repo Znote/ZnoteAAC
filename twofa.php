@@ -25,7 +25,6 @@ if ($config['TFSVersion'] !== 'TFS_10') {
 		mysql_update("UPDATE `znote_accounts` SET `secret`= '$scrtString' WHERE `account_id`='$session_user_id';");
 		$query['znote_secret'] = $scrtString;
 	}
-
 	// HTML rendering
 	?>
 	<h1>Two-Factor Authentication</h1>
