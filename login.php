@@ -1,5 +1,94 @@
 <?php
 require_once 'engine/init.php';
+
+// Client 11 loginWebService
+if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TFS_10') {
+
+	function jsonError($message, $code = 3) {
+		die(json_encode(array('errorCode' => $code, 'errorMessage' => $message)));
+	}
+
+	header("Content-Type: application/json");
+	$input = file_get_contents("php://input");
+
+	// Based on tests, input length should be at least 67+ chars.
+	if (strlen($input) > 10) {
+		/* {
+			'accountname' => 'username',
+			'password' => 'superpass',
+			'stayloggedin' => true,
+			'token' => '123123', (or not set)
+			'type' => 'login', (What other types do we have?)
+		} */
+		$jsonObject = json_decode($input);
+
+		$username = sanitize($jsonObject->accountname);
+		$password = SHA1($jsonObject->password);
+		$token = (isset($jsonObject->token)) ? sanitize($jsonObject->token) : false;
+		
+		$twofa = ($config['twoFactorAuthenticator'] === true) ? true : false;
+		$fields = ($twofa) ? '`id`, `secret`' : '`id`';
+
+		$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `name`='{$username}' AND `password`='{$password}' LIMIT 1;");
+		if ($account === false) {
+			jsonError('Wrong username and/or password.');
+		}
+
+		if ($twofa) {
+			if ($account['secret'] !== null) {
+				if ($token === false) {
+					jsonError('Submit a valid two-factor authentication token.', 6);
+				} else {
+					require_once("engine/function/rfc6238.php");
+					if (TokenAuth6238::verify($account['secret'], $token) !== true) {
+						jsonError('Two-factor authentication failed, token is wrong.', 6);
+					} else {
+					}
+				}
+			}
+		}
+
+		$players = mysql_select_multi("SELECT `name` FROM `players` WHERE `account_id`='".$account['id']."';");
+		if ($players !== false) {
+
+			$response = array(
+				'session' => array(
+					'sessionkey' => $username."\n".$jsonObject->password."\n".$token."\n".floor(time() / 30),
+					'lastlogintime' => 0,
+					'ispremium' => false, // ($Premdays > 0 || $freePremium ? "true" : "false")
+					'premiumuntil' => 0, // ($freePremium ? "0" : time() + ($Premdays * 86400))
+					'status' => 'active'
+				),
+				'playdata' => array(
+					'worlds' => array(
+						array(
+							'id' => 1,
+							'name' => 'OTserv',
+							'externaladdress' => $_SERVER["SERVER_ADDR"],
+							'externalport' => 7172,
+							'previewstate' => 0
+						)
+					),
+					'characters' => array(
+						//array( 'worldid' => ASD, 'name' => asd ),
+					)
+				)
+			);
+
+			foreach ($players as $player) {
+				$response['playdata']['characters'][] = array('worldid' => 1, 'name' => $player['name']);
+			}
+
+			//error_log("= SESSION KEY: " . $response['session']['sessionkey']);
+			die(json_encode($response));
+		} else {
+			jsonError("Character list is empty.");
+		}
+	} else {
+		jsonError("Unrecognized event.");
+	}
+} // End client 11 loginWebService
+
 logged_in_redirect();
 include 'layout/overall/header.php';
 
