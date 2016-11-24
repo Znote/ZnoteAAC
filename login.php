@@ -60,7 +60,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 				'playdata' => array(
 					'worlds' => array(
 						array(
-							'id' => 1,
+							'id' => 0,
 							'name' => $gameserver['name'],
 							'externaladdress' => $gameserver['ip'],
 							'externalport' => $gameserver['port'],
