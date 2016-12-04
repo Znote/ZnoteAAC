@@ -1135,43 +1135,53 @@ function user_create_account($register_data, $maildata) {
 function user_create_character($character_data) {
 	array_walk($character_data, 'array_sanitize');
 	$cnf = fullConfig();
+
+	$vocation = (int)$character_data['vocation'];
+	$playercnf = $cnf['player'];
+	$base = $playercnf['base'];
+	$create = $playercnf['create'];
+	$skills = $create['skills'][$vocation];
+
+	$outfit = ($character_data['sex'] == 1) ? $create['male_outfit'] : $create['female_outfit'];
 	
-	if ($character_data['sex'] == 1) {
-		$outfit_type = $cnf['maleOutfitId'];
-	} else {
-		$outfit_type = $cnf['femaleOutfitId'];
-	}
+	$leveldiff = $create['level'] - $base['level'];
+
+	$gains = $cnf['vocations_gain'][$vocation];
+	
+	$health	= $base['health'] + ( $gains['hp']  * $leveldiff );
+	$mana	= $base['mana']   + ( $gains['mp']  * $leveldiff );
+	$cap	= $base['cap']    + ( $gains['cap'] * $leveldiff );
 	
 	// This is TFS 0.2 compatible import data with Znote AAC mysql schema
 	$import_data = array(
 		'name'	=>	$character_data['name'],
 		'group_id' => 1,
 		'account_id' => $character_data['account_id'],
-		'level' => $cnf['level'],
-		'vocation'	=>	$character_data['vocation'],
-		'health' => $cnf['health'],
-		'healthmax' => $cnf['health'],
-		'experience' => 0, /* Will automatically be configured according to level after creating this array*/
-		'lookbody' => $cnf['lookBody'], /* STARTER OUTFITS */
-		'lookfeet' => $cnf['lookFeet'],
-		'lookhead' => $cnf['lookHead'],
-		'looklegs' => $cnf['lookLegs'],
-		'looktype' => $outfit_type,
+		'level' => $create['level'],
+		'vocation'	=>	$vocation,
+		'health' => $health,
+		'healthmax' => $health,
+		'experience' => level_to_experience($create['level']),
+		'lookbody' => $outfit['body'], /* STARTER OUTFITS */
+		'lookfeet' => $outfit['feet'],
+		'lookhead' => $outfit['head'],
+		'looklegs' => $outfit['legs'],
+		'looktype' => $outfit['id'],
 		'lookaddons' => 0,
-		'maglevel' => 0,
-		'mana' => $cnf['mana'],
-		'manamax' => $cnf['mana'],
+		'maglevel' => $skills['magic'],
+		'mana' => $mana,
+		'manamax' => $mana,
 		'manaspent' => 0,
-		'soul' => $cnf['soul'],
-		'town_id'	=>	$character_data['town_id'],
+		'soul' => $base['soul'],
+		'town_id' => $character_data['town_id'],
 		'posx' => $cnf['default_pos']['x'],
 		'posy' => $cnf['default_pos']['y'],
 		'posz' => $cnf['default_pos']['z'],
 		'conditions' => '',
-		'cap' => $cnf['cap'],
+		'cap' => $cap,
 		'sex' => $character_data['sex'],
 		'lastlogin' => 0,
-		'lastip'	=>	$character_data['lastip'],
+		'lastip' => $character_data['lastip'],
 		'save' => 1,
 		'skull' => 0,
 		'skulltime' => 0,
@@ -1188,8 +1198,8 @@ function user_create_character($character_data) {
 		'balance' => 0
 	);
 	
-	// TFS 1.0 rules
-	if (Config('TFSVersion') === 'TFS_10') {
+	// TFS 1.0 variations
+	if ($cnf['TFSVersion'] === 'TFS_10') {
 		unset($import_data['rank_id']);
 		unset($import_data['guildnick']);
 		unset($import_data['direction']);
@@ -1199,39 +1209,50 @@ function user_create_character($character_data) {
 		unset($import_data['loss_mana']);
 		unset($import_data['premend']);
 		unset($import_data['online']);
-	}
 
-	// Set correct experience for level
-	$import_data['experience'] = level_to_experience($import_data['level']);
+		// Skills can be added into the same query on TFS 1.0+
+		$import_data['skill_fist'] = $skills['fist'];
+		$import_data['skill_club'] = $skills['club'];
+		$import_data['skill_sword'] = $skills['sword'];
+		$import_data['skill_axe'] = $skills['axe'];
+		$import_data['skill_dist'] = $skills['dist'];
+		$import_data['skill_shielding'] = $skills['shield'];
+		$import_data['skill_fishing'] = $skills['fishing'];
+	}
 	
 	// If you are no vocation (id 0), use these details instead:
-	if ($character_data['vocation'] === '0') {
-		$import_data['level'] = $cnf['nvlevel'];
-		$import_data['experience'] = level_to_experience($cnf['nvlevel']);
-		$import_data['health'] = $cnf['nvHealth'];
-		$import_data['healthmax'] = $cnf['nvHealth'];
-		$import_data['cap'] = $cnf['nvCap'];
-		$import_data['mana'] = $cnf['nvMana'];
-		$import_data['manamax'] = $cnf['nvMana'];
-		$import_data['soul'] = $cnf['nvSoul'];
+	if ($vocation === 0) {
+		$import_data['level'] = $create['novocation']['level'];
+		$import_data['experience'] = level_to_experience($create['novocation']['level']);
 		
-		if ($cnf['nvForceTown'] == 1) {
-			$import_data['town_id'] = $cnf['nvTown'];
+		if ($create['novocation']['forceTown'] === true) {
+			$import_data['town_id'] = $create['novocation']['townId'];
 		}
 	}
-	
+
 	$fields = array_keys($import_data); // Fetch select fields
 	$data = array_values($import_data); // Fetch insert data
 	
 	$fields_sql = implode("`, `", $fields); // Convert array into SQL compatible string
 	$data_sql = implode("', '", $data); // Convert array into SQL compatible string
-	echo 1;
+
 	mysql_insert("INSERT INTO `players`(`$fields_sql`) VALUES ('$data_sql');");
 	
 	$created = time();
 	$charid = user_character_id($import_data['name']);
-	echo 2;
 	mysql_insert("INSERT INTO `znote_players`(`player_id`, `created`, `hide_char`, `comment`) VALUES ('$charid', '$created', '0', '');");
+
+	// Player skills TFS 0.2, 0.3/4. (TFS 1.0 is done above character creation)
+	if ($cnf['TFSVersion'] != 'TFS_10') {
+		// Not quite sure if players table have player_skills creation triggers, this may need to be inserts instead of update queries.
+		mysql_update("UPDATE `player_skills` SET `value`='". $skills['fist'] ."' WHERE `player_id`='{$charid}' AND `skillid`='0' LIMIT 1;");
+		mysql_update("UPDATE `player_skills` SET `value`='". $skills['club'] ."' WHERE `player_id`='{$charid}' AND `skillid`='1' LIMIT 1;");
+		mysql_update("UPDATE `player_skills` SET `value`='". $skills['sword'] ."' WHERE `player_id`='{$charid}' AND `skillid`='2' LIMIT 1;");
+		mysql_update("UPDATE `player_skills` SET `value`='". $skills['axe'] ."' WHERE `player_id`='{$charid}' AND `skillid`='3' LIMIT 1;");
+		mysql_update("UPDATE `player_skills` SET `value`='". $skills['dist'] ."' WHERE `player_id`='{$charid}' AND `skillid`='4' LIMIT 1;");
+		mysql_update("UPDATE `player_skills` SET `value`='". $skills['shield'] ."' WHERE `player_id`='{$charid}' AND `skillid`='5' LIMIT 1;");
+		mysql_update("UPDATE `player_skills` SET `value`='". $skills['fish'] ."' WHERE `player_id`='{$charid}' AND `skillid`='6' LIMIT 1;");
+	}
 }
 
 // Returns counted value of all players online

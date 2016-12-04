@@ -1,7 +1,6 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
 protect_page();
 admin_only($user_data);
-// start
 
 // PREP: Create a function that echos player skills
 function playerSkill($skills, $id) {
@@ -16,13 +15,16 @@ if (isset($_POST['pid']) && (int)$_POST['pid'] > 0) {
 	$pid = (int)$_POST['pid'];
 	if ($config['TFSVersion'] != 'TFS_10') $status = user_is_online($pid);
 	else $status = user_is_online_10($pid);
+
 	if (!$status) {
 		// New player level
 		$level = (int)$_POST['level'];
 		
 		// Fetch stat gain for vocation
 		$statgain = $config['vocations_gain'][(int)$_POST['vocation']];
+		$playercnf = $config['player'];
 
+		/*
 		if ((int)$_POST['vocation'] !== 0) {
 			// Fetch base level and stats:
 			$baselevel = $config['level'];
@@ -36,13 +38,12 @@ if (isset($_POST['pid']) && (int)$_POST['pid'] > 0) {
 			$basemana = $config['nvMana'];
 			$basecap = $config['nvCap'];
 		}
+		*/
 		
-		$levelC = $level - $baselevel;
-		if ($levelC >= 1) {
-			$newhp = $basehealth + ($statgain['hp'] * $levelC);
-			$newmp = $basemana + ($statgain['mp'] * $levelC);
-			$newcap = $basecap + ($statgain['cap'] * $levelC);
-		} else die("Failed to calibrate skills. Level below $baselevel.");
+		$LevelsFromBase = $level - $playercnf['base']['level'];
+		$newhp = $playercnf['base']['health'] + ($statgain['hp'] * $LevelsFromBase);
+		$newmp = $playercnf['base']['mana'] + ($statgain['mp'] * $LevelsFromBase);
+		$newcap = $playercnf['base']['cap'] + ($statgain['cap'] * $LevelsFromBase);
 
 		// Calibrate hp/mana/cap
 		if ($config['TFSVersion'] != 'TFS_10') {

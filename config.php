@@ -394,31 +394,98 @@
 	// Available character vocation users can create.
 	$config['available_vocations'] = array(1, 2, 3, 4);
 
-	// Available towns (specify town ids, etc: (0, 1, 2); to display 3 town options (town id 0, 1 and 2).
-	$config['available_towns'] = array(1,2,4,5);
+	// Available towns (specify town ids, etc: (1, 2, 3); to display 3 town options (town id 1, 2 and 3).
+	$config['available_towns'] = array(1, 2, 4, 5);
 
-	$config['level'] = 8;
-	$config['health'] = 185;
-	$config['mana'] = 40;
-	$config['cap'] = 470;
-	$config['soul'] = 100;
-
-	$config['maleOutfitId'] = 128;
-	$config['femaleOutfitId'] = 136;
-	$config['lookHead'] = 78;
-	$config['lookBody'] = 68;
-	$config['lookLegs'] = 58;
-	$config['lookFeet'] = 76;
-
-	// No vocation info (if user select vocation id 0, we force thees configurations on him
-	$config['nvlevel'] = 1;
-	$config['nvHealth'] = 150;
-	$config['nvMana'] = 5;
-	$config['nvCap'] = 400;
-	$config['nvSoul'] = 100;
-
-	$config['nvForceTown'] = 0; // Force a town to no vocation even though he selected something else? 0 = no, 1 = yes.
-	$config['nvTown'] = 0; // Town id to force no vocations to get to, if nvForceTown is 1.
+	$config['player'] = array(
+		'base' => array(
+			'level' => 8,
+			'health' => 185,
+			'mana' => 40,
+			'cap' => 470,
+			'soul' => 100
+		),
+		// health, mana cap etc are calculated with $config['vocations_gain'] and 'base' values of $config['player']
+		'create' => array(
+			'level' => 8,
+			'novocation' => array( // vocation id 0 (No vocation) special settings
+				'level' => 1, // Level
+				'forceTown' => true,
+				'townId' => 30
+			),
+			'skills' => array( // See $config['vocations'] for proper vocation names of these IDs
+				// No vocation
+				0 => array(
+					'magic' => 0,
+					'fist' => 10,
+					'club' => 10,
+					'axe' => 10,
+					'sword' => 10,
+					'dist' => 10,
+					'shield' => 10,
+					'fishing' => 10,
+				),
+				// Sorcerer
+				1 => array(
+					'magic' => 0,
+					'fist' => 10,
+					'club' => 10,
+					'axe' => 10,
+					'sword' => 10,
+					'dist' => 10,
+					'shield' => 10,
+					'fishing' => 10,
+				),
+				// Druid
+				2 => array(
+					'magic' => 0,
+					'fist' => 10,
+					'club' => 10,
+					'axe' => 10,
+					'sword' => 10,
+					'dist' => 10,
+					'shield' => 10,
+					'fishing' => 10,
+				),
+				// Paladin
+				3 => array(
+					'magic' => 0,
+					'fist' => 10,
+					'club' => 10,
+					'axe' => 10,
+					'sword' => 10,
+					'dist' => 10,
+					'shield' => 10,
+					'fishing' => 10,
+				),
+				// Knight
+				4 => array(
+					'magic' => 0,
+					'fist' => 10,
+					'club' => 10,
+					'axe' => 10,
+					'sword' => 10,
+					'dist' => 10,
+					'shield' => 10,
+					'fishing' => 10,
+				),
+			),
+			'male_outfit' => array(
+				'id' => 128,
+				'head' => 78,
+				'body' => 68,
+				'legs' => 58,
+				'feet' => 76
+			),
+			'female_outfit' => array(
+				'id' => 136,
+				'head' => 78,
+				'body' => 68,
+				'legs' => 58,
+				'feet' => 76
+			)
+		)
+	);
 
 	// Minimum allowed character name letters. Etc 4 letters: "Kåre".
 	$config['minL'] = 4;
@@ -449,12 +516,6 @@
 	$config['house'] = array(
 		'house_file' => 'C:\test\Mystic Spirit_0.2.5\data\world\forgotten-house.xml',
 		'price_sqm' => '50', // price per house sqm
-	);
-
-	$config['status'] = array(
-		'status_check' => false, //enable or disable status checker
-		'status_ip' => '127.0.0.1',
-		'status_port' => "7171",
 	);
 
 	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed eg. 1 DAY, 2 HOUR, 3 MONTH etc. 
@@ -491,7 +552,7 @@
 
 	// What client version and server port are you using on this OT?
 	// Used for the Downloads page.
-	$config['client'] = 1098; // 954 = tibia 9.54
+	$config['client'] = 1098; // 954 = client 9.54
 
 	 // Download link to client.
 	$config['client_download'] = 'http://clients.halfaway.net/windows.php?tibia='. $config['client'] .'';
@@ -499,6 +560,12 @@
 
 	$config['port'] = 7171; // Port number to connect to your OT.
 	
+	$config['status'] = array(
+		'status_check' => false, //enable or disable status checker
+		'status_ip' => '127.0.0.1',
+		'status_port' => "7171",
+	);
+
 	// Gameserver info is used for client 11+ loginWebService
 	$config['gameserver'] = array(
 		'ip' => $_SERVER["SERVER_ADDR"], // Can be an ip string like '123.123.123.123'
