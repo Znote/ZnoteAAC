@@ -60,7 +60,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 				'playdata' => array(
 					'worlds' => array(
 						array(
-							'id' => 1,
+							'id' => 0,
 							'name' => $gameserver['name'],
 							'externaladdress' => $gameserver['ip'],
 							'externalport' => $gameserver['port'],
@@ -74,7 +74,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 			);
 
 			foreach ($players as $player) {
-				$response['playdata']['characters'][] = array('worldid' => 1, 'name' => $player['name']);
+				$response['playdata']['characters'][] = array('worldid' => 0, 'name' => $player['name']);
 			}
 
 			//error_log("= SESSION KEY: " . $response['session']['sessionkey']);
