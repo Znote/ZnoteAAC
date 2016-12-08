@@ -73,8 +73,8 @@
 
 	$rawPayment = VerifyPagseguroIPN($notificationCode);
 	$payment = simplexml_load_string($rawPayment);
-	$paymentStatus = (int) $paymentStatus;
-	$paymentCode = sanitize($paymentCode);
+	$paymentStatus = (int) $payment->status;
+	$paymentCode = sanitize($payment->code);
 
 	report($notificationCode, $rawPayment);
 
