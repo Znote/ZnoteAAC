@@ -107,7 +107,7 @@ if (empty($_POST) === false) {
 		$errors[] = 'Failed to authorize your account, are the details correct, have you <a href=\'register.php\'>register</a>ed?';
 	} /*else if (user_activated($username) === false) {
 		$errors[] = 'You havent activated your account! Please check your email. <br>Note it may appear in your junk/spam box.';
-	} */else if (!Token::isValid($_POST['token'])) {
+	} */else if ($config['use_token'] && !Token::isValid($_POST['token'])) {
 		Token::debug($_POST['token']);
 		$errors[] = 'Token is invalid.';
 	} else {
