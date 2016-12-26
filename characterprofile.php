@@ -208,7 +208,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 				{ ?>
 					<li>
 						<font class="profile_font" name="profile_font_comment">Comment:</font><br>
-						<textarea name="profile_comment_textarea" cols="70" rows="10" readonly="readonly" class="span12"><?php echo $profile_znote_data['comment']; ?></textarea>
+						<textarea name="profile_comment_textarea" cols="70" rows="10" readonly="readonly" class="span12"><?php echo preg_replace('/\v+|\\\r\\\n/','<br/>',$profile_znote_data['comment']); ?></textarea>
 					</li>
 				<?php
 				}
