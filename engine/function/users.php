@@ -1244,14 +1244,8 @@ function user_create_character($character_data) {
 
 	// Player skills TFS 0.2, 0.3/4. (TFS 1.0 is done above character creation)
 	if ($cnf['TFSVersion'] != 'TFS_10') {
-		// Not quite sure if players table have player_skills creation triggers, this may need to be inserts instead of update queries.
-		mysql_update("UPDATE `player_skills` SET `value`='". $skills['fist'] ."' WHERE `player_id`='{$charid}' AND `skillid`='0' LIMIT 1;");
-		mysql_update("UPDATE `player_skills` SET `value`='". $skills['club'] ."' WHERE `player_id`='{$charid}' AND `skillid`='1' LIMIT 1;");
-		mysql_update("UPDATE `player_skills` SET `value`='". $skills['sword'] ."' WHERE `player_id`='{$charid}' AND `skillid`='2' LIMIT 1;");
-		mysql_update("UPDATE `player_skills` SET `value`='". $skills['axe'] ."' WHERE `player_id`='{$charid}' AND `skillid`='3' LIMIT 1;");
-		mysql_update("UPDATE `player_skills` SET `value`='". $skills['dist'] ."' WHERE `player_id`='{$charid}' AND `skillid`='4' LIMIT 1;");
-		mysql_update("UPDATE `player_skills` SET `value`='". $skills['shield'] ."' WHERE `player_id`='{$charid}' AND `skillid`='5' LIMIT 1;");
-		mysql_update("UPDATE `player_skills` SET `value`='". $skills['fish'] ."' WHERE `player_id`='{$charid}' AND `skillid`='6' LIMIT 1;");
+		mysql_delete("DELETE FROM `player_skills` WHERE `player_id`='{$charid}';");
+		mysql_insert("INSERT INTO `player_skills` (`player_id`, `skillid`, `value`) VALUES ('{$charid}', '0', '".$skills['fist']."'), ('{$charid}', '1', '".$skills['club']."'), ('{$charid}', '2', '".$skills['sword']."'), ('{$charid}', '3', '".$skills['axe']."'), ('{$charid}', '4', '".$skills['dist']."'), ('{$charid}', '5', '".$skills['shield']."'), ('{$charid}', '6', '".$skills['fishing']."');");
 	}
 }
 
