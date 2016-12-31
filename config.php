@@ -263,17 +263,44 @@
 		'limit' => 20, //Number of players that it will show.
 	);
 
-	// Vocation ids and names.
+	// Vocation IDs, names and which vocation ID they got promoted from
 	$config['vocations'] = array(
-		0 => 'No vocation',
-		1 => 'Sorcerer',
-		2 => 'Druid',
-		3 => 'Paladin',
-		4 => 'Knight',
-		5 => 'Master Sorcerer',
-		6 => 'Elder Druid',
-		7 => 'Royal Paladin',
-		8 => 'Elite Knight',
+		0 => array( 
+			'name' => 'No vocation',
+			'fromVoc' => false
+		),
+		1 => array( 
+			'name' => 'Sorcerer',
+			'fromVoc' => false
+		),
+		2 => array( 
+			'name' => 'Druid',
+			'fromVoc' => false
+		),
+		3 => array( 
+			'name' => 'Paladin',
+			'fromVoc' => false
+		),
+		4 => array( 
+			'name' => 'Knight',
+			'fromVoc' => false
+		),
+		5 => array( 
+			'name' => 'Master Sorcerer',
+			'fromVoc' => 1
+		),
+		6 => array( 
+			'name' => 'Elder Druid',
+			'fromVoc' => 2
+		),
+		7 => array( 
+			'name' => 'Royal Paladin',
+			'fromVoc' => 3
+		),
+		8 => array( 
+			'name' => 'Elite Knight',
+			'fromVoc' => 4
+		)
 	);
 
 	/* Vocation stat gains per level

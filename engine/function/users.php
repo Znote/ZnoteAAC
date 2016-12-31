@@ -885,39 +885,99 @@ function user_character_list_count($account_id) {
 // END MY ACCOUNT RELATED
 
 // HIGHSCORE FUNCTIONS \\
-function fetchAllScores($rows, $tfs, $g, $v = -1) {
+function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false) {
 	// Return scores ordered by type and vocation (if set)
 	$data = array();
-	if ($tfs == 'TFS_10') {
 
-		// Generate SQL WHERE-clause for vocation if $v is set
-		$v = ($v > -1) ? 'AND `vocation` = '. intval($v) : NULL;
+	// Add "all" as a simulated vocation in vocation_list to represent all vocations and loop through them.
+	$vocGroups = array(
+		'all' => array()
+	);
+	foreach ($vlist AS $vid => $vdata) {
+		// If this vocation does not have a fromVoc attribute
+		if ($vdata['fromVoc'] === false) {
+			// Add it as a group
+			$vocGroups[(string)$vid] = array();
+		} else {
+			// Add an extended group for both vocations
+			$sharedGroup = (string)$vdata['fromVoc'] . ", " . (string)$vid;
+			$vocGroups[$sharedGroup] = array();
 
-		$data[1] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_club` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_club` DESC LIMIT 0, $rows;");
-		$data[2] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_sword` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_sword` DESC LIMIT 0, $rows;");
-		$data[3] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_axe` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_axe` DESC LIMIT 0, $rows;");
-		$data[4] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_dist` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_dist` DESC LIMIT 0, $rows;");
-		$data[5] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_shielding` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_shielding` DESC LIMIT 0, $rows;");
-		$data[6] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_fishing` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_fishing` DESC LIMIT 0, $rows;");
-		$data[7] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `experience`, `level` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `experience` DESC LIMIT 0, $rows;");
-		$data[8] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `maglevel` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `maglevel` DESC LIMIT 0, $rows;");
-		$data[9] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `skill_fist` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_fist` DESC LIMIT 0, $rows;");
-	} else {
-
-		// Generate SQL WHERE-clause for vocation if $v is set
-		$v = ($v > -1) ? 'AND `p`.`vocation` = '. intval($v) : NULL;
-
-		$data[9] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 0 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
-		$data[1] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 1 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
-		$data[2] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 2 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
-		$data[3] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 3 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
-		$data[4] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 4 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
-		$data[5] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 5 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
-		$data[6] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 6 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
-		$data[7] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `experience`, `level` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `experience` DESC limit 0, $rows;");
-		$data[8] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `maglevel` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `maglevel` DESC limit 0, $rows;");
+			// Make the fromVoc group a reference to the extended group for both vocations
+			$vocGroups[(string)$vdata['fromVoc']] = $sharedGroup;
+			$vocGroups[(string)$vid] = $sharedGroup;
+		}
 	}
-	return $data;
+
+	foreach ($vocGroups as $voc_id => $key_or_arr) {
+
+		$vGrp = $voc_id;
+		// Change to correct vocation group if this vocation id reference a shared vocation group
+		if (!is_array($key_or_arr)) $vGrp = $key_or_arr;
+
+		// If this vocation group is empty (then we need to fill it with highscore SQL Data)
+		if (empty($vocGroups[$vGrp])) {
+
+			// Generate SQL WHERE-clause for vocation if $v is set
+			$v = '';
+			if ($vGrp !== 'all') 
+				$v = (strpos($vGrp, ',') !== false) ? 'AND `p`.`vocation` IN ('. $vGrp . ')' : 'AND `p`.`vocation` = \''.intval($vGrp).'\'';
+
+			if ($tfs == 'TFS_10') {
+
+				if ($flags === false) { // In this case we only need to query players table
+					$v = str_replace('`p`.', '', $v);
+					
+					$vocGroups[$vGrp][1] = mysql_select_multi("SELECT `name`, `vocation`, `skill_club` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_club` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][2] = mysql_select_multi("SELECT `name`, `vocation`, `skill_sword` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_sword` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][3] = mysql_select_multi("SELECT `name`, `vocation`, `skill_axe` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_axe` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][4] = mysql_select_multi("SELECT `name`, `vocation`, `skill_dist` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_dist` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][5] = mysql_select_multi("SELECT `name`, `vocation`, `skill_shielding` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_shielding` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][6] = mysql_select_multi("SELECT `name`, `vocation`, `skill_fishing` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_fishing` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][7] = mysql_select_multi("SELECT `name`, `vocation`, `experience`, `level` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `experience` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][8] = mysql_select_multi("SELECT `name`, `vocation`, `maglevel` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `maglevel` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][9] = mysql_select_multi("SELECT `name`, `vocation`, `skill_fist` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_fist` DESC LIMIT 0, $rows;");
+				
+				} else { // Inner join znote_accounts table to retrieve the flag
+					$vocGroups[$vGrp][1] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_club` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_club` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][2] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_sword` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_sword` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][3] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_axe` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_axe` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][4] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_dist` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_dist` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][5] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_shielding` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_shielding` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][6] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_fishing` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_fishing` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][7] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`experience`, `level` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`experience` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][8] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`maglevel` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`maglevel` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][9] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_fist` AS `value`, `za`.`flag` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_fist` DESC LIMIT 0, $rows;");
+				}
+			} else { // TFS 0.2, 0.3, 0.4
+				
+				if ($flags === false) {
+					$vocGroups[$vGrp][9] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 0 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][1] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 1 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][2] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 2 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][3] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 3 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][4] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 4 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][5] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 5 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][6] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 6 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$v = str_replace('`p`.', '', $v);
+					$vocGroups[$vGrp][7] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `experience`, `level` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `experience` DESC limit 0, $rows;");
+					$vocGroups[$vGrp][8] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `maglevel` AS `value` FROM `players` WHERE `group_id` < $g $v ORDER BY `maglevel` DESC limit 0, $rows;");
+					
+				} else { // Inner join znote_accounts table to retrieve the flag
+					$vocGroups[$vGrp][9] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s`, `za`.`flag` AS `flag` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 0 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][1] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s`, `za`.`flag` AS `flag` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 1 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][2] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s`, `za`.`flag` AS `flag` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 2 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][3] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s`, `za`.`flag` AS `flag` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 3 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][4] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s`, `za`.`flag` AS `flag` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 4 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][5] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s`, `za`.`flag` AS `flag` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 5 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][6] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` FROM `player_skills` AS `s`, `za`.`flag` AS `flag` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 6 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
+					$vocGroups[$vGrp][7] = mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`vocation`, `p`.`experience`, `p`.`level` AS `value` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`experience` DESC limit 0, $rows;");
+					$vocGroups[$vGrp][8] = mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`vocation`, `p`.`maglevel` AS `value` FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`maglevel` DESC limit 0, $rows;");
+				}
+			}
+		}
+	}
+	return $vocGroups;
 }
 // END HIGHSCORE FUNCTIONS
 

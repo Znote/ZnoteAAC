@@ -349,7 +349,7 @@ function online_id_to_name($id) {
 // Parameter: players.vocation_id. Returns: Configured vocation name.
 function vocation_id_to_name($id) {
 	$vocations = config('vocations');
-	return ($vocations[$id] >= 0) ? $vocations[$id] : false;
+	return ($vocations[$id] >= 0) ? $vocations[$id]['name'] : false;
 }
 
 // Parameter: players.group_id. Returns: Configured group name.

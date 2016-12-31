@@ -9,8 +9,18 @@ $type = (isset($_GET['type'])) ? (int)getValue($_GET['type']) : 7;
 if ($type > 9) $type = 7;
 
 // Fetch highscore vocation
-$vocation = (isset($_GET['vocation'])) ? (int)getValue($_GET['vocation']) : -1;
-if ($vocation > 8) $vocation = -1;
+$configVocations = $config['vocations'];
+//$debug['configVocations'] = $configVocations;
+
+$vocationIds = array_keys($configVocations);
+
+$vocation = 'all';
+if (isset($_GET['vocation']) && is_numeric($_GET['vocation'])) {
+	$vocation = (int)$_GET['vocation'];
+	if (!in_array($vocation, $vocationIds)) {
+		$vocation = "all";
+	}
+}
 
 // Fetch highscore page
 $page = getValue(@$_GET['page']);
@@ -43,18 +53,22 @@ function pageCheck($index, $page, $rowPerPage) {
 
 $cache = new Cache('engine/cache/highscores');
 if ($cache->hasExpired()) {
-	$scores = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId'], $vocation);
+	$vocGroups = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId'], $configVocations, $vocation, $config['country_flags']);
 	
-	$cache->setContent($scores);
+	$cache->setContent($vocGroups);
 	$cache->save();
 } else {
-	$scores = $cache->load();
+	$vocGroups = $cache->load();
 }
 
-if ($scores) {
+if ($vocGroups) {
+	$vocGroup = (is_array($vocGroups[$vocation])) ? $vocGroups[$vocation] : $vocGroups[$vocGroups[$vocation]];
 	?>
-	<h1>Ranking for <?php echo skillName($type) .", ". (($vocation < 0) ? 'any vocation' : vocation_id_to_name($vocation)) ?>.</h1>
+
+	<h1>Ranking for <?php echo skillName($type) .", ". (($vocation === 'all') ? 'any vocation' : vocation_id_to_name($vocation)) ?>.</h1>
+	
 	<form action="" method="GET">
+
 		<select name="type">
 			<option value="7" <?php if ($type == 7) echo "selected"; ?>>Experience</option>
 			<option value="8" <?php if ($type == 8) echo "selected"; ?>>Magic</option>
@@ -66,20 +80,22 @@ if ($scores) {
 			<option value="6" <?php if ($type == 6) echo "selected"; ?>>Fish</option>
 			<option value="9" <?php if ($type == 9) echo "selected"; ?>>Fist</option>
 		</select>
+
 		<select name="vocation">
-			<option value="-1" <?php if ($vocation < 0) echo "selected"; ?>>Any vocation</option>
-
+			<option value="all" <?php if (!is_int($vocation)) echo "selected"; ?>>Any vocation</option>
 			<?php
-			foreach (config('vocations') as $v_id => $v_name) {
-				$selected = ($vocation == $v_id) ? " selected" : NULL;
-
-				echo '<option value="'. $v_id .'"'. $selected .'>'. $v_name .'</option>';
+			foreach ($configVocations as $v_id => $v_data) {
+				if ($v_data['fromVoc'] === false) {
+					$selected = (is_int($vocation) && $vocation == $v_id) ? " selected $vocation = $v_id" : "";
+					echo '<option value="'. $v_id .'"'. $selected .'>'. $v_data['name'] .'</option>';
+				}
 			}
 			?>
 		</select>
+
 		<select name="page">
 			<?php
-			$pages = ceil(min(($highscore['rows'] / $highscore['rowsPerPage']), (count($scores[$type]) / $highscore['rowsPerPage'])));
+			$pages = ceil(min(($highscore['rows'] / $highscore['rowsPerPage']), (count($vocGroup[$type]) / $highscore['rowsPerPage'])));
 			for ($i = 0; $i < $pages; $i++) {
 				$x = $i + 1;
 				if ($x == $page) echo "<option value='".$x."' selected>Page: ".$x."</option>";
@@ -87,9 +103,12 @@ if ($scores) {
 			}
 			?>
 		</select>
+
 		<input type="submit" value=" View " class="btn btn-info">
 	</form>
+
 	<table id="highscoresTable" class="table table-striped table-hover">
+
 		<tr class="yellow">
 			<td>Rank</td>
 			<td>Name</td>
@@ -97,9 +116,11 @@ if ($scores) {
 			<td>Level</td>
 			<?php if ($type === 7) echo "<td>Points</td>"; ?>
 		</tr>
+
 		<?php
-		for ($i = 0; $i < count($scores[$type]); $i++) {
-			if ($scores[$type] === false) {
+		for ($i = 0; $i < count($vocGroup[$type]); $i++) {
+
+			if ($vocGroup[$type] === false) {
 				?>
 				<tr>
 					<td colspan="5">Nothing to show here yet.</td>
@@ -107,22 +128,19 @@ if ($scores) {
 				<?php
 			} else {
 				if (pageCheck($i, $page, $rowsPerPage)) {
-					$profile_data = user_character_data($scores[$type][$i]['id'], 'account_id');
-
-					$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
-					if ($config['country_flags'] === true && count($account_data['flag']) > 1) $flag = '<img src="flags/' . $account_data['flag'] . '.png">  ';
-					else $flag = '';
+					$flag = ($config['country_flags'] === true && strlen($vocGroup[$type][$i]['flag']) > 1) ? '<img src="flags/' . $vocGroup[$type][$i]['flag'] . '.png">  ' : '';
 					?>
 					<tr>
 						<td><?php echo $i+1; ?></td>
-						<td><?php echo $flag; ?><a href="characterprofile.php?name=<?php echo $scores[$type][$i]['name']; ?>"><?php echo $scores[$type][$i]['name']; ?></a></td>
-						<td><?php echo vocation_id_to_name($scores[$type][$i]['vocation']); ?></td>
-						<td><?php echo $scores[$type][$i]['value']; ?></td>
-						<?php if ($type === 7) echo "<td>". $scores[$type][$i]['experience'] ."</td>"; ?>
+						<td><?php echo $flag; ?><a href="characterprofile.php?name=<?php echo $vocGroup[$type][$i]['name']; ?>"><?php echo $vocGroup[$type][$i]['name']; ?></a></td>
+						<td><?php echo vocation_id_to_name($vocGroup[$type][$i]['vocation']); ?></td>
+						<td><?php echo $vocGroup[$type][$i]['value']; ?></td>
+						<?php if ($type === 7) echo "<td>". $vocGroup[$type][$i]['experience'] ."</td>"; ?>
 					</tr>
 					<?php
 				}
 			}
+
 		}
 		?>
 	</table>
