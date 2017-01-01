@@ -16,7 +16,14 @@ function insertImage($account_id, $title, $desc, $image) {
 	$image = sanitize($image);
 	$account_id = (int)$account_id;
 	$time = time();
-	mysql_insert("INSERT INTO `znote_images` (`title`, `desc`, `date`, `status`, `image`, `account_id`) VALUES ('$title', '$desc', '$time', '1', '$image', '$account_id');");
+
+	// Insert only if image dosn't already exist there
+	$exist = mysql_select_single("SELECT `id` FROM `znote_images` WHERE `image`='$image' LIMIT 1;");
+	if ($exist === false) {
+		mysql_insert("INSERT INTO `znote_images` (`title`, `desc`, `date`, `status`, `image`, `account_id`) VALUES ('$title', '$desc', '$time', '1', '$image', '$account_id');");
+		return true;
+	}
+	return false;
 }
 
 function updateImage($id, $status) {

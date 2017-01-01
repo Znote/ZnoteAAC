@@ -10,6 +10,14 @@ if (isset($_POST['delete'])) {
 	updateImage($data[0], 3);
 }
 
+// Remove
+if (isset($_POST['remove'])) {
+	$data = explode(":", $_POST['remove']);
+	$did = (int)$data[0];
+	echo 'Image '. $did .' removed.';
+	mysql_delete("DELETE FROM `znote_images` WHERE `id`='$did' LIMIT 1;");
+}
+
 // Accept
 if (isset($_POST['accept'])) {
 	$data = explode(":", $_POST['accept']);
@@ -39,7 +47,6 @@ if (isset($_POST['accept']) || isset($_POST['delete'])) {
 $images = fetchImages(1);
 if ($images != false) {
 	foreach($images as $image) {
-		$pw = explode("!", $image['image']);
 		?>
 		<table>
 			<tr class="yellow">
@@ -47,7 +54,7 @@ if ($images != false) {
 			</tr>
 			<tr>
 				<td>
-					<a href="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
+					<a href="<?php echo $image['image']; ?>"><img src="<?php echo $image['image']; ?>" alt="<?php echo $image['title']; ?>" style="max-width: 100%;"/></a>
 				</td>
 			</tr>
 			<tr>
@@ -67,7 +74,6 @@ if ($images != false) {
 $images = fetchImages(2);
 if ($images != false) {
 	foreach($images as $image) {
-		$pw = explode("!", $image['image']);
 		?>
 		<table>
 			<tr class="yellow">
@@ -75,7 +81,7 @@ if ($images != false) {
 			</tr>
 			<tr>
 				<td>
-					<a href="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
+					<a href="<?php echo $image['image']; ?>"><img src="<?php echo $image['image']; ?>" alt="<?php echo $image['title']; ?>" style="max-width: 100%;"/></a>
 				</td>
 			</tr>
 			<tr>
@@ -95,15 +101,17 @@ if ($images != false) {
 $images = fetchImages(3);
 if ($images != false) {
 	foreach($images as $image) {
-		$pw = explode("!", $image['image']);
 		?>
 		<table>
 			<tr class="yellow">
-				<td><h2><?php echo $image['title']; ?><form action="" method="post"><input type="submit" name="accept" value="<?php echo $image['id']; ?>:Recover Image"/></form></h2></td>
+				<td><h2><?php echo $image['title']; ?><form action="" method="post">
+				<input type="submit" name="accept" value="<?php echo $image['id']; ?>:Recover Image"/>
+				<input type="submit" name="remove" value="<?php echo $image['id']; ?>:Remove Image"/>
+				</form></h2></td>
 			</tr>
 			<tr>
 				<td>
-					<a href="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>"><img src="<?php echo 'http://'. $pw[0] .'.1m.yt/'. $pw[1] .'.'. $pw[2]; ?>" width="650"/></a>
+					<a href="<?php echo $image['image']; ?>"><img src="<?php echo $image['image']; ?>" alt="<?php echo $image['title']; ?>" style="max-width: 100%;"/></a>
 				</td>
 			</tr>
 			<tr>
