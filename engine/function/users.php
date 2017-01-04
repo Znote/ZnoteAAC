@@ -401,7 +401,7 @@ function guild_invite_player($cid, $gid) {
 // Gets a list of invited players to a particular guild.
 function guild_invite_list($gid) {
 	$gid = (int)$gid;
-	return mysql_select_multi("SELECT `player_id`, `guild_id` FROM `guild_invites` WHERE `guild_id`='$gid';");
+	return mysql_select_multi("SELECT `gi`.`player_id`, `gi`.`guild_id`, `p`.`name` FROM `guild_invites` AS `gi` INNER JOIN `players` AS `p` ON `gi`.`player_id`=`p`.`id` WHERE `gi`.`guild_id`='$gid';");
 }
 
 // Update player's guild position
@@ -495,6 +495,7 @@ function get_player_guild_data($cid) {
 	$cid = (int)$cid;
 	if (config('TFSVersion') !== 'TFS_10') $playerdata = mysql_select_single("SELECT `rank_id` FROM `players` WHERE `id`='$cid' LIMIT 1;");
 	else $playerdata = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='$cid' LIMIT 1;");
+	
 	if ($playerdata !== false) {
 		$rankdata = mysql_select_single("SELECT `guild_id`, `level` AS `rank_level`, `name` AS `rank_name` FROM `guild_ranks` WHERE `id`='". $playerdata['rank_id'] ."' LIMIT 1;");
 		if ($rankdata !== false) {
@@ -533,8 +534,8 @@ function get_guilds_list() {
 // Get array of player data related to a guild.
 function get_guild_players($gid) {
     $gid = (int)$gid; // Sanitizing the parameter id
-    if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT p.rank_id, p.name, p.level, p.guildnick, p.vocation, p.online, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid' ORDER BY gr.id, p.name;");
-    else return mysql_select_multi("SELECT p.id, p.name, p.level, p.vocation, gm.rank_id, gm.nick AS `guildnick`, gr.name AS `rank_name` FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id LEFT JOIN guild_ranks AS gr ON gr.id = gm.rank_id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name");
+    if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT `p`.`rank_id`, `p`.`name`, `p`.`level`, `p`.`guildnick`, `p`.`vocation`, `p`.`online`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `p`.`rank_id` WHERE `gr`.`guild_id` ='$gid' ORDER BY `gr`.`id`, `p`.`name`;");
+    else return mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `gm`.`rank_id`, `gm`.`nick` AS `guildnick`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_membership` AS `gm` ON `gm`.`player_id` = `p`.`id` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `gm`.`rank_id` WHERE `gm`.`guild_id` = '$gid' ORDER BY `gm`.`rank_id`, `p`.`name`");
 }
 
 // Get guild level data (avg level, total level, count of players)
@@ -834,26 +835,20 @@ function user_pending_deletes($acc_id) {
 }
 
 // Parameter: accounts.id returns: An array containing detailed information of every character on the account.
-// Array: [0] = name, [1] = level, [2] = vocation, [3] = town_id, [4] = lastlogin, [5] = online
 function user_character_list($account_id) {
 	//$count = user_character_list_count($account_id);
 	$account_id = (int)$account_id;
 
 	if (config('TFSVersion') == 'TFS_10') {
-		$characters = mysql_select_multi("SELECT `id`, `name`, `level`, `vocation`, `town_id`, `lastlogin` FROM `players` WHERE `account_id`='$account_id' ORDER BY `level` DESC");
+		$characters = mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `p`.`town_id`, `p`.`lastlogin`, `gm`.`rank_id`, `po`.`player_id` AS `online` FROM `players` AS `p` LEFT JOIN `guild_membership` AS `gm` ON `p`.`id`=`gm`.`player_id` LEFT JOIN `players_online` AS `po` ON `p`.`id`=`po`.`player_id` WHERE `p`.`account_id`='$account_id' ORDER BY `p`.`level` DESC");
 		if ($characters !== false) {
-			$onlineArray = mysql_select_multi("SELECT `player_id` FROM `players_online`;");
-			$onlineIds = array();
-			if ($onlineArray !== false) foreach ($onlineArray as $row) $onlineIds[] = $row['player_id'];
 			for ($i = 0; $i < count($characters); $i++) {
-				$online = in_array($characters[$i]['id'], $onlineIds);
-				if ($online) $characters[$i]['online'] = 1;
-				else $characters[$i]['online'] = 0;
-				unset($characters[$i]['id']);
+				$characters[$i]['online'] = ($characters[$i]['online'] > 0) ? 1 : 0;
+				//unset($characters[$i]['id']);
 			}
 		}
 
-	} else $characters = mysql_select_multi("SELECT `name`, `level`, `vocation`, `town_id`, `lastlogin`, `online` FROM `players` WHERE `account_id`='$account_id' ORDER BY `level` DESC");
+	} else $characters = mysql_select_multi("SELECT `id`, `name`, `level`, `vocation`, `town_id`, `lastlogin`, `online`, `rank_id` FROM `players` WHERE `account_id`='$account_id' ORDER BY `level` DESC");
 
 	if ($characters !== false) {
 		$count = count($characters);

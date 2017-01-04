@@ -28,11 +28,14 @@ if (user_logged_in() === true) {
 	// fetch data
 	$char_count = user_character_list_count($session_user_id);
 	$char_array = user_character_list($user_data['id']);
-	
 	$characters = array();
+	$charactersId = array();
+	$charactersRank = array();
 	if ($char_array !== false) {
 		foreach ($char_array as $value) {
 			$characters[] = $value['name'];
+			$charactersId[] = $value['id'];
+			$charactersRank[] = $value['rank_id'];
 		}
 	}
 } else {
@@ -186,19 +189,20 @@ if (user_logged_in() === true) {
 	$highest_access = 0;
 	if (user_logged_in() === true) {
 		// Get visitor access in this guild
-		
 		foreach ($players as $player) {
 			$rid = $player['rank_id'];
 			
 			for ($i = 0; $i < $char_count; $i++) {
-				if ($config['TFSVersion'] !== 'TFS_10') $data = user_character_data(user_character_id($characters[$i]), 'rank_id');
-				else $data = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='". user_character_id($characters[$i]) ."' LIMIT 1;");
-				if ($data['rank_id'] == $rid) {
-					$access = get_guild_position($data['rank_id']);
+				
+				$playerRank = $charactersRank[$i];
+
+				if ($playerRank == $rid) {
+					$access = get_guild_position($playerRank);
 					if ($access == 2 || $access == 3) { //If player got access level vice leader or leader
 						if ($access > $highest_access) $highest_access = $access;
 					}
 				}
+
 			}
 		}
 	}
@@ -253,7 +257,7 @@ if (user_logged_in() === true) {
 			}
 			echo '</td>';
 			echo '<td>'. $player['level'] .'</td>';
-			echo '<td>'. $config['vocations'][$player['vocation']] .'</td>';
+			echo '<td>'. $config['vocations'][$player['vocation']]['name'] .'</td>';
 			if ($chardata['online'] == 1) echo '<td> <b><font color="green"> Online </font></b></td>';
 			else echo '<td> Offline </td>';
 			echo '</tr>';
@@ -275,7 +279,7 @@ if (user_logged_in() === true) {
 			$exist = false;
 			// Shuffle through invited character, see if they match your character.
 			if ($inv_data !== false) foreach ($inv_data as $inv) {
-				if (user_character_id($characters[$i]) == $inv['player_id']) {
+				if ($charactersId[$i] == $inv['player_id']) {
 					$exist = true;
 				}
 			}
@@ -286,9 +290,8 @@ if (user_logged_in() === true) {
 		<?php
 		$bool = false;
 		if ($inv_data !== false) foreach ($inv_data as $inv) {
-			$uninv = user_character_data($inv['player_id'], 'name');
 			echo '<tr>';
-			echo '<td>'. $uninv['name'] .'</td>';
+			echo '<td>'. $inv['name'] .'</td>';
 			// Remove invitation
 			if ($highest_access == 2 || $highest_access == 3) {
 			?> <form action="" method="post"> <?php
@@ -301,7 +304,7 @@ if (user_logged_in() === true) {
 			// Join Guild
 			?> <form action="" method="post"> <?php
 				for ($i = 0; $i < $char_count; $i++) {
-					if (user_character_id($characters[$i]) == $inv['player_id']) {
+					if ($charactersId[$i] == $inv['player_id']) {
 						echo '<td>';
 						echo '<input type="hidden" name="joinguild" value="' . $inv['player_id'] . '" />';
 						echo '<input type="submit" value="Join Guild">';
@@ -317,7 +320,7 @@ if (user_logged_in() === true) {
 			// Reject invitation
 			?> <form action="" method="post"> <?php
 				for ($i = 0; $i < $char_count; $i++) {
-					if (user_character_id($characters[$i]) == $inv['player_id']) {
+					if ($charactersId[$i] == $inv['player_id']) {
 						echo '<td>';
 						echo '<input type="hidden" name="uninvite" value="' . $inv['player_id'] . '" />';
 						echo '<input type="submit" value="Reject Invitation">';
@@ -685,9 +688,9 @@ if ($highest_access >= 2) {
 					<?php
 					//$gid = get_guild_id($_GET['name']);
 					//$players = get_guild_players($gid);
+
 					foreach ($players as $player) {
-						$pl_data = get_player_guild_data(user_character_id($player['name']));
-						if ($pl_data['rank_level'] != 3) {
+						if ($player['rank_level'] != 3) {
 							echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>'; 
 						} else {
 							if ($highest_access == 3) {
@@ -714,8 +717,7 @@ if ($highest_access >= 2) {
 					//$gid = get_guild_id($_GET['name']);
 					//$players = get_guild_players($gid);
 					foreach ($players as $player) {
-						$pl_data = get_player_guild_data(user_character_id($player['name']));
-						if ($pl_data['rank_level'] != 3) {
+						if ($player['rank_level'] != 3) {
 							echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>'; 
 						}	
 					}
@@ -750,9 +752,8 @@ if ($highest_access >= 2) {
 					//$gid = get_guild_id($_GET['name']);
 					//$players = get_guild_players($gid);
 					foreach ($players as $player) {
-						$pl_data = get_player_guild_data(user_character_id($player['name']));
-						if ($pl_data['rank_level'] != 3) {
-							if ($pl_data['rank_level'] != 2) {
+						if ($player['rank_level'] != 3) {
+							if ($player['rank_level'] != 2) {
 								echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>';
 							} else if ($highest_access == 3) echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>';
 						}
@@ -800,9 +801,8 @@ if ($highest_access >= 2) {
 					//$gid = get_guild_id($_GET['name']);
 					//$players = get_guild_players($gid);
 					foreach ($players as $player) {
-						$pl_data = get_player_guild_data(user_character_id($player['name']));
-						if ($pl_data['rank_level'] != 3) {
-							echo '<option value="'. user_character_id($player['name']) .'">'. $player['name'] .'</option>'; 
+						if ($player['rank_level'] != 3) {
+							echo '<option value="'. $player['id'] .'">'. $player['name'] .'</option>'; 
 						}
 					}
 					?>
@@ -920,7 +920,7 @@ if ($forumExist !== false) {
 			for ($i = 0; $i < $char_count; $i++) {
 				foreach ($players as $player) {
 					if ($player['name'] == $characters[$i]) {
-						$data = get_player_guild_data(user_character_id($player['name']));
+						$data = get_player_guild_data($player['id']);
 						if ($data['rank_level'] != 3) echo '<option value="'. $characters[$i] .'">'. $characters[$i] .'</option>';
 						else echo '<option disabled>'. $characters[$i] .' [disabled:Leader]</option>';
 					}
