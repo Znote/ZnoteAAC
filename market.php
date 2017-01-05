@@ -8,11 +8,11 @@ $compare = &$_GET['compare'];
 // If you are not comparing any items, present the list.
 if (!$compare) {
 	$cache = new Cache('engine/cache/market');
-	$cache->setExpiration(6);
+	$cache->setExpiration(60);
 	if ($cache->hasExpired()) {
 		$offers = array(
-			'wts' => mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `sale` = 1 ORDER BY `created` DESC;"),
-			'wtb' => mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `sale` = 0 ORDER BY `created` DESC;")
+			'wts' => mysql_select_multi("SELECT `mo`.`id`, `mo`.`itemtype` AS `item_id`, `mo`.`amount`, `mo`.`price`, `mo`.`created`, `mo`.`anonymous`, `p`.`name` AS `player_name` FROM `market_offers` AS `mo` INNER JOIN `players` AS `p` ON `mo`.`player_id`=`p`.`id` WHERE `mo`.`sale` = '1'  ORDER BY `mo`.`created` DESC;"),
+			'wtb' => mysql_select_multi("SELECT `mo`.`id`, `mo`.`itemtype` AS `item_id`, `mo`.`amount`, `mo`.`price`, `mo`.`created`, `mo`.`anonymous`, `p`.`name` AS `player_name` FROM `market_offers` AS `mo` INNER JOIN `players` AS `p` ON `mo`.`player_id`=`p`.`id` WHERE `mo`.`sale` = '0'  ORDER BY `mo`.`created` DESC;")
 		);
 		$cache->setContent($offers);
 		$cache->save();
@@ -64,7 +64,7 @@ if (!$compare) {
 		foreach (($offers['wtb'] ? $offers['wtb'] : array()) as $o) {
 		?>
 		<tr>
-			<td><?php getItemNameById($o['item_id']); ?></td>
+			<td><?php echo (isset($items[$o['item_id']])) ? $items[$o['item_id']] : $o['item_id']; ?></td>
 			<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 			<td><?php echo $o['amount']; ?></td>
 			<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
@@ -82,8 +82,8 @@ if (!$compare) {
 	$compare = (int)$compare;
 
 	// First list active bids
-	$offers = mysql_select_multi("SELECT `id`, `sale`, `itemtype` AS `item_id`, `amount`, `price`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `itemtype`='$compare' ORDER BY `price` ASC;");
-	$historyOffers = mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `inserted`, `expires_at` FROM `market_history` WHERE `itemtype`='$compare' AND `state`=255 ORDER BY `price` ASC;");
+	$offers = mysql_select_multi("SELECT `mo`.`id`, `mo`.`sale`, `mo`.`itemtype` AS `item_id`, `mo`.`amount`, `mo`.`price`, `mo`.`created`, `mo`.`anonymous`, `p`.`name` AS `player_name` FROM `market_offers` AS `mo` INNER JOIN `players` AS `p` ON `mo`.`player_id`=`p`.`id` WHERE `mo`.`itemtype`='$compare' ORDER BY `mo`.`price` ASC;");
+	$historyOffers = mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `inserted`, `expires_at` FROM `market_history` WHERE `itemtype`='$compare' AND `state`='255' ORDER BY `price` ASC;");
 	$buylist = false;
 	// Markup
 	?>
@@ -109,7 +109,7 @@ if (!$compare) {
 			} else {
 				?>
 				<tr>
-					<td><?php getItemNameById($o['item_id']); ?></td>
+					<td><?php echo (isset($items[$o['item_id']])) ? $items[$o['item_id']] : $o['item_id']; ?></td>
 					<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 					<td><?php echo $o['amount']; ?></td>
 					<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
@@ -138,7 +138,7 @@ if (!$compare) {
 			foreach ($buylist as $o) {
 				?>
 				<tr>
-					<td><?php getItemNameById($o['item_id']); ?></td>
+					<td><?php echo (isset($items[$o['item_id']])) ? $items[$o['item_id']] : $o['item_id']; ?></td>
 					<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 					<td><?php echo $o['amount']; ?></td>
 					<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
@@ -165,7 +165,7 @@ if (!$compare) {
 		foreach (($historyOffers ? $historyOffers : array()) as $o) {
 		?>
 		<tr>
-			<td><?php getItemNameById($o['item_id']); ?></td>
+			<td><?php echo (isset($items[$o['item_id']])) ? $items[$o['item_id']] : $o['item_id']; ?></td>
 			<td><img src="<?php echo "http://".$server."/".$o['item_id'].".".$imageType; ?>" alt="Item Image"></td>
 			<td><?php echo $o['amount']; ?></td>
 			<td><?php echo number_format($o['price'], 0, "", " "); ?></td>
