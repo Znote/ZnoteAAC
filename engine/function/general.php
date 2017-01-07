@@ -132,7 +132,7 @@ function setCache($time) {
 
 // Get visitor basic data
 function znote_visitors_get_data() {
-	return mysql_select_multi("SELECT `ip`, `value` FROM `znote_visitors`");
+	return mysql_select_multi("SELECT `ip`, `value` FROM `znote_visitors` ORDER BY `id` DESC LIMIT 1000;");
 }
 
 // Set visitor basic data
