@@ -23,8 +23,8 @@ if ($logged_in === true) {
 		foreach ($images as $img) { 
 			$imageSrc = (string)$img['src'];
 		}
-		$title = sanitize($_POST['title']);
-		$desc = sanitize($_POST['desc']);
+		$title = $_POST['title'];
+		$desc = $_POST['desc'];
 
 		if ($imageSrc !== false) {
 
