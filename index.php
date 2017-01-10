@@ -6,6 +6,7 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 	} else {
 		$page = (int)$_GET['page'];
 	}
+	$view = (isset($_GET['view'])) ? (int)$_GET['view'] : 0;
 
 	if ($config['allowSubPages'] && file_exists("layout/sub/index.php")) include 'layout/sub/index.php';
 	else {
@@ -72,40 +73,75 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 				}
 				return $string;
 			}
-			for ($i = $current; $i < $current + $config['news_per_page']; $i++) {
-				if (isset($news[$i])) {
+
+			if ($view > 0) { // We want to view a specific news post
+				$si = false;
+				for ($i = 0; $i < count($news); $i++) if ($view === (int)$news[$i]['id']) $si = $i;
+				if ($si !== false) {
 					?>
 					<table id="news">
 						<tr class="yellow">
-							<td class="zheadline"><?php echo getClock($news[$i]['date'], true) .' by <a href="characterprofile.php?name='. $news[$i]['name'] .'">'. $news[$i]['name'] .'</a> - <b>'. TransformToBBCode($news[$i]['title']) .'</b>'; ?></td>
+							<td class="zheadline"><?php echo getClock($news[$si]['date'], true) .' by <a href="characterprofile.php?name='. $news[$si]['name'] .'">'. $news[$si]['name'] .'</a> - <b>'. TransformToBBCode($news[$si]['title']) .'</b>'; ?></td>
 						</tr>
 						<tr>
 							<td>
-								<p><?php echo TransformToBBCode(nl2br($news[$i]['text'])); ?></p>
+								<p><?php echo TransformToBBCode(nl2br($news[$si]['text'])); ?></p>
 							</td>
 						</tr>
 					</table>
 					<?php
-				} 
-			}
-
-
-			echo '<select name="newspage" onchange="location = this.options[this.selectedIndex].value;">';
-
-			for ($i = 0; $i < $page_amount; $i++) {
-
-				if ($i == $page) {
-
-					echo '<option value="index.php?page='.$i.'" selected>Page '.$i.'</option>';
-
 				} else {
-
-					echo '<option value="index.php?page='.$i.'">Page '.$i.'</option>';
+					?>
+					<table id="news">
+						<tr class="yellow">
+							<td class="zheadline">News post not found.</td>
+						</tr>
+						<tr>
+							<td>
+								<p>We failed to find the post you where looking for.</p>
+							</td>
+						</tr>
+					</table>
+					<?php
 				}
+
+			} else { // We want to view latest news or a page of news.
+
+				for ($i = $current; $i < $current + $config['news_per_page']; $i++) {
+					if (isset($news[$i])) {
+						?>
+						<table id="news">
+							<tr class="yellow">
+								<td class="zheadline"><?php echo '<a href="?view='.$news[$i]['id'].'">'.getClock($news[$i]['date'], true).'</a> by <a href="characterprofile.php?name='. $news[$i]['name'] .'">'. $news[$i]['name'] .'</a> - <b>'. TransformToBBCode($news[$i]['title']) .'</b>'; ?></td>
+							</tr>
+							<tr>
+								<td>
+									<p><?php echo TransformToBBCode(nl2br($news[$i]['text'])); ?></p>
+								</td>
+							</tr>
+						</table>
+						<?php
+					} 
+				}
+
+				echo '<select name="newspage" onchange="location = this.options[this.selectedIndex].value;">';
+
+				for ($i = 0; $i < $page_amount; $i++) {
+
+					if ($i == $page) {
+
+						echo '<option value="index.php?page='.$i.'" selected>Page '.$i.'</option>';
+
+					} else {
+
+						echo '<option value="index.php?page='.$i.'">Page '.$i.'</option>';
+					}
+				}
+				
+				echo '</select>';
+
 			}
 			
-			echo '</select>';
-
 		} else {
 			echo '<p>No news exist.</p>';
 		}
