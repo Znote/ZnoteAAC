@@ -6,7 +6,7 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 	} else {
 		$page = (int)$_GET['page'];
 	}
-	$view = (isset($_GET['view'])) ? (int)$_GET['view'] : 0;
+	$view = (isset($_GET['view'])) ? urlencode($_GET['view']) : "";
 
 	if ($config['allowSubPages'] && file_exists("layout/sub/index.php")) include 'layout/sub/index.php';
 	else {
@@ -74,14 +74,19 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 				return $string;
 			}
 
-			if ($view > 0) { // We want to view a specific news post
+			if ($view !== "") { // We want to view a specific news post
 				$si = false;
-				for ($i = 0; $i < count($news); $i++) if ($view === (int)$news[$i]['id']) $si = $i;
+				if (ctype_digit($view) === false) {
+					for ($i = 0; $i < count($news); $i++) if ($view === urlencode($news[$i]['title'])) $si = $i;
+				} else {
+					for ($i = 0; $i < count($news); $i++) if ((int)$view === (int)$news[$i]['id']) $si = $i;
+				}
+				
 				if ($si !== false) {
 					?>
 					<table id="news">
 						<tr class="yellow">
-							<td class="zheadline"><?php echo getClock($news[$si]['date'], true) .' by <a href="characterprofile.php?name='. $news[$si]['name'] .'">'. $news[$si]['name'] .'</a> - <b>'. TransformToBBCode($news[$si]['title']) .'</b>'; ?></td>
+							<td class="zheadline"><?php echo '<a href="?view='.$news[$si]['id'].'">[#'.$news[$si]['id'].']</a> '. getClock($news[$si]['date'], true) .' by <a href="characterprofile.php?name='. $news[$si]['name'] .'">'. $news[$si]['name'] .'</a> - <b>'. TransformToBBCode($news[$si]['title']) .'</b>'; ?></td>
 						</tr>
 						<tr>
 							<td>
@@ -112,7 +117,7 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 						?>
 						<table id="news">
 							<tr class="yellow">
-								<td class="zheadline"><?php echo '<a href="?view='.$news[$i]['id'].'">'.getClock($news[$i]['date'], true).'</a> by <a href="characterprofile.php?name='. $news[$i]['name'] .'">'. $news[$i]['name'] .'</a> - <b>'. TransformToBBCode($news[$i]['title']) .'</b>'; ?></td>
+								<td class="zheadline"><?php echo '<a href="?view='.urlencode($news[$i]['title']).'">'.getClock($news[$i]['date'], true).'</a> by <a href="characterprofile.php?name='. $news[$i]['name'] .'">'. $news[$i]['name'] .'</a> - <b>'. TransformToBBCode($news[$i]['title']) .'</b>'; ?></td>
 							</tr>
 							<tr>
 								<td>
