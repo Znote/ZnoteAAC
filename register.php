@@ -50,6 +50,9 @@ if (empty($_POST) === false) {
 				$errors[] = 'Too short words in your name.';
 			}
 		}
+		if (strlen($_POST['username']) > 32) {
+			$errors[] = 'Your account name must be less than 33 characters.';
+		}
 		// end name restriction
 		if (strlen($_POST['password']) < 6) {
 			$errors[] = 'Your password must be at least 6 characters.';
