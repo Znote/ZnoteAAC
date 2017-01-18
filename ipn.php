@@ -82,7 +82,7 @@
 	$custom           = (int)$_POST['custom'];
 
 	$connectedIp = $_SERVER['REMOTE_ADDR'];
-	mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', 'Connection from IP: $connectedIp', '0', '0', '0')");
+	mysql_insert("INSERT INTO `znote_paypal` VALUES ('0', '$txn_id', 'Connection from IP: $connectedIp', '0', '0', '0')");
 	
 	$status = VerifyPaypalIPN();
 	if ($status) {
@@ -113,7 +113,7 @@
 					// Verify that the user havent messed around with POST data
 					if ($status) {
 						// transaction log
-						mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', '$payer_email', '$custom', '".$paidMoney."', '".$paidPoints."')");
+						mysql_insert("INSERT INTO `znote_paypal` VALUES ('0', '$txn_id', '$payer_email', '$custom', '".$paidMoney."', '".$paidPoints."')");
 						
 						// Process payment
 						$data = mysql_select_single("SELECT `points` AS `old_points` FROM `znote_accounts` WHERE `account_id`='$custom';");
@@ -124,12 +124,12 @@
 					}
 				}  else {
 					$pmail = $paypal['email'];
-					mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', 'ERROR: Wrong mail. Received: $receiver_email, configured: $pmail', '0', '0', '0')");
+					mysql_insert("INSERT INTO `znote_paypal` VALUES ('0', '$txn_id', 'ERROR: Wrong mail. Received: $receiver_email, configured: $pmail', '0', '0', '0')");
 				}
 			}
 		}
 	} else {
 		// Something is wrong
-		mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$txn_id', 'ERROR: Invalid data. $postdata', '0', '0', '0')");
+		mysql_insert("INSERT INTO `znote_paypal` VALUES ('0', '$txn_id', 'ERROR: Invalid data. $postdata', '0', '0', '0')");
 	}
 ?>
