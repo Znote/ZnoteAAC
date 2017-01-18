@@ -38,7 +38,7 @@ INSERT INTO `znote` (`version`, `installed`) VALUES
 CREATE TABLE IF NOT EXISTS `znote_accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) NOT NULL,
-  `ip` int(10) NOT NULL,
+  `ip` int(10) UNSIGNED NOT NULL,
   `created` int(10) NOT NULL,
   `points` int(10) DEFAULT 0,
   `cooldown` int(10) DEFAULT 0,
