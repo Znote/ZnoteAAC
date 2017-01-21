@@ -8,6 +8,11 @@ if ($config['TFSVersion'] !== 'TFS_10') {
 	<a href="https://github.com/otland/forgottenserver/releases" target="_BLANK">here</a>.</p>
 	<?php
 } else {
+	// If user wishes to disable Two-Factor Authentication
+	if (isset($_GET['disable'])) {
+		mysql_update("UPDATE `accounts` SET `secret`=NULL WHERE `id`='".(int)$session_user_id."' LIMIT 1;");
+		mysql_update("UPDATE `znote_accounts` SET `secret`=NULL WHERE `account_id`='".(int)$session_user_id."' LIMIT 1;");
+	}
 
 	// General init
 	require_once("engine/function/rfc6238.php");
@@ -32,6 +37,8 @@ if ($config['TFSVersion'] !== 'TFS_10') {
 	
 	<?php if ($status === false): ?>
 		<p><strong>Login with a token generated from this QR code to activate:</strong></p>
+	<?php else: ?>
+		<p>Click <a href="?disable">HERE</a> to disable Two-Factor Authentication and generate a new QR code.</p>
 	<?php endif; ?>
 	
 	<img
