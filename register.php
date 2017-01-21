@@ -86,7 +86,7 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 		?>
 		<h1>Email authentication required</h1>
 		<p>We have sent you an email with an activation link to your submitted email address.</p>
-		<p>If you can't find the email within 5 minutes, check your junk/trash inbox as it may be mislocated there.</p>
+		<p>If you can't find the email within 5 minutes, check your <strong>junk/trash inbox (spam filter)</strong> as it may be mislocated there.</p>
 		<?php
 	} else echo 'Congratulations! Your account has been created. You may now login to create a character.';
 } elseif (isset($_GET['authenticate']) && empty($_GET['authenticate'])) {
@@ -94,11 +94,14 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 	$auid = (isset($_GET['u']) && (int)$_GET['u'] > 0) ? (int)$_GET['u'] : false;
 	$akey = (isset($_GET['k']) && (int)$_GET['k'] > 0) ? (int)$_GET['k'] : false;
 	// Find a match
-	$user = mysql_select_single("SELECT `id` FROM `znote_accounts` WHERE `account_id`='$auid' AND `activekey`='$akey' AND `active`='0' LIMIT 1;");
+	$user = mysql_select_single("SELECT `id`, `active` FROM `znote_accounts` WHERE `account_id`='$auid' AND `activekey`='$akey' LIMIT 1;");
 	if ($user !== false) {
 		$user = $user['id'];
+		$active = $user['active'];
 		// Enable the account to login
-		mysql_update("UPDATE `znote_accounts` SET `active`='1' WHERE `id`='$user' LIMIT 1;");
+		if ($active == 0) {
+			mysql_update("UPDATE `znote_accounts` SET `active`='1' WHERE `id`='$user' LIMIT 1;");
+		}
 		echo '<h1>Congratulations!</h1> <p>Your account has been created. You may now login to create a character.</p>';
 	} else {
 		echo '<h1>Authentication failed</h1> <p>Either the activation link is wrong, or your account is already activated.</p>';

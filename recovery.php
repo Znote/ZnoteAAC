@@ -59,7 +59,7 @@ if ($config['mailserver']['accountRecovery']) {
 					<?php
 				}
 
-			} else {
+			} elseif (!$password) {
 				// Recover password
 				$newpass = rand(100000000, 999999999);
 				$salt = '';
@@ -100,37 +100,102 @@ if ($config['mailserver']['accountRecovery']) {
 					<p>Submitted data is wrong.</p>
 					<?php
 				}
+			} else { // Token
+				$password = sha1($password);
+				$user = mysql_select_single("SELECT `a`.`id`, `a`.`name`, `za`.`activekey` FROM `accounts` AS `a` INNER JOIN `znote_accounts` AS `za` ON `a`.`id` = `za`.`account_id` WHERE `a`.`name`='{$username}' AND `a`.`password`='{$password}' AND `a`.`email`='{$email}' LIMIT 1;");
+				if ($user !== false) {
+					// Found user
+					$recoverylink = $config['site_url'] . '/recovery.php?a='.$user['id'].'&k='.$user['activekey'];
+					$mailer = new Mail($config['mailserver']);
+					$title = $config['site_title'].": Remove Two-Factor Authentication link";
+					$body = "<h1>Remove Two-Factor Authentication</h1>";
+					$body .= "<p>If you really want to remove Two-Factor Authentication, click on the following link:<br>";
+					$body .= "<a href='$recoverylink' target='_BLANK'>$recoverylink</a><br>";
+					$body .= "Enjoy your stay at ".$config['mailserver']['fromName'].". <br>";
+					$body .= "<hr>I am an automatic no-reply e-mail. Any emails sent back to me will be ignored.</p>";
+					$mailer->sendMail($email, $title, $body, $user['name']);
+					?>
+					<h1>Confirm your action through email</h1>
+					<p>We have sent a confirmation link to <b><?php echo $email; ?></b>.</p>
+					<p>You must click the link before we remove Two-factor authentication.</p>
+					<p>If you can't find the email within 5 minutes, check your junk/trash inbox as it may be mislocated there.</p>
+					<?php
+				} else {
+					// Wrong submitted info
+					?>
+					<h1>Account recovery failed!</h1>
+					<p>Submitted data is wrong.</p>
+					<?php
+				}
+
+
 			}
 		} else echo "Captcha image verification was submitted wrong.";
 	} else {
-		?>
-		<h1>Account Recovery</h1>
-		<!-- HTML code -->
-		<?php
-		if (in_array($mode, array('username', 'password'))) {
-			?>
-			<form action="" method="POST">
-				<label for="email">Email:</label><input type="text" name="email" placeholder="name@mail.com"><br>
-				<label for="Character">Character: </label><input type="text" name="character"><br>
+		
+		$a = (isset($_GET['a']) && !empty($_GET['a'])) ? (int)$_GET['a'] : false;
+		$k = (isset($_GET['k']) && !empty($_GET['k'])) ? (int)$_GET['k'] : false;
+
+		// Remove Two-Factor Authentication
+		if ($a !== false && $k !== false) {
+			$account = mysql_select_single("SELECT `a`.`id`, `a`.`secret`, `za`.`secret` FROM `accounts` AS `a` INNER JOIN `znote_accounts` AS `za` ON `a`.`id`=`za`.`account_id` WHERE `a`.`id`='$a' AND `za`.`activekey`='$k' LIMIT 1;");
+			if ($account !== false) {
+				mysql_update("UPDATE `accounts` SET `secret`=NULL WHERE `id`='$a' LIMIT 1;");
+				mysql_update("UPDATE `znote_accounts` SET `secret`=NULL WHERE `account_id`='$a' LIMIT 1;");
+				?>
+				<h1>Two-Factor Authentication disabled.</h1>
+				<p>You may now login with just your username and password.</p>
 				<?php
-				if ($mode === 'password') echo '<label for="username">Username:</label> <input type="text" name="username"><br>';
-				else echo '<label for="password">Password:</label> <input type="password" name="password"><br>';
-				if ($config['use_captcha']) {
+			} else {
+				?>
+				<h1>Failed verify your request.</h1>
+				<p>We are unable to authenticate your account.</p>
+				<?php
+			}
+		} else { // Regular view
+			?>
+			<h1>Account Recovery</h1>
+			<!-- HTML code -->
+			<?php
+			if (in_array($mode, array('username', 'password', 'token'))) {
+				?>
+				<form action="" method="POST">
+					<label for="email">Email:</label><input type="text" name="email" placeholder="name@mail.com"><br>
+					<label for="Character">Character: </label><input type="text" name="character"><br>
+					<?php
+					
+					if ($mode === 'password') {
+						echo '<label for="username">Username:</label> <input type="text" name="username"><br>';
+					} elseif ($mode === 'password') {
+						echo '<label for="password">Password:</label> <input type="password" name="password"><br>';
+					} elseif ($mode === 'token') {
+						echo '<label for="username">Username:</label> <input type="text" name="username"><br>';
+						echo '<label for="password">Password:</label> <input type="password" name="password"><br>';
+					}
+
+					if ($config['use_captcha']) {
+						?>
+							<b>Write the image symbols in the text field to verify that you are a human:</b>
+							<img id="captcha" src="captcha/securimage_show.php" alt="CAPTCHA Image" /><br>
+							<input type="text" name="captcha_code" size="10" maxlength="6" />
+							<a href="#" onclick="document.getElementById('captcha').src = 'captcha/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a><br><br>
+						<?php
+					}
 					?>
-						<b>Write the image symbols in the text field to verify that you are a human:</b>
-						<img id="captcha" src="captcha/securimage_show.php" alt="CAPTCHA Image" /><br>
-						<input type="text" name="captcha_code" size="10" maxlength="6" />
-						<a href="#" onclick="document.getElementById('captcha').src = 'captcha/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a><br><br>
+					<input type="submit" value="Recover Account">
+				</form>
+				<?php
+			} else {
+				if ($config['twoFactorAuthenticator']) {
+					?>
+					<p>Do you wish to recover your <a href="?mode=username">username</a>, <a href="?mode=password">password</a> or remove <a href="?mode=token">Two-factor authentication</a>?</p>
+					<?php
+				} else {
+					?>
+					<p>Do you wish to recover your <a href="?mode=username">username</a> or <a href="?mode=password">password</a>?</p>
 					<?php
 				}
-				?>
-				<input type="submit" value="Recover Account">
-			</form>
-			<?php
-		} else {
-			?>
-			<p>Do you wish to recover your <a href="?mode=username">username</a> or <a href="?mode=password">password</a>?</p>
-			<?php
+			}
 		}
 	}
 } else {

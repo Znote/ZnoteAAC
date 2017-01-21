@@ -1173,11 +1173,12 @@ function user_create_account($register_data, $maildata) {
 	
 	$account_id = user_id($register_data['name']);
 	$activeKey = rand(100000000,999999999);
-	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `activekey`, `flag`) VALUES ('$account_id', '$ip', '$created', '$activeKey', '$flag')");
+	$active = ($maildata['register']) ? 0 : 1;
+	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `active`, `activekey`, `flag`) VALUES ('$account_id', '$ip', '$created', '$active', '$activeKey', '$flag')");
 	
 	if ($maildata['register']) {
 
-		$thisurl = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		$thisurl = config('site_url') . "$_SERVER[REQUEST_URI]";
 		$thisurl .= "?authenticate&u=".$account_id."&k=".$activeKey;
 
 		$mailer = new Mail($maildata);
