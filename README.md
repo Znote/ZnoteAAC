@@ -9,10 +9,9 @@ It is created in PHP with a simple custom procedural framework.
 
 ### Where do I download?
 
-The stable version is available on otland, while the developement version is here on github.
-
-* [Stable: Znote AAC 1.4](http://otland.net/threads/znote-aac-1-4-tfs-0-2-13-tfs-0-3-6-0-4.166722/)
-* [Developement: Znote AAC 1.5] (https://github.com/Znote/ZnoteAAC/archive/master.zip)
+We use github to distribute our versions, stable are tagged as releases, while development is the latest commit. 
+* [Stable] (https://github.com/Znote/ZnoteAAC/releases)
+* [Developement] (https://github.com/Znote/ZnoteAAC/archive/master.zip)
 
 **NOTE:** Developement version supports TFS 1.0, but you can expect bugs to occur. 
 
@@ -21,7 +20,14 @@ Znote AAC primarily aims to be compatible with [Forgotten Server] (https://githu
 Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC supports these versions:
 * TFS 0.2.13+ (Since initial release)
 * TFS 0.3.6+ (Since Znote AAC 1.2)
-* TFS 1.0+ (Since Znote AAC 1.5)
+* TFS 1.2+ (Since Znote AAC 1.5)
+### Requirements
+* PHP Version 5.3.3 or higher. Mostly tested on 5.6 and 7.0. Most web stacks ships with this as default these days.
+
+### Optionals
+* For email registration verification and account recovery: [PHPMailer] (https://github.com/PHPMailer/PHPMailer/releases) Version 5.x, extracted and renamed to just "PHPMailer" in Znote AAC directory. 
+* PHP extention curl for PHPMailer, paypal and google reCaptcha services.
+* PHP extention openssl for google reCaptcha services.
 
 ### Installation instructions
 
@@ -32,7 +38,6 @@ This will show you the rest of the instructions as well as the mysql schema.
 2: Edit config.php and: 
 - modify $config['TFSVersion'] with correct TFS version you are running. (TFS_02, TFS_03, TFS_10). 
 - modify $config['page_admin_access'] with your admin account username(s).
-- modify $config['salt'] with true or false if you have salt activated in config.lua(On the OT server) for password security.
 
 3: Before inserting correct SQL connection details, visit the website ( http://127.0.0.1/ ), it will generate a mysql schema you should import to your OT servers database.
 
@@ -46,19 +51,5 @@ This will show you the rest of the instructions as well as the mysql schema.
 
 8: You may need to change directory access rights of /engine/cache to allow writing.
 
-### This is the developement repository for the Znote AAC project.
-# TODO 1.5:
-* Confirm TFS 1.0 LUA scripts works (Shop system, first items)
-* Fix 1.5 milestone assigned issues.
-
-# TODO 1.6:
-* Recovery key
-* Email system
-* Character auction for shop points
-* Database shop offers
-* Manage shop offers without touching code
-* Live TFS 1.0 integration
-
-# Removed from TODO:
-* TFS 1.0 Livestream
-Reason: Not open source, not legally available on any official free TFS distributions.
+### TODO List:
+* Check [Milestones] (https://github.com/Znote/ZnoteAAC/milestones)
