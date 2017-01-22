@@ -21,6 +21,7 @@ Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC s
 * TFS 0.2.13+ (Since initial release)
 * TFS 0.3.6+ (Since Znote AAC 1.2)
 * TFS 1.2+ (Since Znote AAC 1.5)
+
 ### Requirements
 * PHP Version 5.3.3 or higher. Mostly tested on 5.6 and 7.0. Most web stacks ships with this as default these days.
 
