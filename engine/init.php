@@ -24,10 +24,12 @@ session_start();
 ob_start();
 require_once 'config.php';
 $sessionPrefix = $config['session_prefix'];
-
 if ($config['paypal']['enabled'] || $config['use_captcha']) {
-	$curlcheck = function_exists('curl_version') ? true : false;
+	$curlcheck = extension_loaded('curl');
 	if (!$curlcheck) die("php cURL is not enabled. It is required to for paypal or captcha services.<br>1. Find your php.ini file.<br>2. Uncomment extension=php_curl<br>Restart web server.<br><br><b>If you don't want this then disable paypal & use_captcha in config.php.</b>");
+}
+if ($config['use_captcha'] && !extension_loaded('openssl')) {
+	die("php openSSL is not enabled. It is required to for captcha services.<br>1. Find your php.ini file.<br>2. Uncomment extension=php_openssl<br>Restart web server.<br><br><b>If you don't want this then disable use_captcha in config.php.</b>");
 }
 
 require_once 'database/connect.php';
