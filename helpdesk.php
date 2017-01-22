@@ -108,10 +108,27 @@ if ($view !== false) {
 				$errors[] = 'Token is invalid.';
 			}
 			if ($config['use_captcha']) {
-				include_once 'captcha/securimage.php';
-				$securimage = new Securimage();
-				if ($securimage->check($_POST['captcha_code']) == false) {
-				  $errors[] = 'Captcha image verification was submitted wrong.';
+				$captcha = (isset($_POST['g-recaptcha-response'])) ? $_POST['g-recaptcha-response'] : false;
+				if(!$captcha) {
+					$errors[] = 'Please check the the captcha form.';
+				} else {
+					$secretKey = $config['captcha_secret_key'];
+					$ip = $_SERVER['REMOTE_ADDR'];
+					// curl start
+					$curl_connection = curl_init("https://www.google.com/recaptcha/api/siteverify");
+					$post_string = "secret=".$secretKey."&response=".$captcha."&remoteip=".$ip;
+					curl_setopt($curl_connection, CURLOPT_CONNECTTIMEOUT, 5);
+					curl_setopt($curl_connection, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($curl_connection, CURLOPT_SSL_VERIFYPEER, false);
+					curl_setopt($curl_connection, CURLOPT_FOLLOWLOCATION, 0);
+					curl_setopt($curl_connection, CURLOPT_POSTFIELDS, $post_string);
+					$response = curl_exec($curl_connection);
+					curl_close($curl_connection);
+					// Curl end
+					$responseKeys = json_decode($response,true);
+					if(intval($responseKeys["success"]) !== 1) {
+						$errors[] = 'Captcha failed.';
+					}
 				}
 			}
 			// Reversed this if, so: first check if you need to validate, then validate. 
@@ -205,10 +222,7 @@ if ($view !== false) {
 				if ($config['use_captcha']) {
 					?>
 					<li>
-						<b>Write the image symbols in the text field to verify that you are a human:</b>
-						<img id="captcha" src="captcha/securimage_show.php" alt="CAPTCHA Image" /><br>
-						<input type="text" name="captcha_code" size="10" maxlength="6" />
-						<a href="#" onclick="document.getElementById('captcha').src = 'captcha/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a><br><br>
+						 <div class="g-recaptcha" data-sitekey="<?php echo $config['captcha_site_key']; ?>"></div>
 					</li>
 					<?php
 				}

@@ -753,7 +753,10 @@
 		// SECURITY STUFF  \\
 		// --------------- \\
 	$config['use_token'] = false;
+	// Set up captcha keys on https://www.google.com/recaptcha/
 	$config['use_captcha'] = false;
+	$config['captcha_secret_key'] = "Secret key";
+	$config['captcha_site_key'] = "Site key";
 
 	// Session prefix, if you are hosting multiple sites, make the session name different to avoid conflict.
 	$config['session_prefix'] = 'znote_';
@@ -826,7 +829,7 @@
 	/////////////////
 	// Write your pagseguro address here, and what currency you want to recieve money in.
 	$config['pagseguro'] = array(
-		'enabled' => true,
+		'enabled' => false,
 		'sandbox' => false,
 		'email' => '', // Example: pagseguro@mail.com
 		'token' => '',
@@ -854,7 +857,7 @@
 	// You can configure paygol to send each month, then they will send money
 	// to you 1 month after recieving 50+ eur.
 	$config['paygol'] = array(
-		'enabled' => true,
+		'enabled' => false,
 		'serviceID' => 86648,// Service ID from paygol.com
 		'currency' => 'SEK',
 		'price' => 20,
@@ -869,7 +872,7 @@
 	////////////
 	// If useDB is set to true, player can shop in-game as well using Znote LUA shop system plugin.
 	$config['shop'] = array(
-		'enabled' => true,
+		'enabled' => false,
 		'enableShopConfirmation' => true, // Verify that user wants to buy with popup
 		'useDB' => false, // Fetch offers from database, or the below config array
 		'showImage' => true,
