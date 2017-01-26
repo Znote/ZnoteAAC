@@ -91,22 +91,27 @@ if (!$compare) {
 	if (is_string($compare)) {
 		$query = array();
 		foreach ($items as $id => $name) {
-			if (strpos(strtolower($name), strtolower($compare)) !== false) {
+			if (strpos(strtolower($name), stripslashes(strtolower($compare))) !== false) {
 				$query[] = $id;
 			}
 		}
-		$condition = "`itemtype` IN (". implode(',', $query) .")";
+		$condition = (!empty($query)) ? "`itemtype` IN (". implode(',', $query) .")" : false;
 	}
 	
 	// First list active bids
-	$offers = mysql_select_multi("SELECT `mo`.`id`, `mo`.`sale`, `mo`.`itemtype` AS `item_id`, `mo`.`amount`, `mo`.`price`, `mo`.`created`, `mo`.`anonymous`, `p`.`name` AS `player_name` FROM `market_offers` AS `mo` INNER JOIN `players` AS `p` ON `mo`.`player_id`=`p`.`id` WHERE `mo`.$condition ORDER BY `mo`.`price` ASC;");
-	$historyOffers = mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `inserted`, `expires_at` FROM `market_history` WHERE $condition AND `state`='255' ORDER BY `price` ASC;");
+	if ($condition === false) {
+		$offers = array();
+		$historyOffers = array();
+	} else {
+		$offers = mysql_select_multi("SELECT `mo`.`id`, `mo`.`sale`, `mo`.`itemtype` AS `item_id`, `mo`.`amount`, `mo`.`price`, `mo`.`created`, `mo`.`anonymous`, `p`.`name` AS `player_name` FROM `market_offers` AS `mo` INNER JOIN `players` AS `p` ON `mo`.`player_id`=`p`.`id` WHERE `mo`.$condition ORDER BY `mo`.`price` ASC;");
+		$historyOffers = mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `inserted`, `expires_at` FROM `market_history` WHERE $condition AND `state`='255' ORDER BY `price` ASC;");
+	}
 	$buylist = false;
 
 	// Markup
 	$itemname = (isset($items[$compare])) ? $items[$compare] : $compare;
 	if (!is_string($compare)) echo "<h1>Comparing item: ". $itemname ."</h1>";
-	else echo "<h1>Search: $compare</h1>";
+	else echo "<h1>Search: ". stripslashes($compare) ."</h1>";
 	?>
 	<a href="market.php"><button>Go back</button></a>
 	<h2>Active offers</h2>
