@@ -25,7 +25,7 @@ if ($cache->hasExpired()) {
 }
 // End cache
 
-if ($array !== false) {
+if (!empty($array) && $array !== false) {
 	?>
 	
 	<table id="onlinelistTable" class="table table-striped table-hover">
