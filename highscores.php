@@ -28,6 +28,7 @@ if (!$page || $page == 0) $page = 1;
 else $page = (int)$page;
 
 $highscore = $config['highscore'];
+$loadFlags = ($config['country_flags']['enabled'] && $config['country_flags']['highscores']) ? true : false;
 
 $rows = $highscore['rows'];
 $rowsPerPage = $highscore['rowsPerPage'];
@@ -53,7 +54,7 @@ function pageCheck($index, $page, $rowPerPage) {
 
 $cache = new Cache('engine/cache/highscores');
 if ($cache->hasExpired()) {
-	$vocGroups = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId'], $configVocations, $vocation, $config['country_flags']);
+	$vocGroups = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId'], $configVocations, $vocation, $loadFlags);
 	
 	$cache->setContent($vocGroups);
 	$cache->save();
@@ -128,7 +129,7 @@ if ($vocGroups) {
 				<?php
 			} else {
 				if (pageCheck($i, $page, $rowsPerPage)) {
-					$flag = ($config['country_flags'] === true && strlen($vocGroup[$type][$i]['flag']) > 1) ? '<img src="flags/' . $vocGroup[$type][$i]['flag'] . '.png">  ' : '';
+					$flag = ($loadFlags === true && strlen($vocGroup[$type][$i]['flag']) > 1) ? '<img src="' . $config['country_flags']['server'] . '/' . $vocGroup[$type][$i]['flag'] . '.png">  ' : '';
 					?>
 					<tr>
 						<td><?php echo $i+1; ?></td>

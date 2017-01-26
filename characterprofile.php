@@ -29,7 +29,6 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 		}
 		
 		$profile_znote_data = user_znote_character_data($user_id, 'created', 'hide_char', 'comment');
-		$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
 		
 		$guild_exist = false;
 		
@@ -47,12 +46,18 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 		<!-- Profile name -->
 		<h1><font class="profile_font" name="profile_font_header">Profile: <?php echo $profile_data['name']; ?></font></h1>
 			<ul class="unstyled">
-				<?php 
-				if ($config['country_flags'])
-				{ ?>
-					<!-- Player country data -->
-					<li><font class="profile_font" name="profile_font_country">Country: <?php echo '<img src="flags/' . $account_data['flag'] . '.png">'; ?></font></li><?php
-				} ?>
+				<?php
+				$flags = $config['country_flags'];
+				if ($flags['enabled'] && $flags['characterprofile']) { 
+					$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
+
+					if (strlen($account_data['flag']) > 0):
+						?><!-- Player country data -->
+						<li><font class="profile_font" name="profile_font_country">Country: <?php echo '<img src="' . $flags['server'] . '/' . $account_data['flag'] . '.png">'; ?></font></li>
+						<?php
+					endif;
+				}
+				?>
 				
 				<!-- Player Position -->
 				<?php if ($profile_data['group_id'] > 1) { ?>

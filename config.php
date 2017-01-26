@@ -560,7 +560,13 @@
 	$config['use_guild_logos'] = true;
 	
 	// Use country flags
-	$config['country_flags'] = false;
+	$config['country_flags'] = array(
+		'enabled' => true,
+		'highscores' => true,
+		'onlinelist' => true,
+		'characterprofile' => true,
+		'server' => 'http://flag.znote.eu'
+	);
 
 	// Level requirement to create guild? (Just set it to 1 to allow all levels).
 	$config['create_guild_level'] = 8;
