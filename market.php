@@ -21,7 +21,12 @@ if (!$compare) {
 	}
 	?>
 	<h1>Marketplace</h1>
-	<p>You can buy and sell items by clicking on the <a target="_BLANK" href="http://4.ii.gl/CAPcBp.png">market in depot.</a> <br>To sell an item: Place item inside your depot, click on market, search for your item and sell it.</p>
+	<p>You can buy and sell items by clicking on the <a target="_BLANK" href="http://znote.eu/images/depotmarket.jpg">market in depot.</a> <br>To sell an item: Place item inside your depot, click on market, search for your item and sell it.</p>
+	<form action="" class="market_item_search">
+		<label for="compareSearch">Item search:</label>
+		<input type="text" id="compareSearch" name="compare">
+		<input type="submit" value="Search">
+	</form>
 	<h2>WTS: Want to sell</h2>
 	<table class="table tbl-hover">
 		<tr class="yellow">
@@ -79,15 +84,30 @@ if (!$compare) {
 	<?php
 } else {
 	// Else You want to compare price
-	$compare = (int)$compare;
+	$compare = ((int)$compare > 0) ? (int)$compare : getValue($compare);
 
+	$condition = "`itemtype`='$compare'";
+
+	if (is_string($compare)) {
+		$query = array();
+		foreach ($items as $id => $name) {
+			if (strpos(strtolower($name), strtolower($compare)) !== false) {
+				$query[] = $id;
+			}
+		}
+		$condition = "`itemtype` IN (". implode(',', $query) .")";
+	}
+	
 	// First list active bids
-	$offers = mysql_select_multi("SELECT `mo`.`id`, `mo`.`sale`, `mo`.`itemtype` AS `item_id`, `mo`.`amount`, `mo`.`price`, `mo`.`created`, `mo`.`anonymous`, `p`.`name` AS `player_name` FROM `market_offers` AS `mo` INNER JOIN `players` AS `p` ON `mo`.`player_id`=`p`.`id` WHERE `mo`.`itemtype`='$compare' ORDER BY `mo`.`price` ASC;");
-	$historyOffers = mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `inserted`, `expires_at` FROM `market_history` WHERE `itemtype`='$compare' AND `state`='255' ORDER BY `price` ASC;");
+	$offers = mysql_select_multi("SELECT `mo`.`id`, `mo`.`sale`, `mo`.`itemtype` AS `item_id`, `mo`.`amount`, `mo`.`price`, `mo`.`created`, `mo`.`anonymous`, `p`.`name` AS `player_name` FROM `market_offers` AS `mo` INNER JOIN `players` AS `p` ON `mo`.`player_id`=`p`.`id` WHERE `mo`.$condition ORDER BY `mo`.`price` ASC;");
+	$historyOffers = mysql_select_multi("SELECT `id`, `itemtype` AS `item_id`, `amount`, `price`, `inserted`, `expires_at` FROM `market_history` WHERE $condition AND `state`='255' ORDER BY `price` ASC;");
 	$buylist = false;
+
 	// Markup
+	$itemname = (isset($items[$compare])) ? $items[$compare] : $compare;
+	if (!is_string($compare)) echo "<h1>Comparing item: ". $itemname ."</h1>";
+	else echo "<h1>Search: $compare</h1>";
 	?>
-	<h1>Comparing item</h1>
 	<a href="market.php"><button>Go back</button></a>
 	<h2>Active offers</h2>
 	<table class="table tbl-hover">
