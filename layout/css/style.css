@@ -629,6 +629,10 @@ hr {
         border: 1px solid black;
 }
 
+.ThreadTable td {
+  word-break: break-all;
+}
+
 /* ///////////\/\\\\\\\\\\\
    //  Znote YOUTUBE BB  \\
    ///////////\/\\\\\\\\\\\ */
