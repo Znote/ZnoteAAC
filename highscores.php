@@ -29,6 +29,7 @@ else $page = (int)$page;
 
 $highscore = $config['highscore'];
 $loadFlags = ($config['country_flags']['enabled'] && $config['country_flags']['highscores']) ? true : false;
+$loadOutfits = ($config['show_outfits']['highscores']) ? true : false;
 
 $rows = $highscore['rows'];
 $rowsPerPage = $highscore['rowsPerPage'];
@@ -54,8 +55,7 @@ function pageCheck($index, $page, $rowPerPage) {
 
 $cache = new Cache('engine/cache/highscores');
 if ($cache->hasExpired()) {
-	$vocGroups = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId'], $configVocations, $vocation, $loadFlags);
-	
+	$vocGroups = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId'], $configVocations, $vocation, $loadFlags, $loadOutfits);
 	$cache->setContent($vocGroups);
 	$cache->save();
 } else {
@@ -111,6 +111,7 @@ if ($vocGroups) {
 	<table id="highscoresTable" class="table table-striped table-hover">
 
 		<tr class="yellow">
+			<?php if ($loadOutfits) echo "<td>Outfit</td>"; ?>
 			<td>Rank</td>
 			<td>Name</td>
 			<td>Vocation</td>
@@ -132,6 +133,9 @@ if ($vocGroups) {
 					$flag = ($loadFlags === true && strlen($vocGroup[$type][$i]['flag']) > 1) ? '<img src="' . $config['country_flags']['server'] . '/' . $vocGroup[$type][$i]['flag'] . '.png">  ' : '';
 					?>
 					<tr>
+						<?php if ($loadOutfits): ?>
+							<td class="outfitColumn"><img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $vocGroup[$type][$i]['type']; ?>&addons=<?php echo $vocGroup[$type][$i]['addons']; ?>&head=<?php echo $vocGroup[$type][$i]['head']; ?>&body=<?php echo $vocGroup[$type][$i]['body']; ?>&legs=<?php echo $vocGroup[$type][$i]['legs']; ?>&feet=<?php echo $vocGroup[$type][$i]['feet']; ?>" alt="img"></td>
+						<?php endif; ?>
 						<td><?php echo $i+1; ?></td>
 						<td><?php echo $flag; ?><a href="characterprofile.php?name=<?php echo $vocGroup[$type][$i]['name']; ?>"><?php echo $vocGroup[$type][$i]['name']; ?></a></td>
 						<td><?php echo vocation_id_to_name($vocGroup[$type][$i]['vocation']); ?></td>

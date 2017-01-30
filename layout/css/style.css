@@ -678,3 +678,16 @@ div.aspectratio > iframe {
 table.hide {
   display: none;
 }
+
+.outfitColumn {
+    position: relative;
+    width: 60px;
+    background: initial;
+    border-top: none;
+}
+
+.outfitColumn img {
+    position: absolute;
+    top: -38px;
+    right: 4px;
+}

@@ -1,31 +1,33 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
  
-if ($config['log_ip']) 
-{
+if ($config['log_ip']) {
 	znote_visitor_insert_detailed_data(4);
 }
 
-if (isset($_GET['name']) === true && empty($_GET['name']) === false) 
-{
+if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 	$name = getValue($_GET['name']);
 	$user_id = user_character_exist($name);
 	
-	if ($user_id !== false) 
-	{	
-		if ($config['TFSVersion'] == 'TFS_10') 
-		{
-			$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin');
+	if ($user_id !== false) {
+		$loadOutfits = $config['show_outfits']['characterprofile'];
+
+		if ($config['TFSVersion'] == 'TFS_10') {
+			if (!$loadOutfits) {
+				$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin');
+			} else { // Load outfits
+				$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
+			}
 			$profile_data['online'] = user_is_online_10($user_id);
 			
-			if ($config['Ach']) 
-			{
+			if ($config['Ach']) {
 				$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`=(int)$user_id");
 			}
-			
-		} 
-		else 
-		{
-			$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex');
+		} else { // TFS 0.2, 0.3
+			if (!$loadOutfits) {
+				$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex');
+			} else { // Load outfits
+				$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
+			}
 		}
 		
 		$profile_znote_data = user_znote_character_data($user_id, 'created', 'hide_char', 'comment');
@@ -44,7 +46,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false)
 		<!-- PROFILE MARKUP HERE-->
 		
 		<!-- Profile name -->
-		<h1><font class="profile_font" name="profile_font_header">Profile: <?php echo $profile_data['name']; ?></font></h1>
+		<h1><?php if ($loadOutfits): ?><img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $profile_data['looktype']; ?>&addons=<?php echo $profile_data['lookaddons']; ?>&head=<?php echo $profile_data['lookhead']; ?>&body=<?php echo $profile_data['lookbody']; ?>&legs=<?php echo $profile_data['looklegs']; ?>&feet=<?php echo $profile_data['lookfeet']; ?>" alt="img"><?php endif; ?><font class="profile_font" name="profile_font_header"><?php echo $profile_data['name']; ?></font></h1>
 			<ul class="unstyled">
 				<?php
 				$flags = $config['country_flags'];

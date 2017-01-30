@@ -571,9 +571,9 @@
 	// Show outfits
 	$config['show_outfits'] = array(
 		'shop' => true,
-		'highscores' => false, // Not implemented yet
-		'characterprofile' => false, // Not implemented yet
-		'onlinelist' => false, // Not implemented yet
+		'highscores' => true,
+		'characterprofile' => true,
+		'onlinelist' => true,
 		// Image server may be unreliable and only for test,
 		// host yourself: https://otland.net/threads/item-images-10-92.242492/
 		'imageServer' => 'http://outfit-images.ots.me/animatedOutfits1090/animoutfit.php'
