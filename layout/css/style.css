@@ -654,3 +654,27 @@ div.aspectratio > iframe {
   width: 100%;
   height: 100%;
 }
+
+/* SHOP Category style */
+#categoryNavigator {
+  background-color: #555555;
+  max-width: 650px;
+  margin-top: 20px;
+}
+
+#categoryNavigator a {
+  color: white;
+  font-weight: bold;
+  padding: 10px 15px;
+  display: inline-block;
+  text-decoration: none;
+  border-right: 1px solid #E5E5DB;
+}
+
+#categoryNavigator a:hover {
+  background-color: #ad7400;
+}
+
+table.hide {
+  display: none;
+}

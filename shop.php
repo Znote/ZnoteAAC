@@ -87,8 +87,215 @@ if ($config['shop_auction']['characterAuction']) {
 	<p>Interested in buying characters? View the <a href="auctionChar.php">character auction page!</a></p>
 	<?php
 }
+
+$outfitsIds = array(136,137,138,139,140,141,142,147,148,149,150,155,156,157,158,252,269,270,279,288,324,336,366,431,433,464,466,471,513,514,542,128,129,130,131,132,133,134,143,144,145,146,151,152,153,154,251,268,273,278,289,325,335,367,430,432,463,465,472,512,516,541);
+$category_items = array();
+$category_premium = array();
+$category_outfits = array();
+$category_mounts = array();
+$category_misc = array();
+foreach ($shop_list as $key => $offer) {
+	
+	switch ($offer['type']) {
+		case 1:
+			$category_items[$key] = $offer;
+		break;
+		case 2:
+			$category_premium[$key] = $offer;
+		break;
+		case 3:
+			$category_misc[$key] = $offer;
+		break;
+		case 4:
+			$category_misc[$key] = $offer;
+		break;
+		case 5:
+			$category_outfits[$key] = $offer;
+		break;
+		case 6:
+			$category_mounts[$key] = $offer;
+		break;
+		default:
+			$category_misc[$key] = $offer;
+		break;
+	}
+}
+
+// Render a bunch of tables (one for each category)
 ?>
-<table>
+<div id="categoryNavigator">
+	<a class="nav_link" href="#all">ALL</a>
+	<a class="nav_link" href="#cat_itemids">ITEMS</a>
+	<a class="nav_link" href="#cat_premium">PREMIUM</a>
+	<a class="nav_link" href="#cat_outfits">OUTFITS</a>
+	<a class="nav_link" href="#cat_mounts">MOUNTS</a>
+	<a class="nav_link" href="#cat_misc">MISC</a>
+</div>
+<script type="text/javascript">
+	function domReady () {
+		var links = document.getElementsByClassName("nav_link");
+		for (var i=0; i < links.length; i++) {
+			links[i].addEventListener('click', function(e){
+				e.preventDefault();
+				// Hide all tables
+				for (var x=0; x < links.length; x++) {
+					var hash = links[x].hash.substr(1);
+					if (hash != 'all') {
+						var table = document.getElementById(hash);
+						if (table.classList.contains("show")) {
+							table.classList.remove("show");
+							table.classList.add("hide");
+						}
+					}
+				}
+				// Display only the one we selected
+				var hash = this.hash.substr(1);
+				if (hash != 'all') {
+					var target = document.getElementById(hash);
+					if (target.classList.contains('hide')) {
+						target.classList.remove("hide");
+						target.classList.add("show");
+					}
+				} else { // We clicked to show all tables
+					// Show all tables
+					for (var x=0; x < links.length; x++) {
+						var hash = links[x].hash.substr(1);
+						if (hash != 'all') {
+							var table = document.getElementById(hash);
+							if (table.classList.contains("hide")) {
+								table.classList.remove("hide");
+								table.classList.add("show");
+							}
+						}
+					}
+				}
+			});
+		}
+	}
+	// Mozilla, Opera, Webkit 
+	if ( document.addEventListener ) {
+		document.addEventListener( "DOMContentLoaded", function(){
+		document.removeEventListener( "DOMContentLoaded", arguments.callee, false);
+		domReady();
+	  }, false );
+	// If IE event model is used
+	} else if ( document.attachEvent ) {
+		// ensure firing before onload
+		document.attachEvent("onreadystatechange", function(){
+		if ( document.readyState === "complete" ) {
+			document.detachEvent( "onreadystatechange", arguments.callee );
+			domReady();
+		}
+		});
+	}
+</script>
+
+<!-- ITEMIDS -->
+<table class="show" id="cat_itemids">
+	<tr class="yellow">
+		<td>Item:</td>
+		<?php if ($config['shop']['showImage']) { ?><td>Image:</td><?php } ?>
+		<td>Count:</td>
+		<td>Points:</td>
+		<td>Action:</td>
+	</tr>
+	<?php foreach ($category_items as $key => $offers): ?>
+		<tr class="special">
+			<td><?php echo $offers['description']; ?></td>
+			<?php if ($config['shop']['showImage']):?>
+				<td><img src="http://<?php echo $config['shop']['imageServer']; ?>/<?php echo $offers['itemid']; ?>.<?php echo $config['shop']['imageType']; ?>" alt="img"></td>
+			<?php endif; ?>
+			<td><?php echo $offers['count']; ?>x</td>
+			<td><?php echo $offers['points']; ?></td>
+			<td>
+				<form action="" method="POST">
+					<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
+					<input type="hidden" name="session" value="<?php echo time(); ?>">
+					<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
+				</form>
+			</td>
+		</tr>
+	<?php endforeach; ?>
+</table>
+<!-- PREMIUM DURATION -->
+<table class="show" id="cat_premium">
+	<tr class="yellow">
+		<td>Description:</td>
+		<?php if ($config['shop']['showImage']) { ?><td>Image:</td><?php } ?>
+		<td>Duration:</td>
+		<td>Points:</td>
+		<td>Action:</td>
+	</tr>
+	<?php foreach ($category_premium as $key => $offers): ?>
+		<tr class="special">
+			<td><?php echo $offers['description']; ?></td>
+			<?php if ($config['shop']['showImage']):?>
+				<td><img src="http://<?php echo $config['shop']['imageServer']; ?>/<?php echo $offers['itemid']; ?>.<?php echo $config['shop']['imageType']; ?>" alt="img"></td>
+			<?php endif; ?>
+			<td><?php echo $offers['count']; ?> Days</td>
+			<td><?php echo $offers['points']; ?></td>
+			<td>
+				<form action="" method="POST">
+					<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
+					<input type="hidden" name="session" value="<?php echo time(); ?>">
+					<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
+				</form>
+			</td>
+		</tr>
+	<?php endforeach; ?>
+</table>
+<!-- OUTFITS -->
+<table class="show" id="cat_outfits">
+	<tr class="yellow">
+		<td>Description:</td>
+		<?php if ($config['shop']['showImage']) { ?><td>Image:</td><?php } ?>
+		<td>Points:</td>
+		<td>Action:</td>
+	</tr>
+	<?php foreach ($category_outfits as $key => $offers): ?>
+		<tr class="special">
+			<td><?php echo $offers['description']; ?></td>
+			<?php if ($config['show_outfits']['shop']):?>
+				<td><img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $offers['itemid']; ?>&addons=<?php echo $offers['count']; ?>&head=<?php echo rand(1, 132); ?>&body=<?php echo rand(1, 132); ?>&legs=<?php echo rand(1, 132); ?>&feet=<?php echo rand(1, 132); ?>" alt="img"></td>
+			<?php endif; ?>
+			<td><?php echo $offers['points']; ?></td>
+			<td>
+				<form action="" method="POST">
+					<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
+					<input type="hidden" name="session" value="<?php echo time(); ?>">
+					<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
+				</form>
+			</td>
+		</tr>
+	<?php endforeach; ?>
+</table>
+<!-- MOUNTS -->
+<table class="show" id="cat_mounts">
+	<tr class="yellow">
+		<td>Description:</td>
+		<?php if ($config['show_outfits']['shop']) { ?><td>Image:</td><?php } ?>
+		<td>Points:</td>
+		<td>Action:</td>
+	</tr>
+	<?php foreach ($category_mounts as $key => $offers): ?>
+		<tr class="special">
+			<td><?php echo $offers['description']; ?></td>
+			<?php if ($config['shop']['showImage']):?>
+				<td><img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $outfitsIds[rand(0,count($outfitsIds)-1)]; ?>&addons=<?php echo rand(1, 3); ?>&head=<?php echo rand(1, 132); ?>&body=<?php echo rand(1, 132); ?>&legs=<?php echo rand(1, 132); ?>&feet=<?php echo rand(1, 132); ?>&mount=<?php echo $offers['itemid']; ?>&direction=2" alt="img"></td>
+			<?php endif; ?>
+			<td><?php echo $offers['points']; ?></td>
+			<td>
+				<form action="" method="POST">
+					<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
+					<input type="hidden" name="session" value="<?php echo time(); ?>">
+					<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
+				</form>
+			</td>
+		</tr>
+	<?php endforeach; ?>
+</table>
+<!-- MISCELLANEOUS -->
+<table class="show" id="cat_misc">
 	<tr class="yellow">
 		<td>Description:</td>
 		<?php if ($config['shop']['showImage']) { ?><td>Image:</td><?php } ?>
@@ -96,27 +303,27 @@ if ($config['shop_auction']['characterAuction']) {
 		<td>Points:</td>
 		<td>Action:</td>
 	</tr>
-		<?php
-		foreach ($shop_list as $key => $offers) {
-		echo '<tr class="special">';
-		echo '<td>'. $offers['description'] .'</td>';
-		if ($config['shop']['showImage']) echo '<td><img src="http://'. $config['shop']['imageServer'] .'/'. $offers['itemid'] .'.'. $config['shop']['imageType'] .'" alt="img"></td>';
-		if ($offers['type'] == 2) echo '<td>'. $offers['count'] .' Days</td>';
-		else if ($offers['type'] == 3 && $offers['count'] == 0) echo '<td>Unlimited</td>';
-		else echo '<td>'. $offers['count'] .'x</td>';
-		echo '<td>'. $offers['points'] .'</td>';
-		echo '<td>';
-		?>
-		<form action="" method="POST">
-			<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
-			<input type="hidden" name="session" value="<?php echo time(); ?>">
-			<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
-		</form>
-		<?php
-		echo '</td>';
-		echo '</tr>';
-		}
-		?>
+	<?php foreach ($category_misc as $key => $offers): ?>
+		<tr class="special">
+			<td><?php echo $offers['description']; ?></td>
+			<?php if ($config['shop']['showImage']):?>
+				<td><img src="http://<?php echo $config['shop']['imageServer']; ?>/<?php echo $offers['itemid']; ?>.<?php echo $config['shop']['imageType']; ?>" alt="img"></td>
+			<?php endif;
+			if ($offers['count'] === 0): ?>
+				<td>Unlimited</td>
+			<?php else: ?>
+				<td><?php echo $offers['count']; ?>x</td>
+			<?php endif; ?>
+			<td><?php echo $offers['points']; ?></td>
+			<td>
+				<form action="" method="POST">
+					<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
+					<input type="hidden" name="session" value="<?php echo time(); ?>">
+					<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
+				</form>
+			</td>
+		</tr>
+	<?php endforeach; ?>
 </table>
 
 <?php if ($shop['enableShopConfirmation']) { ?>

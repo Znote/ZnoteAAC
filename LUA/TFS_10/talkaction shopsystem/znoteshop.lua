@@ -29,11 +29,41 @@ function onSay(player, words, param)
 					player:sendTextMessage(MESSAGE_STATUS_WARNING, "Need more CAP!")
 				end
 			end
+
+			-- ORDER TYPE 5 (Outfit and addon)
+			if q_type == 5 then
+				-- Make sure player don't already have this outfit and addon
+				if not player:hasOutfit(q_itemid, q_count) then
+					db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
+					player:addOutfit(q_itemid)
+					player:addOutfitAddon(q_itemid, q_count)
+					player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received a new outfit!")
+				else
+					player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this outfit and addon!")
+				end
+			end
+
+			-- ORDER TYPE 6 (Mounts)
+			if q_type == 6 then
+				-- Make sure player don't already have this outfit and addon
+				if not player:hasMount(q_itemid) then
+					db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
+					player:addMount(q_itemid)
+					player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received a new mount!")
+				else
+					player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this mount!")
+				end
+			end
+			
 			-- Add custom order types here
-			-- Type 2 is reserved for premium days and is handled on website, not needed here.
-			-- Type 3 is reserved for character gender(sex) change and is handled on website as well.
-			-- So use type 4+ for custom stuff, like etc packages.
-			-- if q_type == 4 then
+			-- Type 1 is for itemids (Already coded here)
+			-- Type 2 is for premium (Coded on web)
+			-- Type 3 is for gender change (Coded on web)
+			-- Type 4 is for character name change (Coded on web)
+			-- Type 5 is for character outfit and addon (Already coded here)
+			-- Type 6 is for mounts (Already coded here)
+			-- So use type 7+ for custom stuff, like etc packages.
+			-- if q_type == 7 then
 			-- end
 		else
 			player:sendTextMessage(MESSAGE_STATUS_WARNING, "You have no orders.")

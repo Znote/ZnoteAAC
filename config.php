@@ -568,6 +568,17 @@
 		'server' => 'http://flag.znote.eu'
 	);
 
+	// Show outfits
+	$config['show_outfits'] = array(
+		'shop' => true,
+		'highscores' => false, // Not implemented yet
+		'characterprofile' => false, // Not implemented yet
+		'onlinelist' => false, // Not implemented yet
+		// Image server may be unreliable and only for test,
+		// host yourself: https://otland.net/threads/item-images-10-92.242492/
+		'imageServer' => 'http://outfit-images.ots.me/animatedOutfits1090/animoutfit.php'
+	);
+
 	// Level requirement to create guild? (Just set it to 1 to allow all levels).
 	$config['create_guild_level'] = 8;
 
@@ -898,55 +909,85 @@
 		// sellable before auctioneer can claim character back.
 	);
 
-	// If useDB is false, this array list will be used for shop offers.
+	/*
+		type 1 = items
+		type 2 = Premium days
+		type 3 = Change character gender
+		type 4 = Change character name
+		type 5 = Buy outfit (put outfit id as itemid), 
+		(put addon id as count [0 = nothing, 1 = first addon, 2 = second addon, 3 = both addons])
+		type 6 = Buy mount (put mount id as itemid)
+		type 7+ = custom coded stuff
+	*/
 	$config['shop_offers'] = array(
-		// offer 1
 		1 => array(
-			'type' => 1, // 1 = item id offers, 2 = premium days [itemid ignored], 3 = sex change[itemid & count ignored], 4+ = custom.
+			'type' => 1,
 			'itemid' => 2160, // item to get in-game
-			'count' => 5, //if type is 2, this represents premium days
-			'description' => "Crystal coin.", // Description shown on website
+			'count' => 5, // Stack number (5x itemid)
+			'description' => "Crystal coin", // Description shown on website
 			'points' => 100, // How many points this offer costs
 		),
-
-		// offer 2
 		2 => array(
 			'type' => 1,
 			'itemid' => 2392,
 			'count' => 1,
-			'description' => "Fire sword.",
+			'description' => "Fire sword",
 			'points' => 10,
 		),
-
-		// offer 3
 		3 => array(
 			'type' => 2,
 			'itemid' => 12466, // Item to display on page
-			'count' => 7,
-			'description' => "Premium membership.",
+			'count' => 7, // Days of premium account
+			'description' => "Premium membership",
 			'points' => 25,
 		),
-
-		// offer 4
 		4 => array(
 			'type' => 3,
-			'itemid' => 12666,
+			'itemid' => 12666, // Item to display on page
 			'count' => 3,
-			'description' => "Change character gender.",
+			'description' => "Change character gender",
 			'points' => 10,
 		),
 		5 => array(
 			'type' => 3,
-			'itemid' => 12666,
-			'count' => 0,
-			'description' => "Change character gender.",
+			'itemid' => 12666, // Item to display on page
+			'count' => 0, // 0 = unlimited
+			'description' => "Change character gender",
 			'points' => 20,
 		),
-		5 => array(
+		6 => array(
 			'type' => 4,
-			'itemid' => 12666,
+			'itemid' => 12666, // Item to display on page
 			'count' => 1,
-			'description' => "Change character name.",
+			'description' => "Change character name",
+			'points' => 20,
+		),
+		7 => array(
+			'type' => 5,
+			'itemid' => 132, // Outfit ID
+			'count' => 3, // Addon 0 = none, 1 = first, 2 = second, 3 = both
+			'description' => "Nobleman with both addons",
+			'points' => 20,
+		),
+		8 => array(
+			'type' => 5,
+			'itemid' => 140,
+			'count' => 3,
+			'description' => "Noblewoman with both addons",
+			'points' => 20,
+		),
+		9 => array(
+			'type' => 6,
+			'itemid' => 32, // Mount ID
+			'count' => 1,
+			'description' => "Gnarlhound mount",
+			'points' => 20,
+		),
+		10 => array(
+			'type' => 6,
+			'itemid' => 17,
+			'count' => 1,
+			'description' => "War horse",
 			'points' => 20,
 		),
 	);
