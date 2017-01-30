@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS `znote_accounts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES
-('1', '0', '$time');
+INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `flag`) VALUES
+('1', '0', '$time', '');
 
 CREATE TABLE IF NOT EXISTS `znote_news` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
