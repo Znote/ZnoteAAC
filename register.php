@@ -92,6 +92,9 @@ if (empty($_POST) === false) {
 		if (validate_ip(getIP()) === false && $config['validate_IP'] === true) {
 			$errors[] = 'Failed to recognize your IP address. (Not a valid IPv4 address).';
 		}
+	        if (strlen($_POST['flag']) < 1) {
+                        $errors[] = 'Please choose country.';
+                }
 	}
 }
 
