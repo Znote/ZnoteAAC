@@ -94,7 +94,7 @@ require '../engine/function/users.php';
 		foreach ($old_accounts as $old) {
 
 			// Make acc data compatible:
-			mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`) VALUES ('$old', '0', '$time')");
+			mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `flag`) VALUES ('$old', '0', '$time', '')");
 			$updated_acc += 1;
 			
 			// Fetch unsalted password
