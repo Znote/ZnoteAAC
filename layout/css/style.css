@@ -633,6 +633,10 @@ hr {
   word-break: break-all;
 }
 
+#ThreadTitle {
+  word-wrap: break-word;
+}
+
 /* ///////////\/\\\\\\\\\\\
    //  Znote YOUTUBE BB  \\
    ///////////\/\\\\\\\\\\\ */
