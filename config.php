@@ -890,6 +890,7 @@
 	// If useDB is set to true, player can shop in-game as well using Znote LUA shop system plugin.
 	$config['shop'] = array(
 		'enabled' => false,
+		'loginToView' => false, // Do user need to login to see the shop offers?
 		'enableShopConfirmation' => true, // Verify that user wants to buy with popup
 		'useDB' => false, // Fetch offers from database, or the below config array
 		'showImage' => true,
