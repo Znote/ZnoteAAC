@@ -12,6 +12,7 @@
 			<li><a href="houses.php">Houses</a></li>
 			<li><a href="deaths.php">Deaths</a></li>
 			<li><a href="killers.php">Killers</a></li>
+			<li><a href="spells.php">Spells</a></li>
 		</ul>
 	</li>
 	<li><a href="forum.php">Forum</a></li>
