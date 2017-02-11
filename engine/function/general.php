@@ -345,6 +345,15 @@ function vocation_id_to_name($id) {
 	return ($vocations[$id] >= 0) ? $vocations[$id]['name'] : false;
 }
 
+// Parameter: players.name. Returns: Configured vocation id.
+function vocation_name_to_id($name) {
+	$vocations = config('vocations');
+	foreach ($vocations as $id => $vocation)
+		if ($vocation['name'] == $name)
+			return $id;
+	return false;
+}
+
 // Parameter: players.group_id. Returns: Configured group name.
 function group_id_to_name($id) {
 	$positions = config('ingame_positions');
