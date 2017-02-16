@@ -35,19 +35,34 @@ if (user_logged_in() && is_admin($user_data)) {
 		if ($stagesXML !== false) {
 			$stagesData = array();
 			// Load config ( stages enabled or disabled)
-			foreach ($stagesXML->config->attributes() as $name => $value) {
-				$stagesData["$name"] = "$value";
-			}
+			if ($config['TFSVersion'] == 'TFS_10')
+				foreach ($stagesXML->config->attributes() as $name => $value)
+					$stagesData["$name"] = "$value";
 			// Load stage levels
 			// Each stage XML object
-			foreach ($stagesXML->stage as $stage) {
-				$rowData = array();
-				// Each attribute name and values on current stage object
-				foreach ($stage->attributes() as $name => $value) {
-					$rowData["$name"] = "$value";
+			if ($config['TFSVersion'] == 'TFS_10') {
+				foreach ($stagesXML->stage as $stage) {
+					$rowData = array();
+					// Each attribute name and values on current stage object
+					foreach ($stage->attributes() as $name => $value) {
+						$rowData["$name"] = "$value";
+					}
+					// Populate XML assoc array
+					$stagesData['stages'][] = $rowData;
 				}
-				// Populate XML assoc array
-				$stagesData['stages'][] = $rowData;
+			} else {
+				// TFS 0.3/4
+				foreach ($stagesXML->world as $world) {
+					foreach ($world->stage as $stage) {
+						$rowData = array();
+						// Each attribute name and values on current stage object
+						foreach ($stage->attributes() as $name => $value) {
+							$rowData["$name"] = "$value";
+						}
+						// Populate XML assoc array
+						$stagesData['stages'][] = $rowData;
+					}
+				}
 			}
 			$cache->setContent($stagesData);
 			$cache->save();
@@ -70,6 +85,54 @@ if (user_logged_in() && is_admin($user_data)) {
 $cache = new Cache('engine/cache/luaconfig');
 if (user_logged_in() && is_admin($user_data)) {
 	if (isset($_POST['loadConfig']) && isset($_POST['configData'])) {
+		// Whitelist for values we are interested in
+		$whitelist = array( // Etc 'maxPlayers'
+			'worldType',
+			'hotkeyAimbotEnabled',
+			'protectionLevel',
+			'killsToRedSkull',
+			'killsToBlackSkull',
+			'pzLocked',
+			'removeChargesFromRunes',
+			'timeToDecreaseFrags',
+			'whiteSkullTime',
+			'stairJumpExhaustion',
+			'experienceByKillingPlayers',
+			'expFromPlayersLevelRange',
+			'loginProtocolPort',
+			'maxPlayers',
+			'motd',
+			'onePlayerOnlinePerAccount',
+			'deathLosePercent',
+			'housePriceEachSQM',
+			'houseRentPeriod',
+			'marketOfferDuration',
+			'premiumToCreateMarketOffer',
+			'maxMarketOffersAtATimePerPlayer',
+			'allowChangeOutfit',
+			'freePremium',
+			'kickIdlePlayerAfterMinutes',
+			'rateExp',
+			'rateSkill',
+			'rateLoot',
+			'rateMagic',
+			'rateSpawn',
+			'staminaSystem',
+			'experienceStages'
+		);
+		// TFS 0.3/4 compatibility, convert config value names to TFS 1.0 values
+		$tfs03to10 = array(
+			// TFS 0.3/4		  TFS 1.0
+			'rateExperience' 			=> 'rateExp',
+			'loginPort' 				=> 'loginProtocolPort',
+			'rateExperienceFromPlayers' => 'experienceByKillingPlayers',
+			'dailyFragsToRedSkull' 		=> 'killsToRedSkull',
+			'dailyFragsToBlackSkull' 	=> 'killsToBlackSkull',
+			'removeRuneCharges' 		=> 'removeChargesFromRunes',
+			'stairhopDelay' 			=> 'stairJumpExhaustion',
+			'housePriceEachSquare' 		=> 'housePriceEachSQM',
+			'idleKickTime' 				=> 'kickIdlePlayerAfterMinutes',
+		);
 		// This will be the populated array with filtered relevant data
 		$luaConfig = array();
 		// Explode the string into string array by newline
@@ -91,48 +154,26 @@ if (user_logged_in() && is_admin($user_data)) {
 					// Remove uneccesary whitespace
 					$data[0] = trim($data[0]);
 					$data[1] = trim($data[1]);
-					// Whitelist for values we are interested in
-					$whitelist = array( // Etc 'maxPlayers'
-						'worldType',
-						'hotkeyAimbotEnabled',
-						'protectionLevel',
-						'killsToRedSkull',
-						'killsToBlackSkull',
-						'pzLocked',
-						'removeChargesFromRunes',
-						'timeToDecreaseFrags',
-						'whiteSkullTime',
-						'stairJumpExhaustion',
-						'experienceByKillingPlayers',
-						'expFromPlayersLevelRange',
-						'loginProtocolPort',
-						'maxPlayers',
-						'motd',
-						'onePlayerOnlinePerAccount',
-						'deathLosePercent',
-						'housePriceEachSQM',
-						'houseRentPeriod',
-						'marketOfferDuration',
-						'premiumToCreateMarketOffer',
-						'maxMarketOffersAtATimePerPlayer',
-						'allowChangeOutfit',
-						'freePremium',
-						'kickIdlePlayerAfterMinutes',
-						'rateExp',
-						'rateSkill',
-						'rateLoot',
-						'rateMagic',
-						'rateSpawn',
-						'staminaSystem'
-					);
+					// TFS 0.3/4 compatibility
+					if (isset($tfs03to10[$data[0]])) {
+						$data[0] = $tfs03to10[$data[0]];
+						if (isset($tfs03to10[$data[1]])) {
+							$data[1] = $tfs03to10[$data[1]];
+						}
+					}
 					if (in_array($data[0], $whitelist)) {
 						// Type cast: boolean
 						if (in_array(strtolower($data[1]), array('true', 'false'))) {
 							$data[1] = (strtolower($data[1]) === 'true') ? true : false;
 						} else {
-							// Type cast: integer
 							if (strpos($data[1], '"') === false) {
-								$data[1] = eval('return (' . $data[1] . ');');
+								if (!in_array($data[1], array_keys($luaConfig))) {
+									// Type cast: integer
+									$data[1] = eval('return (' . $data[1] . ');');
+								} else {
+									// Type cast: Load value from another key
+									$data[1] = (isset($luaConfig[$data[1]])) ? $luaConfig[$data[1]] : null;
+								}
 							} else {
 								// Type cast: string, just remove the quote we earlier used to determine if it was a string.
 								$data[1] = str_replace('"', '', $data[1]);
@@ -170,7 +211,7 @@ $stages = false;
 <h1>Server Information</h1>
 <p>Here you will find all basic information about <b><?php echo $config['site_title']; ?></b></p>
 
-<?php if ($stagesData && $stagesData['enabled']): $stages = true; ?>
+<?php if (($stagesData && isset($stagesData['enabled']) && $stagesData['enabled']) || (isset($luaConfig['experienceStages']) && $luaConfig['experienceStages'] === true)): $stages = true; ?>
 	<h2>Server rates</h2>
 	<table class="table tbl-hover">
 		<tbody>
@@ -262,10 +303,12 @@ $stages = false;
 				<td>Remove rune charges</td>
 				<td><?php echo toYesNo($luaConfig['removeChargesFromRunes']); ?></td>
 			</tr>
-			<tr>
-				<td>Time to decrease frags</td>
-				<td><?php echo toDuration($luaConfig['timeToDecreaseFrags']); ?></td>
-			</tr>
+			<?php if (isset($luaConfig['timeToDecreaseFrags'])): ?>
+				<tr>
+					<td>Time to decrease frags</td>
+					<td><?php echo toDuration($luaConfig['timeToDecreaseFrags']); ?></td>
+				</tr>
+			<?php endif; ?>
 			<tr>
 				<td>Experience by killing players</td>
 				<td><?php echo toYesNo($luaConfig['experienceByKillingPlayers']); ?></td>
@@ -326,18 +369,24 @@ $stages = false;
 				<td>Allow outfit change</td>
 				<td><?php echo toYesNo($luaConfig['allowChangeOutfit']); ?></td>
 			</tr>
-			<tr>
-				<td>Stamina system</td>
-				<td><?php echo toYesNo($luaConfig['staminaSystem']); ?></td>
-			</tr>
-			<tr>
-				<td>Premium to add items to market</td>
-				<td><?php echo toYesNo($luaConfig['premiumToCreateMarketOffer']); ?></td>
-			</tr>
-			<tr>
-				<td>Market offer duration</td>
-				<td><?php echo toDuration($luaConfig['marketOfferDuration'] * 1000); ?></td>
-			</tr>
+			<?php if (isset($luaConfig['staminaSystem'])): ?>
+				<tr>
+					<td>Stamina system</td>
+					<td><?php echo toYesNo($luaConfig['staminaSystem']); ?></td>
+				</tr>
+			<?php endif; ?>
+			<?php if (isset($luaConfig['premiumToCreateMarketOffer'])): ?>
+				<tr>
+					<td>Premium to add items to market</td>
+					<td><?php echo toYesNo($luaConfig['premiumToCreateMarketOffer']); ?></td>
+				</tr>
+			<?php endif; ?>
+			<?php if (isset($luaConfig['marketOfferDuration'])): ?>
+				<tr>
+					<td>Market offer duration</td>
+					<td><?php echo toDuration($luaConfig['marketOfferDuration'] * 1000); ?></td>
+				</tr>
+			<?php endif; ?>
 		</tbody>
 	</table>
 <?php else: ?>
