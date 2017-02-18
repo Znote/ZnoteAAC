@@ -619,18 +619,24 @@ hr {
 }
 
 #percent {
-        position: absolute;
-        margin-left:175px;
+  position: absolute;
+  margin-left:175px;
 }
 
 #bar {
-        height: 20px;
-        background-color: green;
-        border: 1px solid black;
+  height: 20px;
+  background-color: green;
+  border: 1px solid black;
 }
 
 .ThreadTable td {
   word-break: break-all;
+}
+
+.ThreadTable td.avatar {
+  min-width: 100px;
+  vertical-align: top;
+  text-align: center;
 }
 
 #ThreadTitle {

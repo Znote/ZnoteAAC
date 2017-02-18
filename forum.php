@@ -7,11 +7,15 @@ if (!$config['forum']['enabled']) admin_only($user_data);
 	---		Znote AAC forum 	---
 	-------------------------------
 	Created by Znote.
-	Version 1.2.
+	Version 1.3.
 
 	Changelog (1.0 --> 1.2):
 	- Updated to the new date/clock time system
 	- Bootstrap design support.
+
+	Changelog (1.2 --> 1.3):
+	- Show character outfit as avatar
+	- Show in-game position
 */
 // BBCODE support:
 function TransformToBBCode($string) {
@@ -530,22 +534,35 @@ if (!empty($_GET)) {
 
 
 			if ($access) {
+				$threadPlayer = ($config['forum']['outfit_avatars'] || $config['forum']['player_position']) ? mysql_select_single("SELECT `id`, `group_id`, `sex`, `lookbody`, `lookfeet`, `lookhead`, `looklegs`, `looktype`, `lookaddons` FROM `players` WHERE `id`='".$threadData['player_id']."';") : false;
 				?>
 				<font>LinkMap: <a href="forum.php">Forum</a> - <a href="?cat=<?php echo $getCat; ?>"><?php echo $getForum; ?></a></font><br>
 				<font size="5" id="ThreadTitle">Viewing thread: <?php echo "<a href='?forum=". $getForum ."&cat=". $getCat ."&thread=". $threadData['id'] ."'>". $threadData['title'] ."</a>"; ?></font>
 				<table class="znoteTable ThreadTable table table-striped">
 					<tr class="yellow">
-						<th>
+						<th<?php if ($threadPlayer !== false) echo ' colspan="2"'; ?>>
 							<?php 
-								echo getClock($threadData['created'], true); 
-							?>
-							 - Created by: 
-							 <?php 
-							 	echo "<a href='characterprofile.php?name=". $threadData['player_name'] ."'>". $threadData['player_name'] ."</a>";
-							 ?>
+							echo getClock($threadData['created'], true); 
+							if ($threadPlayer === false): ?>
+								 - Created by: 
+								<?php 
+						 		echo "<a href='characterprofile.php?name=". $threadData['player_name'] ."'>". $threadData['player_name'] ."</a>";
+					 		endif;
+					 		?>
 						</th>
 					</tr>
 					<tr>
+						<?php if ($threadPlayer !== false): ?>
+						<td class="avatar">
+							<a href='characterprofile.php?name=<?php echo $threadData['player_name']; ?>'><?php echo $threadData['player_name']; ?></a>
+							<?php if ($config['forum']['outfit_avatars']): ?>
+							<br><img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $threadPlayer['looktype']; ?>&addons=<?php echo $threadPlayer['lookaddons']; ?>&head=<?php echo $threadPlayer['lookhead']; ?>&body=<?php echo $threadPlayer['lookbody']; ?>&legs=<?php echo $threadPlayer['looklegs']; ?>&feet=<?php echo $threadPlayer['lookfeet']; ?>" alt="img">
+							<?php endif; ?>
+							<?php if ($config['forum']['player_position']): ?>
+							<br><span><?php echo group_id_to_name($threadPlayer['group_id']); ?></span>
+							<?php endif; ?>
+						</td>
+						<?php endif; ?>
 						<td>
 							<p><?php echo nl2br(TransformToBBCode($threadData['text'])); ?></p>
 						</td>
@@ -619,23 +636,49 @@ if (!empty($_GET)) {
 				?>
 				<?php
 				// Display replies... (copy table above and edit each post)
-				$posts = mysql_select_multi("SELECT `id`, `player_name`, `text`, `created`, `updated` FROM `znote_forum_posts` WHERE `thread_id`='". $threadData['id'] ."' ORDER BY `created`;");
+				$posts = mysql_select_multi("SELECT `id`, `player_id`, `player_name`, `text`, `created`, `updated` FROM `znote_forum_posts` WHERE `thread_id`='". $threadData['id'] ."' ORDER BY `created`;");
 				if ($posts !== false) {
+					// Load extra data (like outfit avatars?)
+					$players = array();
+					$extra = false;
+					if ($config['forum']['outfit_avatars'] || $config['forum']['player_position']) {
+						$extra = true; 
+
+						foreach($posts as $post)
+							if (!isset($players[$post['player_id']]))
+								$players[$post['player_id']] = array();
+
+						$sql_players = mysql_select_multi("SELECT `id`, `group_id`, `sex`, `lookbody`, `lookfeet`, `lookhead`, `looklegs`, `looktype`, `lookaddons` FROM `players` WHERE `id` IN (".implode(',', array_keys($players)).");");
+
+						foreach ($sql_players as $player)
+							$players[$player['id']] = $player;
+
+					}
+
 					foreach($posts as $post) {
 						?>
 						<table class="znoteTable ThreadTable table table-striped">
 							<tr class="yellow">
-								<th>
-									<?php 
-										echo getClock($post['created'], true); 
-									?>
-									 - Posted by: 
-									 <?php 
-									 	echo "<a href='characterprofile.php?name=". $post['player_name'] ."'>". $post['player_name'] ."</a>";
-									 ?>
+								<th<?php if ($extra) echo ' colspan="2"'; ?>>
+									<?php echo getClock($post['created'], true);
+									if (!$extra): ?>
+										 - Posted by: 
+										 <?php echo "<a href='characterprofile.php?name=". $post['player_name'] ."'>". $post['player_name'] ."</a>";
+									 endif; ?>
 								</th>
 							</tr>
 							<tr>
+								<?php if ($extra): ?>
+								<td class="avatar">
+									<a href='characterprofile.php?name=<?php echo $post['player_name']; ?>'><?php echo $post['player_name']; ?></a>
+									<?php if ($config['forum']['outfit_avatars']): ?>
+									<br><img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $players[$post['player_id']]['looktype']; ?>&addons=<?php echo $players[$post['player_id']]['lookaddons']; ?>&head=<?php echo $players[$post['player_id']]['lookhead']; ?>&body=<?php echo $players[$post['player_id']]['lookbody']; ?>&legs=<?php echo $players[$post['player_id']]['looklegs']; ?>&feet=<?php echo $players[$post['player_id']]['lookfeet']; ?>" alt="img">
+									<?php endif; ?>
+									<?php if ($config['forum']['player_position']): ?>
+									<br><span><?php echo group_id_to_name($players[$post['player_id']]['group_id']); ?></span>
+									<?php endif; ?>
+								</td>
+								<?php endif; ?>
 								<td>
 									<p><?php echo nl2br(TransformToBBCode($post['text'])); ?></p>
 								</td>

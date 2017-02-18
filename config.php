@@ -632,6 +632,8 @@
 	// How to design/display hidden/closed/sticky threads.
 	$config['forum'] = array(
 		'enabled' => true,
+		'outfit_avatars' => true, // Show character outfit as forum avatar?
+		'player_position' => true, // Tutor, Community manager, God etc..?
 		'guildboard' => true,
 		'level' => 5,
 		'cooldownPost' => 1,//60,
