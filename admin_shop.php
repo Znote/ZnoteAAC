@@ -5,7 +5,7 @@ protect_page();
 admin_only($user_data);
 
 $orders = mysql_select_multi('SELECT * FROM `znote_shop_orders` ORDER BY `id` DESC;');
-$order_types = array(1 => 'Item', 2 => 'Premium Days', 3 => 'Gender Change', 4 => 'Name Change', 5 => 'Custom');
+$order_types = array(1 => 'Item', 2 => 'Premium Days', 3 => 'Gender Change', 4 => 'Name Change', 5 => 'Outfits', 6 =>'Mounts');
 $items = getItemList();
 ?>
 <h1>Shop Logs</h1>
@@ -36,7 +36,7 @@ $items = getItemList();
 </table>
 
 <?php
-$orders = mysql_select_multi("SELECT `id`, `account_id`, `type`, `itemid`, `count`, `points`, `time` FROM `znote_shop_logs` ORDER BY `id` DESC;");
+$order_types = array(1 => 'Item', 2 => 'Premium Days', 3 => 'Gender Change', 4 => 'Name Change', 5 => 'Outfit', 6 =>'Mount', 7 =>'Custom');
 ?>
 <h2>Order History</h2>
 <p>This list contains all transactions bought in the shop.</p>
