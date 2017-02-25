@@ -5,7 +5,7 @@ protect_page();
 admin_only($user_data);
 
 $orders = mysql_select_multi('SELECT * FROM `znote_shop_orders` ORDER BY `id` DESC;');
-$order_types = array(1 => 'Item', 2 => 'Premium Days', 3 => 'Gender Change', 4 => 'Name Change', 5 => 'Custom');
+$order_types = array(1 => 'Item', 2 => 'Premium Days', 3 => 'Gender Change', 4 => 'Name Change', 5 => 'Outfits', 6 =>'Mounts');
 $items = getItemList();
 ?>
 <h1>Shop Logs</h1>
