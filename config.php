@@ -686,8 +686,11 @@
 	// Don't touch this unless you know what you are doing. (modifying this(key value) also requires modifications in OT files /XML/commands.xml).
 	$config['ingame_positions'] = array(
 		1 => 'player',
-		2 => 'gamemaster',
-		3 => 'god',
+		2 => 'Tutor',
+		3 => 'Senior Tutor',
+		4 => 'Gamemaster',
+		5 => 'Community Manager',
+		6 => 'God',
 	);
 
 	// Enable OS advanced feautures? false = no, true = yes
