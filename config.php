@@ -15,7 +15,7 @@
 
 	$config['site_title'] = 'Znote AAC';
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
-	$config['site_url'] = "http://znote.dev";
+	$config['site_url'] = "http://demo.znote.eu";
 
 	// Path to server folder without / Example: C:\Users\Alvaro\Documents\GitHub\forgottenserver
 	$config['server_path'] = ''; 
@@ -37,7 +37,7 @@
 	$config['sqlHost'] = '127.0.0.1';
 
 	// QR code authenticator Only works with TFS 1.2+
-	$config['twoFactorAuthenticator'] = true;
+	$config['twoFactorAuthenticator'] = false;
 	// You can use the mobile phone app "authy" with this.
 
 	/* CLOCK FUNCTION
@@ -515,19 +515,19 @@
 	);
 
 	// Minimum allowed character name letters. Etc 4 letters: "Kåre".
-	$config['minL'] = 4;
+	$config['minL'] = 3;
 	// Maximum allowed character name letters. Etc 20 letters: "Bobkåreolesofiesberg"
 	$config['maxL'] = 20;
 
 	// Maximum allowed character name words. Etc 2 words = "Bob Kåre", 3 words: "Bob Arne Kåre" as max char name words.
-	$config['maxW'] = 2;
+	$config['maxW'] = 3;
 
 	// -------------- \\
 	// WEBSITE STUFF  \\
 	// -------------- \\
 
 	// News to be displayed per page
-	$config['news_per_page'] = 4;
+	$config['news_per_page'] = 5;
 
 	// Enable or disable changelog ticker in news page.
 	$config['UseChangelogTicker'] = true;
@@ -586,7 +586,7 @@
 	$config['free_sex_change'] = false;
 
 	// Do you need to have premium account to create a guild?
-	$config['guild_require_premium'] = false;
+	$config['guild_require_premium'] = true;
 
 	$config['guildwar_enabled'] = false;
 
@@ -685,7 +685,7 @@
 	
 	// Don't touch this unless you know what you are doing. (modifying this(key value) also requires modifications in OT files /XML/commands.xml).
 	$config['ingame_positions'] = array(
-		1 => 'Player',
+		1 => 'player',
 		2 => 'Tutor',
 		3 => 'Senior Tutor',
 		4 => 'Gamemaster',
