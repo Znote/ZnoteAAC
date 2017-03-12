@@ -10,7 +10,7 @@
 			<li>
 				Password: <br>
 				<input type="password" name="password">
-			</li><?php if ($config['use_token'] == true) { ?>
+			</li><?php if ($config['twoFactorAuthenticator'] == true) { ?>
 			<li>
 				Token: <br>
 				<input type="password" name="authcode">
