@@ -10,17 +10,19 @@
 			<li>
 				Password: <br>
 				<input type="password" name="password">
-			</li>
+			</li><?php if ($config['use_token'] == true) { ?>
 			<li>
 				Token: <br>
 				<input type="password" name="authcode">
-			</li>
+			</li><?php } ?>
 			<li>
 				<input type="submit" value="Log in">
 			</li>
 			<?php
-				/* Form file */
-				Token::create();
+				if ($config['use_token'] == true) {
+					/* Form file */
+					Token::create();
+				}
 			?>
 		<center>	<h3><a href="register.php">New account</a></h3>
 		<font size="1">- <a href="recovery.php">Account Recovery</a></font></center>
