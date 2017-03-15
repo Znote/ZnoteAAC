@@ -13,6 +13,7 @@
 			<li><a href="deaths.php">Deaths</a></li>
 			<li><a href="killers.php">Killers</a></li>
 			<li><a href="spells.php">Spells</a></li>
+			<?php if ($config['items'] == true) { ?><li><a href="items.php">Items</a></li><?php } ?>
 		</ul>
 	</li>
 	<li><a href="forum.php">Forum</a></li>

@@ -4,6 +4,10 @@
 		define('ZNOTE_OS', ($isWindows) ? 'WINDOWS' : 'LINUX');
 	}
 	
+	// If you want to use items.php (not 100% yet, I guess)
+	// Tested with TFS items.xml master (1.3)
+	$config['items'] = false;
+	
 	// Available options: TFS_02, TFS_03
 	// TFS 0.2 = TFS_02
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
