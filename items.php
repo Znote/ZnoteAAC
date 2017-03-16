@@ -5,44 +5,44 @@
 // Loading equipable items list
 $itemsCache = new Cache('engine/cache/items');
 if (user_logged_in() && is_admin($user_data)) {
-    if (isset($_GET['update'])) {
-        echo "<p><strong>Logged in as admin, loading engine/XML/items.xml file and updating cache.</strong></p>";
-        // ITEMS XML TO PHP ARRAY
-        $itemsXML = simplexml_load_file("engine/XML/items.xml");
-        if ($itemsXML !== false) {
-            $types = array();
-            $type_attr = array();
-            $groups = array();
+	if (isset($_GET['update'])) {
+		echo "<p><strong>Logged in as admin, loading engine/XML/items.xml file and updating cache.</strong></p>";
+		// ITEMS XML TO PHP ARRAY
+		$itemsXML = simplexml_load_file("engine/XML/items.xml");
+		if ($itemsXML !== false) {
+			$types = array();
+			$type_attr = array();
+			$groups = array();
  
-            // This empty array will eventually contain all items grouped by type and indexed by item type
-            $items = array();
+			// This empty array will eventually contain all items grouped by type and indexed by item type
+			$items = array();
  
-            // Loop through each XML item object
-            foreach ($itemsXML as $type => $item) {
-                // Get item types
-                if (!in_array($type, $types)) {
-                    $types[] = $type;
-                    $type_attr[$type] = array();
-                }
-                // Get item attributes
-                $attributes = array();
-                // Extract attribute values from the XML object and store it in a more manage friendly way $attributes
-                foreach ($item->attributes() as $aName => $aValue)
-                    $attributes["$aName"] = "$aValue";
-                // Remove unececsary attributes
-                if (isset($attributes['plural'])) unset($attributes['plural']);
-                //if (isset($attributes['id'])) unset($attributes['id']);
-                //if (isset($attributes['fromid'])) unset($attributes['fromid']);
-                //if (isset($attributes['toid'])) unset($attributes['toid']);
-                if (isset($attributes['editorsuffix'])) unset($attributes['editorsuffix']);
-                if (isset($attributes['article'])) unset($attributes['article']);
-                // Populate type attributes
-                foreach (array_keys($attributes) as $attr) {
-                    if (!in_array($attr, $type_attr[$type]))
-                        $type_attr[$type][] = $attr;
-                }
+			// Loop through each XML item object
+			foreach ($itemsXML as $type => $item) {
+				// Get item types
+				if (!in_array($type, $types)) {
+					$types[] = $type;
+					$type_attr[$type] = array();
+				}
+				// Get item attributes
+				$attributes = array();
+				// Extract attribute values from the XML object and store it in a more manage friendly way $attributes
+				foreach ($item->attributes() as $aName => $aValue)
+					$attributes["$aName"] = "$aValue";
+				// Remove unececsary attributes
+				if (isset($attributes['plural'])) unset($attributes['plural']);
+				//if (isset($attributes['id'])) unset($attributes['id']);
+				//if (isset($attributes['fromid'])) unset($attributes['fromid']);
+				//if (isset($attributes['toid'])) unset($attributes['toid']);
+				if (isset($attributes['editorsuffix'])) unset($attributes['editorsuffix']);
+				if (isset($attributes['article'])) unset($attributes['article']);
+				// Populate type attributes
+				foreach (array_keys($attributes) as $attr) {
+					if (!in_array($attr, $type_attr[$type]))
+						$type_attr[$type][] = $attr;
+				}
  
-                // Loop through every <attribute> object inside the <item> object
+				// Loop through every <attribute> object inside the <item> object
 				$item_attributes = array();
 				$iai = array();
 				
@@ -64,10 +64,10 @@ if (user_logged_in() && is_admin($user_data)) {
 						}
 					}
 				}
-                foreach (array_keys($attributes) as $attr) {
-                    if (!in_array($attr, $type_attr[$type]))
-                        $type_attr[$type][] = $attr;
-                }
+				foreach (array_keys($attributes) as $attr) {
+					if (!in_array($attr, $type_attr[$type]))
+						$type_attr[$type][] = $attr;
+				}
 				
 				// Add items with slotType or weaponType (TFS 1.x default)
 				if(isset($attributes['id'])) $id = (isset($attributes['id'])) ? $attributes['id'] : false;
@@ -75,39 +75,39 @@ if (user_logged_in() && is_admin($user_data)) {
 				if (isset($item_attributes['slotType']) || isset($item_attributes['weaponType'])) {
 					$items[$type][$id] = array('attributes' => $item_attributes);
 					
-                    // Populate item array with potential relevant attributes for the item type
-                    foreach ($type_attr[$type] as $att)
+					// Populate item array with potential relevant attributes for the item type
+					foreach ($type_attr[$type] as $att)
 						$items[$type][$id][$att] = (isset($attributes[$att])) ? $attributes[$att] : false;
 				}
 						
 						
 				$save = array($items);
 				
-                
-            }
-            $itemsCache->setContent($items);
-            $itemsCache->save();
-        } else {
-            echo "<p><strong>Failed to load engine/XML/items.xml file.</strong></p>";
-        }
-    } else {
-        $items = $itemsCache->load();
-        ?>
-        <form action="">
-            <input type="submit" name="update" value="Generate new cache">
-        </form>
-        <?php
-    }
-    // END ITEMS XML TO PHP ARRAY
+				
+			}
+			$itemsCache->setContent($items);
+			$itemsCache->save();
+		} else {
+			echo "<p><strong>Failed to load engine/XML/items.xml file.</strong></p>";
+		}
+	} else {
+		$items = $itemsCache->load();
+		?>
+		<form action="">
+			<input type="submit" name="update" value="Generate new cache">
+		</form>
+		<?php
+	}
+	// END ITEMS XML TO PHP ARRAY
 } else {
-    $items = $itemsCache->load();
+	$items = $itemsCache->load();
 }
 // End loading items list
  
 if ($items) {
-    // Preparing data
-    $types = array_keys($items);
-    $itemServer = 'http://'.$config['shop']['imageServer'].'/';
+	// Preparing data
+	$types = array_keys($items);
+	$itemServer = 'http://'.$config['shop']['imageServer'].'/';
  
 	//slotType values and names
 	if(isset($_GET['slot'])) {
@@ -178,11 +178,11 @@ if ($items) {
 		}
 	}
  
-    // Render HTML
+	// Render HTML
 	if(isset($_GET['slot']) && ($slottype_name == 'null')) header("Location:items.php");
-    ?>
+	?>
  
-    	<h1 id="items">Items<?php if (isset($_GET['slot'])) echo ' ('.$slottype_name.')';?></h1>
+		<h1 id="items">Items<?php if (isset($_GET['slot'])) echo ' ('.$slottype_name.')';?></h1>
 	<?php if(empty($_GET['slot'])) { ?>
 	<table>
 		<tbody>
@@ -234,156 +234,154 @@ if ($items) {
 				}
 			}
 				
-				if($show == true) { ?>
+			if($show == true) { ?>
 			<tr>
 				<td><img src="<?php echo $itemServer.$itemid.'.gif'; ?>" /></td>
 				<td><?php echo ucwords($select['name']); ?></td>
 				<td><?php
 				foreach ($select['attributes'] as $array => $value) {
 		
-			$extra = NULL;
-			if($value > 0) $extra = '+'; 
-				switch ($array) {
-				case 'weight':
-					echo ucwords($array).': '.intval($value/100).'.'.substr($value, -2).' oz<br>';
-				break;
-				case 'containerSize':
-					echo 'Slots: '.$value.'<br>';
-				break;
-				case 'armor':
-					echo ucwords($array).': '.$value.'<br>';
-				break;
-				case 'attack':
-					echo ucwords($array).': '.$value;
-					if($element != NULL) echo ' ('.$element.')';
-					echo '<br>';
-				break;
-				case 'defense':
-					echo ucwords($array).': '.$value;
-					if($extradef != NULL) echo ' ('.$extradef.')';
-					echo '<br>';
-				break;
-				case 'skillFist':
-					echo 'Fist Fighting: '.$extra.$value.'<br>';
-				break;
-				case 'skillAxe':
-					echo 'Axe Fighting: '.$extra.$value.'<br>';
-				break;
-				case 'skillSword':
-					echo 'Sword Fighting: '.$extra.$value.'<br>';
-				break;
-				case 'skillClub':
-					echo 'Club Fighting: '.$extra.$value.'<br>';
-				break;
-				case 'skillAxe':
-					echo 'Axe Fighting: '.$extra.$value.'<br>';
-				break;
-				case 'skillDist':
-					echo 'Distance Fighting: '.$extra.$value.'<br>';
-				break;
-				case 'skillShield':
-					echo 'Shielding: '.$extra.$value.'<br>';
-				break;
-				case 'range':
-					echo ucwords($array).': '.$value.'<br>';
-				break;
-				case 'shootType':
-					echo 'Shoot Type: '.ucwords($value).'<br>';
-				break;
-				case 'hitChance':
-					echo 'Hit: '.$extra.$value.'%<br>';
-				break;
-				case 'magiclevelpoints':
-					echo 'Magic Level: '.$extra.$value.'<br>';
-				break;
-				case 'absorbPercentEnergy':
-					echo 'Energy Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentFire':
-					echo 'Fire Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentEarth':
-					echo 'Earth Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentPoison':
-					echo 'Poison Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentIce':
-					echo 'Ice Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentHoly':
-					echo 'Holy Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentDeath':
-					echo 'Death Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentLifeDrain':
-					echo 'Life Drain Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentManaDrain':
-					echo 'Mana Drain Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentDrown':
-					echo 'Drown Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentPhysical':
-					echo 'Physical Protection: '.$extra.$value.'%<br>';
-				break;
-				case 'absorbPercentIce':
-					echo 'Ice Protection: '.$extra.$value.'%<br>';
-				break;
-				/**case 'suppressDrunk':
-					echo 'Suppress Drunk: Yes<br>';
-				break;
-				case 'suppressEnergy':
-					echo 'Suppress Energy: Yes<br>';
-				break;
-				case 'suppressFire':
-					echo 'Suppress Fire: Yes<br>';
-				break;
-				case 'suppressPoison':
-					echo 'Suppress Poison: Yes<br>';
-				break;
-				case 'suppressDrown':
-					echo 'Suppress Drown: Yes<br>';
-				break;
-				case 'suppressPhysical':
-					echo 'Suppress Bleeding: Yes<br>';
-				break;
-				case 'suppressFreeze':
-					echo 'Suppress Freeze: Yes<br>';
-				break;
-				case 'suppressDazzle':
-					echo 'Suppress Dazzle: Yes<br>';
-				break;
-				case 'suppressCurse':
-					echo 'Suppress Curse: Yes<br>';
-				break; 
-				Those are not necessary in my opinion, but if you want to show
-				**/
-				case 'speed':
-					echo 'Speed: '.$extra.($value/2).'<br>';
-				break;
-				case 'charges':
-					echo 'Charges: '.$value.'<br>';
-				break;
-		}
-		}
-		?></td>
+					$extra = NULL;
+					if($value > 0) $extra = '+'; 
+						switch ($array) {
+						case 'weight':
+							echo ucwords($array).': '.intval($value/100).'.'.substr($value, -2).' oz<br>';
+						break;
+						case 'containerSize':
+							echo 'Slots: '.$value.'<br>';
+						break;
+						case 'armor':
+							echo ucwords($array).': '.$value.'<br>';
+						break;
+						case 'attack':
+							echo ucwords($array).': '.$value;
+							if($element != NULL) echo ' ('.$element.')';
+							echo '<br>';
+						break;
+						case 'defense':
+							echo ucwords($array).': '.$value;
+							if($extradef != NULL) echo ' ('.$extradef.')';
+							echo '<br>';
+						break;
+						case 'skillFist':
+							echo 'Fist Fighting: '.$extra.$value.'<br>';
+						break;
+						case 'skillAxe':
+							echo 'Axe Fighting: '.$extra.$value.'<br>';
+						break;
+						case 'skillSword':
+							echo 'Sword Fighting: '.$extra.$value.'<br>';
+						break;
+						case 'skillClub':
+							echo 'Club Fighting: '.$extra.$value.'<br>';
+						break;
+						case 'skillAxe':
+							echo 'Axe Fighting: '.$extra.$value.'<br>';
+						break;
+						case 'skillDist':
+							echo 'Distance Fighting: '.$extra.$value.'<br>';
+						break;
+						case 'skillShield':
+							echo 'Shielding: '.$extra.$value.'<br>';
+						break;
+						case 'range':
+							echo ucwords($array).': '.$value.'<br>';
+						break;
+						case 'shootType':
+							echo 'Shoot Type: '.ucwords($value).'<br>';
+						break;
+						case 'hitChance':
+							echo 'Hit: '.$extra.$value.'%<br>';
+						break;
+						case 'magiclevelpoints':
+							echo 'Magic Level: '.$extra.$value.'<br>';
+						break;
+						case 'absorbPercentEnergy':
+							echo 'Energy Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentFire':
+							echo 'Fire Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentEarth':
+							echo 'Earth Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentPoison':
+							echo 'Poison Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentIce':
+							echo 'Ice Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentHoly':
+							echo 'Holy Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentDeath':
+							echo 'Death Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentLifeDrain':
+							echo 'Life Drain Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentManaDrain':
+							echo 'Mana Drain Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentDrown':
+							echo 'Drown Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentPhysical':
+							echo 'Physical Protection: '.$extra.$value.'%<br>';
+						break;
+						case 'absorbPercentIce':
+							echo 'Ice Protection: '.$extra.$value.'%<br>';
+						break;
+						/**case 'suppressDrunk':
+							echo 'Suppress Drunk: Yes<br>';
+						break;
+						case 'suppressEnergy':
+							echo 'Suppress Energy: Yes<br>';
+						break;
+						case 'suppressFire':
+							echo 'Suppress Fire: Yes<br>';
+						break;
+						case 'suppressPoison':
+							echo 'Suppress Poison: Yes<br>';
+						break;
+						case 'suppressDrown':
+							echo 'Suppress Drown: Yes<br>';
+						break;
+						case 'suppressPhysical':
+							echo 'Suppress Bleeding: Yes<br>';
+						break;
+						case 'suppressFreeze':
+							echo 'Suppress Freeze: Yes<br>';
+						break;
+						case 'suppressDazzle':
+							echo 'Suppress Dazzle: Yes<br>';
+						break;
+						case 'suppressCurse':
+							echo 'Suppress Curse: Yes<br>';
+						break; 
+						Those are not necessary in my opinion, but if you want to show
+						**/
+						case 'speed':
+							echo 'Speed: '.$extra.($value/2).'<br>';
+						break;
+						case 'charges':
+							echo 'Charges: '.$value.'<br>';
+						break;
+					}
+				}
+			?>				
+				</td>
 			</tr>
 					
 					
-<?php			}
-				
-				
-				
-			
+<?php
+			}
 		} ?>
 	
 		</tbody>
 	</table>
 				
-    <?php
+	<?php
 	}
 } else { ?>
 	<h1>Items</h1>
