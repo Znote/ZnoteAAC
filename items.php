@@ -47,7 +47,7 @@ if (user_logged_in() && is_admin($user_data)) {
 				$iai = array();
 				
 				foreach ($item as $attribute) {
-					foreach ($attribute->attributes() as $aName => $aValue){
+					foreach ($attribute->attributes() as $aName => $aValue) {
 						if($aName == 'key') {
 							$attribute_attributes["$aName"] = "$aValue";
 							$iai[] = $attribute_attributes[$aName];
@@ -55,13 +55,13 @@ if (user_logged_in() && is_admin($user_data)) {
 					}
 				}
 				foreach ($item as $attribute) {
-					foreach ($attribute->attributes() as $aName => $aValue){
-							$attribute_attributes["$aName"] = "$aValue";
-							if(in_array($attribute_attributes[$aName], $iai)){
-								$whatis = $attribute_attributes[$aName];
-							} else {
-								$item_attributes[$whatis] = (isset($attribute_attributes[$aName])) ? $attribute_attributes[$aName] : false;
-							}
+					foreach ($attribute->attributes() as $aName => $aValue) {
+						$attribute_attributes["$aName"] = "$aValue";
+						if(in_array($attribute_attributes[$aName], $iai)) {
+							$whatis = $attribute_attributes[$aName];
+						} else {
+							$item_attributes[$whatis] = (isset($attribute_attributes[$aName])) ? $attribute_attributes[$aName] : false;
+						}
 					}
 				}
                 foreach (array_keys($attributes) as $attr) {
@@ -69,7 +69,7 @@ if (user_logged_in() && is_admin($user_data)) {
                         $type_attr[$type][] = $attr;
                 }
 				
-                // Add items with slotType or weaponType (TFS 1.x default)
+				// Add items with slotType or weaponType (TFS 1.x default)
 				if(isset($attributes['id'])) $id = (isset($attributes['id'])) ? $attributes['id'] : false;
 				if(isset($attributes['fromid'])) $id = (isset($attributes['name'])) ? $attributes['name'] : false;
 				if (isset($item_attributes['slotType']) || isset($item_attributes['weaponType'])) {
@@ -77,7 +77,7 @@ if (user_logged_in() && is_admin($user_data)) {
 					
                     // Populate item array with potential relevant attributes for the item type
                     foreach ($type_attr[$type] as $att)
-                        $items[$type][$id][$att] = (isset($attributes[$att])) ? $attributes[$att] : false;
+						$items[$type][$id][$att] = (isset($attributes[$att])) ? $attributes[$att] : false;
 				}
 						
 						
@@ -110,8 +110,8 @@ if ($items) {
     $itemServer = 'http://'.$config['shop']['imageServer'].'/';
  
 	//slotType values and names
-	if(isset($_GET['slot'])){
-		switch($_GET['slot']){
+	if(isset($_GET['slot'])) {
+		switch($_GET['slot']) {
 			case 'helmet':
 				$slottype = 'head';
 				$slottype_name = 'Helmets';
@@ -227,145 +227,147 @@ if ($items) {
 				else $itemid = $select['fromid'];
 			
 			if (!empty($select['attributes'])) {
-				foreach ($select['attributes'] as $att => $value){
+				foreach ($select['attributes'] as $att => $value) {
 					if($att == 'slotType' || $att == 'weaponType') $slotType = $value;
 						if(!empty($slotType) && $slotType == $slottype) $show = true;
 						else $show = false;
 				}
 			}
 				
-				if($show == true){ ?>
+				if($show == true) { ?>
 			<tr>
 				<td><img src="<?php echo $itemServer.$itemid.'.gif'; ?>" /></td>
 				<td><?php echo ucwords($select['name']); ?></td>
 				<td><?php
-				foreach ($select['attributes'] as $array => $value){
+				foreach ($select['attributes'] as $array => $value) {
 		
 			$extra = NULL;
 			if($value > 0) $extra = '+'; 
-				if($array == 'weight'){
+				switch ($array) {
+				case 'weight':
 					echo ucwords($array).': '.intval($value/100).'.'.substr($value, -2).' oz<br>';
-				}
-				elseif($array == 'containerSize'){
+				break;
+				case 'containerSize':
 					echo 'Slots: '.$value.'<br>';
-				}
-				elseif($array == 'armor'){
+				break;
+				case 'armor':
 					echo ucwords($array).': '.$value.'<br>';
-				}
-				elseif($array == 'attack'){
+				break;
+				case 'attack':
 					echo ucwords($array).': '.$value;
 					if($element != NULL) echo ' ('.$element.')';
 					echo '<br>';
-				}
-				elseif($array == 'defense'){
+				break;
+				case 'defense':
 					echo ucwords($array).': '.$value;
 					if($extradef != NULL) echo ' ('.$extradef.')';
 					echo '<br>';
-				}
-				elseif($array == 'skillFist'){
+				break;
+				case 'skillFist':
 					echo 'Fist Fighting: '.$extra.$value.'<br>';
-				}
-				elseif($array == 'skillAxe'){
+				break;
+				case 'skillAxe':
 					echo 'Axe Fighting: '.$extra.$value.'<br>';
-				}
-				elseif($array == 'skillSword'){
+				break;
+				case 'skillSword':
 					echo 'Sword Fighting: '.$extra.$value.'<br>';
-				}
-				elseif($array == 'skillClub'){
+				break;
+				case 'skillClub':
 					echo 'Club Fighting: '.$extra.$value.'<br>';
-				}
-				elseif($array == 'skillAxe'){
+				break;
+				case 'skillAxe':
 					echo 'Axe Fighting: '.$extra.$value.'<br>';
-				}
-				elseif($array == 'skillDist'){
+				break;
+				case 'skillDist':
 					echo 'Distance Fighting: '.$extra.$value.'<br>';
-				}
-				elseif($array == 'skillShield'){
+				break;
+				case 'skillShield':
 					echo 'Shielding: '.$extra.$value.'<br>';
-				}
-				elseif($array == 'range'){
+				break;
+				case 'range':
 					echo ucwords($array).': '.$value.'<br>';
-				}
-				elseif($array == 'shootType'){
+				break;
+				case 'shootType':
 					echo 'Shoot Type: '.ucwords($value).'<br>';
-				}
-				elseif($array == 'hitChance'){
+				break;
+				case 'hitChance':
 					echo 'Hit: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'magiclevelpoints'){
+				break;
+				case 'magiclevelpoints':
 					echo 'Magic Level: '.$extra.$value.'<br>';
-				}
-				elseif($array == 'absorbPercentEnergy'){
+				break;
+				case 'absorbPercentEnergy':
 					echo 'Energy Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentFire'){
+				break;
+				case 'absorbPercentFire':
 					echo 'Fire Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentEarth'){
+				break;
+				case 'absorbPercentEarth':
 					echo 'Earth Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentPoison'){
+				break;
+				case 'absorbPercentPoison':
 					echo 'Poison Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentIce'){
+				break;
+				case 'absorbPercentIce':
 					echo 'Ice Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentHoly'){
+				break;
+				case 'absorbPercentHoly':
 					echo 'Holy Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentDeath'){
+				break;
+				case 'absorbPercentDeath':
 					echo 'Death Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentLifeDrain'){
+				break;
+				case 'absorbPercentLifeDrain':
 					echo 'Life Drain Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentManaDrain'){
+				break;
+				case 'absorbPercentManaDrain':
 					echo 'Mana Drain Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentDrown'){
+				break;
+				case 'absorbPercentDrown':
 					echo 'Drown Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentPhysical'){
+				break;
+				case 'absorbPercentPhysical':
 					echo 'Physical Protection: '.$extra.$value.'%<br>';
-				}
-				elseif($array == 'absorbPercentIce'){
+				break;
+				case 'absorbPercentIce':
 					echo 'Ice Protection: '.$extra.$value.'%<br>';
-				}
-				/**elseif($array == 'suppressDrunk'){
+				break;
+				/**case 'suppressDrunk':
 					echo 'Suppress Drunk: Yes<br>';
-				}
-				elseif($array == 'suppressEnergy'){
+				break;
+				case 'suppressEnergy':
 					echo 'Suppress Energy: Yes<br>';
-				}
-				elseif($array == 'suppressFire'){
+				break;
+				case 'suppressFire':
 					echo 'Suppress Fire: Yes<br>';
-				}
-				elseif($array == 'suppressPoison'){
+				break;
+				case 'suppressPoison':
 					echo 'Suppress Poison: Yes<br>';
-				}
-				elseif($array == 'suppressDrown'){
+				break;
+				case 'suppressDrown':
 					echo 'Suppress Drown: Yes<br>';
-				}
-				elseif($array == 'suppressPhysical'){
+				break;
+				case 'suppressPhysical':
 					echo 'Suppress Bleeding: Yes<br>';
-				}
-				elseif($array == 'suppressFreeze'){
+				break;
+				case 'suppressFreeze':
 					echo 'Suppress Freeze: Yes<br>';
-				}
-				elseif($array == 'suppressDazzle'){
+				break;
+				case 'suppressDazzle':
 					echo 'Suppress Dazzle: Yes<br>';
-				}
-				elseif($array == 'suppressCurse'){
+				break;
+				case 'suppressCurse':
 					echo 'Suppress Curse: Yes<br>';
-				} 
+				break; 
 				Those are not necessary in my opinion, but if you want to show
 				**/
-				elseif($array == 'speed'){
+				case 'speed':
 					echo 'Speed: '.$extra.($value/2).'<br>';
-				}
-				elseif($array == 'charges'){
+				break;
+				case 'charges':
 					echo 'Charges: '.$value.'<br>';
-				}
+				break;
+		}
 		}
 		?></td>
 			</tr>
