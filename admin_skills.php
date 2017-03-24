@@ -129,7 +129,7 @@ if ($name !== false) {
 					$vocations = $config['vocations'];
 					foreach ($vocations as $vid => $vname) {
 						?>
-						<option value="<?php echo $vid; ?>" <?php if ($vid == playerSkill($skills, 9)) echo "selected"?> ><?php echo $vname; ?></option>
+						<option value="<?php echo $vid; ?>" <?php if ($vid == playerSkill($skills, 9)) echo "selected"?> ><?php echo $vname['name']; ?></option>
 						<?php
 					}
 					?>
