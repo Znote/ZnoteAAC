@@ -777,8 +777,8 @@
 	$config['use_token'] = false;
 	// Set up captcha keys on https://www.google.com/recaptcha/
 	$config['use_captcha'] = false;
-	$config['captcha_secret_key'] = "Secret key";
 	$config['captcha_site_key'] = "Site key";
+	$config['captcha_secret_key'] = "Secret key";
 
 	// Session prefix, if you are hosting multiple sites, make the session name different to avoid conflict.
 	$config['session_prefix'] = 'znote_';
