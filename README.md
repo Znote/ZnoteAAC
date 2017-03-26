@@ -16,7 +16,7 @@ We use github to distribute our versions, stable are tagged as releases, while d
 **NOTE:** Developement version supports TFS 1.0, but you can expect bugs to occur. 
 
 ### Compatible OT distributions
-Znote AAC primarily aims to be compatible with [Forgotten Server] (https://github.com/otland/forgottenserver)
+Znote AAC primarily aims to be compatible with [Forgotten Server](https://github.com/otland/forgottenserver)
 Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC supports these versions:
 * TFS 0.2.13+ (Since initial release)
 * TFS 0.3.6+ (Since Znote AAC 1.2)
@@ -26,7 +26,7 @@ Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC s
 * PHP Version 5.3.3 or higher. Mostly tested on 5.6 and 7.0. Most web stacks ships with this as default these days.
 
 ### Optionals
-* For email registration verification and account recovery: [PHPMailer] (https://github.com/PHPMailer/PHPMailer/releases) Version 5.x, extracted and renamed to just "PHPMailer" in Znote AAC directory. 
+* For email registration verification and account recovery: [PHPMailer](https://github.com/PHPMailer/PHPMailer/releases) Version 5.x, extracted and renamed to just "PHPMailer" in Znote AAC directory. 
 * PHP extention curl for PHPMailer, paypal and google reCaptcha services.
 * PHP extention openssl for google reCaptcha services.
 
@@ -46,7 +46,7 @@ This will show you the rest of the instructions as well as the mysql schema.
 
 5: IF you have existing database from active OT server, enter the folder called "special" and convert the database for Znote AAC support ( http://127.0.0.1/special/ )
 
-6: Enjoy Znote AAC. You can look around [HERE] (http://otland.net/forums/website-applications.118/) for plugins and resources to Znote AAC, for instance various free templates to use.
+6: Enjoy Znote AAC. You can look around [HERE](http://otland.net/forums/website-applications.118/) for plugins and resources to Znote AAC, for instance various free templates to use.
 
 7: Please note that you need PHP cURL enabled to make Paypal payments work. 
 
