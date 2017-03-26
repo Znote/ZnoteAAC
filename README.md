@@ -10,8 +10,8 @@ It is created in PHP with a simple custom procedural framework.
 ### Where do I download?
 
 We use github to distribute our versions, stable are tagged as releases, while development is the latest commit. 
-* [Stable] (https://github.com/Znote/ZnoteAAC/releases)
-* [Developement] (https://github.com/Znote/ZnoteAAC/archive/master.zip)
+* [Stable](https://github.com/Znote/ZnoteAAC/releases)
+* [Developement](https://github.com/Znote/ZnoteAAC/archive/master.zip)
 
 **NOTE:** Developement version supports TFS 1.0, but you can expect bugs to occur. 
 
@@ -53,4 +53,4 @@ This will show you the rest of the instructions as well as the mysql schema.
 8: You may need to change directory access rights of /engine/cache to allow writing.
 
 ### TODO List:
-* Check [Milestones] (https://github.com/Znote/ZnoteAAC/milestones)
+* Check [Milestones](https://github.com/Znote/ZnoteAAC/milestones)
