@@ -24,6 +24,7 @@ $install = "
 	<li>
 		Import the below schema to a <b>TFS database in phpmyadmin</b>:<br>
 		<textarea cols=\"65\" rows=\"10\">
+ALTER TABLE `accounts` ADD `secret` CHAR(16) DEFAULT NULL;
 CREATE TABLE IF NOT EXISTS `znote` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `version` varchar(30) NOT NULL COMMENT 'Znote AAC version',
