@@ -606,7 +606,9 @@
 	$config['client_download_linux'] = 'http://clients.halfaway.net/linux.php?tibia='. $config['client'] .'';
 
 	$config['port'] = 7171; // Port number to connect to your OT.
-	
+
+        $config['type'] = 'pvp'; // NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
+
 	$config['status'] = array(
 		'status_check' => false, //enable or disable status checker
 		'status_ip' => '127.0.0.1',
