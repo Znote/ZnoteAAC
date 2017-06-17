@@ -116,11 +116,11 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 	// Find a match
 	$user = mysql_select_single("SELECT `id`, `active` FROM `znote_accounts` WHERE `account_id`='$auid' AND `activekey`='$akey' LIMIT 1;");
 	if ($user !== false) {
-		$user = $user['id'];
-		$active = $user['active'];
+		$user = (int) $user['id'];
+		$active = (int) $user['active'];
 		// Enable the account to login
 		if ($active == 0) {
-			mysql_update("UPDATE `znote_accounts` SET `active`='1' WHERE `id`='$user' LIMIT 1;");
+			mysql_update("UPDATE `znote_accounts` SET `active`='1' WHERE `id`= $user LIMIT 1;");
 		}
 		echo '<h1>Congratulations!</h1> <p>Your account has been created. You may now login to create a character.</p>';
 	} else {
