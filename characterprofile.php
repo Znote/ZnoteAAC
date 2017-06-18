@@ -20,7 +20,8 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 			$profile_data['online'] = user_is_online_10($user_id);
 			
 			if ($config['Ach']) {
-				$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`=(int)$user_id");
+				$user_id = (int) $user_id;
+				$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`=$user_id");
 			}
 		} else { // TFS 0.2, 0.3
 			if (!$loadOutfits) {
