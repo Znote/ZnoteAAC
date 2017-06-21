@@ -26,7 +26,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 		$password = SHA1($jsonObject->password);
 		$token = (isset($jsonObject->token)) ? sanitize($jsonObject->token) : false;
 		
-		$fields = '`id`, `premdays`';
+		$fields = '`id`, `premdays`, `secret`';
 		if ($config['twoFactorAuthenticator']) $fields .= ', `secret`';
 
 		$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `name`='{$username}' AND `password`='{$password}' LIMIT 1;");
@@ -45,13 +45,16 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 			}
 		}
 
-		$players = mysql_select_multi("SELECT `name` FROM `players` WHERE `account_id`='".$account['id']."';");
+		$players = mysql_select_multi("SELECT `name`, `sex` FROM `players` WHERE `account_id`='".$account['id']."';");
 		if ($players !== false) {
 
 			$gameserver = $config['gameserver'];
+			// todo: Fix dynamic desition to pass along token. (and verify that it works). Hostname: otx11.lan
+			$sessionKey = $username."\n".$jsonObject->password;
+			if (strlen($account['secret']) > 5) $sessionKey .= "\n".$token."\n".floor(time() / 30);
 			$response = array(
 				'session' => array(
-					'sessionkey' => $username."\n".$jsonObject->password."\n".$token."\n".floor(time() / 30),
+					'sessionkey' => $sessionKey,
 					'lastlogintime' => 0,
 					'ispremium' => ($account['premdays'] > 0) ? true : false,
 					'premiumuntil' => time() + ($account['premdays'] * 86400),
@@ -64,17 +67,25 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 							'name' => $gameserver['name'],
 							'externaladdress' => $gameserver['ip'],
 							'externalport' => $gameserver['port'],
-							'previewstate' => 0
+							'previewstate' => 0,
+							'location' => 'ALL',
+							'externaladdressunprotected' => $gameserver['ip'],
+							'externaladdressprotected' => $gameserver['ip']
 						)
 					),
 					'characters' => array(
-						//array( 'worldid' => ASD, 'name' => asd ),
+						//array( 'worldid' => ASD, 'name' => asd, 'ismale' => true, 'tutorial' => false ),
 					)
 				)
 			);
 
 			foreach ($players as $player) {
-				$response['playdata']['characters'][] = array('worldid' => 0, 'name' => $player['name']);
+				$response['playdata']['characters'][] = array(
+					'worldid' => 0,
+					'name' => $player['name'],
+					'ismale' => ($player['sex'] === 1) ? true : false,
+					'tutorial' => false
+				);
 			}
 
 			//error_log("= SESSION KEY: " . $response['session']['sessionkey']);
