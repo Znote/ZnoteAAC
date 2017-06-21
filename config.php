@@ -615,9 +615,9 @@
 
 	// Gameserver info is used for client 11+ loginWebService
 	$config['gameserver'] = array(
-		'ip' => $_SERVER["SERVER_ADDR"], // Can be an ip string like '123.123.123.123'
+		'ip' => '127.0.0.1',
 		'port' => 7172,
-		'name' => 'OTserv'
+		'name' => 'OTXServer-Global' // Must be identical to config.lua (OT config file) server name.
 	);
 
 	// How often do you want highscores to update?
