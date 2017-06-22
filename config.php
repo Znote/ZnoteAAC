@@ -49,8 +49,38 @@
 		- getClock(time(), true) = returns current time in formatted date
 		- getClock(false, true) = same as above
 		- getClock(false, true, false) = get current time, don't adjust timezone 
-		- echo getClock($profile_data['lastlogin'], true); = from characterprofile,
-		explains when user was last logged in. */
+		- echo getClock($profile_data['lastlogin'], true); = from characterprofile, explains when user was last logged in.
+		- multi months language:
+		function getClock($time = false, $format = false, $adjust = true) {
+    		if ($time === false) $time = time();
+   		 // Date string representation
+   		 $date = "d F Y (H:i)"; // 15 July 2013 (13:50)
+    		if ($adjust) $adjust = (1 * 3600); // Adjust to fit your timezone.
+    		else $adjust = 0;
+    		if ($format) {
+        		$EnglishMonth = date("F", $time+$adjust);
+        		// Will be translated to polish in switch statement
+        		$PolishMonth = $EnglishMonth;
+        		switch ($EnglishMonth) {
+        		    case 'January':
+        		        $Polishmonth = "PolishJanuary";
+        		        break;
+         		    case 'February':
+            		    $Polishmonth = "PolishFebruary";
+            		    break;
+            		// And so on....
+            		case 'December':
+                		$Polishmonth = "PolishDecember";
+                		break;
+        		}
+        		return str_replace($EnglishMonth, $Polishmonth, date($date, $time+$adjust));
+    		}
+    		else {
+        		return $time+$adjust;
+    		}
+		}			
+	*/
+
 	function getClock($time = false, $format = false, $adjust = true) {
 		if ($time === false) $time = time();
 		// Date string representation
