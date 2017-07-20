@@ -209,6 +209,7 @@ if (empty($errors) === false) {
 	?>
 	<h2>We tried to log you in, but...</h2>
 	<?php
+	header("HTTP/1.1 401 Not Found");
 	echo output_errors($errors);
 }
 
