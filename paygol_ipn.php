@@ -16,14 +16,14 @@ $service_id	= getValue($_GET['service_id']);
 $shortcode	= getValue($_GET['shortcode']);
 $keyword	= getValue($_GET['keyword']);
 $message	= getValue($_GET['message']);
-$sender	 = getValue($_GET['sender']);
+$sender	    = getValue($_GET['sender']);
 $operator	= getValue($_GET['operator']);
 $country	= getValue($_GET['country']);
-$custom	 = getValue($_GET['custom']);
-$points	 = getValue($_GET['points']);
-$price	 = getValue($_GET['price']);
+$custom	    = getValue($_GET['custom']);
+$points	    = getValue($_GET['points']);
+$price	    = getValue($_GET['price']);
 $currency	= getValue($_GET['currency']);
-$secret = getValue($_GET['secret']);
+$secret     = getValue($_GET['secret']);
 
 // config paygol settings
 $paygol = $config['paygol'];
