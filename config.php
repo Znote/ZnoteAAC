@@ -880,10 +880,11 @@
 	// to you 1 month after recieving 50+ eur.
 	$config['paygol'] = array(
 		'enabled' => false,
-		'serviceID' => 86648,// Service ID from paygol.com
+		'serviceID' => 86648, // Service ID from paygol.com
+		'secretKey' => 'xxxx-xxxx-xxxx-xxxx', // Secret key from paygol.com. Never share your secret key
 		'currency' => 'SEK',
 		'price' => 20,
-		'points' => 20, // Remember to write same details in paygol.com!
+		'points' => 20,
 		'name' => '20 points',
 		'returnURL' => "http://".$_SERVER['HTTP_HOST']."/success.php",
 		'cancelURL' => "http://".$_SERVER['HTTP_HOST']."/failed.php"
