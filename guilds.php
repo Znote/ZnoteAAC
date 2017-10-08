@@ -115,7 +115,8 @@ if (user_logged_in() === true) {
 						
 							if (preg_match("/^[a-zA-Z_ ]+$/", $_POST['guild_name'])) {
 							// Only allow normal symbols as guild name
-								
+								if (strlen($_POST['guild_name']) < 31) {
+
 								$guildname = sanitize($_POST['guild_name']);
 								
 								$gid = get_guild_id($guildname);
@@ -125,7 +126,8 @@ if (user_logged_in() === true) {
 									$guilds = guild_list($config['TFSVersion']);
 									header('Location: success.php');
 									exit();
-								} else echo 'A guild with that name already exist.';
+									} else echo 'A guild with that name already exist.';
+								} else echo 'Guild name is to long. It can has to be 30 or less characters long.';
 							} else echo 'Guild name may only contain a-z, A-Z and spaces.';
 						} else echo 'You are already in a guild.';
 					} else echo 'You need a premium account to create a guild.';
@@ -149,7 +151,7 @@ if (user_logged_in() === true) {
 				}
 				?>
 				</select>
-				<input type="text" maxlength="30" name="guild_name">
+				<input type="text" name="guild_name">
 				
 				<input type="submit" value="Create Guild">
 			</li>
