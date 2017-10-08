@@ -149,7 +149,7 @@ if (user_logged_in() === true) {
 				}
 				?>
 				</select>
-				<input type="text" name="guild_name">
+				<input type="text" maxlength="30" name="guild_name">
 				
 				<input type="submit" value="Create Guild">
 			</li>
