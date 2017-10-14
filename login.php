@@ -54,6 +54,10 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 			if (strlen($account['secret']) > 5) $sessionKey .= "\n".$token."\n".floor(time() / 30);
 			$response = array(
 				'session' => array(
+					'fpstracking' => false,
+					'isreturner' => true,
+					'returnernotification' => false,
+					'showrewardnews' => false,
 					'sessionkey' => $sessionKey,
 					'lastlogintime' => 0,
 					'ispremium' => ($account['premdays'] > 0) ? true : false,
@@ -70,7 +74,8 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 							'previewstate' => 0,
 							'location' => 'ALL',
 							'externaladdressunprotected' => $gameserver['ip'],
-							'externaladdressprotected' => $gameserver['ip']
+							'externaladdressprotected' => $gameserver['ip'],
+							'anticheatprotection' => false
 						)
 					),
 					'characters' => array(
