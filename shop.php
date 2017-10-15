@@ -133,11 +133,11 @@ foreach ($shop_list as $key => $offer) {
 ?>
 <div id="categoryNavigator">
 	<a class="nav_link" href="#all">ALL</a>
-	<a class="nav_link" href="#cat_itemids">ITEMS</a>
-	<a class="nav_link" href="#cat_premium">PREMIUM</a>
-	<a class="nav_link" href="#cat_outfits">OUTFITS</a>
-	<a class="nav_link" href="#cat_mounts">MOUNTS</a>
-	<a class="nav_link" href="#cat_misc">MISC</a>
+	<?php if (!empty($category_items)): ?><a class="nav_link" href="#cat_itemids">ITEMS</a><?php endif; ?>
+	<?php if (!empty($category_premium)): ?><a class="nav_link" href="#cat_premium">PREMIUM</a><?php endif; ?>
+	<?php if (!empty($category_outfits)): ?><a class="nav_link" href="#cat_outfits">OUTFITS</a><?php endif; ?>
+	<?php if (!empty($category_mounts)): ?><a class="nav_link" href="#cat_mounts">MOUNTS</a><?php endif; ?>
+	<?php if (!empty($category_misc)): ?><a class="nav_link" href="#cat_misc">MISC</a><?php endif; ?>
 </div>
 <script type="text/javascript">
 	function domReady () {
@@ -198,35 +198,38 @@ foreach ($shop_list as $key => $offer) {
 	}
 </script>
 
-<!-- ITEMIDS -->
-<table class="show" id="cat_itemids">
-	<tr class="yellow">
-		<td>Item:</td>
-		<?php if ($config['shop']['showImage']) { ?><td>Image:</td><?php } ?>
-		<td>Count:</td>
-		<td>Points:</td>
-		<?php if ($loggedin === true): ?><td>Action:</td><?php endif; ?>
-	</tr>
-	<?php foreach ($category_items as $key => $offers): ?>
-		<tr class="special">
-			<td><?php echo $offers['description']; ?></td>
-			<?php if ($config['shop']['showImage']):?>
-				<td><img src="http://<?php echo $config['shop']['imageServer']; ?>/<?php echo $offers['itemid']; ?>.<?php echo $config['shop']['imageType']; ?>" alt="img"></td>
-			<?php endif; ?>
-			<td><?php echo $offers['count']; ?>x</td>
-			<td><?php echo $offers['points']; ?></td>
-			<?php if ($loggedin === true): ?>
-			<td>
-				<form action="" method="POST">
-					<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
-					<input type="hidden" name="session" value="<?php echo time(); ?>">
-					<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
-				</form>
-			</td>
-			<?php endif; ?>
+<?php if (!empty($category_items)): ?>
+	<!-- ITEMIDS -->
+	<table class="show" id="cat_itemids">
+		<tr class="yellow">
+			<td>Item:</td>
+			<?php if ($config['shop']['showImage']) { ?><td>Image:</td><?php } ?>
+			<td>Count:</td>
+			<td>Points:</td>
+			<?php if ($loggedin === true): ?><td>Action:</td><?php endif; ?>
 		</tr>
-	<?php endforeach; ?>
-</table>
+		<?php foreach ($category_items as $key => $offers): ?>
+			<tr class="special">
+				<td><?php echo $offers['description']; ?></td>
+				<?php if ($config['shop']['showImage']):?>
+					<td><img src="http://<?php echo $config['shop']['imageServer']; ?>/<?php echo $offers['itemid']; ?>.<?php echo $config['shop']['imageType']; ?>" alt="img"></td>
+				<?php endif; ?>
+				<td><?php echo $offers['count']; ?>x</td>
+				<td><?php echo $offers['points']; ?></td>
+				<?php if ($loggedin === true): ?>
+				<td>
+					<form action="" method="POST">
+						<input type="hidden" name="buy" value="<?php echo (int)$key; ?>">
+						<input type="hidden" name="session" value="<?php echo time(); ?>">
+						<input type="submit" value="  PURCHASE  "  class="needconfirmation" data-item-name="<?php echo $offers['description']; ?>" data-item-cost="<?php echo $offers['points']; ?>">
+					</form>
+				</td>
+				<?php endif; ?>
+			</tr>
+		<?php endforeach; ?>
+	</table>
+<?php endif; ?>
+<?php if (!empty($category_premium)): ?>
 <!-- PREMIUM DURATION -->
 <table class="show" id="cat_premium">
 	<tr class="yellow">
@@ -256,6 +259,8 @@ foreach ($shop_list as $key => $offer) {
 		</tr>
 	<?php endforeach; ?>
 </table>
+<?php endif; ?>
+<?php if (!empty($category_outfits)): ?>
 <!-- OUTFITS -->
 <table class="show" id="cat_outfits">
 	<tr class="yellow">
@@ -283,6 +288,8 @@ foreach ($shop_list as $key => $offer) {
 		</tr>
 	<?php endforeach; ?>
 </table>
+<?php endif; ?>
+<?php if (!empty($category_mounts)): ?>
 <!-- MOUNTS -->
 <table class="show" id="cat_mounts">
 	<tr class="yellow">
@@ -310,6 +317,8 @@ foreach ($shop_list as $key => $offer) {
 		</tr>
 	<?php endforeach; ?>
 </table>
+<?php endif; ?>
+<?php if (!empty($category_misc)): ?>
 <!-- MISCELLANEOUS -->
 <table class="show" id="cat_misc">
 	<tr class="yellow">
@@ -343,6 +352,7 @@ foreach ($shop_list as $key => $offer) {
 		</tr>
 	<?php endforeach; ?>
 </table>
+<?php endif; ?>
 
 <?php if ($shop['enableShopConfirmation']) { ?>
 <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
