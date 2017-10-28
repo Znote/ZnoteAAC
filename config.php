@@ -669,7 +669,6 @@
 	);
 
 	// Email Server configurations (SMTP)
-
 	/*	Please consider using a released stable version of PHPMailer or you may run into issues, such as 6.0.1.
 		Download PHPMailer: https://github.com/PHPMailer/PHPMailer/
 		Extract to Znote AAC directory (where this config.php file is located)
