@@ -579,7 +579,7 @@
 		'onlinelist' => true,
 		// Image server may be unreliable and only for test,
 		// host yourself: https://otland.net/threads/item-images-10-92.242492/
-		'imageServer' => 'http://outfit-images.ots.me/animatedOutfits1090/animoutfit.php'
+		'imageServer' => 'http://outfit-images.ots.me/animatedOutfits1099/animoutfit.php'
 	);
 
 	// Level requirement to create guild? (Just set it to 1 to allow all levels).
