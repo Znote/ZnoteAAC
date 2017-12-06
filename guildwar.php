@@ -178,10 +178,13 @@ if (!empty($_GET['warid'])) {
 							$guild_2_kills++;
 					}
 					$url = url("guildwar.php?warid=". $wars['id']);
-					echo '<tr class="special" onclick="javascript:window.location.href=\'' . $url . '\'">';
-					echo '<td>'. $wars['name1'] .'</td>';
+					$guildname1 = url("guilds.php?name=". $wars['name1']);
+					$guildname2 = url("guilds.php?name=". $wars['name2']);
+					echo '<tr>';
+					echo '<td><a href="' . $guildname1 . '">'. $wars['name1'] .'</a></td>';
 					echo '<td>'. $guild_1_kills .' - ' . $guild_2_kills . '</td>';
-					echo '<td>'. $wars['name2'] .'</td>';
+					echo '<td><a href="' . $guildname2 . '">'. $wars['name2'] .'</a></td>';
+					echo '<td><a href="' . $url . '">View</a></td>';
 					echo '</tr>';
 				}
 				?>
