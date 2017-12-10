@@ -75,6 +75,7 @@ Znote AAC is very rich feature wise, here is an attempt at summarizing what we o
 - Email verification & lost account interface
 - Two-factor authentication support
 - Hide characters from character list
+- Support helpdesk (tickets)
 
 #### Create character:
 - Supports custom vocations, starting skills, available towns
@@ -162,6 +163,7 @@ Znote AAC is very rich feature wise, here is an attempt at summarizing what we o
 - Create news with a feature rich text editor
 - Add changelogs
 - Load and update server and spells information
+- Helpdesk
 
 ### TODO List:
 * Check [Milestones](https://github.com/Znote/ZnoteAAC/milestones)
