@@ -20,66 +20,69 @@ if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
 		$bid_char = (int)$bid_char;
 		$bid_amount = (int)$bid_amount;
 		$player = mysql_select_single("SELECT `id`, `account_id`, `name`, `level`, `balance` FROM `players` WHERE `id`='$bid_char' LIMIT 1;");
-		// Does player have or need premium?
-		$premstatus = $config['houseConfig']['requirePremium'];
-		if ($premstatus) {
-			$premstatus = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='".$player['account_id']."' LIMIT 1;");
-			$premstatus = ($premstatus['premdays'] > 0) ? true : false;
-		} else $premstatus = true;
-		if ($premstatus) {
-			// Can player have or bid on more houses?
-			$pHouseCount = mysql_select_single("SELECT COUNT('id') AS `value` FROM `houses` WHERE ((`highest_bidder`='$bid_char' AND `owner`='$bid_char') OR (`highest_bidder`='$bid_char') OR (`owner`='$bid_char')) AND `id`!='".$house['id']."' LIMIT 1;");
-			if ($pHouseCount['value'] < $config['houseConfig']['housesPerPlayer']) {
-				// Is character level high enough?
-				if ($player['level'] >= $config['houseConfig']['levelToBuyHouse']) {
-					// Can player afford this bid?
-					if ($player['balance'] > $bid_amount) {
-						// Is bid higher than previous bid?
-						if ($bid_amount > $house['bid']) {
-							// Is bid higher than lowest bid?
-							if ($bid_amount > $minbid) {
-								// Should only apply to external players, allowing a player to up his pledge without
-								// being forced to pay his full previous bid. 
-								if ($house['highest_bidder'] != $player['id']) $lastbid = $house['bid'] + 1;
-								else {
-									$lastbid = $house['last_bid'];
-									echo "<b><font color='green'>You have raised the house pledge to ".$bid_amount."gp!</font></b><br>";
-								}
-								// Has bid already started?
-								if ($house['bid_end'] > 0) {
-									if ($house['bid_end'] > time()) {
-										mysql_update("UPDATE `houses` SET `highest_bidder`='". $player['id'] ."', `bid`='$bid_amount', `last_bid`='$lastbid' WHERE `id`='". $house['id'] ."' LIMIT 1;");
+		
+		if (user_logged_in() === true && $player['account_id'] == $session_user_id) {
+			// Does player have or need premium?
+			$premstatus = $config['houseConfig']['requirePremium'];
+			if ($premstatus) {
+				$premstatus = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='".$player['account_id']."' LIMIT 1;");
+				$premstatus = ($premstatus['premdays'] > 0) ? true : false;
+			} else $premstatus = true;
+			if ($premstatus) {
+				// Can player have or bid on more houses?
+				$pHouseCount = mysql_select_single("SELECT COUNT('id') AS `value` FROM `houses` WHERE ((`highest_bidder`='$bid_char' AND `owner`='$bid_char') OR (`highest_bidder`='$bid_char') OR (`owner`='$bid_char')) AND `id`!='".$house['id']."' LIMIT 1;");
+				if ($pHouseCount['value'] < $config['houseConfig']['housesPerPlayer']) {
+					// Is character level high enough?
+					if ($player['level'] >= $config['houseConfig']['levelToBuyHouse']) {
+						// Can player afford this bid?
+						if ($player['balance'] > $bid_amount) {
+							// Is bid higher than previous bid?
+							if ($bid_amount > $house['bid']) {
+								// Is bid higher than lowest bid?
+								if ($bid_amount > $minbid) {
+									// Should only apply to external players, allowing a player to up his pledge without
+									// being forced to pay his full previous bid. 
+									if ($house['highest_bidder'] != $player['id']) $lastbid = $house['bid'] + 1;
+									else {
+										$lastbid = $house['last_bid'];
+										echo "<b><font color='green'>You have raised the house pledge to ".$bid_amount."gp!</font></b><br>";
+									}
+									// Has bid already started?
+									if ($house['bid_end'] > 0) {
+										if ($house['bid_end'] > time()) {
+											mysql_update("UPDATE `houses` SET `highest_bidder`='". $player['id'] ."', `bid`='$bid_amount', `last_bid`='$lastbid' WHERE `id`='". $house['id'] ."' LIMIT 1;");
+											$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
+										}
+									} else {
+										$lastbid = $minbid + 1;
+										$bidend = time() + $config['houseConfig']['auctionPeriod'];
+										mysql_update("UPDATE `houses` SET `highest_bidder`='". $player['id'] ."', `bid`='$bid_amount', `last_bid`='$lastbid', `bid_end`='$bidend' WHERE `id`='". $house['id'] ."' LIMIT 1;");
 										$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
 									}
-								} else {
-									$lastbid = $minbid + 1;
-									$bidend = time() + $config['houseConfig']['auctionPeriod'];
-									mysql_update("UPDATE `houses` SET `highest_bidder`='". $player['id'] ."', `bid`='$bid_amount', `last_bid`='$lastbid', `bid_end`='$bidend' WHERE `id`='". $house['id'] ."' LIMIT 1;");
-									$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
-								}
-								echo "<b><font color='green'>You have the highest bid on this house!</font></b>";
-							} else echo "<b><font color='red'>You need to place a bid that is higher or equal to {$minbid}gp.</font></b>";
-						} else {
-							// Check if current bid is higher than last_bid
-							if ($bid_amount > $house['last_bid']) {
-								// Should only apply to external players, allowing a player to up his pledge without
-								// being forced to pay his full previous bid.
-								if ($house['highest_bidder'] != $player['id']) {
-									$lastbid = $bid_amount + 1;
-									mysql_update("UPDATE `houses` SET `last_bid`='$lastbid' WHERE `id`='". $house['id'] ."' LIMIT 1;");
-									$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
-									echo "<b><font color='orange'>Unfortunately your bid was not higher than previous bidder.</font></b>";
-								} else {
-									echo "<b><font color='orange'>You already have a higher pledge on this house.</font></b>";
-								}
+									echo "<b><font color='green'>You have the highest bid on this house!</font></b>";
+								} else echo "<b><font color='red'>You need to place a bid that is higher or equal to {$minbid}gp.</font></b>";
 							} else {
-								echo "<b><font color='red'>Too low bid amount, someone else has a higher bid active.</font></b>";
+								// Check if current bid is higher than last_bid
+								if ($bid_amount > $house['last_bid']) {
+									// Should only apply to external players, allowing a player to up his pledge without
+									// being forced to pay his full previous bid.
+									if ($house['highest_bidder'] != $player['id']) {
+										$lastbid = $bid_amount + 1;
+										mysql_update("UPDATE `houses` SET `last_bid`='$lastbid' WHERE `id`='". $house['id'] ."' LIMIT 1;");
+										$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
+										echo "<b><font color='orange'>Unfortunately your bid was not higher than previous bidder.</font></b>";
+									} else {
+										echo "<b><font color='orange'>You already have a higher pledge on this house.</font></b>";
+									}
+								} else {
+									echo "<b><font color='red'>Too low bid amount, someone else has a higher bid active.</font></b>";
+								}
 							}
-						}
-					} else echo "<b><font color='red'>You don't have enough money to bid this high.</font></b>";
-				} else echo "<b><font color='red'>Your character is to low level, must be higher level than ", $config['houseConfig']['levelToBuyHouse']-1 ," to buy a house.</font></b>";
-			} else echo "<b><font color='red'>You cannot have more houses.</font></b>";
-		} else echo "<b><font color='red'>You need premium account to purchase houses.</font></b>";
+						} else echo "<b><font color='red'>You don't have enough money to bid this high.</font></b>";
+					} else echo "<b><font color='red'>Your character is to low level, must be higher level than ", $config['houseConfig']['levelToBuyHouse']-1 ," to buy a house.</font></b>";
+				} else echo "<b><font color='red'>You cannot have more houses.</font></b>";
+			} else echo "<b><font color='red'>You need premium account to purchase houses.</font></b>";
+		} else echo "<b><font color='red'>You may only bid on houses for characters on your account.</font></b>";
 	}
 
 	// HTML structure and logic
