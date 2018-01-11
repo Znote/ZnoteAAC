@@ -50,6 +50,8 @@ if (user_logged_in() && is_admin($user_data)) {
 						if ("$attributeName" == "name") {
 							$vocId = vocation_name_to_id("$attributeValue");
 							$vocations[] = ($vocId !== false) ? $vocId : "$attributeValue";
+						} elseif ("$attributeName" == "id") {
+							$vocations[] = (int)"$attributeValue";
 						}
 					}
 				}
