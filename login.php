@@ -55,6 +55,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 			$response = array(
 				'session' => array(
 					'fpstracking' => false,
+					'optiontracking' => false,
 					'isreturner' => true,
 					'returnernotification' => false,
 					'showrewardnews' => false,
@@ -75,6 +76,8 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TF
 							'location' => 'ALL',
 							'externaladdressunprotected' => $gameserver['ip'],
 							'externaladdressprotected' => $gameserver['ip'],
+							'externalportunprotected' => $gameserver['port'],
+							'externalportprotected' => $gameserver['port'],
 							'anticheatprotection' => false
 						)
 					),
