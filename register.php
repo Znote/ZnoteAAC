@@ -22,27 +22,8 @@ if (empty($_POST) === false) {
 		}
 
 		if ($config['use_captcha']) {
-			$captcha = (isset($_POST['g-recaptcha-response'])) ? $_POST['g-recaptcha-response'] : false;
-			if(!$captcha) {
-				$errors[] = 'Please check the the captcha form.';
-			} else {
-				$secretKey = $config['captcha_secret_key'];
-				$ip = $_SERVER['REMOTE_ADDR'];
-				// curl start
-				$curl_connection = curl_init("https://www.google.com/recaptcha/api/siteverify");
-				$post_string = "secret=".$secretKey."&response=".$captcha."&remoteip=".$ip;
-				curl_setopt($curl_connection, CURLOPT_CONNECTTIMEOUT, 5);
-				curl_setopt($curl_connection, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($curl_connection, CURLOPT_SSL_VERIFYPEER, false);
-				curl_setopt($curl_connection, CURLOPT_FOLLOWLOCATION, 0);
-				curl_setopt($curl_connection, CURLOPT_POSTFIELDS, $post_string);
-				$response = curl_exec($curl_connection);
-				curl_close($curl_connection);
-				// Curl end
-				$responseKeys = json_decode($response,true);
-				if(intval($responseKeys["success"]) !== 1) {
-					$errors[] = 'Captcha failed.';
-				}
+			if(!verifyGoogleReCaptcha($_POST['g-recaptcha-response'])) {
+				$errors[] = "Please confirm that you're not a robot.";
 			}
 		}
 
