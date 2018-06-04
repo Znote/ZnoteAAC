@@ -780,6 +780,7 @@
 	$config['use_captcha'] = false;
 	$config['captcha_site_key'] = "Site key";
 	$config['captcha_secret_key'] = "Secret key";
+	$config['captcha_use_curl'] = false; // Set to false if you don't have cURL installed, otherwise set it to true
 
 	// Session prefix, if you are hosting multiple sites, make the session name different to avoid conflict.
 	$config['session_prefix'] = 'znote_';

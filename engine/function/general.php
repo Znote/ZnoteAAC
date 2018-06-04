@@ -527,4 +527,34 @@ function generateRandomString($length = 16) {
 	return $randomString;
 }
 
+function verifyGoogleReCaptcha($postResponse = null) {
+	if(!isset($postResponse) || empty($postResponse)) {
+		return false;
+	}
+
+	$recaptcha_api_url = 'https://www.google.com/recaptcha/api/siteverify';
+	$secretKey = config('captcha_secret_key');
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$params = 'secret='.$secretKey.'&response='.$postResponse.'&remoteip='.$ip;
+
+	$useCurl = config('captcha_use_curl');
+	if($useCurl) {
+		$curl_connection = curl_init($recaptcha_api_url);
+
+		curl_setopt($curl_connection, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($curl_connection, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl_connection, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl_connection, CURLOPT_FOLLOWLOCATION, 0);
+		curl_setopt($curl_connection, CURLOPT_POSTFIELDS, $params);
+
+		$response = curl_exec($curl_connection);
+		curl_close($curl_connection);
+	} else {
+		$response = file_get_contents($recaptcha_api_url . '?' . $params);
+	}
+
+	$json = json_decode($response);
+	return isset($json->success) && $json->success;
+}
+
 ?>
