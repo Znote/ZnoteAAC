@@ -1000,4 +1000,17 @@
 			'points' => 20,
 		),
 	);
-?>
+
+	//////////////////////////
+	/// OTServers.eu voting
+	//
+	// Start by creating an account at OTServers.eu and add your server.
+	// You can find your secret token by logging in on OTServers.eu and go to 'MY SERVER' then 'Encourage players to vote'.
+	$config['otservers_eu_voting'] = [
+		'enabled' => false,
+		'voteUrl' => 'https://api.otservers.eu/vote_link.php',
+		'voteCheckUrl' => 'https://api.otservers.eu/vote_check.php',
+		'secretToken' => '', //Enter your secret token. Do not share with anyone!
+		'landingPage' => '/voting.php?action=reward', //The user will be redirected to this page after voting
+		'points' => '1' //Amount of points to give as reward
+	];
