@@ -25,6 +25,7 @@ function TransformToBBCode($string) {
 		'[img]{$1}[/img]'    => '<a href="$1" target="_BLANK"><img src="$1" alt="image" style="width: 100%"></a>',
 		'[link]{$1}[/link]'    => '<a href="$1">$1</a>',
 		'[link={$1}]{$2}[/link]'   => '<a href="$1" target="_BLANK">$2</a>',
+		'[url={$1}]{$2}[/url]'   => '<a href="$1" target="_BLANK">$2</a>',
 		'[color={$1}]{$2}[/color]' => '<font color="$1">$2</font>',
 		'[*]{$1}[/*]' => '<li>$1</li>',
 		'[youtube]{$1}[/youtube]' => '<div class="youtube"><div class="aspectratio"><iframe src="//www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe></div></div>',
@@ -33,6 +34,11 @@ function TransformToBBCode($string) {
 	foreach ($tags as $tag => $value) {
 		$code = preg_replace('/placeholder([0-9]+)/', '(.*?)', preg_quote(preg_replace('/\{\$([0-9]+)\}/', 'placeholder$1', $tag), '/'));
 		$string = preg_replace('/'.$code.'/i', $value, $string);
+		if (strpos($string, "<a href=") !== false) {
+            if (strpos($string, "http") === false) {
+                $string = substr_replace($string, "//", 9, 0);
+            }
+        }
 	}
 
 	return $string;
