@@ -35,10 +35,10 @@ function TransformToBBCode($string) {
 		$code = preg_replace('/placeholder([0-9]+)/', '(.*?)', preg_quote(preg_replace('/\{\$([0-9]+)\}/', 'placeholder$1', $tag), '/'));
 		$string = preg_replace('/'.$code.'/i', $value, $string);
 		if (strpos($string, "<a href=") !== false) {
-            if (strpos($string, "http") === false) {
-                $string = substr_replace($string, "//", 9, 0);
-            }
-        }
+			if (strpos($string, "http") === false) {
+				$string = substr_replace($string, "//", 9, 0);
+			}
+		}
 	}
 
 	return $string;
