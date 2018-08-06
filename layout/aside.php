@@ -1,11 +1,12 @@
 <div id="sidebar_container">
-	<?php 
+	<?php
 		if (user_logged_in() === true) {
-			include 'layout/widgets/loggedin.php'; 
+			include 'layout/widgets/loggedin.php';
 		} else {
-			include 'layout/widgets/login.php'; 
+			include 'layout/widgets/login.php';
 		}
-		if (user_logged_in() && is_admin($user_data)) include 'layout/widgets/Wadmin.php'; 
+		if (user_logged_in() && is_admin($user_data)) include 'layout/widgets/Wadmin.php';
+		if (user_logged_in()) include 'layout/widgets/vote.php';
 		include 'layout/widgets/charactersearch.php';
 		include 'layout/widgets/topplayers.php';
 		include 'layout/widgets/highscore.php';
