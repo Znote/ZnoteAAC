@@ -50,7 +50,7 @@ if (empty($_POST) === false) {
 			$acc_id = user_character_account_id($_POST['reset_pass']);
 			
 			if ($acc_id != $session_user_id) {
-				if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10') {
+				if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' || $config['ServerEngine'] == 'OTHIRE') {
 					user_change_password($acc_id, $_POST['new_pass']);
 				} else if ($config['ServerEngine'] == 'TFS_03') {
 					user_change_password03($acc_id, $_POST['new_pass']);
@@ -89,7 +89,7 @@ if (empty($_POST) === false) {
 	if (empty($_POST['position_name']) === false && empty($_POST['position_type']) === false) {
 		if (user_character_exist($_POST['position_name'])) {
 			if (array_key_exists($_POST['position_type'], $config['ingame_positions'])) {
-				if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10') {
+				if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' || $config['ServerEngine'] == 'OTHIRE') {
 					set_ingame_position($_POST['position_name'], $_POST['position_type']);
 				} else if ($config['ServerEngine'] == 'TFS_03') {
 					set_ingame_position03($_POST['position_name'], $_POST['position_type']);

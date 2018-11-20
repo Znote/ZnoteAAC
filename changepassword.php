@@ -50,7 +50,7 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 } else {
 	if (empty($_POST) === false && empty($errors) === true) {
 		//Posted the form without errors
-		if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10') {
+		if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' || $config['ServerEngine'] == 'OTHIRE') {
 			user_change_password($session_user_id, $_POST['new_password']);
 		} else if ($config['ServerEngine'] == 'TFS_03') {
 			user_change_password03($session_user_id, $_POST['new_password']);
