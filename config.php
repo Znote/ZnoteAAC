@@ -8,12 +8,13 @@
 	// Tested with TFS items.xml master (1.3)
 	$config['items'] = false;
 	
-	// Available options: TFS_02, TFS_03
+	// Available options: TFS_02, TFS_03, OTHIRE
+	// OTHIRE = OTHIRE
 	// TFS 0.2 = TFS_02
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
 	// TFS 0.4 = TFS_03
 	// TFS 1.0 = TFS_10 (Under developement)
-	$config['TFSVersion'] = 'TFS_10';
+	$config['ServerEngine'] = 'TFS_10';
 	// As far as I know, OTX is based on TFS_03, so make sure TFS version is configured TFS_03
 	$config['CustomVersion'] = false;
 

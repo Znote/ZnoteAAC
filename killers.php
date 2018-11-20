@@ -1,5 +1,5 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
-if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') {
+if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10') {
 $cache = new Cache('engine/cache/killers');
 if ($cache->hasExpired()) {
 	$killers = fetchMurders();
@@ -84,7 +84,7 @@ if ($latests) {
 <?php
 } else echo 'No player kills exist.';
 
-} else if ($config['TFSVersion'] == 'TFS_03') {
+} else if ($config['ServerEngine'] == 'TFS_03') {
 	$cache = new Cache('engine/cache/killers');
 	if ($cache->hasExpired()) {
 		$deaths = fetchLatestDeaths_03(30, true);

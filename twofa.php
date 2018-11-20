@@ -1,6 +1,6 @@
 <?php require_once 'engine/init.php'; if ($config['twoFactorAuthenticator'] === false) die("twoFactorAuthenticator is disabled in config.php"); protect_page(); include 'layout/overall/header.php';
 // Two-Factor Authentication setup page
-if ($config['TFSVersion'] !== 'TFS_10') {
+if ($config['ServerEngine'] !== 'TFS_10') {
 	?>
 	<h1>Server compatibility error</h1>
 	<p>Sorry, this server is not compatible with Two-Factor Authentication.<br>

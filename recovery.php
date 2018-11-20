@@ -21,7 +21,7 @@ if ($config['mailserver']['accountRecovery']) {
 			if (!$username) {
 				// Recover username
 				$salt = '';
-				if ($config['TFSVersion'] != 'TFS_03') {
+				if ($config['ServerEngine'] != 'TFS_03') {
 					// TFS 0.2 and 1.0
 					$password = sha1($password);
 				} else {
@@ -61,7 +61,7 @@ if ($config['mailserver']['accountRecovery']) {
 				// Recover password
 				$newpass = rand(100000000, 999999999);
 				$salt = '';
-				if ($config['TFSVersion'] != 'TFS_03') {
+				if ($config['ServerEngine'] != 'TFS_03') {
 					// TFS 0.2 and 1.0
 					$password = sha1($newpass);
 				} else {

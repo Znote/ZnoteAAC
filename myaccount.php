@@ -52,7 +52,7 @@ if (!empty($_POST['selected_character'])) {
 				if (user_character_account_id($char_name) === $session_user_id) {
 					$charid = user_character_id($char_name);
 					if ($charid !== false) {
-						if ($config['TFSVersion'] === 'TFS_10') {
+						if ($config['ServerEngine'] === 'TFS_10') {
 							if (!user_is_online_10($charid)) {
 								if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
 								else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
@@ -75,7 +75,7 @@ if (!empty($_POST['selected_character'])) {
 				$newname = isset($_POST['newName']) ? getValue($_POST['newName']) : '';
 
 				$player = false;
-				if ($config['TFSVersion'] === 'TFS_10') {
+				if ($config['ServerEngine'] === 'TFS_10') {
 					$player = mysql_select_single("SELECT `id`, `account_id` FROM `players` WHERE `name` = '$oldname'");
 					$player['online'] = (user_is_online_10($player['id'])) ? 1 : 0;
 				} else $player = mysql_select_single("SELECT `id`, `account_id`, `online` FROM `players` WHERE `name` = '$oldname'");
@@ -144,7 +144,7 @@ if (!empty($_POST['selected_character'])) {
 					$char_id = (int)user_character_id($char_name);
 					$account_id = user_character_account_id($char_name);
 
-					if ($config['TFSVersion'] == 'TFS_10') {
+					if ($config['ServerEngine'] == 'TFS_10') {
 						$chr_data['online'] = user_is_online_10($char_id) ? 1 : 0;
 					} else $chr_data = user_character_data($char_id, 'online');
 					if ($chr_data['online'] != 1) {
@@ -242,7 +242,7 @@ if ($render_page) {
 		<p>Welcome to your account page, <?php echo $user_data['name']; ?><br>
 			You have <?php echo $user_data['premdays']; ?> days remaining premium account.</p>
 		<?php
-		if ($config['TFSVersion'] === 'TFS_10' && $config['twoFactorAuthenticator']) {
+		if ($config['ServerEngine'] === 'TFS_10' && $config['twoFactorAuthenticator']) {
 
 			$query = mysql_select_single("SELECT `secret` FROM `accounts` WHERE `id`='".(int)$session_user_id."' LIMIT 1;");
 			$status = ($query['secret'] === NULL) ? false : true;

@@ -17,7 +17,7 @@ if (!isset($config['api']['debug'])) $config['api']['debug'] = false;
 $response = array(
 	'version' => array(
 		'znote' => $version,
-		'ot' => $config['TFSVersion']
+		'ot' => $config['ServerEngine']
 	),
 );
 

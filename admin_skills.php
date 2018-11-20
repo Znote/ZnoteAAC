@@ -13,7 +13,7 @@ function playerSkill($skills, $id) {
 // UPDATE SKILLS POST
 if (isset($_POST['pid']) && (int)$_POST['pid'] > 0) {
 	$pid = (int)$_POST['pid'];
-	if ($config['TFSVersion'] != 'TFS_10') $status = user_is_online($pid);
+	if ($config['ServerEngine'] != 'TFS_10') $status = user_is_online($pid);
 	else $status = user_is_online_10($pid);
 
 	if (!$status) {
@@ -46,7 +46,7 @@ if (isset($_POST['pid']) && (int)$_POST['pid'] > 0) {
 		$newcap = $playercnf['base']['cap'] + ($statgain['cap'] * $LevelsFromBase);
 
 		// Calibrate hp/mana/cap
-		if ($config['TFSVersion'] != 'TFS_10') {
+		if ($config['ServerEngine'] != 'TFS_10') {
 mysql_update("UPDATE `player_skills` SET `value`='". (int)$_POST['fist'] ."' WHERE `player_id`='$pid' AND `skillid`='0' LIMIT 1;");
 mysql_update("UPDATE `player_skills` SET `value`='". (int)$_POST['club'] ."' WHERE `player_id`='$pid' AND `skillid`='1' LIMIT 1;");
 mysql_update("UPDATE `player_skills` SET `value`='". (int)$_POST['sword'] ."' WHERE `player_id`='$pid' AND `skillid`='2' LIMIT 1;");
@@ -86,7 +86,7 @@ if ($name !== false) {
 	if (user_character_exist($name)) {
 		$pid = user_character_id($name);
 
-		if ($config['TFSVersion'] != 'TFS_10') {
+		if ($config['ServerEngine'] != 'TFS_10') {
 			$skills = mysql_select_multi("SELECT `value` FROM `player_skills` WHERE `player_id`='$pid' LIMIT 7;");
 			$player = mysql_select_single("SELECT `maglevel`, `level`, `vocation` FROM `players` WHERE `id`='$pid' LIMIT 1;");
 			$skills[] = array('value' => $player['maglevel']);

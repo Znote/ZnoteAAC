@@ -37,7 +37,7 @@ Without modifying config.php, enter the website and wait for mysql connection er
 This will show you the rest of the instructions as well as the mysql schema.
 
 2: Edit config.php and: 
-- modify $config['TFSVersion'] with correct TFS version you are running. (TFS_02, TFS_03, TFS_10). 
+- modify $config['ServerEngine'] with correct TFS version you are running. (TFS_02, TFS_03, TFS_10). 
 - modify $config['page_admin_access'] with your admin account username(s).
 
 3: Before inserting correct SQL connection details, visit the website ( http://127.0.0.1/ ), it will generate a mysql schema you should import to your OT servers database.
