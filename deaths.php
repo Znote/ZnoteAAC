@@ -2,7 +2,7 @@
 $cache = new Cache('engine/cache/deaths');
 if ($cache->hasExpired()) {
 	
-	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10') {
+	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' || $config['ServerEngine'] !== 'OTHIRE') {
 		$deaths = fetchLatestDeaths();
 	} else if ($config['ServerEngine'] == 'TFS_03') {
 		$deaths = fetchLatestDeaths_03(30);

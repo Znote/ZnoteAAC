@@ -571,7 +571,7 @@ if ($highest_access >= 2) {
 		}
 	}
 	
-	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' && $config['guildwar_enabled'] === true) {
+	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE' || $config['ServerEngine'] == 'TFS_10' && $config['guildwar_enabled'] === true) {
 		if (!empty($_POST['warinvite'])) {
 			if (get_guild_id($_POST['warinvite'])) {
 				$status = false;
@@ -814,7 +814,7 @@ if ($highest_access >= 2) {
 			</ul>
 		</form>
 		<?php } ?>
-		<?php if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' && $config['guildwar_enabled'] === true) { ?>
+		<?php if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE' || $config['ServerEngine'] == 'TFS_10' && $config['guildwar_enabled'] === true) { ?>
 		<h2>Guild War Management:</h2>
 		<form action="" method="post">
 			<ul>
@@ -859,7 +859,7 @@ if ($highest_access >= 2) {
 <!-- end leader-->
 <?php
 if ($config['guildwar_enabled'] === true) {
-	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10') $wardata = get_guild_wars();
+	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE' || $config['ServerEngine'] == 'TFS_10') $wardata = get_guild_wars();
 	else if ($config['ServerEngine'] == 'TFS_03') $wardata = get_guild_wars03();
 	else die("Can't recognize TFS version. It has to be either TFS_02 or TFS_03. Correct this in config.php");
 	$war_exist = false;

@@ -80,7 +80,7 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 			header('Location: sub.php?page=houses');
 		else
 			echo 'Sub page system disabled.';
-	} else if ($config['ServerEngine'] === 'TFS_02') {
+	} else if ($config['ServerEngine'] === 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE') {
 		$house = $config['house'];
 		if (!is_file($house['house_file'])) {
 			echo("<h3>House file not found</h3><p>FAILED TO LOCATE/READ FILE AT:<br><font color='red'>". $house['house_file'] ."</font><br><br>LINUX users: Make sure www-data have read access to file.<br>WINDOWS users: Learn to write correct file path.</p>");

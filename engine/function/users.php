@@ -538,7 +538,7 @@ function get_guild_data($name) {
 	if (config('ServerEngine') !== 'OTHIRE')
 		return mysql_select_single("SELECT `id`, `name`, `ownerid`, `creationdata`, `motd` FROM `guilds` WHERE `name`='$name' LIMIT 1;");
 	else
-		return mysql_select_single("SELECT `id`, `name`, `owner_id`, `creationdate`, `motd` FROM `guilds` WHERE `name`='$name' LIMIT 1;");
+		return mysql_select_single("SELECT `id`, `name`, `owner_id`, `creationdate` FROM `guilds` WHERE `name`='$name' LIMIT 1;");
 }
 
 // Get complete list of guilds

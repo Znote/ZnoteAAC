@@ -142,7 +142,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				
 				<!-- Display house start -->
 				<?php
-				if ($config['ServerEngine'] !== 'TFS_02') 
+				if ($config['ServerEngine'] !== 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE') 
 				{
 					$townid = ($config['ServerEngine'] === 'TFS_03') ? 'town' : 'town_id';
 					$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `$townid` AS `town_id` FROM `houses` WHERE `owner` = $user_id;");
@@ -276,7 +276,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				<li>
 					<b>Death List:</b><br>
 					<?php
-					if ($config['ServerEngine'] == 'TFS_02') 
+					if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE') 
 					{
 						$array = user_fetch_deathlist($user_id);
 						if ($array) 
