@@ -1016,21 +1016,30 @@ function user_recover($mode, $edom, $email, $character, $ip) {
 	$ip = character IP
 */
 	// Structure verify array data correctly
-	if ($mode === 'username') {
-		$verify_data = array(
-			'password' => sha1($edom),
-			'email' => $email
-		);
-	} else {
-		$verify_data = array(
-		if (config('ServerEngine') !== 'OTHIRE') {
-			'name' => $edom,
-			'email' => $email
+	if (config('ServerEngine') !== 'OTHIRE') {
+		if ($mode === 'username') {
+			$verify_data = array(
+				'password' => sha1($edom),
+				'email' => $email
+			);
 		} else {
-			'id' => $edom,
-			'email' => $email			
-		}	
-		);
+			$verify_data = array(
+				'name' => $edom,
+				'email' => $email
+			);
+		}
+	} else {
+		if ($mode === 'username') {
+			$verify_data = array(
+				'password' => sha1($edom),
+				'email' => $email
+			);
+		} else {
+			$verify_data = array(
+				'id' => $edom,
+				'email' => $email
+			);
+		}		
 	}
 	// Determine if the submitted information is correct and herit from same account
 	if (user_account_fields_verify_value($verify_data)) {
