@@ -132,7 +132,7 @@ if (empty($_POST) === false) {
 	} else {
 
 		// Starting loging
-		if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE' || $config['ServerEngine'] == 'TFS_10') $login = user_login($username, $password);
+		if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'OTHIRE' || $config['ServerEngine'] == 'TFS_10') $login = user_login($username, $password);
 		else if ($config['ServerEngine'] == 'TFS_03') $login = user_login_03($username, $password);
 		else $login = false;
 		if ($login === false) {

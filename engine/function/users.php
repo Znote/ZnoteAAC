@@ -1256,7 +1256,7 @@ function user_create_account($register_data, $maildata) {
 }
 
 // CREATE CHARACTER
-function user_create_character($character_data) { // EDITAR AQUI
+function user_create_character($character_data) {
 	array_walk($character_data, 'array_sanitize');
 	$cnf = fullConfig();
 
@@ -1277,50 +1277,95 @@ function user_create_character($character_data) { // EDITAR AQUI
 	$cap	= $base['cap']    + ( $gains['cap'] * $leveldiff );
 	
 	// This is TFS 0.2 compatible import data with Znote AAC mysql schema
-	$import_data = array(
-		'name'	=>	$character_data['name'],
-		'group_id' => 1,
-		'account_id' => $character_data['account_id'],
-		'level' => $create['level'],
-		'vocation'	=>	$vocation,
-		'health' => $health,
-		'healthmax' => $health,
-		'experience' => level_to_experience($create['level']),
-		'lookbody' => $outfit['body'], /* STARTER OUTFITS */
-		'lookfeet' => $outfit['feet'],
-		'lookhead' => $outfit['head'],
-		'looklegs' => $outfit['legs'],
-		'looktype' => $outfit['id'],
-		'lookaddons' => 0,
-		'maglevel' => $skills['magic'],
-		'mana' => $mana,
-		'manamax' => $mana,
-		'manaspent' => 0,
-		'soul' => $base['soul'],
-		'town_id' => $character_data['town_id'],
-		'posx' => $cnf['default_pos']['x'],
-		'posy' => $cnf['default_pos']['y'],
-		'posz' => $cnf['default_pos']['z'],
-		'conditions' => '',
-		'cap' => $cap,
-		'sex' => $character_data['sex'],
-		'lastlogin' => 0,
-		'lastip' => $character_data['lastip'],
-		'save' => 1,
-		'skull' => 0,
-		'skulltime' => 0,
-		'rank_id' => 0,
-		'guildnick' => '',
-		'lastlogout' => 0,
-		'blessings' => 0,
-		'direction' => 0,
-		'loss_experience' => 10,
-		'loss_mana' => 10,
-		'loss_skills' => 10,
-		'premend' => 0,
-		'online' => 0,
-		'balance' => 0
-	);
+	if (config('ServerEngine') !== 'OTHIRE') {
+		$import_data = array(
+			'name'	=>	$character_data['name'],
+			'group_id' => 1,
+			'account_id' => $character_data['account_id'],
+			'level' => $create['level'],
+			'vocation'	=>	$vocation,
+			'health' => $health,
+			'healthmax' => $health,
+			'experience' => level_to_experience($create['level']),
+			'lookbody' => $outfit['body'], /* STARTER OUTFITS */
+			'lookfeet' => $outfit['feet'],
+			'lookhead' => $outfit['head'],
+			'looklegs' => $outfit['legs'],
+			'looktype' => $outfit['id'],
+			'lookaddons' => 0,
+			'maglevel' => $skills['magic'],
+			'mana' => $mana,
+			'manamax' => $mana,
+			'manaspent' => 0,
+			'soul' => $base['soul'],
+			'town_id' => $character_data['town_id'],
+			'posx' => $cnf['default_pos']['x'],
+			'posy' => $cnf['default_pos']['y'],
+			'posz' => $cnf['default_pos']['z'],
+			'conditions' => '',
+			'cap' => $cap,
+			'sex' => $character_data['sex'],
+			'lastlogin' => 0,
+			'lastip' => $character_data['lastip'],
+			'save' => 1,
+			'skull' => 0,
+			'skulltime' => 0,
+			'rank_id' => 0,
+			'guildnick' => '',
+			'lastlogout' => 0,
+			'blessings' => 0,
+			'direction' => 0,
+			'loss_experience' => 10,
+			'loss_mana' => 10,
+			'loss_skills' => 10,
+			'premend' => 0,
+			'online' => 0,
+			'balance' => 0
+		);
+	} else {
+		$import_data = array(
+			'name'	=>	$character_data['name'],
+			'group_id' => 1,
+			'account_id' => $character_data['account_id'],
+			'level' => $create['level'],
+			'vocation'	=>	$vocation,
+			'health' => $health,
+			'healthmax' => $health,
+			'experience' => level_to_experience($create['level']),
+			'lookbody' => $outfit['body'], /* STARTER OUTFITS */
+			'lookfeet' => $outfit['feet'],
+			'lookhead' => $outfit['head'],
+			'looklegs' => $outfit['legs'],
+			'looktype' => $outfit['id'],
+			'maglevel' => $skills['magic'],
+			'mana' => $mana,
+			'manamax' => $mana,
+			'manaspent' => 0,
+			'soul' => $base['soul'],
+			'town_id' => $character_data['town_id'],
+			'posx' => $cnf['default_pos']['x'],
+			'posy' => $cnf['default_pos']['y'],
+			'posz' => $cnf['default_pos']['z'],
+			'conditions' => '',
+			'cap' => $cap,
+			'sex' => $character_data['sex'],
+			'lastlogin' => 0,
+			'lastip' => $character_data['lastip'],
+			'save' => 1,
+			'skull_type' => 0,
+			'skull_time' => 0,
+			'rank_id' => 0,
+			'guildnick' => '',
+			'lastlogout' => 0,
+			'direction' => 0,
+			'loss_experience' => 100,
+			'loss_mana' => 100,
+			'loss_skills' => 100,
+			'loss_items' => 10,
+			'online' => 0,
+			'balance' => 0
+		);		
+	}
 	
 	// TFS 1.0 variations
 	if ($cnf['ServerEngine'] === 'TFS_10') {

@@ -239,8 +239,17 @@ if ($render_page) {
 	?>
 	<div id="myaccount">
 		<h1>My account</h1>
-		<p>Welcome to your account page, <?php echo $user_data['name']; ?><br>
-			You have <?php echo $user_data['premdays']; ?> days remaining premium account.</p>
+		<p>Welcome to your account page, <?php if ($config['ServerEngine'] !== 'OTHIRE') echo $user_data['name']; else echo $user_data['id']; ?><br>
+			<?php if ($config['ServerEngine'] !== 'OTHIRE') {
+			echo 'You have ' .$user_data['premdays']. 'days remaining premium account.'; 
+			} else {
+				if ($user_data['premend'] != 0) {
+					echo 'Your premium account will last till ';
+					echo date("d/m/Y", $user_data['premend']);
+				} else {
+					echo 'You do not have premium account days.';
+				}				
+			} ?></p>
 		<?php
 		if ($config['ServerEngine'] === 'TFS_10' && $config['twoFactorAuthenticator']) {
 
