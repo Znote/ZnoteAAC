@@ -142,7 +142,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				
 				<!-- Display house start -->
 				<?php
-				if ($config['ServerEngine'] !== 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE') 
+				if ($config['ServerEngine'] !== 'TFS_02' || $config['ServerEngine'] == 'OTHIRE') 
 				{
 					$townid = ($config['ServerEngine'] === 'TFS_03') ? 'town' : 'town_id';
 					$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `$townid` AS `town_id` FROM `houses` WHERE `owner` = $user_id;");
@@ -276,7 +276,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				<li>
 					<b>Death List:</b><br>
 					<?php
-					if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] !== 'OTHIRE') 
+					if ($config['ServerEngine'] == 'TFS_02') 
 					{
 						$array = user_fetch_deathlist($user_id);
 						if ($array) 
@@ -355,7 +355,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							echo '<b><font color="green">This player has never died.</font></b>'; 
 						}
 					} 
-					else if ($config['ServerEngine'] == 'TFS_03') 
+					else if ($config['ServerEngine'] == 'TFS_03' || $config['ServerEngine'] == 'OTHIRE') 
 					{
 						//mysql_select_single("SELECT * FROM players WHERE name='TEST DEBUG';");
 						$array = user_fetch_deathlist03($user_id);

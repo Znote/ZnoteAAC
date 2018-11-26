@@ -1,5 +1,5 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
-if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' || $config['ServerEngine'] !== 'OTHIRE') {
+if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' || $config['ServerEngine'] == 'OTHIRE') {
 $cache = new Cache('engine/cache/killers');
 if ($cache->hasExpired()) {
 	$killers = fetchMurders();
