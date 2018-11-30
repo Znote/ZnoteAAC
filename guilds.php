@@ -5,8 +5,13 @@ $isOtx = ($config['CustomVersion'] == 'OTX') ? true : false;
 function guild_list($TFSVersion) {
 	$cache = new Cache('engine/cache/guildlist');
 	if ($cache->hasExpired()) {
-		if ($TFSVersion != 'TFS_10') $guilds = mysql_select_multi("SELECT `t`.`id`, `t`.`name`, `t`.`creationdata`, `motd`, (SELECT count(p.rank_id) FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =`t`.`id`) AS `total` FROM `guilds` as `t` ORDER BY `t`.`name`;");
-		else $guilds = mysql_select_multi("SELECT `id`, `name`, `creationdata`, `motd`, (SELECT COUNT('guild_id') FROM `guild_membership` WHERE `guild_id`=`id`) AS `total` FROM `guilds` ORDER BY `name`;");
+		if ($TFSVersion != 'TFS_10')
+			if ($TFSVersion === 'OTHIRE')
+				$guilds = mysql_select_multi("SELECT `t`.`id`, `t`.`name`, `t`.`creationdate`, (SELECT count(p.rank_id) FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =`t`.`id`) AS `total` FROM `guilds` as `t` ORDER BY `t`.`name`;");
+			else
+				$guilds = mysql_select_multi("SELECT `t`.`id`, `t`.`name`, `t`.`creationdata`, `motd`, (SELECT count(p.rank_id) FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =`t`.`id`) AS `total` FROM `guilds` as `t` ORDER BY `t`.`name`;");
+		else 
+			$guilds = mysql_select_multi("SELECT `id`, `name`, `creationdata`, `motd`, (SELECT COUNT('guild_id') FROM `guild_membership` WHERE `guild_id`=`id`) AS `total` FROM `guilds` ORDER BY `name`;");
 		
 		// Add level data info to guilds
 		if ($guilds !== false) 

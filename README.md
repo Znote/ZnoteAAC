@@ -56,6 +56,7 @@ This will show you the rest of the instructions as well as the mysql schema.
 Znote AAC is very rich feature wise, here is an attempt at summarizing what we offer.
 
 #### Server distribution compatibility:
+- OTHire
 - TFS 0.2
 - TFS 0.3/4
 - TFS 1.x

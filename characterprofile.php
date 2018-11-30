@@ -27,7 +27,10 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 			if (!$loadOutfits) {
 				$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex');
 			} else { // Load outfits
-				$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
+				if ($config['ServerEngine'] !== 'OTHIRE')
+					$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
+				else
+					$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype');
 			}
 		}
 		
@@ -144,7 +147,12 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				<?php
 				if ($config['ServerEngine'] !== 'TFS_02' || $config['ServerEngine'] == 'OTHIRE') 
 				{
-					$townid = ($config['ServerEngine'] === 'TFS_03') ? 'town' : 'town_id';
+					if ($config['ServerEngine'] == 'OTHIRE') 
+						$townid = 'townid';
+					if ($config['ServerEngine'] == 'TFS_03') 
+						$townid = 'town';
+					if ($config['ServerEngine'] !== 'TFS_03' && $config['ServerEngine'] !== 'OTHIRE')
+						$townid = 'town_id';
 					$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `$townid` AS `town_id` FROM `houses` WHERE `owner` = $user_id;");
 					
 					if ($houses) 
