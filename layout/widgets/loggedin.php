@@ -1,5 +1,5 @@
 <div class="sidebar">
-	<h2>Welcome, <?php echo $user_data['name']; ?>.</h2>
+	<h2>Welcome, <?php if ($config['ServerEngine'] !== 'OTHIRE') echo $user_data['name']; else echo $user_data['id'];?>.</h2>
 	<div class="inner">
 		<ul>
 			<li>

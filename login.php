@@ -2,7 +2,7 @@
 require_once 'engine/init.php';
 
 // Client 11 loginWebService
-if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['TFSVersion'] === 'TFS_10') {
+if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === 'TFS_10') {
 
 	function jsonError($message, $code = 3) {
 		die(json_encode(array('errorCode' => $code, 'errorMessage' => $message)));
@@ -132,8 +132,8 @@ if (empty($_POST) === false) {
 	} else {
 
 		// Starting loging
-		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') $login = user_login($username, $password);
-		else if ($config['TFSVersion'] == 'TFS_03') $login = user_login_03($username, $password);
+		if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'OTHIRE' || $config['ServerEngine'] == 'TFS_10') $login = user_login($username, $password);
+		else if ($config['ServerEngine'] == 'TFS_03') $login = user_login_03($username, $password);
 		else $login = false;
 		if ($login === false) {
 			$errors[] = 'Username and password combination is wrong.';
@@ -151,7 +151,7 @@ if (empty($_POST) === false) {
 
 			if ($status) {
 				// Regular login success, now lets check authentication token code
-				if ($config['TFSVersion'] == 'TFS_10' && $config['twoFactorAuthenticator']) {
+				if ($config['ServerEngine'] == 'TFS_10' && $config['twoFactorAuthenticator']) {
 					require_once("engine/function/rfc6238.php");
 
 					// Two factor authentication code / token

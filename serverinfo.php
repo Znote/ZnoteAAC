@@ -35,12 +35,12 @@ if (user_logged_in() && is_admin($user_data)) {
 		if ($stagesXML !== false) {
 			$stagesData = array();
 			// Load config ( stages enabled or disabled)
-			if ($config['TFSVersion'] == 'TFS_10')
+			if ($config['ServerEngine'] == 'TFS_10')
 				foreach ($stagesXML->config->attributes() as $name => $value)
 					$stagesData["$name"] = "$value";
 			// Load stage levels
 			// Each stage XML object
-			if ($config['TFSVersion'] == 'TFS_10') {
+			if ($config['ServerEngine'] == 'TFS_10') {
 				foreach ($stagesXML->stage as $stage) {
 					$rowData = array();
 					// Each attribute name and values on current stage object

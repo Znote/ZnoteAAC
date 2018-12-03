@@ -115,14 +115,25 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 		}
 
 		//Register
-		$register_data = array(
-			'name'		=>	$_POST['username'],
-			'password'	=>	$_POST['password'],
-			'email'		=>	$_POST['email'],
-			'created'	=>	time(),
-			'ip'		=>	getIPLong(),
-			'flag'		=> 	$_POST['flag']
-		);
+		if ($config['ServerEngine'] !== 'OTHIRE') {
+			$register_data = array(
+				'name'		=>	$_POST['username'],
+				'password'	=>	$_POST['password'],
+				'email'		=>	$_POST['email'],
+				'created'	=>	time(),
+				'ip'		=>	getIPLong(),
+				'flag'		=> 	$_POST['flag']
+			);
+		} else {
+			$register_data = array(
+				'id'		=>	$_POST['username'],
+				'password'	=>	$_POST['password'],
+				'email'		=>	$_POST['email'],
+				'created'	=>	time(),
+				'ip'		=>	getIPLong(),
+				'flag'		=> 	$_POST['flag']
+			);			
+		}	
 
 		user_create_account($register_data, $config['mailserver']);
 		if (!$config['mailserver']['debug']) header('Location: register.php?success');

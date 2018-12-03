@@ -57,7 +57,7 @@ if ($admin) $yourChars = mysql_select_multi("SELECT `id`, `name`, `group_id` FRO
 else $yourChars = mysql_select_multi("SELECT `id`, `name`, `group_id` FROM `players` WHERE `level`>='". $config['forum']['level'] ."' AND `account_id`='". $user_data['id'] ."';");
 if (!$yourChars) $yourChars = array();
 $charCount = count($yourChars);
-$yourAccess = accountAccess($user_data['id'], $config['TFSVersion']);
+$yourAccess = accountAccess($user_data['id'], $config['ServerEngine']);
 if ($admin) {
 	if (!empty($_POST)) {
 		$guilds = mysql_select_multi("SELECT `id`, `name` FROM `guilds` ORDER BY `name`;");
