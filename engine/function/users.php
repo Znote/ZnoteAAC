@@ -908,7 +908,10 @@ function user_character_list_count($account_id) {
 
 // HIGHSCORE FUNCTIONS \\
 function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false, $outfits = false) {
-	$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`, `p`.`lookaddons` AS `addons`" : "";
+	if (config('ServerEngine') !== 'OTHIRE')
+		$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`, `p`.`lookaddons` AS `addons`" : "";
+	else
+		$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`" : "";
 	// Return scores ordered by type and vocation (if set)
 	$data = array();
 
