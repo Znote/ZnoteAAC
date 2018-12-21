@@ -32,7 +32,12 @@ if ($config['mailserver']['accountRecovery']) {
 					}
 					$password = sha1($salt.$password);
 				}
-				$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`password` = '$password' LIMIT 1;");
+				
+				if ($config['ServerEngine'] != 'OTHIRE')
+					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`password` = '$password' LIMIT 1;");
+				else
+					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`password` = '$password' LIMIT 1;");
+				
 				if ($user !== false) {
 					// Found user
 
@@ -72,7 +77,12 @@ if ($config['mailserver']['accountRecovery']) {
 					}
 					$password = sha1($salt.$newpass);
 				}
-				$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name`, `a`.`id` AS `account_id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`name` = '$username' LIMIT 1;");
+				
+				if ($config['ServerEngine'] != 'OTHIRE')
+					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name`, `a`.`id` AS `account_id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`name` = '$username' LIMIT 1;");
+				else
+					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`id` AS `account_id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`id` = '$username' LIMIT 1;");
+				
 				if ($user !== false) {
 					// Found user
 					// Give him the new password
