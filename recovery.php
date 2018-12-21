@@ -174,7 +174,7 @@ if ($config['mailserver']['accountRecovery']) {
 					
 					if ($mode === 'password') {
 						echo '<label for="username">Username:</label> <input type="text" name="username"><br>';
-					} elseif ($mode === 'password') {
+					} elseif ($mode === 'username') {
 						echo '<label for="password">Password:</label> <input type="password" name="password"><br>';
 					} elseif ($mode === 'token') {
 						echo '<label for="username">Username:</label> <input type="text" name="username"><br>';
