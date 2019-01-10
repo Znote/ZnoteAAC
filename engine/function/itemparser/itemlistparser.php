@@ -6,8 +6,7 @@
 */
 
 function getItemList() {	
-	$items = parseItems();	
-	return $items;
+	return parseItems();
 }
 
 function getItemById($id) {
@@ -27,7 +26,7 @@ function parseItems() {
 	// Create our parsed item list
 	foreach ($items->children() as $item) {
 		if ($item['id'] && $item['name'] != NULL) {
-			$out[(string)$item['id']] = (string)$item['name'];
+			$out[(int)$item['id']] = (string)$item['name'];
 		}
 	}
 
