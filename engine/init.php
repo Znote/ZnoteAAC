@@ -32,6 +32,11 @@ if ($config['use_captcha'] && !extension_loaded('openssl')) {
 	die("php openSSL is not enabled. It is required to for captcha services.<br>1. Find your php.ini file.<br>2. Uncomment extension=php_openssl<br>Restart web server.<br><br><b>If you don't want this then disable use_captcha in config.php.</b>");
 }
 
+// References ( & ) works as an alias for a variable, 
+// they point to the same memmory, instead of duplicating it.
+if (!isset($config['TFSVersion'])) $config['TFSVersion'] = &$config['ServerEngine'];
+if (!isset($config['ServerEngine'])) $config['ServerEngine'] = &$config['TFSVersion'];
+
 require_once 'database/connect.php';
 require_once 'function/general.php';
 require_once 'function/users.php';
@@ -47,7 +52,10 @@ Token::generate();
 
 if (user_logged_in() === true) {
 	$session_user_id = getSession('user_id');
-	$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premdays');
+	if ($config['ServerEngine'] !== 'OTHIRE')
+		$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premdays');
+	else
+		$user_data = user_data($session_user_id, 'id', 'password', 'email', 'premend');
 	$user_znote_data = user_znote_account_data($session_user_id, 'ip', 'created', 'points', 'cooldown', 'flag');
 }
 $errors = array();

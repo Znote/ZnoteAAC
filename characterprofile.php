@@ -11,7 +11,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 	if ($user_id !== false) {
 		$loadOutfits = $config['show_outfits']['characterprofile'];
 
-		if ($config['TFSVersion'] == 'TFS_10') {
+		if ($config['ServerEngine'] == 'TFS_10') {
 			if (!$loadOutfits) {
 				$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin');
 			} else { // Load outfits
@@ -27,7 +27,10 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 			if (!$loadOutfits) {
 				$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex');
 			} else { // Load outfits
-				$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
+				if ($config['ServerEngine'] !== 'OTHIRE')
+					$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
+				else
+					$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype');
 			}
 		}
 		
@@ -142,9 +145,14 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				
 				<!-- Display house start -->
 				<?php
-				if ($config['TFSVersion'] !== 'TFS_02') 
+				if ($config['ServerEngine'] !== 'TFS_02' || $config['ServerEngine'] == 'OTHIRE') 
 				{
-					$townid = ($config['TFSVersion'] === 'TFS_03') ? 'town' : 'town_id';
+					if ($config['ServerEngine'] == 'OTHIRE') 
+						$townid = 'townid';
+					if ($config['ServerEngine'] == 'TFS_03') 
+						$townid = 'town';
+					if ($config['ServerEngine'] !== 'TFS_03' && $config['ServerEngine'] !== 'OTHIRE')
+						$townid = 'town_id';
 					$houses = mysql_select_multi("SELECT `id`, `owner`, `name`, `$townid` AS `town_id` FROM `houses` WHERE `owner` = $user_id;");
 					
 					if ($houses) 
@@ -180,7 +188,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				
 				<!-- Display player status -->
 				<li><font class="profile_font" name="profile_font_status">Status:</font> <?php
-				if ($config['TFSVersion'] == 'TFS_10') 
+				if ($config['ServerEngine'] == 'TFS_10') 
 				{
 					if ($profile_data['online']) 
 					{
@@ -276,7 +284,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				<li>
 					<b>Death List:</b><br>
 					<?php
-					if ($config['TFSVersion'] == 'TFS_02') 
+					if ($config['ServerEngine'] == 'TFS_02') 
 					{
 						$array = user_fetch_deathlist($user_id);
 						if ($array) 
@@ -313,7 +321,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							echo '<b><font color="green">This player has never died.</font></b>';
 						}
 					} 
-					else if ($config['TFSVersion'] == 'TFS_10') 
+					else if ($config['ServerEngine'] == 'TFS_10') 
 					{
 						$deaths = mysql_select_multi("SELECT 
 							`player_id`, `time`, `level`, `killed_by`, `is_player`, 
@@ -355,7 +363,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							echo '<b><font color="green">This player has never died.</font></b>'; 
 						}
 					} 
-					else if ($config['TFSVersion'] == 'TFS_03') 
+					else if ($config['ServerEngine'] == 'TFS_03' || $config['ServerEngine'] == 'OTHIRE') 
 					{
 						//mysql_select_single("SELECT * FROM players WHERE name='TEST DEBUG';");
 						$array = user_fetch_deathlist03($user_id);

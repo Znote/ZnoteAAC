@@ -21,10 +21,10 @@ if (empty($_POST) === false) {
 	// $_POST['']
 	
 	// .3 compatibility
-	if ($config['TFSVersion'] == 'TFS_03' && $config['salt'] === true) {
+	if ($config['ServerEngine'] == 'TFS_03' && $config['salt'] === true) {
 		$salt = user_data($session_user_id, 'salt');
 	}
-	if (sha1($_POST['current_password']) === $pass_data['password'] || $config['TFSVersion'] == 'TFS_03' && $config['salt'] === true && sha1($salt['salt'].$_POST['current_password']) === $pass_data['password']) {
+	if (sha1($_POST['current_password']) === $pass_data['password'] || $config['ServerEngine'] == 'TFS_03' && $config['salt'] === true && sha1($salt['salt'].$_POST['current_password']) === $pass_data['password']) {
 		if (trim($_POST['new_password']) !== trim($_POST['new_password_again'])) {
 			$errors[] = 'Your new passwords do not match.';
 		} else if (strlen($_POST['new_password']) < 6) {
@@ -50,9 +50,9 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 } else {
 	if (empty($_POST) === false && empty($errors) === true) {
 		//Posted the form without errors
-		if ($config['TFSVersion'] == 'TFS_02' || $config['TFSVersion'] == 'TFS_10') {
+		if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' || $config['ServerEngine'] == 'OTHIRE') {
 			user_change_password($session_user_id, $_POST['new_password']);
-		} else if ($config['TFSVersion'] == 'TFS_03') {
+		} else if ($config['ServerEngine'] == 'TFS_03') {
 			user_change_password03($session_user_id, $_POST['new_password']);
 		}
 		header('Location: changepassword.php?success');

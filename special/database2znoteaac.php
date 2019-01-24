@@ -98,11 +98,11 @@ require '../engine/function/users.php';
 			$updated_acc += 1;
 			
 			// Fetch unsalted password
-			if ($config['TFSVersion'] == 'TFS_03' && $config['salt'] === true) {
+			if ($config['ServerEngine'] == 'TFS_03' && $config['salt'] === true) {
 				$password = user_data($old, 'password', 'salt');
 				$p_pass = str_replace($password['salt'],"",$password['password']);
 			}
-			if ($config['TFSVersion'] == 'TFS_02' || $config['salt'] === false) {
+			if ($config['ServerEngine'] == 'TFS_02' || $config['salt'] === false) {
 				$password = user_data($old, 'password');
 				$p_pass = $password['password'];
 			}
@@ -110,8 +110,8 @@ require '../engine/function/users.php';
 			// Verify lenght of password is less than 28 characters (most likely a plain password)
 			if (strlen($p_pass) < 28 && $old > 1) {
 				// encrypt it with sha1
-				if ($config['TFSVersion'] == 'TFS_02' || $config['salt'] === false) $p_pass = sha1($p_pass);
-				if ($config['TFSVersion'] == 'TFS_03' && $config['salt'] === true) $p_pass = sha1($password['salt'].$p_pass);
+				if ($config['ServerEngine'] == 'TFS_02' || $config['salt'] === false) $p_pass = sha1($p_pass);
+				if ($config['ServerEngine'] == 'TFS_03' && $config['salt'] === true) $p_pass = sha1($password['salt'].$p_pass);
 				
 				// Update their password so they are sha1 encrypted
 				mysql_update("UPDATE `accounts` SET `password`='$p_pass' WHERE `id`='$old';");

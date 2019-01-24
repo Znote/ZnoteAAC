@@ -55,7 +55,7 @@ function pageCheck($index, $page, $rowPerPage) {
 
 $cache = new Cache('engine/cache/highscores');
 if ($cache->hasExpired()) {
-	$vocGroups = fetchAllScores($rows, $config['TFSVersion'], $highscore['ignoreGroupId'], $configVocations, $vocation, $loadFlags, $loadOutfits);
+	$vocGroups = fetchAllScores($rows, $config['ServerEngine'], $highscore['ignoreGroupId'], $configVocations, $vocation, $loadFlags, $loadOutfits);
 	$cache->setContent($vocGroups);
 	$cache->save();
 } else {
