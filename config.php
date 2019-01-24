@@ -1008,6 +1008,7 @@
 	// You can find your secret token by logging in on OTServers.eu and go to 'MY SERVER' then 'Encourage players to vote'.
 	$config['otservers_eu_voting'] = [
 		'enabled' => false,
+        'simpleVoteUrl' => '', //This url is used if the player isn't logged in.
 		'voteUrl' => 'https://api.otservers.eu/vote_link.php',
 		'voteCheckUrl' => 'https://api.otservers.eu/vote_check.php',
 		'secretToken' => '', //Enter your secret token. Do not share with anyone!
