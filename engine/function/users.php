@@ -123,7 +123,7 @@ function bomberman_highscores() {
 
 // Support list
 function support_list() {
-	$TFS = Config('TFSVersion');
+	$TFS = Config('ServerEngine');
 	if ($TFS == 'TFS_10') $staffs = mysql_select_multi("SELECT `id`, `group_id`, `name`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
 	else $staffs = mysql_select_multi("SELECT `group_id`, `name`, `online`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
 
@@ -286,7 +286,7 @@ function guild_change_leader($nCid, $oCid) {
 	if ($status) {
 		
 		// Update players and set their new rank id
-		if (config('TFSVersion') !== 'TFS_10') {
+		if (config('ServerEngine') !== 'TFS_10') {
 			mysql_update("UPDATE `players` SET `rank_id`='$leader_rid' WHERE `id`=$nCid LIMIT 1;");
 			mysql_update("UPDATE `players` SET `rank_id`='$vice_rid' WHERE `id`=$oCid LIMIT 1;");
 		} else {
@@ -305,20 +305,29 @@ function guild_change_leader($nCid, $oCid) {
 function guild_new_leader($new_leader, $gid) {
 	$new_leader = (int)$new_leader;
 	$gid = (int)$gid;
-	mysql_update("UPDATE `guilds` SET `ownerid`='$new_leader' WHERE `id`=$gid");
+	if (config('ServerEngine') !== 'OTHIRE')
+		mysql_update("UPDATE `guilds` SET `ownerid`='$new_leader' WHERE `id`=$gid");
+	else
+		mysql_update("UPDATE `guilds` SET `owner_id`='$new_leader' WHERE `id`=$gid");
 }
 
 // Returns $gid of a guild leader($cid).
 function guild_leader_gid($leader) {
 	$leader = (int)$leader;
-	$data = mysql_select_single("SELECT `id` FROM `guilds` WHERE `ownerid`='$leader';");
+	if (config('ServerEngine') !== 'OTHIRE')
+		$data = mysql_select_single("SELECT `id` FROM `guilds` WHERE `ownerid`='$leader';");
+	else
+		$data = mysql_select_single("SELECT `id` FROM `guilds` WHERE `owner_id`='$leader';");
 	return ($data === false) ? false : $data['id'];
 }
 
 // Returns guild leader(charID) of a guild. (parameter: guild_ID)
 function guild_leader($gid) {
 	$gid = (int)$gid;
-	$data = mysql_select_single("SELECT `ownerid` FROM `guilds` WHERE `id`='$gid';");
+	if (config('ServerEngine') !== 'OTHIRE')
+		$data = mysql_select_single("SELECT `ownerid` FROM `guilds` WHERE `id`='$gid';");
+	else
+		$data = mysql_select_single("SELECT `owner_id` FROM `guilds` WHERE `id`='$gid';");
 	return ($data !== false) ? $data['ownerid'] : false;
 }
 
@@ -351,7 +360,7 @@ function guild_player_join($cid, $gid) {
 	// Create a status we can return depending on results.
 	$status = false;
 
-	if (config('TFSVersion') !== 'TFS_10') {
+	if (config('ServerEngine') !== 'TFS_10') {
 		// Get rank data
 		$ranks = get_guild_rank_data($gid);
 		// Locate rank id for regular member position in this guild
@@ -450,7 +459,10 @@ function create_guild($cid, $name) {
 	$time = time();
 	
 	// Create the guild
-	mysql_insert("INSERT INTO `guilds` (`name`, `ownerid`, `creationdata`, `motd`) VALUES ('$name', '$cid', '$time', '');");
+	if (config('ServerEngine') !== 'OTHIRE')
+		mysql_insert("INSERT INTO `guilds` (`name`, `ownerid`, `creationdata`, `motd`) VALUES ('$name', '$cid', '$time', '');");
+	else
+		mysql_insert("INSERT INTO `guilds` (`name`, `owner_id`, `creationdate`) VALUES ('$name', '$cid', '$time');");
 
 	// Get guild id
 	$gid = get_guild_id($name);
@@ -460,14 +472,14 @@ function create_guild($cid, $name) {
 	$rid = ($data !== false) ? $data['id'] : false;
 
 	// Give player rank id for leader of his guild
-	if (config('TFSVersion') !== 'TFS_10') mysql_update("UPDATE `players` SET `rank_id`='$rid' WHERE `id`='$cid' LIMIT 1;");
+	if (config('ServerEngine') !== 'TFS_10') mysql_update("UPDATE `players` SET `rank_id`='$rid' WHERE `id`='$cid' LIMIT 1;");
 	else mysql_insert("INSERT INTO `guild_membership` (`player_id`, `guild_id`, `rank_id`, `nick`) VALUES ('$cid', '$gid', '$rid', '');");
 }
 
 // Search player table on cid for his rank_id, returns rank_id
 function get_character_guild_rank($cid) {
 	$cid = (int)$cid;
-	if (config('TFSVersion') !== 'TFS_10') {
+	if (config('ServerEngine') !== 'TFS_10') {
 		$data = mysql_select_single("SELECT `rank_id` FROM `players` WHERE `id`='$cid';");
 		return ($data !== false && $data['rank_id'] > 0) ? $data['rank_id'] : false;
 	} else {
@@ -493,7 +505,7 @@ function get_guild_position($rid) {
 // Get a players rank_id, guild_id, rank_level(ID), rank_name(string), using cid(player id)
 function get_player_guild_data($cid) {
 	$cid = (int)$cid;
-	if (config('TFSVersion') !== 'TFS_10') $playerdata = mysql_select_single("SELECT `rank_id` FROM `players` WHERE `id`='$cid' LIMIT 1;");
+	if (config('ServerEngine') !== 'TFS_10') $playerdata = mysql_select_single("SELECT `rank_id` FROM `players` WHERE `id`='$cid' LIMIT 1;");
 	else $playerdata = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='$cid' LIMIT 1;");
 	
 	if ($playerdata !== false) {
@@ -523,25 +535,31 @@ function get_guild_id($name) {
 // Returns guild data from name
 function get_guild_data($name) {
 	$name = sanitize($name);
-	return mysql_select_single("SELECT `id`, `name`, `ownerid`, `creationdata`, `motd` FROM `guilds` WHERE `name`='$name' LIMIT 1;");
+	if (config('ServerEngine') !== 'OTHIRE')
+		return mysql_select_single("SELECT `id`, `name`, `ownerid`, `creationdata`, `motd` FROM `guilds` WHERE `name`='$name' LIMIT 1;");
+	else
+		return mysql_select_single("SELECT `id`, `name`, `owner_id`, `creationdate` FROM `guilds` WHERE `name`='$name' LIMIT 1;");
 }
 
 // Get complete list of guilds
 function get_guilds_list() {
-	return mysql_select_multi("SELECT `id`, `name`, `creationdata` FROM `guilds` ORDER BY `name`;");
+	if (config('ServerEngine') !== 'OTHIRE')
+		return mysql_select_multi("SELECT `id`, `name`, `creationdata` FROM `guilds` ORDER BY `name`;");
+	else
+		return mysql_select_multi("SELECT `id`, `name`, `creationdate` FROM `guilds` ORDER BY `name`;");
 }
 
 // Get array of player data related to a guild.
 function get_guild_players($gid) {
     $gid = (int)$gid; // Sanitizing the parameter id
-    if (config('TFSVersion') !== 'TFS_10') return mysql_select_multi("SELECT `p`.`rank_id`, `p`.`name`, `p`.`level`, `p`.`guildnick`, `p`.`vocation`, `p`.`online`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `p`.`rank_id` WHERE `gr`.`guild_id` ='$gid' ORDER BY `gr`.`id`, `p`.`name`;");
+    if (config('ServerEngine') !== 'TFS_10') return mysql_select_multi("SELECT `p`.`rank_id`, `p`.`name`, `p`.`level`, `p`.`guildnick`, `p`.`vocation`, `p`.`online`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `p`.`rank_id` WHERE `gr`.`guild_id` ='$gid' ORDER BY `gr`.`id`, `p`.`name`;");
     else return mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `gm`.`rank_id`, `gm`.`nick` AS `guildnick`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_membership` AS `gm` ON `gm`.`player_id` = `p`.`id` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `gm`.`rank_id` WHERE `gm`.`guild_id` = '$gid' ORDER BY `gm`.`rank_id`, `p`.`name`");
 }
 
 // Get guild level data (avg level, total level, count of players)
 function get_guild_level_data($gid) {
 	$gid = (int)$gid;
-	$data = (config('TFSVersion') !== 'TFS_10') ? mysql_select_multi("SELECT p.level FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';") : mysql_select_multi("SELECT p.level FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name;");
+	$data = (config('ServerEngine') !== 'TFS_10') ? mysql_select_multi("SELECT p.level FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id ='$gid';") : mysql_select_multi("SELECT p.level FROM players AS p LEFT JOIN guild_membership AS gm ON gm.player_id = p.id WHERE gm.guild_id = '$gid' ORDER BY gm.rank_id, p.name;");
 	$members = 0;
 	$totallevels = 0;
 	if ($data !== false) {
@@ -556,7 +574,7 @@ function get_guild_level_data($gid) {
 // Returns total members in a guild (integer)
 function count_guild_members($gid) {
 	$gid = (int)$gid;
-	if (config('TFSVersion') !== 'TFS_10') {
+	if (config('ServerEngine') !== 'TFS_10') {
 		$data = mysql_select_single("SELECT COUNT(p.id) AS total FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =$gid");
 		return ($data !== false) ? $data['total'] : false;
 	} else {
@@ -636,6 +654,7 @@ function gesior_sql_killer($did) {
 }
 // end gesior
 // END GUILD WAR
+
 // ADMIN FUNCTIONS
 function set_ingame_position($name, $acctype) {
 	$acctype = (int)$acctype;
@@ -690,9 +709,9 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 	if (user_character_exist($bannedby)) {
 		$bannedby = user_character_id($bannedby);
 		
-		if (Config('TFSVersion') === 'TFS_02')
+		if (Config('ServerEngine') === 'TFS_02')
 		mysql_insert("INSERT INTO `bans` (`type` ,`ip` ,`mask` ,`player` ,`account` ,`time` ,`reason_id` ,`action_id` ,`comment` ,`banned_by`) VALUES ('$typeid', '$charip', '4294967295', '$charid', '$accountid', '$time', '$reasonid', '$actionid', '$comment', '$bannedby');");
-		elseif (Config('TFSVersion') === 'TFS_03') {
+		elseif (Config('ServerEngine') === 'TFS_03') {
 			$now = time();
 			switch ($typeid) {
 				case 1: // IP ban
@@ -716,7 +735,7 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 				break;
 			}
 		}
-		elseif (Config('TFSVersion') === 'TFS_10') {
+		elseif (Config('ServerEngine') === 'TFS_10') {
 			$now = time();
 			
 			switch ($typeid) {
@@ -751,6 +770,7 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 }
 
 // -- END admin
+
 // Fetch deathlist
 function user_fetch_deathlist($char_id) {
 	$char_id = (int)$char_id;
@@ -839,7 +859,7 @@ function user_character_list($account_id) {
 	//$count = user_character_list_count($account_id);
 	$account_id = (int)$account_id;
 
-	if (config('TFSVersion') == 'TFS_10') {
+	if (config('ServerEngine') == 'TFS_10') {
 		$characters = mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `p`.`town_id`, `p`.`lastlogin`, `gm`.`rank_id`, `po`.`player_id` AS `online` FROM `players` AS `p` LEFT JOIN `guild_membership` AS `gm` ON `p`.`id`=`gm`.`player_id` LEFT JOIN `players_online` AS `po` ON `p`.`id`=`po`.`player_id` WHERE `p`.`account_id`='$account_id' ORDER BY `p`.`level` DESC");
 		if ($characters !== false) {
 			for ($i = 0; $i < count($characters); $i++) {
@@ -888,7 +908,10 @@ function user_character_list_count($account_id) {
 
 // HIGHSCORE FUNCTIONS \\
 function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false, $outfits = false) {
-	$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`, `p`.`lookaddons` AS `addons`" : "";
+	if (config('ServerEngine') !== 'OTHIRE')
+		$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`, `p`.`lookaddons` AS `addons`" : "";
+	else
+		$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`" : "";
 	// Return scores ordered by type and vocation (if set)
 	$data = array();
 
@@ -996,16 +1019,30 @@ function user_recover($mode, $edom, $email, $character, $ip) {
 	$ip = character IP
 */
 	// Structure verify array data correctly
-	if ($mode === 'username') {
-		$verify_data = array(
-			'password' => sha1($edom),
-			'email' => $email
-		);
+	if (config('ServerEngine') !== 'OTHIRE') {
+		if ($mode === 'username') {
+			$verify_data = array(
+				'password' => sha1($edom),
+				'email' => $email
+			);
+		} else {
+			$verify_data = array(
+				'name' => $edom,
+				'email' => $email
+			);
+		}
 	} else {
-		$verify_data = array(
-			'name' => $edom,
-			'email' => $email
-		);
+		if ($mode === 'username') {
+			$verify_data = array(
+				'password' => sha1($edom),
+				'email' => $email
+			);
+		} else {
+			$verify_data = array(
+				'id' => $edom,
+				'email' => $email
+			);
+		}		
 	}
 	// Determine if the submitted information is correct and herit from same account
 	if (user_account_fields_verify_value($verify_data)) {
@@ -1014,7 +1051,10 @@ function user_recover($mode, $edom, $email, $character, $ip) {
 		if ($mode == 'username') {
 			$account_id = user_account_id_from_password($verify_data['password']);
 		} else {
-			$account_id = user_id($verify_data['name']);
+			if (config('ServerEngine') !== 'OTHIRE')
+				$account_id = user_id($verify_data['name']);
+			else
+				$account_id = user_id($verify_data['id']);
 		}
 		// get account id from character name
 		$player_account_id = user_character_account_id($character);
@@ -1028,8 +1068,13 @@ function user_recover($mode, $edom, $email, $character, $ip) {
 				// IP Match, time to stop verifying SHIT and get on
 				// With giving the visitor his goddamn username/password!
 				if ($mode == 'username') {
-					$name_data = user_data($account_id, 'name');
-					echo '<br><p>Your username is:</p> <h3>'. $name_data['name'] .'</h3>';
+					if (config('ServerEngine') !== 'OTHIRE') {
+						$name_data = user_data($account_id, 'name');
+						echo '<br><p>Your username is:</p> <h3>'. $name_data['name'] .'</h3>';
+					} else {
+						$name_data = user_data($account_id, 'id');
+						echo '<br><p>Your account number is:</p> <h3>'. $name_data['id'] .'</h3>';
+					}	
 				} else {
 					$newpass = substr(sha1(rand(1000000, 99999999)), 8);
 					echo '<br><p>Your new password is:</p> <h3>'. $newpass .'</h3><p>Remember to login and change it!</p>';
@@ -1051,18 +1096,34 @@ function user_account_id_from_password($password) {
 // Get account name from id.
 function user_account_id_from_name($id) {
 	$id = (int)$id;;
-	$result = mysql_select_single("SELECT `name` FROM `accounts` WHERE `id` = '" . $id . "' LIMIT 1;");
-	return $result['name'];
+	if (config('ServerEngine') !== 'OTHIRE') {
+		$result = mysql_select_single("SELECT `name` FROM `accounts` WHERE `id` = '" . $id . "' LIMIT 1;");
+		return $result['name'];
+	} else {
+		$result = mysql_select_single("SELECT `id` FROM `accounts` WHERE `id` = '" . $id . "' LIMIT 1;");
+		return $result['id'];		
+	}	
 }
 
 // Add additional premium days to account id
 function user_account_add_premdays($accid, $days) {
 	$accid = (int)$accid;
 	$days = (int)$days;
-	$data = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='$accid';");
-	$tmp = $data['premdays'];
-	$tmp += $days;
-	mysql_update("UPDATE `accounts` SET `premdays`='$tmp' WHERE `id`='$accid'");
+	
+	if (config('ServerEngine') !== 'OTHIRE') {
+		$data = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='$accid';");
+		$tmp = $data['premdays'];
+		$tmp += $days;
+		mysql_update("UPDATE `accounts` SET `premdays`='$tmp' WHERE `id`='$accid'");
+	} else {
+		$data = mysql_select_single("SELECT `premend` FROM `accounts` WHERE `id`='$accid';");
+		$tmp = $data['premend'];
+		if($tmp == 0)
+			$tmp = time() + ($days * 24 * 60 * 60); 
+		else
+			$tmp = $tmp + ($days * 24 * 60 * 60);
+		mysql_update("UPDATE `accounts` SET `premend`='$tmp' WHERE `id`='$accid'");		
+	}
 }
 
 // Name = char name. Changes from male to female & vice versa.
@@ -1154,7 +1215,7 @@ function user_character_set_hide($char_id, $value) {
 function user_create_account($register_data, $maildata) {
 	array_walk($register_data, 'array_sanitize');
 	
-	if (config('TFSVersion') == 'TFS_03' && config('salt') === true) {
+	if (config('ServerEngine') == 'TFS_03' && config('salt') === true) {
 		$register_data['salt'] = generate_recovery_key(18);
 		$register_data['password'] = sha1($register_data['salt'].$register_data['password']);
 	} else $register_data['password'] = sha1($register_data['password']);
@@ -1167,7 +1228,7 @@ function user_create_account($register_data, $maildata) {
 	unset($register_data['created']);
 	unset($register_data['flag']);
 	
-	if (config('TFSVersion') == 'TFS_10') $register_data['creation'] = $created;
+	if (config('ServerEngine') == 'TFS_10') $register_data['creation'] = $created;
 
 	$fields = '`'. implode('`, `', array_keys($register_data)) .'`';
 	$data = '\''. implode('\', \'', $register_data) .'\'';
@@ -1219,53 +1280,98 @@ function user_create_character($character_data) {
 	$cap	= $base['cap']    + ( $gains['cap'] * $leveldiff );
 	
 	// This is TFS 0.2 compatible import data with Znote AAC mysql schema
-	$import_data = array(
-		'name'	=>	$character_data['name'],
-		'group_id' => 1,
-		'account_id' => $character_data['account_id'],
-		'level' => $create['level'],
-		'vocation'	=>	$vocation,
-		'health' => $health,
-		'healthmax' => $health,
-		'experience' => level_to_experience($create['level']),
-		'lookbody' => $outfit['body'], /* STARTER OUTFITS */
-		'lookfeet' => $outfit['feet'],
-		'lookhead' => $outfit['head'],
-		'looklegs' => $outfit['legs'],
-		'looktype' => $outfit['id'],
-		'lookaddons' => 0,
-		'maglevel' => $skills['magic'],
-		'mana' => $mana,
-		'manamax' => $mana,
-		'manaspent' => 0,
-		'soul' => $base['soul'],
-		'town_id' => $character_data['town_id'],
-		'posx' => $cnf['default_pos']['x'],
-		'posy' => $cnf['default_pos']['y'],
-		'posz' => $cnf['default_pos']['z'],
-		'conditions' => '',
-		'cap' => $cap,
-		'sex' => $character_data['sex'],
-		'lastlogin' => 0,
-		'lastip' => $character_data['lastip'],
-		'save' => 1,
-		'skull' => 0,
-		'skulltime' => 0,
-		'rank_id' => 0,
-		'guildnick' => '',
-		'lastlogout' => 0,
-		'blessings' => 0,
-		'direction' => 0,
-		'loss_experience' => 10,
-		'loss_mana' => 10,
-		'loss_skills' => 10,
-		'premend' => 0,
-		'online' => 0,
-		'balance' => 0
-	);
+	if (config('ServerEngine') !== 'OTHIRE') {
+		$import_data = array(
+			'name'	=>	$character_data['name'],
+			'group_id' => 1,
+			'account_id' => $character_data['account_id'],
+			'level' => $create['level'],
+			'vocation'	=>	$vocation,
+			'health' => $health,
+			'healthmax' => $health,
+			'experience' => level_to_experience($create['level']),
+			'lookbody' => $outfit['body'], /* STARTER OUTFITS */
+			'lookfeet' => $outfit['feet'],
+			'lookhead' => $outfit['head'],
+			'looklegs' => $outfit['legs'],
+			'looktype' => $outfit['id'],
+			'lookaddons' => 0,
+			'maglevel' => $skills['magic'],
+			'mana' => $mana,
+			'manamax' => $mana,
+			'manaspent' => 0,
+			'soul' => $base['soul'],
+			'town_id' => $character_data['town_id'],
+			'posx' => $cnf['default_pos']['x'],
+			'posy' => $cnf['default_pos']['y'],
+			'posz' => $cnf['default_pos']['z'],
+			'conditions' => '',
+			'cap' => $cap,
+			'sex' => $character_data['sex'],
+			'lastlogin' => 0,
+			'lastip' => $character_data['lastip'],
+			'save' => 1,
+			'skull' => 0,
+			'skulltime' => 0,
+			'rank_id' => 0,
+			'guildnick' => '',
+			'lastlogout' => 0,
+			'blessings' => 0,
+			'direction' => 0,
+			'loss_experience' => 10,
+			'loss_mana' => 10,
+			'loss_skills' => 10,
+			'premend' => 0,
+			'online' => 0,
+			'balance' => 0
+		);
+	} else {
+		$import_data = array(
+			'name'	=>	$character_data['name'],
+			'group_id' => 1,
+			'account_id' => $character_data['account_id'],
+			'level' => $create['level'],
+			'vocation'	=>	$vocation,
+			'health' => $health,
+			'healthmax' => $health,
+			'experience' => level_to_experience($create['level']),
+			'lookbody' => $outfit['body'], /* STARTER OUTFITS */
+			'lookfeet' => $outfit['feet'],
+			'lookhead' => $outfit['head'],
+			'looklegs' => $outfit['legs'],
+			'looktype' => $outfit['id'],
+			'maglevel' => $skills['magic'],
+			'mana' => $mana,
+			'manamax' => $mana,
+			'manaspent' => 0,
+			'soul' => $base['soul'],
+			'town_id' => $character_data['town_id'],
+			'posx' => $cnf['default_pos']['x'],
+			'posy' => $cnf['default_pos']['y'],
+			'posz' => $cnf['default_pos']['z'],
+			'conditions' => '',
+			'cap' => $cap,
+			'sex' => $character_data['sex'],
+			'lastlogin' => 0,
+			'lastip' => $character_data['lastip'],
+			'save' => 1,
+			'skull_type' => 0,
+			'skull_time' => 0,
+			'rank_id' => 0,
+			'guildnick' => '',
+			'lastlogout' => 0,
+			'direction' => 0,
+			'loss_experience' => 100,
+			'loss_mana' => 100,
+			'loss_skills' => 100,
+			'loss_items' => 10,
+			'online' => 0,
+			'balance' => 0
+		);		
+	}
 	
 	// TFS 1.0 variations
-	if ($cnf['TFSVersion'] === 'TFS_10') {
+	if ($cnf['ServerEngine'] === 'TFS_10') {
 		unset($import_data['rank_id']);
 		unset($import_data['guildnick']);
 		unset($import_data['direction']);
@@ -1309,7 +1415,7 @@ function user_create_character($character_data) {
 	mysql_insert("INSERT INTO `znote_players`(`player_id`, `created`, `hide_char`, `comment`) VALUES ('$charid', '$created', '0', '');");
 
 	// Player skills TFS 0.2, 0.3/4. (TFS 1.0 is done above character creation)
-	if ($cnf['TFSVersion'] != 'TFS_10') {
+	if ($cnf['ServerEngine'] != 'TFS_10') {
 		mysql_delete("DELETE FROM `player_skills` WHERE `player_id`='{$charid}';");
 		mysql_insert("INSERT INTO `player_skills` (`player_id`, `skillid`, `value`) VALUES ('{$charid}', '0', '".$skills['fist']."'), ('{$charid}', '1', '".$skills['club']."'), ('{$charid}', '2', '".$skills['sword']."'), ('{$charid}', '3', '".$skills['axe']."'), ('{$charid}', '4', '".$skills['dist']."'), ('{$charid}', '5', '".$skills['shield']."'), ('{$charid}', '6', '".$skills['fishing']."');");
 	}
@@ -1317,7 +1423,7 @@ function user_create_character($character_data) {
 
 // Returns counted value of all players online
 function user_count_online() {
-	if (config('TFSVersion') == 'TFS_10') {
+	if (config('ServerEngine') == 'TFS_10') {
 		$online = mysql_select_single("SELECT COUNT(`player_id`) AS `value` FROM `players_online`;");
 		return ($online !== false) ? $online['value'] : 0;
 	} else {
@@ -1464,7 +1570,10 @@ function user_activated($username) {
 // Checks that username exist in database
 function user_exist($username) {
 	$username = sanitize($username);
-	$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `name`='$username';");
+	if (config('ServerEngine') !== 'OTHIRE')
+		$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `name`='$username';");
+	else
+		$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `id`='$username';");
 	return ($data !== false) ? true : false;
 }
 
@@ -1514,7 +1623,10 @@ function user_password_match($password, $account_id) {
 // Get user ID from name
 function user_id($username) {
 	$username = sanitize($username);
-	$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `name`='$username' LIMIT 1;");
+	if (config('ServerEngine') !== 'OTHIRE')
+		$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `name`='$username' LIMIT 1;");
+	else
+		$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `id`='$username' LIMIT 1;");
 	if ($data !== false) return $data['id'];
 	else return false;
 }
@@ -1523,7 +1635,10 @@ function user_id($username) {
 function user_login_id($username, $password) {
 	$username = sanitize($username);
 	$password = sha1($password);
-	$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `name`='$username' AND `password`='$password' LIMIT 1;");
+	if (config('ServerEngine') !== 'OTHIRE')
+		$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `name`='$username' AND `password`='$password' LIMIT 1;");
+	else
+		$data = mysql_select_single("SELECT `id` FROM `accounts` WHERE `id`='$username' AND `password`='$password' LIMIT 1;");
 	if ($data !== false) return $data['id'];
 	else return false;
 }
@@ -1573,7 +1688,10 @@ function user_character_hide($username) {
 function user_login($username, $password) {
 	$username = sanitize($username);
 	$password = sha1($password);
-	$data = mysql_select_single("SELECT `id` FROM accounts WHERE name='$username' AND password='$password';");
+	if (config('ServerEngine') !== 'OTHIRE')
+		$data = mysql_select_single("SELECT `id` FROM accounts WHERE name='$username' AND password='$password';");
+	else
+		$data = mysql_select_single("SELECT `id` FROM accounts WHERE id='$username' AND password='$password';");
 	return ($data !== false) ? $data['id'] : false;
 }
 

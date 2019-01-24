@@ -21,7 +21,7 @@ if ($config['mailserver']['accountRecovery']) {
 			if (!$username) {
 				// Recover username
 				$salt = '';
-				if ($config['TFSVersion'] != 'TFS_03') {
+				if ($config['ServerEngine'] != 'TFS_03') {
 					// TFS 0.2 and 1.0
 					$password = sha1($password);
 				} else {
@@ -32,7 +32,12 @@ if ($config['mailserver']['accountRecovery']) {
 					}
 					$password = sha1($salt.$password);
 				}
-				$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`password` = '$password' LIMIT 1;");
+				
+				if ($config['ServerEngine'] != 'OTHIRE')
+					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`password` = '$password' LIMIT 1;");
+				else
+					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`password` = '$password' LIMIT 1;");
+				
 				if ($user !== false) {
 					// Found user
 
@@ -61,7 +66,7 @@ if ($config['mailserver']['accountRecovery']) {
 				// Recover password
 				$newpass = rand(100000000, 999999999);
 				$salt = '';
-				if ($config['TFSVersion'] != 'TFS_03') {
+				if ($config['ServerEngine'] != 'TFS_03') {
 					// TFS 0.2 and 1.0
 					$password = sha1($newpass);
 				} else {
@@ -72,7 +77,12 @@ if ($config['mailserver']['accountRecovery']) {
 					}
 					$password = sha1($salt.$newpass);
 				}
-				$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name`, `a`.`id` AS `account_id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`name` = '$username' LIMIT 1;");
+				
+				if ($config['ServerEngine'] != 'OTHIRE')
+					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name`, `a`.`id` AS `account_id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`name` = '$username' LIMIT 1;");
+				else
+					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`id` AS `account_id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`id` = '$username' LIMIT 1;");
+				
 				if ($user !== false) {
 					// Found user
 					// Give him the new password
@@ -164,7 +174,7 @@ if ($config['mailserver']['accountRecovery']) {
 					
 					if ($mode === 'password') {
 						echo '<label for="username">Username:</label> <input type="text" name="username"><br>';
-					} elseif ($mode === 'password') {
+					} elseif ($mode === 'username') {
 						echo '<label for="password">Password:</label> <input type="password" name="password"><br>';
 					} elseif ($mode === 'token') {
 						echo '<label for="username">Username:</label> <input type="text" name="username"><br>';

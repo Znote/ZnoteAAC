@@ -5,7 +5,7 @@ if ($config['log_ip']) {
 
 $house = getValue($_GET['id']);
 
-if ($house !== false && $config['TFSVersion'] === 'TFS_10') {
+if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 	$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='$house';");
 	$minbid = $config['houseConfig']['minimumBidSQM'] * $house['size'];
 	if ($house['owner'] > 0) $house['ownername'] = user_name($house['owner']);

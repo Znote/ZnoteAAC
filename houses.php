@@ -5,7 +5,7 @@ include 'layout/overall/header.php';
 if ($config['log_ip'])
 	znote_visitor_insert_detailed_data(3);
 
-if (empty($_POST) === false && $config['TFSVersion'] === 'TFS_03') {
+if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 
 	/* Token used for cross site scripting security */
 	if (isset($_POST['token']) && Token::isValid($_POST['token'])) {
@@ -75,12 +75,12 @@ if (empty($_POST) === false && $config['TFSVersion'] === 'TFS_03') {
 		echo 'Please clear your web cache/cookies <b>OR</b> use another web browser<br>';
 	}
 } else {
-	if (empty($_POST) === true && $config['TFSVersion'] === 'TFS_03') {
+	if (empty($_POST) === true && $config['ServerEngine'] === 'TFS_03') {
 		if ($config['allowSubPages'])
 			header('Location: sub.php?page=houses');
 		else
 			echo 'Sub page system disabled.';
-	} else if ($config['TFSVersion'] === 'TFS_02') {
+	} else if ($config['ServerEngine'] === 'TFS_02' || $config['ServerEngine'] == 'OTHIRE') {
 		$house = $config['house'];
 		if (!is_file($house['house_file'])) {
 			echo("<h3>House file not found</h3><p>FAILED TO LOCATE/READ FILE AT:<br><font color='red'>". $house['house_file'] ."</font><br><br>LINUX users: Make sure www-data have read access to file.<br>WINDOWS users: Learn to write correct file path.</p>");
@@ -142,7 +142,7 @@ if (empty($_POST) === false && $config['TFSVersion'] === 'TFS_03') {
 			</table>
 			<?php
 		} else echo '<p><font color="red">Something is wrong with the cache.</font></p>';
-	} else if ($config['TFSVersion'] === 'TFS_10') {
+	} else if ($config['ServerEngine'] === 'TFS_10') {
 		// Fetch values
 		$querystring_id = &$_GET['id'];
 		$townid = ($querystring_id) ? (int)$_GET['id'] : $config['houseConfig']['HouseListDefaultTown'];

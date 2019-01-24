@@ -8,12 +8,13 @@
 	// Tested with TFS items.xml master (1.3)
 	$config['items'] = false;
 	
-	// Available options: TFS_02, TFS_03
+	// Available options: TFS_02, TFS_03, OTHIRE
+	// OTHire = OTHIRE
 	// TFS 0.2 = TFS_02
 	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
 	// TFS 0.4 = TFS_03
 	// TFS 1.0 = TFS_10 (Under developement)
-	$config['TFSVersion'] = 'TFS_10';
+	$config['ServerEngine'] = 'TFS_10';
 	// As far as I know, OTX is based on TFS_03, so make sure TFS version is configured TFS_03
 	$config['CustomVersion'] = false;
 
@@ -28,6 +29,9 @@
 	// MYSQL CONNECTION DETAILS \\
 	// ------------------------ \\
 
+	if ($config['ServerEngine'] !== 'OTHIRE') {
+		
+	// TFS DATABASE CONFIGS
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
 	$config['sqlUser'] = 'tfs13';
 
@@ -39,6 +43,21 @@
 
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = '127.0.0.1';
+	} else {
+		
+	// OTHIRE DATABASE CONFIG
+	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
+	$config['sql_user'] = 'tfs13';
+
+	// phpmyadmin password for OT server:
+	$config['sql_pass'] = 'tfs13';
+
+	// The database name to connect to. (This is usually same as username).
+	$config['sql_db'] = 'tfs13';
+
+	// Hostname is usually localhost or 127.0.0.1.
+	$config['sql_host'] = '127.0.0.1';		
+	}
 
 	// QR code authenticator Only works with TFS 1.2+
 	$config['twoFactorAuthenticator'] = false;
