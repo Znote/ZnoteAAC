@@ -30,7 +30,7 @@
 	// ------------------------ \\
 
 	if ($config['ServerEngine'] !== 'OTHIRE') {
-		
+
 	// TFS DATABASE CONFIGS
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
 	$config['sqlUser'] = 'tfs13';
@@ -44,7 +44,7 @@
 	// Hostname is usually localhost or 127.0.0.1.
 	$config['sqlHost'] = '127.0.0.1';
 	} else {
-		
+
 	// OTHIRE DATABASE CONFIG
 	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
 	$config['sql_user'] = 'tfs13';
@@ -56,7 +56,7 @@
 	$config['sql_db'] = 'tfs13';
 
 	// Hostname is usually localhost or 127.0.0.1.
-	$config['sql_host'] = '127.0.0.1';		
+	$config['sql_host'] = '127.0.0.1';
 	}
 
 	// QR code authenticator Only works with TFS 1.2+
@@ -1027,6 +1027,7 @@
 	// You can find your secret token by logging in on OTServers.eu and go to 'MY SERVER' then 'Encourage players to vote'.
 	$config['otservers_eu_voting'] = [
 		'enabled' => false,
+		'simpleVoteUrl' => '', //This url is used if the player isn't logged in.
 		'voteUrl' => 'https://api.otservers.eu/vote_link.php',
 		'voteCheckUrl' => 'https://api.otservers.eu/vote_check.php',
 		'secretToken' => '', //Enter your secret token. Do not share with anyone!

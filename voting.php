@@ -1,34 +1,38 @@
-<?php require_once 'engine/init.php';
-protect_page();
+<?php
+require_once 'engine/init.php';
 include 'layout/overall/header.php';
 
 $otservers_eu_voting = $config['otservers_eu_voting'];
 
 if ($otservers_eu_voting['enabled']) {
-	$isRewardRequest = isset($_GET['action']) && $_GET['action'] === 'reward';
-
-	if (!$isRewardRequest) {
-		$result = vote($user_data['id'], $otservers_eu_voting);
-		if ($result === false) {
-			echo '<p>Something went wrong! Could not make a vote request.</p>';
-		} else {
-			header('Location: ' . $result['voteLink']);
-			die;
-		}
-	} else {
-		$result = checkHasVoted($user_data['id'], $otservers_eu_voting);
-		if ($result !== false) {
-			if ($result['voted'] === true) {
-				$points = $otservers_eu_voting['points'];
-				$pointsText = $points === '1' ? 'point' : 'points';
-				mysql_update("UPDATE `znote_accounts` SET `points` = `points` + '$points' WHERE `account_id`=" . $user_data['id']);
-				echo "<p>Thank you for voting! You have been rewarded with $points $pointsText!</p>";
+	if (user_logged_in()) {
+		$isRewardRequest = isset($_GET['action']) && $_GET['action'] === 'reward';
+		if (!$isRewardRequest) {
+			$result = vote($user_data['id'], $otservers_eu_voting);
+			if ($result === false) {
+				echo '<p>Something went wrong! Could not make a vote request.</p>';
 			} else {
-				echo '<p>It does not seem like you have voted.</p>';
+				header('Location: ' . $result['voteLink']);
+				die;
 			}
 		} else {
-			echo '<p>Could not verify that you have voted.</p>';
+			$result = checkHasVoted($user_data['id'], $otservers_eu_voting);
+			if ($result !== false) {
+				if ($result['voted'] === true) {
+					$points = $otservers_eu_voting['points'];
+					$pointsText = $points === '1' ? 'point' : 'points';
+					mysql_update("UPDATE `znote_accounts` SET `points` = `points` + '$points' WHERE `account_id`=" . $user_data['id']);
+					echo "<p>Thank you for voting! You have been rewarded with $points $pointsText!</p>";
+				} else {
+					echo '<p>It does not seem like you have voted.</p>';
+				}
+			} else {
+				echo '<p>Could not verify that you have voted.</p>';
+			}
 		}
+	} else {
+		header('Location: ' . $otservers_eu_voting['simpleVoteUrl']);
+		die;
 	}
 } else {
 	echo '<p>Voting is not enabled.</p>';
