@@ -5,6 +5,21 @@ $imageType = $config['shop']['imageType'];
 $items = getItemList();
 $compare = &$_GET['compare'];
 
+// If we failed to load items.xml, a string is returned (not an array)
+// with the attempted loaded file path.
+// So if $items is not an array, send an error message, include the footer and ignore rest of this page.
+if (is_array($items) === false): 
+	?>
+	<h1>Marketplace</h1>
+	<p>Failed to load item list.</p>
+	<p>Attempted to load this file: <?php echo $items; ?></p>
+	<p>Configure correct 'server_path' in config.php.</p>
+	<p>If the path is correct, make sure your web user has access to read it.</p>
+	<?php
+	include 'layout/overall/footer.php';
+	die();
+endif;
+
 // If you are not comparing any items, present the list.
 if (!$compare) {
 	$cache = new Cache('engine/cache/market');
