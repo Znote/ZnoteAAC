@@ -32,9 +32,6 @@ CREATE TABLE IF NOT EXISTS `znote` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-INSERT INTO `znote` (`version`, `installed`) VALUES
-('$version', '$time');
-
 CREATE TABLE IF NOT EXISTS `znote_accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) NOT NULL,
@@ -48,9 +45,6 @@ CREATE TABLE IF NOT EXISTS `znote_accounts` (
   `secret` char(16) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
-
-INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `flag`) VALUES
-('1', '0', '$time', '');
 
 CREATE TABLE IF NOT EXISTS `znote_news` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -107,9 +101,6 @@ CREATE TABLE IF NOT EXISTS `znote_players` (
   `comment` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
-
-INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES
-('1', '$time', '0', '');
 
 CREATE TABLE IF NOT EXISTS `znote_player_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -190,12 +181,6 @@ CREATE TABLE IF NOT EXISTS `znote_forum` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`) VALUES
-('Staff Board', '4', '0', '0', '0'),
-('Tutors Board', '2', '0', '0', '0'),
-('Discussion', '1', '0', '0', '0'),
-('Feedback', '1', '0', '1', '0');
-
 CREATE TABLE IF NOT EXISTS `znote_forum_threads` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `forum_id` int(11) NOT NULL,
@@ -264,6 +249,21 @@ CREATE TABLE IF NOT EXISTS `znote_global_storage` (
   `value` TEXT NOT NULL,
   UNIQUE (`key`)
 ) ENGINE=InnoDB;
+
+INSERT INTO `znote` (`version`, `installed`) VALUES
+('$version', '$time');
+
+INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `flag`) VALUES
+('1', '0', '$time', '');
+
+INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES
+('1', '$time', '0', '');
+
+INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`) VALUES
+('Staff Board', '4', '0', '0', '0'),
+('Tutors Board', '2', '0', '0', '0'),
+('Discussion', '1', '0', '0', '0'),
+('Feedback', '1', '0', '1', '0');
 
 </textarea>
 	</li>
