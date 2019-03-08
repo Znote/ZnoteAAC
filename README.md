@@ -26,7 +26,7 @@ Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC s
 * PHP Version 5.3.3 or higher. Mostly tested on 5.6 and 7.0. Most web stacks ships with this as default these days.
 
 ### Optionals
-* For email registration verification and account recovery: [PHPMailer](https://github.com/PHPMailer/PHPMailer/releases) Version 5.x, extracted and renamed to just "PHPMailer" in Znote AAC directory. 
+* For email registration verification and account recovery: [PHPMailer](https://github.com/PHPMailer/PHPMailer/releases) Version 6.x, extracted and renamed to just "PHPMailer" in Znote AAC directory. 
 * PHP extention curl for PHPMailer, paypal and google reCaptcha services.
 * PHP extention openssl for google reCaptcha services.
 
