@@ -691,13 +691,19 @@ table.hide {
 
 .outfitColumn {
     position: relative;
-    width: 60px;
-    background: initial;
-    border-top: none;
 }
 
 .outfitColumn img {
     position: absolute;
-    top: -38px;
-    right: 4px;
+    z-index: 1;
+    top: -32px;
+    left: -16px;
+}
+
+.auction_char .outfitColumn {
+  height: 60px;
+}
+.auction_char .outfitColumn img {
+  top: -16px;
+  left: -20px;
 }
