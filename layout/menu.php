@@ -22,6 +22,9 @@
 		<ul> <!-- (sub)dropdown SHOP -->
 			<li><a href="buypoints.php">Buy Points</a></li>
 			<li><a href="shop.php">Shop Offers</a></li>
+			<?php if ($config['shop_auction']['characterAuction']): ?>
+				<li><a href="auctionChar.php">Character Auction</a></li>
+			<?php endif; ?>
 		</ul>
 	</li>
 	<li><a href="guilds.php">Guilds</a>

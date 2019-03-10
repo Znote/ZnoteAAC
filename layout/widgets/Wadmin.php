@@ -23,6 +23,9 @@
 			<li>
 				<a href='admin_shop.php'>Admin Shop</a>
 			</li>
+			<li>
+				<a href='admin_auction.php'>Admin Auction</a>
+			</li>
 			<?php
 			$new = 0;
 			$cat = 4; //Category ID for feedback section

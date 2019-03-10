@@ -250,6 +250,21 @@ CREATE TABLE IF NOT EXISTS `znote_global_storage` (
   UNIQUE (`key`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS `znote_auction_player` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) NOT NULL,
+  `original_account_id` int(11) NOT NULL,
+  `bidder_account_id` int(11) NOT NULL,
+  `time_begin` int(11) NOT NULL,
+  `time_end` int(11) NOT NULL,
+  `price` int(11) NOT NULL,
+  `bid` int(11) NOT NULL,
+  `deposit` int(11) NOT NULL,
+  `sold` tinyint(1) NOT NULL,
+  `claimed` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 INSERT INTO `znote` (`version`, `installed`) VALUES
 ('$version', '$time');
 

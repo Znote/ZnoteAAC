@@ -926,15 +926,24 @@
 	);
 
 	//////////
-	/// Let players sell characters.
+	/// Let players sell, buy and bid on characters.
+	/// Creates a deeper shop economy, encourages players to spend more money in shop for points.
+	/// Pay to win/progress mechanic, but also lets people who can barely afford points to gain it
+	/// by leveling characters to sell. It can also discourages illegal/risky third-party account 
+	/// services. Since players can buy officially & support the server, dodgy competitors have to sell for cheaper.
+	/// Without admin interference this is organic to each individual community economy inflation.
 	/////////
 	$config['shop_auction'] = array(
 		'characterAuction' => false, // Enable/disable this system
-		'requiredLevel' => 50, // Minimum level of sold character
-		'leastValue' => 10, // Lowest donation points a char can be sold for.
-		'leastTime' => 24, // In hours. False to disable.
-		// leastTime = Lowest duration of time an auctioned player has to be
-		// sellable before auctioneer can claim character back.
+		// Account ID of the account that stores players in the auction.
+		// Make sure storage account has a very secure password!
+		'storage_account_id' => 5, // Separate secure account ID, not your GM.
+		'step' => 5, // Minimum amount someone can raise a bid by
+		'step_duration' => 1 * 60 * 60, // When bidding over someone else, extend bid period by 1 hour.
+		'lowestLevel' => 20, // Minimum level of sold character
+		'lowestPrice' => 10, // Lowest donation points a char can be sold for.
+		'biddingDuration' => 1 * 24 * 60 * 60, // = 1 day, 0 to disable bidding
+		'deposit' => 10 // Seller has to add 10=10% deposit to auction which he gets back later.
 	);
 
 	/*
