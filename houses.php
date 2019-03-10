@@ -153,30 +153,47 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 
 		// Create Search house box
 		?>
-		<form action="" method="get" style="width: 648px">
-			<b>Select town:</b>
-			<select name="id">
-			<?php
-			foreach ($towns as $id => $name)
-				echo '<option value="'. $id .'"' . ($townid != $id ?: ' selected') . '>'. $name .'</option>';
-			?>
-			</select>
-			<b style="padding-left: 8px;">Order:</b>
-			<select name="order">
-			<?php
-			$order_allowed = array('id', 'name', 'size', 'beds', 'rent', 'owner');
-			foreach($order_allowed as $o)
-				echo '<option value="' . $o . '"' . ($o != $order ?: ' selected') . '>' . ucfirst($o) . '</option>';
-			?>
-			</select>
-			<select name="type">
-			<?php
-			$type_allowed = array('desc', 'asc');
-			foreach($type_allowed as $t)
-				echo '<option value="' . $t . '"' . ($t != $type ?: ' selected') . '>' . ($t == 'desc' ? 'Descending' : 'Ascending') .'</option>';
-			?>
-			</select>
-			<input type="submit" value="Fetch houses" style="margin-left: 8px;"/>
+		<form action="" method="get" class="houselist">
+			<table>
+				<tr>
+					<td>Town</td>
+					<td>Order</td>
+					<td>Sort</td>
+				</tr>
+				<tr>
+					<td>
+						<select name="id">
+						<?php
+						foreach ($towns as $id => $name)
+							echo '<option value="'. $id .'"' . ($townid != $id ?: ' selected') . '>'. $name .'</option>';
+						?>
+						</select>
+					</td>
+					<td>
+						<select name="order">
+						<?php
+						$order_allowed = array('id', 'name', 'size', 'beds', 'rent', 'owner');
+						foreach($order_allowed as $o)
+							echo '<option value="' . $o . '"' . ($o != $order ?: ' selected') . '>' . ucfirst($o) . '</option>';
+						?>
+						</select>
+					</td>
+					<td>
+						<select name="type">
+						<?php
+						$type_allowed = array('desc', 'asc');
+						foreach($type_allowed as $t)
+							echo '<option value="' . $t . '"' . ($t != $type ?: ' selected') . '>' . ($t == 'desc' ? 'Descending' : 'Ascending') .'</option>';
+						?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<input type="submit" value="Fetch houses"/>
+					</td>
+				</tr>
+			</table>
 		</form>
 		<?php
 		if(!in_array($order, $order_allowed))
