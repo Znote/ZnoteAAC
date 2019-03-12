@@ -404,7 +404,10 @@ function admin_only($user_data) {
 }
 
 function is_admin($user_data) {
-	return in_array($user_data['name'], config('page_admin_access')) ? true : false;
+	if (config('ServerEngine') === 'OTHIRE')
+		return in_array($user_data['id'], config('page_admin_access')) ? true : false;
+	else
+		return in_array($user_data['name'], config('page_admin_access')) ? true : false;	
 }
 
 function array_sanitize(&$item) {
