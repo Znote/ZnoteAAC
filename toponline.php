@@ -1,15 +1,13 @@
 <?php
 require_once 'engine/init.php';
 include 'layout/overall/header.php'; 
-
 if (!$config['toponline']['enabled']) {
 echo 'This page has been disabled at config.php.';
 include 'layout/overall/footer.php';
 	exit();
 }
 $limit = $config['toponline']['limit'];
-$type = $_GET['type'];
-
+$type = isset($_GET['type']);
 function onlineTimeTotal($value)
 {
 	$hours = floor($value / 3600);
@@ -17,7 +15,6 @@ function onlineTimeTotal($value)
 	$minutes = floor($value / 60);
 		return '<font color="black">'.$hours.'h '.$minutes.'m</font>';
 }
-
 function hours_and_minutes($value, $color = 1)
 {
 	$hours = floor($value / 3600);
@@ -33,7 +30,6 @@ function hours_and_minutes($value, $color = 1)
 		else
 			return '<font color="green">'.$hours.'h '.$minutes.'m</font>';
 }
-
 if(empty($type))
 	$znotePlayers = mysql_select_multi('SELECT * FROM `znote_players` AS `z` JOIN `players` AS `p` WHERE `p`.`id`=`z`.`player_id` and `p`.`group_id` < 3 ORDER BY `onlinetimetoday` DESC LIMIT '.$limit);
 elseif($type == "sum")
@@ -41,12 +37,11 @@ elseif($type == "sum")
 elseif($type >= 1 && $type <= 4)
 	$znotePlayers = mysql_select_multi('SELECT * FROM `znote_players` AS `z` JOIN `players` AS `p` WHERE `p`.`id`=`z`.`player_id` and `p`.`group_id` < 3 ORDER BY `onlinetime' . (int) $type . '` DESC LIMIT '.$limit);
 	
-echo '<CENTER><H2>Most online on <?php echo $config['site_title'] ?></H2></CENTER>
+echo '<CENTER><H2>Most online on' .$config['site_title'] . '</H2></CENTER>
 <BR>
 <table class="table table-striped">
 		<td><center><b>#</b></center></td>
 		<td width="10%"><b>Name</b></td>';
-
 if($type == "sum")
 	echo '<td ><center><b><center><a href="?subtopic=onlinetime&type=sum">Total</a></center></B></TD>';
 else
@@ -67,8 +62,6 @@ if(empty($type))
 else
 	echo '<TD ><b><center><a href="?subtopic=onlinetime">Today</a></center></B></TD>';
 echo '</TR>';
-
-
 $number_of_rows = 1;
 if($znotePlayers)
 foreach($znotePlayers as $player)
