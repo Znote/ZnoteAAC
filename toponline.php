@@ -7,7 +7,8 @@ include 'layout/overall/footer.php';
 	exit();
 }
 $limit = $config['toponline']['limit'];
-$type = isset($_GET['type']);
+$type = (isset($_GET['type'])) ? getValue($_GET['type']) : false;
+
 function onlineTimeTotal($value)
 {
 	$hours = floor($value / 3600);
