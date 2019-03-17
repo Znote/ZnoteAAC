@@ -87,12 +87,12 @@ function calculate_discount($orig, $new) {
 		if ($new != $orig) {
 			$calc = ($new/$orig) - 1;
 			$calc *= 100;
-			$tmp = '+'. $calc .'%';
+			$tmp = '+'. floor($calc) .'%';
 		} else $tmp = '0%';
 	} else {
 		$calc = 1 - ($new/$orig);
 		$calc *= 100;
-		$tmp = '-'. $calc .'%';
+		$tmp = '-'. floor($calc) .'%';
 	}
 	return $tmp;
 }
