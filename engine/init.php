@@ -135,10 +135,11 @@ if ($config['log_ip']) {
 }
 
 // Sub page override system
+$filename = explode('/', $_SERVER['PHP_SELF']);
+$filename = $filename[count($filename)-1];
+$page_filename = str_replace('.php', '', $filename);
 if ($config['allowSubPages']) {
 	require_once 'layout/sub.php';
-	$filename = explode('/', $_SERVER['PHP_SELF']);
-	$filename = $filename[count($filename)-1];
 	if (isset($subpages) && !empty($subpages)) {
 		foreach ($subpages as $page) {
 			if ($page['override'] && $page['file'] === $filename) {

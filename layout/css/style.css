@@ -707,3 +707,29 @@ table.hide {
   top: -16px;
   left: -20px;
 }
+
+/* Characterprofile table design */
+#characterProfileTable thead th:first-of-type {
+  position: relative;
+  width: 28%;
+}
+#characterProfileTable thead th:nth-child(2) {
+  /*background-color: red;*/
+}
+
+#characterProfileTable thead h1 {
+  text-shadow: none;
+  color: white;
+  padding: 0;
+}
+
+#characterProfileTable .outfit {
+  position: absolute;
+  left: 0;
+  top: -16px;
+}
+#characterProfileTable .flag {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
