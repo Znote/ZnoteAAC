@@ -289,10 +289,8 @@ INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`) VAL
 	</li>
 </ol>
 ";
-if ($config['ServerEngine'] !== 'OTHIRE')
-	$connect = new mysqli($config['sqlHost'], $config['sqlUser'], $config['sqlPassword'], $config['sqlDatabase']);
-else
-	$connect = new mysqli($config['sql_host'], $config['sql_user'], $config['sql_pass'], $config['sql_db']);
+
+$connect = new mysqli($config['sqlHost'], $config['sqlUser'], $config['sqlPassword'], $config['sqlDatabase']);
 
 if ($connect->connect_errno) {
     die("Failed to connect to MySQL: (" . $connect->connect_errno . ") " . $connect->connect_error . $install);
