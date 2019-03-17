@@ -371,7 +371,8 @@ function guild_player_join($cid, $gid) {
 		// Add to guild if rank id was found:
 		if ($rid != false) {
 			// Remove the invite:
-			guild_remove_invitation($cid, $gid);
+			//guild_remove_invitation($cid, $gid);
+			guild_remove_all_invitations($cid);
 			// Add to guild:
 			mysql_update("UPDATE `players` SET `rank_id`='$rid' WHERE `id`=$cid");
 			$status = true;
@@ -383,7 +384,8 @@ function guild_player_join($cid, $gid) {
 		if ($guildrank !== false) {
 			$rid = $guildrank['id'];
 			// Remove invite
-			guild_remove_invitation($cid, $gid);
+			//guild_remove_invitation($cid, $gid);
+			guild_remove_all_invitations($cid);
 			// Add to guild
 			mysql_insert("INSERT INTO `guild_membership` (`player_id`, `guild_id`, `rank_id`, `nick`) VALUES ('$cid', '$gid', '$rid', '');");
 			// Return success
@@ -398,6 +400,12 @@ function guild_remove_invitation($cid, $gid) {
 	$cid = (int)$cid;
 	$gid = (int)$gid;
 	mysql_delete("DELETE FROM `guild_invites` WHERE `player_id`='$cid' AND `guild_id`='$gid';");
+}
+
+// Remove ALL invitations
+function guild_remove_all_invitations($cid) {
+	$cid = (int)$cid;
+	mysql_delete("DELETE FROM `guild_invites` WHERE `player_id`='$cid';");
 }
 
 // Invite character to guild

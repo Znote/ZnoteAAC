@@ -171,7 +171,7 @@ if (user_logged_in() === true) {
 <?php
 } else { // GUILD OVERVIEW
 	$guild = get_guild_data($_GET['name']);
-	$gid = $guild['id'];
+	$gid = (int)$guild['id'];
 	if ($gid === false) {
 		header('Location: guilds.php');
 		exit();
@@ -358,16 +358,24 @@ if (user_logged_in() === true) {
 		exit();
 	}
 	if (!empty($_POST['joinguild'])) {
-		// 
+		$joining_player_id = (int)$_POST['joinguild'];
+		// Join a guild
 		foreach ($inv_data as $inv) {
-			if ($inv['player_id'] == $_POST['joinguild']) {
-				if ($config['ServerEngine'] !== 'TFS_10') $chardata = user_character_data($_POST['joinguild'], 'online');
-				else $chardata['online'] = (user_is_online_10($_POST['joinguild'])) ? 1 : 0;
+			if ((int)$inv['player_id'] == $joining_player_id) {
+				if ($config['ServerEngine'] !== 'TFS_10') $chardata = user_character_data($joining_player_id, 'online');
+				else $chardata['online'] = (user_is_online_10($joining_player_id)) ? 1 : 0;
 				if ($chardata['online'] == 0) {
-					if (guild_player_join($_POST['joinguild'], $gid)) {
-						header('Location: guilds.php?name='. $_GET['name']);
-						exit();
-					} else echo '<font color="red" size="4">Failed to find guild position representing member.</font>';
+					// Ensure player is not already a member of another guild
+					if (get_character_guild_rank($joining_player_id) === false) {
+						if (guild_player_join($joining_player_id, (int)$gid)) {
+							header('Location: guilds.php?name='. $_GET['name']);
+							exit();
+						} else echo '<font color="red" size="4">Failed to find guild position representing member.</font>';
+					} else {
+						$already_guild = get_player_guild_data($joining_player_id);
+						$already_guild_name = get_guild_name($already_guild['guild_id']);
+						echo "<font color='red' size='4'>You are already <strong>{$already_guild['rank_name']}</strong> of another guild: <strong><a href='guilds.php?name={$already_guild_name}'>{$already_guild_name}</a></strong>.<br>You need to leave that guild first before you can join another one.</font>";
+					}
 				} else echo '<font color="red" size="4">Character must be offline before joining guild.</font>';
 			}
 		}
