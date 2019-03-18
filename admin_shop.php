@@ -36,6 +36,7 @@ $items = getItemList();
 </table>
 
 <?php
+$orders = mysql_select_multi('SELECT * FROM `znote_shop_logs` ORDER BY `id` DESC;');
 $order_types = array(1 => 'Item', 2 => 'Premium Days', 3 => 'Gender Change', 4 => 'Name Change', 5 => 'Outfit', 6 =>'Mount', 7 =>'Custom');
 ?>
 <h2>Order History</h2>
