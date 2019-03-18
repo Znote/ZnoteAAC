@@ -483,9 +483,20 @@ if ($auction['characterAuction']) {
 					AND `p`.`group_id` = 1
 					LIMIT 1
 				;");
-				if (isset($player['online']) && $player['online'] == 0) {
-					if (isset($player['alreadyInAuction']) && $player['alreadyInAuction'] == 0) {
-						$status = true;
+				// Verify storage account ID exist
+				$storage_account = mysql_select_single("
+					SELECT `id` 
+					FROM `accounts` 
+					WHERE `id`={$auction['storage_account_id']} 
+					LIMIT 1;
+				");
+				if ($storage_account === false) {
+					data_dump($auction, false, "Configured storage_account_id in config.php does not exist!");
+				} else {
+					if (isset($player['online']) && $player['online'] == 0) {
+						if (isset($player['alreadyInAuction']) && $player['alreadyInAuction'] == 0) {
+							$status = true;
+						}
 					}
 				}
 			}

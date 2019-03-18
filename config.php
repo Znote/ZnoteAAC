@@ -919,7 +919,7 @@
 		'characterAuction' => false, // Enable/disable this system
 		// Account ID of the account that stores players in the auction.
 		// Make sure storage account has a very secure password!
-		'storage_account_id' => 5, // Separate secure account ID, not your GM.
+		'storage_account_id' => 500000, // Separate secure account ID, not your GM.
 		'step' => 5, // Minimum amount someone can raise a bid by
 		'step_duration' => 1 * 60 * 60, // When bidding over someone else, extend bid period by 1 hour.
 		'lowestLevel' => 20, // Minimum level of sold character
