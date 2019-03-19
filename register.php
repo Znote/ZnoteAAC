@@ -42,7 +42,8 @@ if (empty($_POST) === false) {
 			}
 		} else {
 			if (preg_match("/^[0-9]+$/", $_POST['username']) == false) {
-				$errors[] = 'Your account can only contain numbers 0-9.';			
+				$errors[] = 'Your account can only contain numbers 0-9.';
+			}
 		}	
 		// name restriction
 		$resname = explode(" ", $_POST['username']);
