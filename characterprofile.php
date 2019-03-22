@@ -376,41 +376,43 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				FROM player_storage 
 				WHERE `player_id` = {$user_id}
 			");
-			foreach ($config['quests'] as $cquest) {
-				$totalquests = $totalquests + 1;
-				foreach ($sqlquests as $dbquest) {
-					if ($cquest[0] == $dbquest['key'] && $cquest[1] == $dbquest['value']) {
-						$completedquests = $completedquests + 1;
+			if (isset($config['quests']) && !empty($config['quests'])) {
+				foreach ($config['quests'] as $cquest) {
+					$totalquests = $totalquests + 1;
+					foreach ($sqlquests as $dbquest) {
+						if ($cquest[0] == $dbquest['key'] && $cquest[1] == $dbquest['value']) {
+							$completedquests = $completedquests + 1;
+						}
 					}
-				}
-				if ($cquest[3] == 1) {
-					if ($completedquests != 0) {
-						if ($firstrun == 1): ?>
-							<b> Quest progression </b>
-							<table id="characterprofileQuest" class="table table-striped table-hover">
-								<thead>
-									<tr class="yellow">
-										<th>Quest:</th>
-										<th>progression:</th>
-									</tr>
-								</thead>
-								<tbody>
+					if ($cquest[3] == 1) {
+						if ($completedquests != 0) {
+							if ($firstrun == 1): ?>
+								<b> Quest progression </b>
+								<table id="characterprofileQuest" class="table table-striped table-hover">
+									<thead>
+										<tr class="yellow">
+											<th>Quest:</th>
+											<th>progression:</th>
+										</tr>
+									</thead>
+									<tbody>
+								<?php
+								$firstrun = 0;
+							endif;
+							$completed = $completedquests / $totalquests * 100;
+							?>
+							<tr>
+								<td><?php echo $cquest[2]; ?></td>
+								<td id="progress">
+									<span id="percent"><?php echo round($completed); ?>%</span>
+									<div id="bar" style="width: '.$completed.'%"></div>
+								</td>
+							</tr>
 							<?php
-							$firstrun = 0;
-						endif;
-						$completed = $completedquests / $totalquests * 100;
-						?>
-						<tr>
-							<td><?php echo $cquest[2]; ?></td>
-							<td id="progress">
-								<span id="percent"><?php echo round($completed); ?>%</span>
-								<div id="bar" style="width: '.$completed.'%"></div>
-							</td>
-						</tr>
-						<?php
+						}
+						$completedquests = 0;
+						$totalquests = 0;
 					}
-					$completedquests = 0;
-					$totalquests = 0;
 				}
 			}
 		}
