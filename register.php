@@ -36,7 +36,7 @@ if (empty($_POST) === false) {
 		if ($isNoob) {
 			$errors[] = 'This account name is blocked for registration.';
 		}
-		if ($config['ServerEngine'] !== 'OTHIRE') {
+		if ($config['ServerEngine'] !== 'OTHIRE' && $config['client'] >= 830) {
 			if (preg_match("/^[a-zA-Z0-9]+$/", $_POST['username']) == false) {
 				$errors[] = 'Your account name can only contain characters a-z, A-Z and 0-9.';
 			}
@@ -44,7 +44,7 @@ if (empty($_POST) === false) {
 			if (preg_match("/^[0-9]+$/", $_POST['username']) == false) {
 				$errors[] = 'Your account can only contain numbers 0-9.';
 			}
-		}	
+		}
 		// name restriction
 		$resname = explode(" ", $_POST['username']);
 		foreach($resname as $res) {

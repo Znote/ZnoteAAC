@@ -1243,7 +1243,7 @@ function user_create_account($register_data, $maildata) {
 
 	mysql_insert("INSERT INTO `accounts` ($fields) VALUES ($data)");
 	
-	$account_id = user_id($register_data['name']);
+	$account_id = (isset($register_data['name'])) ? user_id($register_data['name']) : user_id($register_data['id']);
 	$activeKey = rand(100000000,999999999);
 	$active = ($maildata['register']) ? 0 : 1;
 	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `active`, `activekey`, `flag`) VALUES ('$account_id', '$ip', '$created', '$active', '$activeKey', '$flag')");
