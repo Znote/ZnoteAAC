@@ -48,7 +48,7 @@ function accountAccess($accountId, $TFS) {
 	$yourChars = mysql_select_multi("SELECT `name`, `group_id`, `account_id` FROM `players` WHERE `account_id`='$accountId';");
 	if ($yourChars !== false) {
 		foreach ($yourChars as $char) {
-			if ($TFS === 'TFS_03') {
+			if ($TFS === 'TFS_03' || $TFS === 'OTHIRE') {
 				if ($char['group_id'] > $access) $access = $char['group_id'];
 			} else {
 				if ($char['group_id'] > 1) {
