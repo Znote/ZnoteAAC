@@ -25,8 +25,10 @@
 		$IPN['cmd'] = '_notify-validate';
 		$PaypalHost = (empty($IPN['test_ipn']) ? 'www' : 'www.sandbox').'.paypal.com';
 		$cURL = curl_init();
-		//curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
-		//curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, 1);
+		curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, 2);
+		curl_setopt($cURL, CURLOPT_SSLVERSION, 6);
+		curl_setopt($cURL, CURLOPT_CAINFO, __DIR__ . '/engine/cert/cacert.pem');
 		curl_setopt($cURL, CURLOPT_URL, "https://{$PaypalHost}/cgi-bin/webscr");
 		curl_setopt($cURL, CURLOPT_ENCODING, 'gzip');
 		curl_setopt($cURL, CURLOPT_BINARYTRANSFER, true);
