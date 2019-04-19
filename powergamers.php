@@ -15,8 +15,8 @@ include 'layout/overall/footer.php';
 	$today = true;
 	if ($days) {
 		$selected = ($_POST['days']);
-		$days = $selected[1];
-		$vocation = $selected[0];
+		$days = (int) $selected[1];
+		$vocation = (int) $selected[0];
 		if ($days > 0)
 		$today = false;
 	} else {
