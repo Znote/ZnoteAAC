@@ -3,7 +3,7 @@ if ($config['log_ip']) {
 	znote_visitor_insert_detailed_data(3);
 }
 
-$house = getValue($_GET['id']);
+$house = (isset($_GET['id']) && (int)$_GET['id'] > 0) ? (int)$_GET['id'] : false;
 
 if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 	$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='$house';");
