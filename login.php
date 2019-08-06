@@ -45,7 +45,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 			}
 		}
 
-		$players = mysql_select_multi("SELECT `name`, `sex` FROM `players` WHERE `account_id`='".$account['id']."';");
+		$players = mysql_select_multi("SELECT `name`, `sex`, `level`, `vocation`, `lookbody`, `looktype`, `lookhead`, `looklegs`, `lookfeet`, `lookaddons`, `deletion` FROM `players` WHERE `account_id`='".$account['id']."';");
 		if ($players !== false) {
 
 			$gameserver = $config['gameserver'];
@@ -59,6 +59,8 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 					'isreturner' => true,
 					'returnernotification' => false,
 					'showrewardnews' => false,
+					'tournamentticketpurchasestate' => 0,
+					'emailcoderequest' => false,
 					'sessionkey' => $sessionKey,
 					'lastlogintime' => 0,
 					'ispremium' => ($account['premdays'] > 0) ? true : false,
@@ -74,10 +76,14 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 							'externalport' => $gameserver['port'],
 							'previewstate' => 0,
 							'location' => 'ALL',
+							'pvptype' => 'pvp',
 							'externaladdressunprotected' => $gameserver['ip'],
 							'externaladdressprotected' => $gameserver['ip'],
 							'externalportunprotected' => $gameserver['port'],
 							'externalportprotected' => $gameserver['port'],
+							'istournamentworld' => false,
+							'restrictedstore' => false,
+							'currenttournamentphase' => 2,
 							'anticheatprotection' => false
 						)
 					),
@@ -92,7 +98,18 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 					'worldid' => 0,
 					'name' => $player['name'],
 					'ismale' => ($player['sex'] === 1) ? true : false,
-					'tutorial' => false
+					'tutorial' => false,
+					'level' => intval($player['level']),
+					'vocation' => vocation_id_to_name($player['vocation']),
+					'outfitid' => intval($player['looktype']),
+					'headcolor' => intval($player['lookhead']),
+					'torsocolor' => intval($player['lookbody']),
+					'legscolor' => intval($player['looklegs']),
+					'detailcolor' => intval($player['lookfeet']),
+					'addonsflags' => intval($player['lookaddons']),
+					'ishidden' => intval($player['deletion']) === 1,
+					'istournamentparticipant' => false,
+					'remainingdailytournamentplaytime' => 0
 				);
 			}
 
