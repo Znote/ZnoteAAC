@@ -559,5 +559,9 @@ function verifyGoogleReCaptcha($postResponse = null) {
 	$json = json_decode($response);
 	return isset($json->success) && $json->success;
 }
+// html encoding function (encode any string to valid UTF-8 HTML)
+function hhb_tohtml(/*string*/ $str)/*:string*/ {
+	return htmlentities($str, ENT_QUOTES | ENT_HTML401 | ENT_SUBSTITUTE | ENT_DISALLOWED, 'UTF-8', true);
+}
 
 ?>
