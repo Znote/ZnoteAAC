@@ -61,8 +61,8 @@
 	$paypal = $config['paypal'];
 	$prices = $config['paypal_prices'];
 	
-	// Send an empty HTTP 200 OK response to acknowledge receipt of the notification 
-	header('HTTP/1.1 200 OK'); 
+	// Send an empty HTTP 204 OK response to acknowledge receipt of the notification 
+	http_response_code(204);
 
 	// Build the required acknowledgement message out of the notification just received
 	$req = 'cmd=_notify-validate';
