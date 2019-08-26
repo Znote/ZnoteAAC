@@ -1,42 +1,12 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
-//TODO: move this function to the appropriate location (maybe engine/function/general.php or engine/function/crypto.php ?)
-// php5-compatibile version of php7's random_bytes()
-// $crypto_strong:  a boolean value that determines if the algorithm used was "cryptographically strong"
-function random_bytes_compat($length, &$crypto_strong = null)
-{
-    $crypto_strong = false;
-    if (!is_int($length)) {
-        throw new \InvalidArgumentException("argument 1 must be an int, is " . gettype($length));
-    }
-    if ($length < 0) {
-        throw new \InvalidArgumentException("length must be >= 0");
-    }
-    if (is_callable("random_bytes")) {
-        $crypto_strong = true;
-        return random_bytes($length);
-    }
-    if (is_callable("openssl_random_pseudo_bytes")) {
-        return openssl_random_pseudo_bytes($length, $crypto_strong);
-    }
-    $ret = @file_get_contents("/dev/urandom", false, null, 0, $length);
-    if (is_string($ret) && strlen($ret) === $length) {
-        $crypto_strong = true;
-        return $ret;
-    }
-    // fallback to non-cryptographically-secure mt_rand() implementation...
-    $crypto_strong = false;
-    $ret = "";
-    for ($i = 0; $i < $length; ++$i) {
-        $ret .= chr(mt_rand(0, 255));
-    }
-    return $ret;
-}
+
 if(!isset($_SESSION['csrf_token'])){
         $_SESSION['csrf_token']=bin2hex(random_bytes_compat(5,$crypto_strong));
 	if(!$crypto_strong){
 		// we don't really care, the csrf token doesn't really have to be cryptographically strong.
 	}
 }
+
 protect_page();
 admin_only($user_data);
 // Encryption (if select field has $key 0, it will return false, so add $enc + $key will return 100, subtract and you get 0, not false). 
