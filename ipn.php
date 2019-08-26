@@ -65,13 +65,10 @@
 	http_response_code(204);
 
 	// Build the required acknowledgement message out of the notification just received
-	$req = 'cmd=_notify-validate';
-	foreach ($_POST as $key => $value) {
-		$value = urlencode(stripslashes($value));
-		$req  .= "&$key=$value";
+	$postdata = 'cmd=_notify-validate';
+	if(!empty($_POST)){
+		$postdata.="&".http_build_query($_POST);
 	}
-	$postdata = $req;
-	
 	// Assign payment notification values to local variables
 	$item_name        = $_POST['item_name'];
 	$item_number      = $_POST['item_number'];
