@@ -32,8 +32,8 @@ function random_bytes_compat($length, &$crypto_strong = null)
     return $ret;
 }
 if(!isset($_SESSION['csrf_token'])){
-        $_SESSION['csrf_token']=bin2hex(random_bytes_compat(5),$crypto_strong);
-	if(!$crypt_strong){
+        $_SESSION['csrf_token']=bin2hex(random_bytes_compat(5,$crypto_strong));
+	if(!$crypto_strong){
 		// we don't really care, the csrf token doesn't really have to be cryptographically strong.
 	}
 }
