@@ -1,4 +1,12 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
+
+if(!isset($_SESSION['csrf_token'])){
+        $_SESSION['csrf_token']=bin2hex(random_bytes_compat(5,$crypto_strong));
+	if(!$crypto_strong){
+		// we don't really care, the csrf token doesn't really have to be cryptographically strong.
+	}
+}
+
 protect_page();
 admin_only($user_data);
 // Encryption (if select field has $key 0, it will return false, so add $enc + $key will return 100, subtract and you get 0, not false). 
@@ -7,6 +15,14 @@ $enc = 100;
 
 // start
 if (empty($_POST) === false) {
+	if(empty($_POST['csrf_token'])){
+		http_response_code(400);
+		die("error: missing csrf token!");
+	}
+	if(!hash_equals($_POST['csrf_token'],$_SESSION['csrf_token'])){
+		http_response_code(400);
+		die("error: csrf token invalid!");
+	}
 	// BAN system!
 	if (!empty($_POST['ban_char']) && !empty($_POST['ban_type']) && !empty($_POST['ban_action']) && !empty($_POST['ban_reason']) && !empty($_POST['ban_time']) && !empty($_POST['ban_comment'])) {
 		if (user_character_exist($_POST['ban_char'])) {
@@ -21,14 +37,14 @@ if (empty($_POST) === false) {
 			//var_dump($charname, $typeid, $actionid, $reasonid, $time, $comment);
 			
 			if (set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $comment)) {
-				$errors[] = 'Violation entry has been set for '. $charname .'.';
+				$errors[] = 'Violation entry has been set for '. hhb_tohtml($charname) .'.';
 			} else {
-				$errors[] = 'Website character name: '. $config['website_char'] .' does not exist. Create this character name or configure another name in config.php';
+				$errors[] = 'Website character name: '. hhb_tohtml($config['website_char']) .' does not exist. Create this character name or configure another name in config.php';
 				$errors[] = 'Website failed to recognize a character it can represent while inserting a rule violation.';
 			}
 			
 		} else {
-			$errors[] = 'Character '. getValue($_POST['ban_char']) .' does not exist.';
+			$errors[] = 'Character '. hhb_tohtml(getValue($_POST['ban_char'])) .' does not exist.';
 		}
 	}
 	
@@ -37,9 +53,9 @@ if (empty($_POST) === false) {
 	if (empty($_POST['del_name']) === false) {
 		if (user_character_exist($_POST['del_name'])) {
 			user_delete_character(user_character_id($_POST['del_name']));
-			$errors[] = 'Character '. getValue($_POST['del_name']) .' permanently deleted.';
+			$errors[] = 'Character '. hhb_tohtml(getValue($_POST['del_name'])) .' permanently deleted.';
 		} else {
-			$errors[] = 'Character '. getValue($_POST['del_name']) .' does not exist.';
+			$errors[] = 'Character '. hhb_tohtml(getValue($_POST['del_name'])) .' does not exist.';
 		}
 	}
 	
@@ -55,7 +71,7 @@ if (empty($_POST) === false) {
 				} else if ($config['ServerEngine'] == 'TFS_03') {
 					user_change_password03($acc_id, $_POST['new_pass']);
 				}
-				$errors[] = 'The password to the account of character name: '. getValue($_POST['reset_pass']) .' has been set to: '. getValue($_POST['new_pass']) .'.';
+				$errors[] = 'The password to the account of character name: '. hhb_tohtml(getValue($_POST['reset_pass'])) .' has been set to: '. hhb_tohtml(getValue($_POST['new_pass'])) .'.';
 			} else {
 				header('Location: changepassword.php');
 				exit();
@@ -100,10 +116,10 @@ if (empty($_POST) === false) {
 						$pos = $value;
 					}
 				}
-				$errors[] = 'Character '. getValue($_POST['position_name']) .' recieved the ingame position: '. $pos .'.';
+				$errors[] = 'Character '. hhb_tohtml(getValue($_POST['position_name'])) .' recieved the ingame position: '. hhb_tohtml($pos) .'.';
 			}
 		} else {
-			$errors[] = 'Character '. getValue($_POST['position_name']) .' does not exist.';
+			$errors[] = 'Character '. hhb_tohtml(getValue($_POST['position_name'])) .' does not exist.';
 		}
 	}
 	
@@ -112,7 +128,7 @@ if (empty($_POST) === false) {
 		$from = $_POST['from'];
 		if ($from === 'only') {
 			if (empty($_POST['player_name']) || !user_character_exist($_POST['player_name'])) {
-				$errors[] = 'Character '. getValue($_POST['player_name']) .' does not exist.';
+				$errors[] = 'Character '. hhb_tohtml(getValue($_POST['player_name'])) .' does not exist.';
 			}
 		}
 
@@ -154,20 +170,22 @@ if ($basic['version'] !== $version) {
 	mysql_update("UPDATE `znote` SET `version`='$version';");
 	$basic = user_znote_data('version', 'installed', 'cached');
 }
-echo "Running Znote AAC Version: ". $basic['version'] .".<br>";
-echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
+echo "Running Znote AAC Version: ". hhb_tohtml($basic['version']) .".<br>";
+echo "Last cached on: ". hhb_tohtml(getClock($basic['cached'], true)) .".<br>";
 ?>
 </p>
 <ul>
 	<li>
 		<b>Permanently delete/erase character from database:</b> 
 		<form type="submit" action="" method="post">
+			<input type="hidden" name="csrf_token" value="<?php echo hhb_tohtml($_SESSION['csrf_token']);?>" />
 			<input type="text" name="del_name" placeholder="Character name...">
 		</form>
 	</li>
 	<li>
 		<b>Ban character and/or account:</b>
 		<form action="" method="post">
+			<input type="hidden" name="csrf_token" value="<?php echo hhb_tohtml($_SESSION['csrf_token']);?>" />
 			<table style="background-color:lightblue;">
 				<!-- row 1 -->
 				<tr>
@@ -182,21 +200,21 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 						<select name="ban_type">
 							<?php
 							foreach ($config['ban_type'] as $key=>$value) {
-								echo "<option value=\"". ($enc + $key) ."\">". $value ."</option>";
+								echo "<option value=\"". hhb_tohtml($enc + $key) ."\">". hhb_tohtml($value) ."</option>";
 							}
 							?>
 						</select>
 						<select name="ban_action">
 							<?php
 							foreach ($config['ban_action'] as $key=>$value) {
-								echo "<option value=\"". ($enc + $key) ."\">". $value ."</option>";
+								echo "<option value=\"". hhb_tohtml($enc + $key) ."\">". hhb_tohtml($value) ."</option>";
 							}
 							?>
 						</select>
 						<select name="ban_time">
 							<?php
 							foreach ($config['ban_time'] as $key=>$value) {
-								echo "<option value=\"". ($enc + $key) ."\">". $value ."</option>";
+								echo "<option value=\"". hhb_tohtml($enc + $key) ."\">". hhb_tohtml($value) ."</option>";
 							}
 							?>
 						</select>
@@ -210,7 +228,7 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 						<select name="ban_reason">
 							<?php
 							foreach ($config['ban_reason'] as $key=>$value) {
-								echo "<option value=\"". ($enc + $key) ."\">". $value ."</option>";
+								echo "<option value=\"". hhb_tohtml($enc + $key) ."\">". hhb_tohtml($value) ."</option>";
 							}
 							?>
 						</select>
@@ -231,6 +249,7 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 	<li>
 		<b>Reset password to the account of character name:</b>
 		<form action="" method="post">
+			<input type="hidden" name="csrf_token" value="<?php echo hhb_tohtml($_SESSION['csrf_token']);?>" />
 			<input type="text" name="reset_pass" placeholder="Character name">
 			<input type="text" name="new_pass" placeholder="New password">
 			<input type="submit" value="Change Password">
@@ -246,11 +265,12 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 		}
 		?>
 		<form action="" method="post">
+			<input type="hidden" name="csrf_token" value="<?php echo hhb_tohtml($_SESSION['csrf_token']);?>" />
 			<input type="text" name="position_name" placeholder="Character name">
 			<select name="position_type">
 				<?php
 				foreach ($config['ingame_positions'] as $key=>$value) {
-					echo "<option value=\"". $key ."\">". $value ."</option>";
+					echo "<option value=\"". hhb_tohtml($key) ."\">". hhb_tohtml($value) ."</option>";
 				}
 				?>
 			</select>
@@ -260,6 +280,7 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 	<li>
 		<b>Give shop points to character:</b>
 		<form action="" method="post">
+			<input type="hidden" name="csrf_token" value="<?php echo hhb_tohtml($_SESSION['csrf_token']);?>" />
 			<input type="text" name="points_char" placeholder="Character name">
 			<input type="text" name="points_value" placeholder="Points">
 			<input type="submit" value="Give Points">
@@ -268,6 +289,7 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 	<li>
 		<b>Teleport Player</b>
 		<form action="" method="post">
+			<input type="hidden" name="csrf_token" value="<?php echo hhb_tohtml($_SESSION['csrf_token']);?>" />
 			<table>
 				<tr>
 					<td>Type:</td>
@@ -298,7 +320,7 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 					<select name="town">
 						<?php
 							foreach($config['towns'] as $townId => $townName) {
-								echo '<option value="' . $townId . '">' . $townName . '</option>';
+								echo '<option value="' . hhb_tohtml($townId) . '">' . hhb_tohtml($townName) . '</option>';
 							}
 						?>
 					</select>
@@ -324,4 +346,4 @@ echo "Last cached on: ". getClock($basic['cached'], true) .".<br>";
 </ul>
 <div id="twitter"><?php include 'twtrNews.php'; ?></div>
 
-<?php include 'layout/overall/footer.php'; ?>
+<?php include 'layout/overall/footer.php';

@@ -559,9 +559,40 @@ function verifyGoogleReCaptcha($postResponse = null) {
 	$json = json_decode($response);
 	return isset($json->success) && $json->success;
 }
+
 // html encoding function (encode any string to valid UTF-8 HTML)
 function hhb_tohtml(/*string*/ $str)/*:string*/ {
 	return htmlentities($str, ENT_QUOTES | ENT_HTML401 | ENT_SUBSTITUTE | ENT_DISALLOWED, 'UTF-8', true);
 }
 
+// php5-compatibile version of php7's random_bytes()
+// $crypto_strong:  a boolean value that determines if the algorithm used was "cryptographically strong"
+function random_bytes_compat($length, &$crypto_strong = null) {
+    $crypto_strong = false;
+    if (!is_int($length)) {
+        throw new \InvalidArgumentException("argument 1 must be an int, is " . gettype($length));
+    }
+    if ($length < 0) {
+        throw new \InvalidArgumentException("length must be >= 0");
+    }
+    if (is_callable("random_bytes")) {
+        $crypto_strong = true;
+        return random_bytes($length);
+    }
+    if (is_callable("openssl_random_pseudo_bytes")) {
+        return openssl_random_pseudo_bytes($length, $crypto_strong);
+    }
+    $ret = @file_get_contents("/dev/urandom", false, null, 0, $length);
+    if (is_string($ret) && strlen($ret) === $length) {
+        $crypto_strong = true;
+        return $ret;
+    }
+    // fallback to non-cryptographically-secure mt_rand() implementation...
+    $crypto_strong = false;
+    $ret = "";
+    for ($i = 0; $i < $length; ++$i) {
+        $ret .= chr(mt_rand(0, 255));
+    }
+    return $ret;
+}
 ?>
