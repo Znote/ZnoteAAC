@@ -1,0 +1,1 @@
+<globalevent name="Znote Shop" interval="30000" script="znoteshop.lua"/>
