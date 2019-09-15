@@ -40,13 +40,22 @@ function onThink(interval, lastExecution)
                     -- ORDER TYPE 1 (Regular item shop products)
                     if orderType == 1 then
                         served = true
+                        local itemType = ItemType(orderItemId)
                         -- Get wheight
-                        if player:getFreeCapacity() >= ItemType(orderItemId):getWeight(orderCount) then
-                            db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
-                            player:addItem(orderItemId, orderCount)
-                            player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received " .. orderCount .. " x " .. ItemType(orderItemId):getName() .. "!")
-                            print("Process complete. [".. player:getName() .."] has recieved " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. ".")
-                        else
+                        if player:getFreeCapacity() >= itemType:getWeight(orderCount) then
+                            local backpack = player:getSlotItem(CONST_SLOT_BACKPACK)
+                            -- variable = (condition) and (return if true) or (return if false)
+                            local needslots = itemType:isStackable() and math.floor(orderCount / 100) + 1 or orderCount
+                            if backpack ~= nil and backpack:getEmptySlots(false) >= needslots then
+                                db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
+                                player:addItem(orderItemId, orderCount)
+                                player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. "!")
+                                print("Process complete. [".. player:getName() .."] has recieved " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. ".")
+                            else -- not enough slots 
+                                player:sendTextMessage(MESSAGE_STATUS_WARNING, "Your main backpack is full. You need to free up "..needslots.." available slots to get " .. orderCount .. " " .. ItemType(orderItemId):getName() .. "!")
+                                print("Process canceled. [".. player:getName() .."] need more space in his backpack to get " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. ".")
+                            end
+                        else -- not enough cap 
                             player:sendTextMessage(MESSAGE_STATUS_WARNING, "You need more CAP to carry this order!")
                             print("Process canceled. [".. player:getName() .."] need more cap to carry " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. ".")
                         end
@@ -62,7 +71,7 @@ function onThink(interval, lastExecution)
                             player:addOutfitAddon(orderItemId, orderCount)
                             player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received a new outfit!")
                             print("Process complete. [".. player:getName() .."] has recieved outfit: ["..orderItemId.."] with addon: ["..orderCount.."]")
-                        else
+                        else -- Already has outfit 
                             player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this outfit and addon!")
                             print("Process canceled. [".. player:getName() .."] already have outfit: ["..orderItemId.."] with addon: ["..orderCount.."].")
                         end
@@ -77,21 +86,20 @@ function onThink(interval, lastExecution)
                             player:addMount(orderItemId)
                             player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received a new mount!")
                             print("Process complete. [".. player:getName() .."] has recieved mount: ["..orderItemId.."]")
-                        else
+                        else -- Already has mount 
                             player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this mount!")
                             print("Process canceled. [".. player:getName() .."] already have mount: ["..orderItemId.."].")
                         end
                     end
 
-                    -- If this order hasn't been processed yet (missing type handling?)
-                    if not served then
+                    if not served then -- If this order hasn't been processed yet (missing type handling?)
                         print("Znote shop: Type ["..orderType.."] not properly processed. Missing Lua code?")
                     end
-                else 
+                else -- Not in protection zone 
                     player:sendTextMessage(MESSAGE_INFO_DESCR, 'You have a pending shop order, please enter protection zone.')
                     print("Skipped one shop order. Reason: Player: [".. player:getName() .."] is not inside protection zone.")
                 end
-            else
+            else -- player not logged in 
                 print("Skipped one shop order. Reason: Player with id [".. player_id .."] is not online.")
             end
 
