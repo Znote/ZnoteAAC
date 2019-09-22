@@ -94,7 +94,9 @@ if (!empty($_POST['selected_character'])) {
 
 				// Check if player and account matches
 				if ($session_user_id != $accountId || $session_user_id != $order['account_id']) {
-					$errors[] = 'Failed to sync your account. :|';
+					if (empty($errors)) {
+						$errors[] = 'Failed to sync your account. :|';
+					}
 				}
 
 				$newname = validate_name($newname);
@@ -241,7 +243,7 @@ if ($render_page) {
 		<h1>My account</h1>
 		<p>Welcome to your account page, <?php if ($config['ServerEngine'] !== 'OTHIRE') echo $user_data['name']; else echo $user_data['id']; ?><br>
 			<?php if ($config['ServerEngine'] !== 'OTHIRE') {
-			echo 'You have ' .$user_data['premdays']. 'days remaining premium account.'; 
+			echo 'You have ' .$user_data['premdays']. ' days remaining premium account.'; 
 			} else {
 				if ($user_data['premend'] != 0) {
 					echo 'Your premium account will last till ';
