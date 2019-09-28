@@ -11,7 +11,7 @@ function onThink(interval, lastExecution)
             ON `po`.`player_id` = `p`.`id`
         INNER JOIN `znote_shop_orders` AS `shop`
             ON `p`.`account_id` = `shop`.`account_id`
-        WHERE `shop`.`type` IN(1,5,6)
+        WHERE `shop`.`type` IN(1,5,6,7)
         GROUP BY `shop`.`id`
     ]])
     -- Detect if we got any results
@@ -22,7 +22,8 @@ function onThink(interval, lastExecution)
             "pending gender change (skip)",
             "pending character name change (skip)",
             "Outfit and addons",
-            "Mounts"
+            "Mounts",
+            "Instant house purchase"
         }
         repeat 
             local player_id = result.getDataInt(orderQuery, 'player_id')
@@ -89,6 +90,28 @@ function onThink(interval, lastExecution)
                         else -- Already has mount 
                             player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this mount!")
                             print("Process canceled. [".. player:getName() .."] already have mount: ["..orderItemId.."].")
+                        end
+                    end
+
+                    -- ORDER TYPE 7 (Direct house purchase)
+                    if orderType == 7 then
+                        served = true
+                        local house = House(orderItemId)
+                        -- Logged in player is not neccesarily the player that bough the house. So we need to load player from db.
+                        local buyerQuery = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = "..orderCount.." LIMIT 1")
+                        if buyerQuery ~= false then
+                            local buyerName = result.getDataString(buyerQuery, "name")
+                            result.free(buyerQuery)
+                            if house then
+                                db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
+                                house:setOwnerGuid(orderCount)
+                                player:sendTextMessage(MESSAGE_INFO_DESCR, "You have successfully bought the house "..house:getName().." on "..buyerName..", be sure to have the money for the rent in the bank.")
+                                print("Process complete. [".. buyerName .."] has recieved house: ["..house:getName().."]")
+                            else
+                                print("Process canceled. Failed to load house with ID: "..orderItemId)
+                            end
+                        else
+                            print("Process canceled. Failed to load player with ID: "..orderCount)
                         end
                     end
 

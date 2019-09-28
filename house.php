@@ -3,14 +3,23 @@ if ($config['log_ip']) {
 	znote_visitor_insert_detailed_data(3);
 }
 
-$house = (isset($_GET['id']) && (int)$_GET['id'] > 0) ? (int)$_GET['id'] : false;
+$house = getValue($_GET['id']);
 
 if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
-	$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='$house';");
+	$house_SQL = "SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='$house';";
+	$house = mysql_select_single($house_SQL);
 	$minbid = $config['houseConfig']['minimumBidSQM'] * $house['size'];
 	if ($house['owner'] > 0) $house['ownername'] = user_name($house['owner']);
 
-	//data_dump($house, false, "Data");
+	if ($config['houseConfig']['shopPoints']['enabled']) {
+		$house['points'] = $house['size'];
+
+		foreach ($config['houseConfig']['shopPoints']['cost'] AS $cost_sqm => $cost_points) {
+			if ($cost_sqm < $house['size']) $house['points'] = $cost_points;
+		}
+	}
+
+	//data_dump($house, false, "House data");
 
 	//////////////////////
 	// Bid on house logic
@@ -85,6 +94,86 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 		} else echo "<b><font color='red'>You may only bid on houses for characters on your account.</font></b>";
 	}
 
+	////////////////////////////////////////
+	// Instantly buy house with shop points 
+	if ($config['houseConfig']['shopPoints']['enabled'] 
+		&& isset($_POST['instantbuy']) 
+		&& $bid_char
+		&& $house['owner'] == 0 
+		&& isset($house['points'])) {
+
+		$account_points = (int)$user_znote_data['points'];
+
+		if ($account_points >= $house['points']) {
+
+			$bid_char = (int)$bid_char;
+			$player = mysql_select_single("SELECT `id`, `account_id`, `name`, `level` FROM `players` WHERE `id`='$bid_char' LIMIT 1;");
+			$pHouseCount = mysql_select_single("SELECT COUNT('id') AS `value` FROM `houses` WHERE ((`highest_bidder`='$bid_char' AND `owner`='$bid_char') OR (`highest_bidder`='$bid_char') OR (`owner`='$bid_char')) AND `id`!='".$house['id']."' LIMIT 1;");
+
+			if (user_logged_in() === true 
+				&& $player['account_id'] == $session_user_id
+				&& $player['level'] >= $config['houseConfig']['levelToBuyHouse']
+				&& $pHouseCount['value'] < $config['houseConfig']['housesPerPlayer']) {
+				
+				$house_points = (int)$house['points'];
+				$house_id = $house['id'];
+				
+				// Remove points from account
+				mysql_update("
+					UPDATE `znote_accounts` 
+					SET `points` = `points`-{$house_points} 
+					WHERE `account_id`={$session_user_id} 
+					LIMIT 1;
+				");
+				
+				// Give new ownership to house
+				mysql_update("
+					UPDATE `houses` 
+					SET `owner` = {$bid_char}
+					WHERE `id` = {$house_id} 
+					LIMIT 1;
+				");
+				
+				// Log purchase in znote_shop_logs and znote_shop_orders
+				$time = time();
+				mysql_insert("
+					INSERT INTO `znote_shop_logs` 
+					(`account_id`, `player_id`, `type`, `itemid`, `count`, `points`, `time`) VALUES 
+					({$session_user_id}, {$bid_char}, 7, {$house_id}, 1, {$house_points}, {$time})
+				");
+				mysql_insert("
+					INSERT INTO `znote_shop_orders` 
+					(`account_id`, `type`, `itemid`, `count`, `time`) VALUES 
+					({$session_user_id}, 7, {$house_id}, {$bid_char}, {$time})
+				");
+				
+				// Reload house data
+				$house = mysql_select_single($house_SQL);
+				$minbid = $config['houseConfig']['minimumBidSQM'] * $house['size'];
+				if ($house['owner'] > 0) $house['ownername'] = user_name($house['owner']);
+				
+				// Congratulate user and tell them they still has to pay rent (if rent > 0)
+				?>
+				<p><strong>Congratulations!</strong>
+					<br>You now own this house!
+					<br>Remember to say <strong>!shop</strong> in-game to process your ownership!
+					<?php if ($house['rent'] > 0): ?>
+						<br>Keep in mind you still need to pay rent on this house, make sure you have enough bank balance to cover it!
+					<?php endif; ?>
+				</p>
+				<?php
+			} else {
+				?>
+				<p><strong>Error:</strong>
+					<br>Either your level is too low, or your player already have or is bidding on another house.
+					<br>Your level: <?php echo $player['level']; ?>. Minimum level to buy house: <?php echo $config['houseConfig']['levelToBuyHouse']; ?>
+					<br>Your house/bid count: <?php echo $pHouseCount['value']; ?>. Maximum house per player: <?php echo $config['houseConfig']['housesPerPlayer']; ?>.
+				</p>
+				<?php
+			}
+		}
+	}
+
 	// HTML structure and logic
 	?>
 	<h1>House: <?php echo $house['name']; ?></h1>
@@ -101,6 +190,9 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 		else echo "Available for auction.";
 		?></li>
 		<li><b>Rent</b>: <?php echo $house['rent']; ?></li>
+		<?php if ($house['owner'] == 0 && isset($house['points'])): ?>
+			<li><b>Shop points</b>: <?php echo $house['points']; ?></li>
+		<?php endif; ?>
 	</ul>
 	<?php
 	// AUCTION MARKUP INIT
@@ -127,7 +219,7 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 						$charData[$char['id']] = $char;
 					}
 					?>
-					<form action="" method="post">
+					<form class="house_form_bid" action="" method="post">
 						<select name="char">
 							<?php
 							foreach ($charData as $id => $char) {
@@ -138,6 +230,25 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 						<input type="text" name="amount" placeholder="Min bid: <?php echo $minbid + 1; ?>">
 						<input type="submit" value="Bid on this house">
 					</form>
+					<?php if ($house['owner'] == 0 && isset($house['points'])): ?>
+						<br>
+						<?php if ((int)$user_znote_data['points'] >= $house['points']): ?>
+							<form class="house_form_buy" action="" method="post">
+								<p>Your account has <strong><?php echo $user_znote_data['points']; ?></strong> available shop points.</p>
+								<select name="char">
+									<?php
+									foreach ($charData as $id => $char) {
+										echo "<option value='$id'>". $char['name'] ."</option>";
+									}
+									?>
+								</select>
+								<input type="submit" name="instantbuy" value="Buy now for <?php echo $house['points']; ?> shop points!">
+							</form>
+						<?php else: ?>
+							<p>Your account has <strong><?php echo $user_znote_data['points']; ?></strong> available shop points.
+								<br>You don't have enough shop points to instantly buy this house.</p>
+						<?php endif; ?>
+					<?php endif; ?>
 					<?php
 				} else echo "<br>You need a character to bid on this house.";
 			} else echo "<br>You need to login before you can bid on houses.";

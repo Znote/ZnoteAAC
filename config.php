@@ -391,6 +391,19 @@
 		'housesPerPlayer' => 1,
 		'requirePremium' => false,
 		'levelToBuyHouse' => 8,
+		// Instant buy with shop points
+		'shopPoints' => array(
+			'enabled' => true,
+			// SQM => points cost
+			'cost' => array(
+				1 => 10,
+				25 => 15,
+				60 => 25,
+				100 => 30,
+				200 => 40,
+				300 => 50,
+			),
+		),
 	);
 
 	// Leave on black square in map and player should get teleported to their selected town.
@@ -936,7 +949,8 @@
 		type 5 = Buy outfit (put outfit id as itemid), 
 		(put addon id as count [0 = nothing, 1 = first addon, 2 = second addon, 3 = both addons])
 		type 6 = Buy mount (put mount id as itemid)
-		type 7+ = custom coded stuff
+		type 7 = buy house (hardcoded in the house system, type used for data log)
+		type 8+ = custom coded stuff
 	*/
 	$config['shop_offers'] = array(
 		1 => array(

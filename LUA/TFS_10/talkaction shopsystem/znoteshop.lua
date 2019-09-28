@@ -12,7 +12,8 @@ function onSay(player, words, param)
 			"pending gender change (skip)",
 			"pending character name change (skip)",
 			"Outfit and addons",
-			"Mounts"
+			"Mounts",
+			"Instant house purchase"
 		}
 		print("Player: " .. player:getName() .. " triggered !shop talkaction.")
 		-- Create the query
@@ -68,6 +69,24 @@ function onSay(player, words, param)
 					else
 						player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this mount!")
 					end
+				end
+
+				-- ORDER TYPE 7 (Direct house purchase)
+				if orderType == 7 then
+				    served = true
+				    local house = House(orderItemId)
+				    -- Logged in player is not neccesarily the player that bough the house. So we need to load player from db.
+				    local buyerQuery = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = "..orderCount.." LIMIT 1")
+				    if buyerQuery ~= false then
+				        local buyerName = result.getDataString(buyerQuery, "name")
+				        result.free(buyerQuery)
+				        if house then
+				            db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
+				            house:setOwnerGuid(orderCount)
+				            player:sendTextMessage(MESSAGE_INFO_DESCR, "You have successfully bought the house "..house:getName().." on "..buyerName..", be sure to have the money for the rent in the bank.")
+				            print("Process complete. [".. buyerName .."] has recieved house: ["..house:getName().."]")
+				        end
+				    end
 				end
 				
 
