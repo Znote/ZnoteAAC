@@ -24,7 +24,7 @@ if (empty($_POST) === false) {
 			if (user_character_exist($_POST['name']) !== false) {
 				$errors[] = 'Sorry, that character name already exist.';
 			}
-			if (!preg_match("/^[a-zA-Z_ ]+$/", $_POST['name'])) {
+			if (!preg_match("/^[a-zA-Z ]+$/", $_POST['name'])) {
 				$errors[] = 'Your name may only contain a-z, A-Z and spaces.';
 			}
 			if (strlen($_POST['name']) < $config['minL'] || strlen($_POST['name']) > $config['maxL']) {
