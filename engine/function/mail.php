@@ -27,9 +27,9 @@ class Mail {
 		//This should be done in your php.ini, but this is how to do it if you don't have access to that
 		//date_default_timezone_set('Etc/UTC');
 
-		require __DIR__.'/../../PHPMailer/src/Exception.php';
-		require __DIR__.'/../../PHPMailer/src/PHPMailer.php';
-		require __DIR__.'/../../PHPMailer/src/SMTP.php';
+		require_once __DIR__.'/../../PHPMailer/src/Exception.php';
+		require_once __DIR__.'/../../PHPMailer/src/PHPMailer.php';
+		require_once __DIR__.'/../../PHPMailer/src/SMTP.php';
 
 		//Create a new PHPMailer instance
 		$mail = new PHPMailer();
