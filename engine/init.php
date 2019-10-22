@@ -56,7 +56,7 @@ if (user_logged_in() === true) {
 		$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premdays');
 	else
 		$user_data = user_data($session_user_id, 'id', 'password', 'email', 'premend');
-	$user_znote_data = user_znote_account_data($session_user_id, 'ip', 'created', 'points', 'cooldown', 'flag');
+	$user_znote_data = user_znote_account_data($session_user_id, 'ip', 'created', 'points', 'cooldown', 'flag' ,'active_email');
 }
 $errors = array();
 // Log IP
