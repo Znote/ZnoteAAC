@@ -35,11 +35,12 @@ if (isset($_GET['success']) === true && empty($_GET['success']) === true) {
 } else {
 	if (empty($_POST) === false && empty($errors) === true) {
 		$update_data = array(
-			'email' => $_POST['new_email'],
+			'email' => $_POST['new_email']
 		);
 
 		$update_znote_data = array(
 			'flag' => getValue($_POST['new_flag']),
+			'active_email' => '0'
 		);
 
 		user_update_account($update_data);

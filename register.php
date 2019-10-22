@@ -105,13 +105,14 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 	$auid = (isset($_GET['u']) && (int)$_GET['u'] > 0) ? (int)$_GET['u'] : false;
 	$akey = (isset($_GET['k']) && (int)$_GET['k'] > 0) ? (int)$_GET['k'] : false;
 	// Find a match
-	$user = mysql_select_single("SELECT `id`, `active` FROM `znote_accounts` WHERE `account_id`='$auid' AND `activekey`='$akey' LIMIT 1;");
+	$user = mysql_select_single("SELECT `id`, `active`, `active_email` FROM `znote_accounts` WHERE `account_id`='$auid' AND `activekey`='$akey' LIMIT 1;");
 	if ($user !== false) {
 		$user = (int) $user['id'];
 		$active = (int) $user['active'];
+		$active_email = (int) $user['active_email'];
 		// Enable the account to login
-		if ($active == 0) {
-			mysql_update("UPDATE `znote_accounts` SET `active`='1' WHERE `id`= $user LIMIT 1;");
+		if ($active == 0 || $active_email == 0) {
+			mysql_update("UPDATE `znote_accounts` SET `active`='1', `active_email`='1' WHERE `id`= $user LIMIT 1;");
 		}
 		echo '<h1>Congratulations!</h1> <p>Your account has been created. You may now login to create a character.</p>';
 	} else {

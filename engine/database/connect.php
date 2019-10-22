@@ -13,6 +13,8 @@ if (!function_exists("elapsedTime")) {
   }
 }
 
+// ALTER TABLE `znote_accounts` ADD `active_email` TINYINT(4) NOT NULL DEFAULT '0' AFTER `active`;
+
 $install = "
 <h2>Install:</h2>
 <ol>
@@ -40,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `znote_accounts` (
   `points` int(10) DEFAULT 0,
   `cooldown` int(10) DEFAULT 0,
   `active` tinyint(4) NOT NULL DEFAULT '0',
+  `active_email` tinyint(4) NOT NULL DEFAULT '0',
   `activekey` int(11) NOT NULL DEFAULT '0',
   `flag` varchar(20) NOT NULL,
   `secret` char(16) DEFAULT NULL,

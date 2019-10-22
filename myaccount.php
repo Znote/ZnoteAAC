@@ -16,6 +16,63 @@ if($undelete_id) {
 // Variable used to check if main page should be rendered after handling POST (Change comment page)
 $render_page = true;
 
+// Handle GET (verify email)
+if (isset($_GET['authenticate']) && $config['mailserver']['myaccount_verify_email']):
+	// If we need to process email verification
+	if (isset($_GET['u']) && isset($_GET['k'])) {
+		// Authenticate user, fetch user id and activation key
+		$auid = (isset($_GET['u']) && (int)$_GET['u'] > 0) ? (int)$_GET['u'] : false;
+		$akey = (isset($_GET['k']) && (int)$_GET['k'] > 0) ? (int)$_GET['k'] : false;
+		if ($auid !== false && $akey !== false) {
+			// Find a match
+			$user = mysql_select_single("SELECT `id`, `active`, `active_email` FROM `znote_accounts` WHERE `account_id`='{$auid}' AND `activekey`='{$akey}' LIMIT 1;");
+			if ($user !== false) {
+				$user = (int) $user['id'];
+				$active = (int) $user['active'];
+				$active_email = (int) $user['active_email'];
+				// Enable the account to login
+				if ($active == 0 || $active_email == 0) {
+					mysql_update("UPDATE `znote_accounts` SET `active`='1', `active_email`='1' WHERE `id`= $user LIMIT 1;");
+				}
+				echo '<h1>Congratulations!</h1> <p>Your email has been verified.</p>';
+				$user_znote_data['active_email'] = 1;
+				// Todo: Bonus points as thanks for verifying email
+			} else {
+				echo '<h1>Authentication failed</h1> <p>Either the activation link is wrong, or your account is already activated.</p>';
+			}
+		} else {
+			echo '<h1>Authentication failed</h1> <p>Either the activation link is wrong, or your account is already activated.</p>';
+		}
+	} else { // We need to send email verification
+		$verify_account_id = (int)$session_user_id;
+		$user = mysql_select_single("SELECT `id`, `activekey`, `active_email` FROM `znote_accounts` WHERE `account_id`='{$verify_account_id}' LIMIT 1;");
+		if ($user !== false) {
+			$thisurl = config('site_url') . "myaccount.php";
+			$thisurl .= "?authenticate&u=".$verify_account_id."&k=".$user['activekey'];
+
+			$mailer = new Mail($config['mailserver']);
+
+			$title = "Please authenticate your email at {$_SERVER['HTTP_HOST']}.";
+			
+			$body = "<h1>Please click on the following link to authenticate your account:</h1>";
+			$body .= "<p><a href='{$thisurl}'>{$thisurl}</a></p>";
+			$body .= "<p>Thank you for verifying your email and enjoy your stay at {$config['mailserver']['fromName']}.</p>";
+			$body .= "<hr><p>I am an automatic no-reply e-mail. Any emails sent back to me will be ignored.</p>";
+			
+			$user_name = ($config['ServerEngine'] !== 'OTHIRE') ? $user_data['name'] : $user_data['id'];
+			//echo "<h1>" . $title . "<h1>" . $body;
+			$mailer->sendMail($user_data['email'], $title, $body, $user_name);
+			?>
+			<h1>Email authentication sent</h1>
+			<p>We have sent you an email with a verification link to your email address: <strong><?php echo $user_data['email']; ?></strong></p>
+			<p>If you can't find the email within 5 minutes, check your <strong>junk/trash inbox (spam filter)</strong> as it may be mislocated there.</p>
+			<?php
+		} else {
+			echo '<h1>Authentication failed</h1> <p>Failed to verify user when trying to send a verification email.</p>';
+		}
+	}
+endif;
+
 // Handle POST
 if (!empty($_POST['selected_character'])) {
 	if (!empty($_POST['action'])) {
@@ -251,7 +308,16 @@ if ($render_page) {
 				} else {
 					echo 'You do not have premium account days.';
 				}				
-			} ?></p>
+			} 
+			if ($config['mailserver']['myaccount_verify_email']): 
+				?><br>Email: <?php echo $user_data['email'];
+				if ($user_znote_data['active_email'] == 1) {
+					?> (Verified).<?php
+				} else {
+					?><br><strong>Your email is not verified! <a href="?authenticate">Please verify it</a>.</strong><?php
+				}
+			endif; ?>
+		</p>
 		<?php
 		if ($config['ServerEngine'] === 'TFS_10' && $config['twoFactorAuthenticator']) {
 
