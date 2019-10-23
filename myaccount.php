@@ -30,11 +30,16 @@ if (isset($_GET['authenticate']) && $config['mailserver']['myaccount_verify_emai
 				$user = (int) $user['id'];
 				$active = (int) $user['active'];
 				$active_email = (int) $user['active_email'];
+				$verify_points = ($active_email == 0 && $config['mailserver']['verify_email_points'] > 0) 
+					? ", `points` = `points` + {$config['mailserver']['verify_email_points']}" 
+					: '';
 				// Enable the account to login
 				if ($active == 0 || $active_email == 0) {
-					mysql_update("UPDATE `znote_accounts` SET `active`='1', `active_email`='1' WHERE `id`= $user LIMIT 1;");
+					$new_activeKey = rand(100000000,999999999);
+					mysql_update("UPDATE `znote_accounts` SET `active`='1', `active_email`='1', `activekey`='{$new_activeKey}' {$verify_points} WHERE `id`= {$user} LIMIT 1;");
 				}
 				echo '<h1>Congratulations!</h1> <p>Your email has been verified.</p>';
+				if ($verify_points !== '') echo "<p>As thanks for having a verified email, you have received <a href='/shop.php'>{$config['mailserver']['verify_email_points']} shop points</a>!</p>";
 				$user_znote_data['active_email'] = 1;
 				// Todo: Bonus points as thanks for verifying email
 			} else {

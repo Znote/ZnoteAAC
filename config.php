@@ -692,6 +692,7 @@
 		'register' => false, // Send activation mail
 		'accountRecovery' => false, // Recover username or password through mail
 		'myaccount_verify_email' => false, // Allow user to verify their email in myaccount page
+		'verify_email_points' => 0, // 0 = disabled. Give users points reward for verifying their email
 		'host' => "mailserver.znote.eu", // Outgoing mail server host.
 		'securityType' => 'ssl', // ssl or tls
 		'port' => 465, // SMTP port number - likely to be 465(ssl) or 587(tls)
