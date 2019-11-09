@@ -44,6 +44,14 @@ if ($loggedin === true) {
 			$verify = $data['points'];
 			if ((int)$old_points == (int)$verify) die("2: Failed to equalize your points.". var_dump((int)$old_points, (int)$verify, $new_points, $expense_points));
 			
+			// If this is an outfit offer, convert array into an integer. 
+			if ($buy['type'] == 5) {
+				if (is_array($buy['itemid'])) {
+					if (COUNT($buy['itemid']) == 2) $buy['itemid'] = ($buy['itemid'][0] * 1000) + $buy['itemid'][1];
+					else $buy['itemid'] = $buy['itemid'][0];
+				}
+			}
+
 			// Do the magic (insert into db, or change sex etc)
 			// If type is 2 or 3
 			if ($buy['type'] == 2) {
@@ -269,11 +277,22 @@ foreach ($shop_list as $key => $offer) {
 		<td>Points:</td>
 		<?php if ($loggedin === true): ?><td>Action:</td><?php endif; ?>
 	</tr>
-	<?php foreach ($category_outfits as $key => $offers): ?>
+	<?php foreach ($category_outfits as $key => $offers): 
+		if (!is_array($offers['itemid'])) $offers['itemid'] = [$offers['itemid']];
+		if (COUNT($offers['itemid']) > 2): ?>
+			<tr class="special">
+				<td colspan="2">
+					<p><strong>Error:</strong> Outfit offer don't support more than 2 outfits. <?php echo COUNT($offers['itemid']); ?> configured.
+						<br>[<?php echo implode(',', $offers['itemid']); ?>]</p>
+				</td>
+			</tr>
+		<?php endif; ?>
 		<tr class="special">
 			<td><?php echo $offers['description']; ?></td>
 			<?php if ($config['show_outfits']['shop']):?>
-				<td><img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $offers['itemid']; ?>&addons=<?php echo $offers['count']; ?>&head=<?php echo rand(1, 132); ?>&body=<?php echo rand(1, 132); ?>&legs=<?php echo rand(1, 132); ?>&feet=<?php echo rand(1, 132); ?>" alt="img"></td>
+				<td><?php foreach($offers['itemid'] as $outfitId): ?>
+					<img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $outfitId; ?>&addons=<?php echo $offers['count']; ?>&head=<?php echo rand(1, 132); ?>&body=<?php echo rand(1, 132); ?>&legs=<?php echo rand(1, 132); ?>&feet=<?php echo rand(1, 132); ?>" alt="img">
+				<?php endforeach; ?></td>
 			<?php endif; ?>
 			<td><?php echo $offers['points']; ?></td>
 			<?php if ($loggedin === true): ?>

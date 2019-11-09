@@ -58,13 +58,26 @@ function onSay(cid, words, param)
 				-- ORDER TYPE 5 (Outfit and addon)
 				if q_type == 5 then
 					served = true
-					-- Make sure player don't already have this outfit and addon
-					if not canPlayerWearOutfit(cid, q_itemid, q_count) then
-						db.executeQuery("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
-						doPlayerAddOutfit(cid,q_itemid,q_count)
-						doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have received a new outfit!")
-					else
-						doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "You already have this outfit and addon!")
+
+					local itemid = q_itemid
+					local outfits = {}
+
+					if itemid > 1000 then
+					    local first = math.floor(itemid/1000)
+					    table.insert(outfits, first)
+					    itemid = itemid - (first * 1000)
+					end
+					table.insert(outfits, itemid)
+
+					for _, outfitId in pairs(outfits) do
+						-- Make sure player don't already have this outfit and addon
+						if not canPlayerWearOutfit(cid, outfitId, q_count) then
+							db.executeQuery("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
+							doPlayerAddOutfit(cid,outfitId,q_count)
+							doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have received a new outfit!")
+						else
+							doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "You already have this outfit and addon!")
+						end
 					end
 				end
 

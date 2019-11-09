@@ -999,26 +999,19 @@
 		),
 		7 => array(
 			'type' => 5,
-			'itemid' => 132, // Outfit ID
+			'itemid' => [132, 140], // Outfit ID
 			'count' => 3, // Addon 0 = none, 1 = first, 2 = second, 3 = both
-			'description' => "Nobleman with both addons",
+			'description' => "Noble outfit with both addons",
 			'points' => 20,
 		),
 		8 => array(
-			'type' => 5,
-			'itemid' => 140,
-			'count' => 3,
-			'description' => "Noblewoman with both addons",
-			'points' => 20,
-		),
-		9 => array(
 			'type' => 6,
 			'itemid' => 32, // Mount ID
 			'count' => 1,
 			'description' => "Gnarlhound mount",
 			'points' => 20,
 		),
-		10 => array(
+		9 => array(
 			'type' => 6,
 			'itemid' => 17,
 			'count' => 1,

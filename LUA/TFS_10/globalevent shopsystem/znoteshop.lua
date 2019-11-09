@@ -65,16 +65,29 @@ function onThink(interval, lastExecution)
                     -- ORDER TYPE 5 (Outfit and addon)
                     if orderType == 5 then
                         served = true
-                        -- Make sure player don't already have this outfit and addon
-                        if not player:hasOutfit(orderItemId, orderCount) then
-                            db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
-                            player:addOutfit(orderItemId)
-                            player:addOutfitAddon(orderItemId, orderCount)
-                            player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received a new outfit!")
-                            print("Process complete. [".. player:getName() .."] has recieved outfit: ["..orderItemId.."] with addon: ["..orderCount.."]")
-                        else -- Already has outfit 
-                            player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this outfit and addon!")
-                            print("Process canceled. [".. player:getName() .."] already have outfit: ["..orderItemId.."] with addon: ["..orderCount.."].")
+
+                        local itemid = orderItemId
+                        local outfits = {}
+
+                        if itemid > 1000 then
+                            local first = math.floor(itemid/1000)
+                            table.insert(outfits, first)
+                            itemid = itemid - (first * 1000)
+                        end
+                        table.insert(outfits, itemid)
+
+                        for _, outfitId in pairs(outfits) do
+                            -- Make sure player don't already have this outfit and addon
+                            if not player:hasOutfit(outfitId, orderCount) then
+                                db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
+                                player:addOutfit(outfitId)
+                                player:addOutfitAddon(outfitId, orderCount)
+                                player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received a new outfit!")
+                                print("Process complete. [".. player:getName() .."] has recieved outfit: ["..outfitId.."] with addon: ["..orderCount.."]")
+                            else -- Already has outfit 
+                                player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this outfit and addon!")
+                                print("Process canceled. [".. player:getName() .."] already have outfit: ["..outfitId.."] with addon: ["..orderCount.."].")
+                            end
                         end
                     end
 
