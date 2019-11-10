@@ -596,6 +596,18 @@
 		'imageServer' => 'http://outfit-images.ots.me/animatedOutfits1099/animoutfit.php'
 	);
 
+	// Show advanced inventory data in character profile
+	$config['EQ_shower'] = array(
+		'enabled' => true,
+		'equipment' => true,
+		'skills' => true,
+		'outfits' => true,
+		// Player storage (storage_value + outfitId) 
+		// used to see if player has outfit.
+		// see LUA scripts folder for otserv code
+		'storage_value' => 10000
+	);
+
 	// Level requirement to create guild? (Just set it to 1 to allow all levels).
 	$config['create_guild_level'] = 8;
 
