@@ -1,0 +1,5 @@
+root = true
+
+[*.{php,css,html,xml,lua,js}]
+indent_style = tab
+indent_size = 4
