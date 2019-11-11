@@ -7,7 +7,7 @@ if (!$config['forum']['enabled']) admin_only($user_data);
 	---		Znote AAC forum 	---
 	-------------------------------
 	Created by Znote.
-	Version 1.3.
+	Version 1.4.
 
 	Changelog (1.0 --> 1.2):
 	- Updated to the new date/clock time system
@@ -16,6 +16,9 @@ if (!$config['forum']['enabled']) admin_only($user_data);
 	Changelog (1.2 --> 1.3):
 	- Show character outfit as avatar
 	- Show in-game position
+
+	Changelog (1.3 -> 1.4):
+	- Fix SQL query error when editing Board name. 
 */
 // BBCODE support:
 function TransformToBBCode($string) {
@@ -189,16 +192,27 @@ if ($admin && !empty($_POST)) {
 
 	$admin_update_category = getValue($_POST['admin_update_category']);
 	$admin_category_name = getValue($_POST['admin_category_name']);
+
 	$admin_category_access = getValue($_POST['admin_category_access']);
 	$admin_category_closed = getValue($_POST['admin_category_closed']);
 	$admin_category_hidden = getValue($_POST['admin_category_hidden']);
 	$admin_category_guild_id = getValue($_POST['admin_category_guild_id']);
+
+	if ($admin_category_access === false) $admin_category_access = 0;
+	if ($admin_category_closed === false) $admin_category_closed = 0;
+	if ($admin_category_hidden === false) $admin_category_hidden = 0;
+	if ($admin_category_guild_id === false) $admin_category_guild_id = 0;
 
 	$admin_board_create_name = getValue($_POST['admin_board_create_name']);
 	$admin_board_create_access = getValue($_POST['admin_board_create_access']);
 	$admin_board_create_closed = getValue($_POST['admin_board_create_closed']);
 	$admin_board_create_hidden = getValue($_POST['admin_board_create_hidden']);
 	$admin_board_create_guild_id = getValue($_POST['admin_board_create_guild_id']);
+
+	if ($admin_board_create_access === false) $admin_board_create_access = 0;
+	if ($admin_board_create_closed === false) $admin_board_create_closed = 0;
+	if ($admin_board_create_hidden === false) $admin_board_create_hidden = 0;
+	if ($admin_board_create_guild_id === false) $admin_board_create_guild_id = 0;
 	
 	// Create board
 	if ($admin_board_create_name !== false) {
