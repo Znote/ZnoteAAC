@@ -96,7 +96,7 @@ if ($vocGroups) {
 
 		<select name="page">
 			<?php
-			$pages = ceil(min(($highscore['rows'] / $highscore['rowsPerPage']), (count($vocGroup[$type]) / $highscore['rowsPerPage'])));
+			$pages = ($vocGroup[$type] !== false) ? ceil(min(($highscore['rows'] / $highscore['rowsPerPage']), (count($vocGroup[$type]) / $highscore['rowsPerPage']))) : 1;
 			for ($i = 0; $i < $pages; $i++) {
 				$x = $i + 1;
 				if ($x == $page) echo "<option value='".$x."' selected>Page: ".$x."</option>";
@@ -120,15 +120,14 @@ if ($vocGroups) {
 		</tr>
 
 		<?php
-		for ($i = 0; $i < count($vocGroup[$type]); $i++) {
-
-			if ($vocGroup[$type] === false) {
-				?>
-				<tr>
-					<td colspan="5">Nothing to show here yet.</td>
-				</tr>
-				<?php
-			} else {
+		if ($vocGroup[$type] === false) {
+			?>
+			<tr>
+				<td colspan="5">Nothing to show here yet.</td>
+			</tr>
+			<?php
+		} else {
+			for ($i = 0; $i < count($vocGroup[$type]); $i++) {
 				if (pageCheck($i, $page, $rowsPerPage)) {
 					$flag = ($loadFlags === true && strlen($vocGroup[$type][$i]['flag']) > 1) ? '<img src="' . $config['country_flags']['server'] . '/' . $vocGroup[$type][$i]['flag'] . '.png">  ' : '';
 					?>
@@ -145,7 +144,6 @@ if ($vocGroups) {
 					<?php
 				}
 			}
-
 		}
 		?>
 	</table>
