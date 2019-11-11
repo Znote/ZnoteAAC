@@ -13,7 +13,7 @@ We use github to distribute our versions, stable are tagged as releases, while d
 * [Stable](https://github.com/Znote/ZnoteAAC/releases)
 * [Developement](https://github.com/Znote/ZnoteAAC/archive/master.zip)
 
-**NOTE:** Developement version supports TFS 1.0, but you can expect bugs to occur. 
+**NOTE:** Developement version supports TFS 1.2, but you can expect bugs to occur. 
 
 ### Compatible OT distributions
 Znote AAC primarily aims to be compatible with [Forgotten Server](https://github.com/otland/forgottenserver)
@@ -23,7 +23,7 @@ Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC s
 * TFS 1.2+ (Since Znote AAC 1.5)
 
 ### Requirements
-* PHP Version 5.3.3 or higher. Mostly tested on 5.6 and 7.0. Most web stacks ships with this as default these days.
+* PHP Version 5.6 or higher. Mostly tested on 5.6 and 7.4. Most web stacks ships with this as default these days.
 
 ### Optionals
 * For email registration verification and account recovery: [PHPMailer](https://github.com/PHPMailer/PHPMailer/releases) Version 6.x, extracted and renamed to just "PHPMailer" in Znote AAC directory. 
@@ -37,7 +37,7 @@ Without modifying config.php, enter the website and wait for mysql connection er
 This will show you the rest of the instructions as well as the mysql schema.
 
 2: Edit config.php and: 
-- modify $config['ServerEngine'] with correct TFS version you are running. (TFS_02, TFS_03, TFS_10). 
+- modify $config['ServerEngine'] with correct TFS version you are running. (TFS_02, TFS_03, TFS_10, OTHIRE). 
 - modify $config['page_admin_access'] with your admin account username(s).
 
 3: Before inserting correct SQL connection details, visit the website ( http://127.0.0.1/ ), it will generate a mysql schema you should import to your OT servers database.
@@ -86,6 +86,7 @@ Znote AAC is very rich feature wise, here is an attempt at summarizing what we o
 #### House:
 - Houses list with towns filter
 - House bidding
+- Direct house purchase with shop points
 
 #### Character profile
 - General information such as name, vocation, level, guild membership etc...
@@ -94,6 +95,7 @@ Znote AAC is very rich feature wise, here is an attempt at summarizing what we o
 - Death list
 - Quest progression
 - Character list
+- EQ shower, skills, full outfits
 
 #### Guilds
 - Configurable level and account type restrictions to create guild
