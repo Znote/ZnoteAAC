@@ -1,4 +1,4 @@
-<?php if (version_compare(phpversion(), '5.3.3', '<')) die('PHP version 5.3.3 or higher is required.');
+<?php if (version_compare(phpversion(), '5.6', '<')) die('PHP version 5.6 or higher is required.');
 
 $l_time = microtime();
 $l_time = explode(' ', $l_time);
