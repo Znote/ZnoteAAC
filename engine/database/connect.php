@@ -294,7 +294,7 @@ SELECT
   UNIX_TIMESTAMP(CURDATE()) AS `created`, 
   0 AS `hide_char`, 
   '' AS `comment`
-FROM `accounts` AS `p`
+FROM `players` AS `p`
 LEFT JOIN `znote_players` AS `z`
   ON `p`.`id` = `z`.`player_id` 
 WHERE `z`.`created` IS NULL;
