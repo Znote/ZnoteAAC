@@ -269,19 +269,57 @@ CREATE TABLE IF NOT EXISTS `znote_auction_player` (
 ) ENGINE=InnoDB;
 
 INSERT INTO `znote` (`version`, `installed`) VALUES
-('$version', '$time');
-
-INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `flag`) VALUES
-('1', '0', '$time', '');
-
-INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES
-('1', '$time', '0', '');
+('$version', UNIX_TIMESTAMP(CURDATE()));
 
 INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`) VALUES
 ('Staff Board', '4', '0', '0', '0'),
 ('Tutors Board', '2', '0', '0', '0'),
 ('Discussion', '1', '0', '0', '0'),
 ('Feedback', '1', '0', '1', '0');
+
+INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `flag`)
+SELECT 
+  `a`.`id` AS `account_id`, 
+  0 AS `ip`, 
+  UNIX_TIMESTAMP(CURDATE()) AS `created`, 
+  '' AS `flag`
+FROM `accounts` AS `a`
+LEFT JOIN `znote_accounts` AS `z`
+  ON `a`.`id` = `z`.`account_id` 
+WHERE `z`.`created` IS NULL;
+
+INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`)
+SELECT 
+  `p`.`id` AS `player_id`, 
+  UNIX_TIMESTAMP(CURDATE()) AS `created`, 
+  0 AS `hide_char`, 
+  '' AS `comment`
+FROM `accounts` AS `p`
+LEFT JOIN `znote_players` AS `z`
+  ON `p`.`id` = `z`.`player_id` 
+WHERE `z`.`created` IS NULL;
+
+DELETE `d` FROM `znote_accounts` AS `d`
+INNER JOIN (
+  SELECT `i`.`account_id`, 
+  MAX(`i`.`id`) AS `retain`
+  FROM `znote_accounts` AS `i` 
+  GROUP BY `i`.`account_id` 
+  HAVING COUNT(`i`.`id`) > 1
+) AS `x`
+  ON `d`.`account_id` = `x`.`account_id`
+  AND `d`.`id` != `x`.`retain`;
+  
+DELETE `d` FROM `znote_players` AS `d`
+INNER JOIN (
+  SELECT `i`.`player_id`, 
+  MAX(`i`.`id`) AS `retain`
+  FROM `znote_players` AS `i` 
+  GROUP BY `i`.`player_id` 
+  HAVING COUNT(`i`.`id`) > 1
+) AS `x`
+  ON `d`.`player_id` = `x`.`player_id`
+  AND `d`.`id` != `x`.`retain`;
 
 </textarea>
 	</li>
