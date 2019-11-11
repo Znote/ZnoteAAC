@@ -211,7 +211,7 @@ if (empty($_POST) === false) {
 					setSession('user_id', $login);
 
 					// if IP is not set (etc acc created before Znote AAC was in use)
-					$znote_data = user_znote_account_data($login);
+					$znote_data = user_znote_account_data($login, 'ip');
 					if ($znote_data['ip'] == 0) {
 						$update_data = array(
 						'ip' => getIPLong(),
