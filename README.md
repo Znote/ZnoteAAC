@@ -1,6 +1,6 @@
 ZnoteAAC
 ========
-
+[![CodeFactor](https://www.codefactor.io/repository/github/znote/znoteaac/badge)](https://www.codefactor.io/repository/github/znote/znoteaac)
 ### What is Znote AAC?
 
 Znote AAC is a full-fledged website used together with an Open Tibia(OT) server. 
