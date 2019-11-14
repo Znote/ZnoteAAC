@@ -123,27 +123,40 @@ function bomberman_highscores() {
 
 // Support list
 function support_list() {
-	$TFS = Config('ServerEngine');
-	if ($TFS == 'TFS_10') $staffs = mysql_select_multi("SELECT `id`, `group_id`, `name`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
-	else $staffs = mysql_select_multi("SELECT `group_id`, `name`, `online`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
+    $TFS = Config('ServerEngine');
 
-	if ($staffs !== false) {
-		for ($i = 0; $i < count($staffs); $i++) {
-			// $staffs[$i]['']
-			if ($TFS == 'TFS_02' || $TFS == 'TFS_10') {
-				$account = mysql_select_single("SELECT `type` FROM `accounts` WHERE `id` ='". $staffs[$i]['account_id'] ."';");
-				$staffs[$i]['group_id'] = $account['type'];
-				if ($TFS == 'TFS_10') {
-					// Fix online status on TFS 1.0
-					if (user_is_online_10($staffs[$i]['id'])) $staffs[$i]['online'] = 1;
-					else $staffs[$i]['online'] = 0;
-					unset($staffs[$i]['id']);
-				}
-			}
-			unset($staffs[$i]['account_id']);
-		}
-	}
-	return $staffs;
+    if ($TFS == 'TFS_10') $staffs = mysql_select_multi("SELECT `p`.`id`, `a`.`type` as `group_id`, `p`.`name`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `p`.`account_id` = `a`.`id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
+    else $staffs = mysql_select_multi("SELECT `a`.`type` as `group_id`, `p`.`name`, `p`.`online`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `a`.`id` = `p`.`account_id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
+
+    foreach($staffs as $k => $v)  {
+        foreach($staffs as $key => $value)  {
+            if($k != $key && $v['account_id'] == $value['account_id']) {
+                 unset($staffs[$k]);
+            }
+        }
+    }
+
+    if ($staffs !== false && $TFS == 'TFS_10') {
+        for ($i = 0; $i < count($staffs); $i++) {
+            // Fix online status on TFS 1.0
+            if (user_is_online_10($staffs[$i]['id'])) $staffs[$i]['online'] = 1;
+            else $staffs[$i]['online'] = 0;
+            unset($staffs[$i]['id']);
+        }
+    }   
+    return $staffs;
+}
+
+function support_list03() {
+    $staffs = mysql_select_multi("SELECT `group_id`, `name`, `online`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
+
+    if ($staffs !== false) {
+        for ($i = 0; $i < count($staffs); $i++) {
+            // $staffs[$i]['']
+            unset($staffs[$i]['account_id']);
+        }
+    }
+    return $staffs;
 }
 
 // NEWS
@@ -665,20 +678,20 @@ function gesior_sql_killer($did) {
 
 // ADMIN FUNCTIONS
 function set_ingame_position($name, $acctype) {
-	$acctype = (int)$acctype;
-	$name = sanitize($name);
-	
-	$acc_id = user_character_account_id($name);
-	$char_id = user_character_id($name);
-	
-	$group_id = 2;
-	if ($acctype == 1) {
-		$group_id = 1;
-	} elseif ($acctype == 6) {
-		$group_id = 3;
-	}
-	mysql_update("UPDATE `accounts` SET `type` = '$acctype' WHERE `id` =$acc_id;");
-	mysql_update("UPDATE `players` SET `group_id` = '$group_id' WHERE `id` =$char_id;");
+    $acctype = (int)$acctype;
+    $name = sanitize($name);
+
+    $acc_id = user_character_account_id($name);
+    $char_id = user_character_id($name);
+
+    $group_id = 1;
+    if ($acctype == 4) {
+        $group_id = 2;
+    } elseif ($acctype >= 5) {
+        $group_id = 3;
+    }
+    mysql_update("UPDATE `accounts` SET `type` = '$acctype' WHERE `id` =$acc_id;");
+    mysql_update("UPDATE `players` SET `group_id` = '$group_id' WHERE `id` =$char_id;");
 }
 
 // .3
