@@ -46,7 +46,7 @@ This will show you the rest of the instructions as well as the mysql schema.
 
 5: IF you have existing database from active OT server, enter the folder called "special" and convert the database for Znote AAC support ( http://127.0.0.1/special/ )
 
-6: Enjoy Znote AAC. You can look around [HERE](http://otland.net/forums/website-applications.118/) for plugins and resources to Znote AAC, for instance various free templates to use.
+6: Enjoy Znote AAC. You can look around [HERE](https://otland.net/forums/website-applications.118/) for plugins and resources to Znote AAC, for instance various free templates to use.
 
 7: Please note that you need PHP cURL enabled to make Paypal payments work. 
 

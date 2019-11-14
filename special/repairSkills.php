@@ -51,4 +51,3 @@ if ($players !== false) {
 ?>
 
 <h1>Script run completed.</h1>
-<p>Script created by <a href="http://otland.net/members/znote/">Znote</a> for Znote AAC users</p>

@@ -2,7 +2,7 @@
 
 <h1>Znote AAC</h1>
 <p>This website is powered by the <a href="https://github.com/Znote/ZnoteAAC">Znote AAC</a> engine.</p>
-<p>An OT website (<strong>A</strong>utomatic <strong>A</strong>ccount <strong>C</strong>reator) created by <a href="http://otland.net/members/znote.5993/">Znote</a> from the OT forum community <a href="https://otland.net">otland.net</a>.</p>
+<p>An OT website (<strong>A</strong>utomatic <strong>A</strong>ccount <strong>C</strong>reator) created by <a href="https://otland.net/members/znote.5993/">Znote</a> from the OT forum community <a href="https://otland.net">otland.net</a>.</p>
 <p>Znote AAC is an open source project where everyone can help with development.</p>
 
 <h2>Developers:</h2>
@@ -64,7 +64,7 @@ endif;
 	<a href="https://otland.net/members/chris.13882/">Chris</a> - PHP OOP file samples, testing, bugfixing.
 	<br><a href="https://otland.net/members/kiwi-dan.152/">Kiwi Dan</a> - Researching TFS 0.2 for me, participation in developement.
 	<br><a href="https://otland.net/members/amoaz.26626/">Amoaz</a> - Pentesting and security tips.
-	<br><a href="https://otland.net/members/evan.40401/">Evan</a>, <a href="http://otland.net/members/gremlee.12075/">Gremlee</a> - Researching TFS 0.3, constructive feedback, suggestion and participation.
+	<br><a href="https://otland.net/members/evan.40401/">Evan</a>, <a href="https://otland.net/members/gremlee.12075/">Gremlee</a> - Researching TFS 0.3, constructive feedback, suggestion and participation.
 	<br><a href="https://otland.net/members/att3.98289/">ATT3</a> - Reporting and fixing bugs, TFS 1.0 research. 
 	<br><a href="https://otland.net/members/mark.1/">Mark</a> - Old repository, TFS distributions which this AAC was primarily built for.
 	<br><a href="https://github.com/tedbro">Tedbro</a>, <a href="https://github.com/exura">Exura</a>, <a href="https://github.com/PrinterLUA">PrinterLUA</a> - Reporting bugs.
