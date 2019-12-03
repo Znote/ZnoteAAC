@@ -21,7 +21,6 @@ function onSay(cid, words, param)
 
 		-- Detect if we got any results
 		if orderQuery ~= false then
-			repeat
 				-- Fetch order values
 				local q_id = result.getDataInt(orderQuery, "id")
 				local q_type = result.getDataInt(orderQuery, "type")
@@ -82,7 +81,6 @@ function onSay(cid, words, param)
 				-- So use type 7+ for custom stuff, like etc packages.
 				-- if q_type == 7 then
 				-- end
-			until not result.next(orderQuery)
 			result.free(orderQuery)
 			if not served then
 				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "You have no orders to process in-game.")
