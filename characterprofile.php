@@ -230,7 +230,12 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 
 						$bar_length = 100;
 						$bar_health = (int)($bar_length * ($playerstats['health'] / $playerstats['healthmax']));
-						$bar_mana = (int)($bar_length * ($playerstats['mana'] / $playerstats['manamax']));
+						if ($playerstats['manamax'] > 0) {
+							$bar_mana = (int)($bar_length * ($playerstats['mana'] / $playerstats['manamax']));
+						}
+						else {
+							$bar_mana = 100;
+						}
 						
 						$outfit_server = $config['show_outfits']['imageServer'];
 						$outfit_storage = $config['EQ_shower']['storage_value'];
