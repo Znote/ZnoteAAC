@@ -81,7 +81,7 @@
 	$custom           = (int)$_POST['custom'];
 
 	$connectedIp = $_SERVER['REMOTE_ADDR'];
-	mysql_insert("INSERT INTO `znote_paypal` VALUES ('0', '$txn_id', 'Connection from IP: $connectedIp', '0', '0', '0')");
+	mysql_insert("INSERT INTO `znote_paypal` VALUES ('0', '0', 'Connection from IP: $connectedIp', '0', '0', '0')");
 	
 	$status = VerifyPaypalIPN();
 	if ($status) {
