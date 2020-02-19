@@ -91,7 +91,7 @@
 			
 			// Check that txn_id has not been previously processed
 			$txn_id_check = mysql_select_single("SELECT `txn_id` FROM `znote_paypal` WHERE `txn_id`='$txn_id'");
-			if ($txn_id_check !== false) {
+			if ($txn_id_check !== true) {
 				// Check that receiver_email is your Primary PayPal email
 				if ($receiver_email == $paypal['email']) {
 					
