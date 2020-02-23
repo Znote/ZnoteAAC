@@ -929,10 +929,15 @@ function user_character_list_count($account_id) {
 
 // HIGHSCORE FUNCTIONS \\
 function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false, $outfits = false) {
-	if (config('ServerEngine') !== 'OTHIRE')
-		$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`, `p`.`lookaddons` AS `addons`" : "";
-	else
+	if (config('ServerEngine') !== 'OTHIRE') {
+		if (config('client') < 780) {
+			$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`" : "";
+		} else {
+			$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`, `p`.`lookaddons` AS `addons`" : "";
+		}
+	} else {
 		$outfits = ($outfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`" : "";
+	}
 	// Return scores ordered by type and vocation (if set)
 	$data = array();
 
@@ -1389,6 +1394,11 @@ function user_create_character($character_data) {
 			'online' => 0,
 			'balance' => 0
 		);		
+	}
+	
+	// Clients below 7.8 don't have outfit addons
+	if (isset($import_data['lookaddons']) && config('client') < 780) {
+		unset($import_data['lookaddons']);
 	}
 	
 	// TFS 1.0 variations
