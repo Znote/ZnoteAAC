@@ -185,9 +185,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							: " `p`.`soul`, `p`.`stamina`,";
 						
 						if ($config['client'] < 780) {
-							$soulStamina = (in_array($config['ServerEngine'], ['TFS_10'])) 
-								? " 0 AS `soul`, 0 AS `stamina`," 
-								: " 0 AS `p`.`soul`, 0 AS `p`.`stamina`,";
+							$soulStamina = " 0 AS `soul`, 0 AS `stamina`,";
 						}
 
 						$player_query = (in_array($config['ServerEngine'], ['TFS_10'])) 
