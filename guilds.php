@@ -586,10 +586,10 @@ if ($highest_access >= 2) {
 	
 	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'OTHIRE' || $config['ServerEngine'] == 'TFS_10' && $config['guildwar_enabled'] === true) {
 		if (!empty($_POST['warinvite'])) {
-			if (get_guild_id($_POST['warinvite'])) {
+			$targetGuild = get_guild_id($_POST['warinvite']);
+			if ($targetGuild) {
 				$status = false;
 				$war_invite = mysql_select_single("SELECT `id` FROM `guilds` WHERE `id` = '$gid';");
-				$targetGuild = get_guild_id($_POST['warinvite']);
 				if ($war_invite !== false) {
 					foreach ($war_invite as $inv) {
 						if ($inv['id'] == $targetGuild) $status = true;
@@ -601,6 +601,8 @@ if ($highest_access >= 2) {
 					if ($guild['name'] == $_POST['warinvite']) $status = true;
 				}
 				
+				if ((int)$gid === (int)$targetGuild) $status = true;
+
 				$wars = mysql_select_multi("SELECT `id`, `guild1`, `guild2`, `status` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild1` = '$targetGuild') AND (`guild2` = '$gid' OR `guild2` = '$targetGuild') AND `status` IN (0, 1);");
 				if ($status == false && $wars == false) {
 					guild_war_invitation($gid, $targetGuild);
