@@ -202,8 +202,8 @@ CREATE TABLE IF NOT EXISTS `znote_deleted_characters` (
 CREATE TABLE IF NOT EXISTS `znote_guild_wars` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `limit` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`id`) REFERENCES `guild_wars` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`id`)
+  --,FOREIGN KEY (`id`) REFERENCES `guild_wars` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- Helpdesk system
