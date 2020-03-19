@@ -1,4 +1,4 @@
--- Znote Shop v1.0 for Znote AAC on TFS 0.3.6+ Crying Damson.
+-- Znote Shop v1.1 for Znote AAC on TFS 0.3.6+ Crying Damson.
 function onSay(cid, words, param)
 	local storage = 54073 -- Make sure to select non-used storage. This is used to prevent SQL load attacks.
 	local cooldown = 15 -- in seconds.
@@ -13,7 +13,8 @@ function onSay(cid, words, param)
 			"pending gender change (skip)",
 			"pending character name change (skip)",
 			"Outfit and addons",
-			"Mounts"
+			"Mounts",
+			"Instant house purchase"
 		}
 		print("Player: " .. getCreatureName(cid) .. " triggered !shop talkaction.")
 		-- Create the query
@@ -28,7 +29,13 @@ function onSay(cid, words, param)
 				local q_type = result.getDataInt(orderQuery, "type")
 				local q_itemid = result.getDataInt(orderQuery, "itemid")
 				local q_count = result.getDataInt(orderQuery, "count")
-				print("Processing type "..q_type..": ".. type_desc[q_type])
+				
+				local description = "Unknown or custom type"
+				if type_desc[q_type] ~= nil then 
+					description = type_desc[q_type]
+				end
+				print("Processing type "..q_type..": ".. description)
+				
 				-- ORDER TYPE 1 (Regular item shop products)
 				if q_type == 1 then
 					served = true
@@ -101,8 +108,9 @@ function onSay(cid, words, param)
 				-- Type 4 is for character name change (Coded on web)
 				-- Type 5 is for character outfit and addon (Already coded here)
 				-- Type 6 is for mounts (Already coded here)
-				-- So use type 7+ for custom stuff, like etc packages.
-				-- if q_type == 7 then
+				-- Type 7 is for Instant house purchase (Not for TFS 0.3)
+				-- So use type 8+ for custom stuff, like etc packages.
+				-- if q_type == 8 then
 				-- end
 			until not result.next(orderQuery)
 			result.free(orderQuery)

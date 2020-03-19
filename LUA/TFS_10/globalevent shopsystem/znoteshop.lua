@@ -1,3 +1,4 @@
+-- Znote Auto Shop v2.1 for Znote AAC on TFS 1.2+
 function onThink(interval, lastExecution)
     local orderQuery = db.storeQuery([[
         SELECT 
@@ -35,7 +36,14 @@ function onThink(interval, lastExecution)
 
             local player = Player(player_id)
             if player ~= nil then
-                print("Processing shop order for: [".. player:getName() .."] type "..orderType..": ".. type_desc[orderType])
+
+                local description = "Unknown or custom type"
+                if type_desc[orderType] ~= nil then 
+                    description = type_desc[orderType]
+                end
+                print("Processing type "..orderType..": ".. description)
+                print("Processing shop order for: [".. player:getName() .."] type "..orderType..": ".. description)
+                
                 local tile = Tile(player:getPosition())
                 if tile ~= nil and tile:hasFlag(TILESTATE_PROTECTIONZONE) then
                     -- ORDER TYPE 1 (Regular item shop products)
