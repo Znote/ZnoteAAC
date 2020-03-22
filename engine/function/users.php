@@ -131,19 +131,19 @@ function support_list() {
     foreach($staffs as $k => $v)  {
         foreach($staffs as $key => $value)  {
             if($k != $key && $v['account_id'] == $value['account_id']) {
-                 unset($staffs[$k]);
+                unset($staffs[$k]);
             }
         }
     }
+    $staffs = array_values($staffs);
 
     if ($staffs !== false && $TFS == 'TFS_10') {
         for ($i = 0; $i < count($staffs); $i++) {
             // Fix online status on TFS 1.0
-            if (user_is_online_10($staffs[$i]['id'])) $staffs[$i]['online'] = 1;
-            else $staffs[$i]['online'] = 0;
+            $staffs[$i]['online'] = (isset($staffs[$i]['id']) && user_is_online_10($staffs[$i]['id'])) ? 1 : 0;
             unset($staffs[$i]['id']);
         }
-    }   
+    }
     return $staffs;
 }
 
