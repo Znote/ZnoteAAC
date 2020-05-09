@@ -128,20 +128,20 @@
 		array(12036,6,"The Ice Islands Quest",1),
 	);
 
-	//Achivements based on "https://github.com/PrinterLUA/FORGOTTENSERVER-ORTS/blob/master/data/lib/achievements_lib.lua"  (TFS 1.0)
+	//Achivements based on "https://github.com/otland/forgottenserver/blob/master/data/lib/core/achievements.lua"  (TFS 1.0)
 	$config['Ach'] = false;
 	$config['achievements'] = array(
 		35000 => array(
 			'First Dragon', //name
 			'Rumours say that you will never forget your first Dragon', //comment
 			'points' => '1', //points
-			'img' => 'http://www.tibia-wiki.net/images/Dragon.gif', //img link or folder (example)> 'images/dragon.png'
+			'img' => 'https://i.imgur.com/Nk2XDge.gif', //img link or folder (example)> 'images/dragon.png'
 		),
 		35001 => array(
 			'Uniwheel',
 			'You\'re probably one of the very few people with this classic and unique ride, hope it doesn\'t break anytime soon.', //comment
 			'points' => '1', //points
-			'img' => 'http://img1.wikia.nocookie.net/__cb20140214234600/tibia/en/images/e/e5/Uniwheel.gif', //img link or folder (example)> 'images/dragon.png'
+			'img' => 'https://i.imgur.com/0GYRgGj.gif', //img link or folder (example)> 'images/dragon.png'
 			'secret' => true
 		),
 		30001 => array(
@@ -248,7 +248,7 @@
 		),
 		30020 => array(
 			'Animal Activist',
-			'Phasellus lacinia odio dolor, in elementum mauris dapibus a. Vivamus nec gravida libero, ac pretium eros. Nam in dictum ealesuada sodales. Nullam eget ex sit amet urna fringilla molestie. Aliquam lobortis urna eros, vel elementum metus accumsan eu. Nulla porttitor in lacus vel ullamcorper.',
+			'You have a soft spot for little, weak animals, and you do everything in your power to protect them - even if you probably eat dragons for breakfast.',
 			'points' => '2',
 			'secret' => true
 		),

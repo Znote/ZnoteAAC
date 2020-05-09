@@ -22,19 +22,19 @@ if ($config['Ach'] == true) {
 foreach ($config['achievements'] as $key => $achName) {
 $secret = false;
 if (($achName['points'] >= 1) and ($achName['points'] <= 3) and (!$achName['img']))  {
-echo '<td><center><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"></center></td>';
+echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
 }
 elseif (($achName['points'] >= 4) and ($achName['points'] <= 6) and (!$achName['img']))
 {
-echo '<td><center><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"></center></td>';
+echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
 }
 elseif (($achName['points'] >= 7) and ($achName['points'] <= 9) and (!$achName['img']))
 {
-echo '<td><center><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"></center></td>';
+echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
 }
 elseif (($achName['points'] >= 10) and (!$achName['img']))
 {
-echo '<td><center><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"><img id="wtf" src="http://img2.wikia.nocookie.net/__cb20100828120326/tibia/en/images/0/0b/Achievement_Grade_Symbol.gif"></center></td>';
+echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
 }
 else {
 echo '<td><img id="wtf" src="' .$achName['img']. '"><br><br></td>';
@@ -42,7 +42,7 @@ echo '<td><img id="wtf" src="' .$achName['img']. '"><br><br></td>';
 echo '<td>' .$achName[0]. '</td>';
 echo '<td>' .$achName[1]. '</td>';
 if ($achName['secret'] == true){
-echo '<td><img id="wtf" src="http://img04.imgland.net/PuMz0mVqSG.gif"></td>';
+echo '<td><img id="wtf" src="https://i.imgur.com/NbPRl7b.gif"></td>';
 echo '<td>'. $achName['points'] .'</td>';
 } else {
 echo '<td></td><td>'. $achName['points'] .'</td>';
