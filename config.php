@@ -128,7 +128,7 @@
 		array(12036,6,"The Ice Islands Quest",1),
 	);
 
-	//Achivements based on "https://github.com/otland/forgottenserver/blob/master/data/lib/core/achievements.lua"  (TFS 1.0)
+	//Achievements based on "https://github.com/otland/forgottenserver/blob/master/data/lib/core/achievements.lua" (TFS 1.0)
 	$config['Ach'] = false;
 	$config['achievements'] = array(
 		35000 => array(
