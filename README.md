@@ -11,9 +11,9 @@ It is created in PHP with a simple custom procedural framework.
 
 We use github to distribute our versions, stable are tagged as releases, while development is the latest commit. 
 * [Stable](https://github.com/Znote/ZnoteAAC/releases)
-* [Developement](https://github.com/Znote/ZnoteAAC/archive/master.zip)
+* [Development](https://github.com/Znote/ZnoteAAC/archive/master.zip)
 
-**NOTE:** Developement version supports TFS 1.2, but you can expect bugs to occur. 
+**NOTE:** Development version supports TFS 1.3, but you can expect bugs to occur. 
 
 ### Compatible OT distributions
 Znote AAC primarily aims to be compatible with [Forgotten Server](https://github.com/otland/forgottenserver)
@@ -27,8 +27,8 @@ Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC s
 
 ### Optionals
 * For email registration verification and account recovery: [PHPMailer](https://github.com/PHPMailer/PHPMailer/releases) Version 6.x, extracted and renamed to just "PHPMailer" in Znote AAC directory. 
-* PHP extention curl for PHPMailer, paypal and google reCaptcha services.
-* PHP extention openssl for google reCaptcha services.
+* PHP extension curl for PHPMailer, paypal and google reCaptcha services.
+* PHP extension openssl for google reCaptcha services.
 
 ### Installation instructions
 
@@ -128,7 +128,7 @@ Znote AAC is very rich feature wise, here is an attempt at summarizing what we o
 #### Buy shop points / digital currency
 - PayPal payment gateway
 - PayGol (SMS) payment gateway
-- PagseGuro payment gateway
+- PagSeguro payment gateway
 
 #### Shop system
 - Items
