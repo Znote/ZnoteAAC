@@ -628,8 +628,8 @@
 	$config['client'] = 1098; // 954 = client 9.54
 
 	 // Download link to client.
-	$config['client_download'] = 'http://clients.halfaway.net/windows.php?tibia='. $config['client'] .'';
-	$config['client_download_linux'] = 'http://clients.halfaway.net/linux.php?tibia='. $config['client'] .'';
+	$config['client_download'] = 'http://tibiaclient.otslist.eu/download/tibia'. $config['client'] .'.exe';
+	$config['client_download_linux'] = 'http://tibiaclient.otslist.eu/download/tibia'. $config['client'] .'.tgz';
 
 	$config['port'] = 7171; // Port number to connect to your OT.
 	
