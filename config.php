@@ -593,7 +593,7 @@
 		'onlinelist' => true,
 		// Image server may be unreliable and only for test,
 		// host yourself: https://otland.net/threads/item-images-10-92.242492/
-		'imageServer' => 'http://outfit-images.ots.me/animatedOutfits1099/animoutfit.php'
+		'imageServer' => 'https://outfit-images.ots.me/animatedOutfits1099/animoutfit.php'
 	);
 
 	// Show advanced inventory data in character profile
