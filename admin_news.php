@@ -89,7 +89,7 @@ if (empty($_POST) === false) {
 		<p>
 			[b]<b>Bold Text</b>[/b]<br>
 			[size=5]Size 5 text[/size]<br>
-			[img]<a href="http://www.imgland.net/" target="_BLANK">Direct Image Link</a>[/img]<br>
+			[img]<a href="https://imgur.com/" target="_BLANK">Direct Image Link</a>[/img]<br>
 			[center]Cented Text[/center]<br>
 			[link]<a href="https://youtube.com/" target="_BLANK">https://youtube.com/</a>[/link]<br>
 			[link=https://youtube.com/]<a href="http://youtube.com/" target="_BLANK">Click to View youtube</a>[/link]<br>

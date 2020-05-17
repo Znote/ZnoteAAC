@@ -734,7 +734,7 @@ if (!empty($_GET)) {
 						<form action="" method="post">
 							<input name="reply_thread" type="hidden" value="<?php echo $threadData['id']; ?>"><br>
 
-<p style="font-size: 13px; padding-left: 10px; padding-top: 10px; height: 5px; width: 600px; border-top: 1px solid black;"><b>[b]Bold Text[/b]</b>, [img]<a href="http://www.imgland.net/">Direct Image Link</a>[/img], [center]Centered Text[/center],<br> [link]<a href="https://youtube.com/" target="_BLANK">https://youtube.com/</a>[/link], [color=<font color="green">GREEN</font>]<font color="green">Green Text!</font>[/color], [*] - Dotted [/*]</p><br>
+<p style="font-size: 13px; padding-left: 10px; padding-top: 10px; height: 5px; width: 600px; border-top: 1px solid black;"><b>[b]Bold Text[/b]</b>, [img]<a href="https://imgur.com/">Direct Image Link</a>[/img], [center]Cented Text[/center],<br> [link]<a href="https://youtube.com/" target="_BLANK">https://youtube.com/</a>[/link], [color=<font color="green">GREEN</font>]<font color="green">Green Text!</font>[/color], [*] - Dotted [/*]</p><br>
 
 							<textarea class="forumReply" name="reply_text" style="width: 610px; height: 150px"></textarea><br>
 							<select name="reply_cid" multiple="multiple">
