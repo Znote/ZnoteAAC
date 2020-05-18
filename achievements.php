@@ -20,35 +20,36 @@ if ($config['Ach'] == true) {
 <tr>
 <?php
 foreach ($config['achievements'] as $key => $achName) {
-$secret = false;
-if (($achName['points'] >= 1) and ($achName['points'] <= 3) and (!$achName['img']))  {
-echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
+	// Set defaults
+	if (!isset($achName['secret'])) $achName['secret'] = false;
+	if (!isset($achName['img'])) $achName['img'] = 'https://i.imgur.com/ZqWp1TE.png';
+	
+	if (($achName['points'] >= 1) and ($achName['points'] <= 3) and (!$achName['img']))  {
+		echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
+	
+	} elseif (($achName['points'] >= 4) and ($achName['points'] <= 6) and (!$achName['img'])) {
+		echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
+	
+	} elseif (($achName['points'] >= 7) and ($achName['points'] <= 9) and (!$achName['img'])) {
+		echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
+	
+	} elseif (($achName['points'] >= 10) and (!$achName['img'])) {
+		echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
+	
+	} else {
+		echo '<td><img id="wtf" src="' .$achName['img']. '"><br><br></td>';
+	}
+	echo '<td>' .$achName[0]. '</td>';
+	echo '<td>' .$achName[1]. '</td>';
+	if ($achName['secret'] == true) {
+		echo '<td><img id="wtf" src="https://i.imgur.com/NbPRl7b.gif"></td>';
+		echo '<td>'. $achName['points'] .'</td>';
+	} else {
+		echo '<td></td><td>'. $achName['points'] .'</td>';
+	}
+	echo '</tr>';		
 }
-elseif (($achName['points'] >= 4) and ($achName['points'] <= 6) and (!$achName['img']))
-{
-echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
-}
-elseif (($achName['points'] >= 7) and ($achName['points'] <= 9) and (!$achName['img']))
-{
-echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
-}
-elseif (($achName['points'] >= 10) and (!$achName['img']))
-{
-echo '<td><center><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"><img id="wtf" src="https://i.imgur.com/TUCGsr3.gif"></center></td>';
-}
-else {
-echo '<td><img id="wtf" src="' .$achName['img']. '"><br><br></td>';
-}
-echo '<td>' .$achName[0]. '</td>';
-echo '<td>' .$achName[1]. '</td>';
-if ($achName['secret'] == true){
-echo '<td><img id="wtf" src="https://i.imgur.com/NbPRl7b.gif"></td>';
-echo '<td>'. $achName['points'] .'</td>';
-} else {
-echo '<td></td><td>'. $achName['points'] .'</td>';
-}	
-echo '</tr>';		
-}?>
+?>
 </table>
 </div>
 </div>
