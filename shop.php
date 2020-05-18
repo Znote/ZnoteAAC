@@ -374,7 +374,7 @@ foreach ($shop_list as $key => $offer) {
 <?php endif; ?>
 
 <?php if ($shop['enableShopConfirmation']) { ?>
-<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 <script>
     $(document).ready(function(){
         $(".needconfirmation").each(function(e){
@@ -396,4 +396,3 @@ foreach ($shop_list as $key => $offer) {
 
 } else echo '<h1>Buy Points system disabled.</h1><p>Sorry, this functionality is disabled.</p>';
 include 'layout/overall/footer.php'; ?>
-
