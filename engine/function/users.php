@@ -103,24 +103,6 @@ function fetchLatestDeaths_03($rowz = 30, $killers = false) {
 	return $data;
 }
 
-// Bomberman Highscores
-function bomberman_highscores() {
-	// Fetch all players who have played bomberman more than 1 time:
-	$totalGames = getPlayerStorageList(5006, 1);
-	foreach ($totalGames as $game) {
-		$char = array();
-		$data = user_character_data($game['player_id'], 'name');
-		$char['name'] = $data['name'];
-		$char['wins'] = getPlayerStorage($game['player_id'], 5004);
-		$char['losses'] = getPlayerStorage($game['player_id'], 5005);
-		$char['frags'] = getPlayerStorage($game['player_id'], 5007);
-		$char['deaths'] = getPlayerStorage($game['player_id'], 5008);
-		$char['total_games'] = $game['value'];
-		$array[] = $char;
-	}
-	if (!empty($array)) {return $array; } else {return false;}
-}
-
 // Support list
 function support_list() {
     $TFS = Config('ServerEngine');
