@@ -386,7 +386,7 @@
 
 	// -- HOUSE AUCTION SYSTEM! (TFS 1.X ONLY)
 	$config['houseConfig'] = array(
-		'HouseListDefaultTown' => 1, // Default town id to display when visting house list page page.
+		'HouseListDefaultTown' => 8, // Default town id to display when visting house list page page.
 		'minimumBidSQM' => 200, // minimum bid cost on auction (per SQM)
 		'auctionPeriod' => 24 * 60 * 60, // 24 hours auction time.
 		'housesPerPlayer' => 1,
@@ -458,7 +458,7 @@
 			'novocation' => array( // vocation id 0 (No vocation) special settings
 				'level' => 1,
 				'forceTown' => true,
-				'townId' => 30
+				'townId' => 1
 			),
 			'skills' => array( // See $config['vocations'] for proper vocation names of these IDs
 				// No vocation
@@ -647,11 +647,11 @@
 	$config['gameserver'] = array(
 		'ip' => '127.0.0.1',
 		'port' => 7172,
-		'name' => 'OTXServer-Global' // Must be identical to config.lua (OT config file) server name.
+		'name' => 'Forgotten' // Must be identical to config.lua (OT config file) server name.
 	);
 
 	// How often do you want highscores to update?
-	$config['cache_lifespan'] = 5;// 60 * 15; // 15 minutes.
+	$config['cache_lifespan'] = 5; // 60 * 15; // 15 minutes.
 
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
@@ -666,11 +666,11 @@
 	$config['forum'] = array(
 		'enabled' => true,
 		'outfit_avatars' => true, // Show character outfit as forum avatar?
-		'player_position' => true, // Show character position? ex: Tutor, Community manager, God etc..?
+		'player_position' => true, // Show character position? ex: Tutor, Community Manager, God
 		'guildboard' => true,
 		'level' => 5,
-		'cooldownPost' => 1,// 60,
-		'cooldownCreate' => 1,// 180,
+		'cooldownPost' => 1, // 60,
+		'cooldownCreate' => 1, // 180,
 		'newPostsBumpThreads' => true,
 		'hidden' => '<font color="orange">[H]</font>',
 		'closed' => '<font color="red">[C]</font>',
@@ -734,7 +734,7 @@
 
 	// What kind of computer are you hosting this website on?
 	// Available options: LINUX or WINDOWS
-	$config['os'] = ZNOTE_OS; // ZNOTE_OS to auto-detect
+	$config['os'] = ZNOTE_OS; // Use 'ZNOTE_OS' to auto-detect
 
 	// Measure how much players are lagging in-game. (Not completed). 
 	$config['ping'] = false;
