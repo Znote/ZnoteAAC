@@ -45,8 +45,7 @@ local config = {
 		}
 }
 
-function onLogin(cid)
-	local player = Player(cid)
+function onLogin(player)
 	local targetVocation = config[player:getVocation():getId()]
 	if not targetVocation then
 		return true

@@ -1,1 +1,0 @@
-<talkaction words="!shop" script="znoteshop.lua"/>

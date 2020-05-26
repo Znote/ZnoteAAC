@@ -1,3 +1,4 @@
+-- <talkaction words="!shop" script="znoteshop.lua"/>
 -- Znote Shop v1.1 for Znote AAC on TFS 1.2+
 function onSay(player, words, param)
 	local storage = 54073 -- Make sure to select non-used storage. This is used to prevent SQL load attacks.
@@ -5,7 +6,7 @@ function onSay(player, words, param)
 
 	if player:getStorageValue(storage) <= os.time() then
 		player:setStorageValue(storage, os.time() + cooldown)
-		
+
 		local type_desc = {
 			"itemids",
 			"pending premium (skip)",
@@ -34,7 +35,7 @@ function onSay(player, words, param)
 					description = type_desc[q_type]
 				end
 				print("Processing type "..q_type..": ".. description)
-				
+
 				-- ORDER TYPE 1 (Regular item shop products)
 				if q_type == 1 then
 					served = true
@@ -105,7 +106,6 @@ function onSay(player, words, param)
 				        end
 				    end
 				end
-				
 
 				-- Add custom order types here
 				-- Type 1 is for itemids (Already coded here)
