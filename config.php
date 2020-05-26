@@ -942,7 +942,7 @@
 		'imageType' => 'gif',
 	);
 
-	////////// 
+	//////////
 	/// Let players sell, buy and bid on characters.
 	/// Creates a deeper shop economy, encourages players to spend more money in shop for points.
 	/// Pay to win/progress mechanic, but also lets people who can barely afford points to gain it
