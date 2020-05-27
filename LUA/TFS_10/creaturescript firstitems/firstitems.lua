@@ -1,17 +1,16 @@
 -- With Rookgaard
 
 --[[
-local firstItems = {2050, 2382}
+local firstItems = {2050, 2382} -- torch and club
 
-function onLogin(cid)
-	local player = Player(cid)
+function onLogin(player)
 	if player:getLastLoginSaved() <= 0 then
 		for i = 1, #firstItems do
 			player:addItem(firstItems[i], 1)
 		end
-		player:addItem(player:getSex() == 0 and 2651 or 2650, 1)
-		player:addItem(1987, 1)
-		player:addItem(2674, 1)
+		player:addItem(player:getSex() == 0 and 2651 or 2650, 1) -- coat
+		player:addItem(ITEM_BAG, 1)
+		player:addItem(2674, 1) -- red apple
 	end
 	return true
 end
@@ -19,30 +18,30 @@ end
 
 -- Without Rookgaard
 local config = {
-		[1] = {
-				--equipment spellbook, wand of vortex, magician's robe, mage hat, studded legs, leather boots, scarf
-				items = {{2175, 1}, {2190, 1}, {8819, 1}, {8820, 1}, {2468, 1}, {2643, 1}, {2661, 1}},
-				--container rope, shovel, mana potion
-				container = {{2120, 1}, {2554, 1}, {7620, 1}}
-		},
-		[2] = {
-				--equipment spellbook, snakebite rod, magician's robe, mage hat, studded legs, leather boots scarf
-				items = {{2175, 1}, {2182, 1}, {8819, 1}, {8820, 1}, {2468, 1}, {2643, 1}, {2661, 1}},
-				--container rope, shovel, mana potion
-				container = {{2120, 1}, {2554, 1}, {7620, 1}}
-		},
-		[3] = {
-				--equipment dwrven shield, 5 spear, ranger's cloak, ranger legs scarf, legion helmet
-				items = {{2525, 1}, {2389, 5}, {2660, 1}, {8923, 1}, {2643, 1}, {2661, 1}, {2480, 1}},
-				--container rope, shovel, health potion, bow, 50 arrow
-				container = {{2120, 1}, {2554, 1}, {7618, 1}, {2456, 1}, {2544, 50}}
-		},
-		[4] = {
-				--equipment dwarven shield, steel axe, brass armor, brass helmet, brass legs scarf
-				items = {{2525, 1}, {8601, 1}, {2465, 1}, {2460, 1}, {2478, 1}, {2643, 1}, {2661, 1}},
-				--container jagged sword, daramian mace, rope, shovel, health potion
-				container = {{8602, 1}, {2439, 1}, {2120, 1}, {2554, 1}, {7618, 1}}
-		}
+	[1] = { -- Sorcerer
+		-- equipment: spellbook, wand of vortex, magician's robe, mage hat, studded legs, leather boots, scarf
+		items = {{2175, 1}, {2190, 1}, {8819, 1}, {8820, 1}, {2468, 1}, {2643, 1}, {2661, 1}},
+		-- container: rope, shovel, mana potion
+		container = {{2120, 1}, {2554, 1}, {7620, 1}}
+	},
+	[2] = { -- Druid
+		-- equipment: spellbook, snakebite rod, magician's robe, mage hat, studded legs, leather boots, scarf
+		items = {{2175, 1}, {2182, 1}, {8819, 1}, {8820, 1}, {2468, 1}, {2643, 1}, {2661, 1}},
+		-- container: rope, shovel, mana potion
+		container = {{2120, 1}, {2554, 1}, {7620, 1}}
+	},
+	[3] = { -- Paladin
+		-- equipment: dwarven shield, 5 spear, ranger's cloak, ranger legs, scarf, legion helmet
+		items = {{2525, 1}, {2389, 5}, {2660, 1}, {8923, 1}, {2643, 1}, {2661, 1}, {2480, 1}},
+		-- container: rope, shovel, health potion, bow, 50 arrow
+		container = {{2120, 1}, {2554, 1}, {7618, 1}, {2456, 1}, {2544, 50}}
+	},
+	[4] = { -- Knight
+		-- equipment: dwarven shield, steel axe, brass armor, brass helmet, brass legs, scarf
+		items = {{2525, 1}, {8601, 1}, {2465, 1}, {2460, 1}, {2478, 1}, {2643, 1}, {2661, 1}},
+		-- container jagged sword, daramanian mace, rope, shovel, health potion
+		container = {{8602, 1}, {2439, 1}, {2120, 1}, {2554, 1}, {7618, 1}}
+	}
 }
 
 function onLogin(player)

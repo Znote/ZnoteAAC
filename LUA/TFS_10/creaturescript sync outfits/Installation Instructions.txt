@@ -1,7 +1,6 @@
 1. Add below line to XML file: data/creaturescripts/creaturescripts.xml
 <event type="login" name="znote_syncoutfits" script="syncoutfit.lua" />
 
-
 2. Register event in login.lua: data/creaturescripts/scripts/login.lua
 player:registerEvent("znote_syncoutfits")
 
