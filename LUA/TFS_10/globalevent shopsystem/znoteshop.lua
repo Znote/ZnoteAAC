@@ -28,11 +28,11 @@ function onThink(interval, lastExecution)
 			"Instant house purchase"
 		}
 		repeat 
-			local player_id = result.getDataInt(orderQuery, 'player_id')
-			local orderId = result.getDataInt(orderQuery, 'id')
-			local orderType = result.getDataInt(orderQuery, 'type')
-			local orderItemId = result.getDataInt(orderQuery, 'itemid')
-			local orderCount = result.getDataInt(orderQuery, 'count')
+			local player_id = result.getNumber(orderQuery, 'player_id')
+			local orderId = result.getNumber(orderQuery, 'id')
+			local orderType = result.getNumber(orderQuery, 'type')
+			local orderItemId = result.getNumber(orderQuery, 'itemid')
+			local orderCount = result.getNumber(orderQuery, 'count')
 			local served = false
 
 			local player = Player(player_id)
@@ -119,10 +119,10 @@ function onThink(interval, lastExecution)
 					if orderType == 7 then
 						served = true
 						local house = House(orderItemId)
-						-- Logged in player is not neccesarily the player that bough the house. So we need to load player from db.
+						-- Logged in player is not necessarily the player that bough the house. So we need to load player from db.
 						local buyerQuery = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = "..orderCount.." LIMIT 1")
 						if buyerQuery ~= false then
-							local buyerName = result.getDataString(buyerQuery, "name")
+							local buyerName = result.getString(buyerQuery, "name")
 							result.free(buyerQuery)
 							if house then
 								db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")

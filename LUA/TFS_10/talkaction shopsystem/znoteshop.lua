@@ -96,7 +96,7 @@ function onSay(player, words, param)
 					-- Logged in player is not necessarily the player that bough the house. So we need to load player from db.
 					local buyerQuery = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = "..orderCount.." LIMIT 1")
 					if buyerQuery ~= false then
-						local buyerName = result.getDataString(buyerQuery, "name")
+						local buyerName = result.getString(buyerQuery, "name")
 						result.free(buyerQuery)
 						if house then
 							db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
