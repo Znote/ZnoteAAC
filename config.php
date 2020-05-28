@@ -5,7 +5,7 @@
 	}
 
 	// If you want to use items.php (not 100% yet, I guess)
-	// Tested with TFS master items.xml (1.X)
+	// Tested with TFS master items.xml (1.x)
 	$config['items'] = false;
 
 	// Available options: TFS_02, TFS_03, OTHIRE, TFS_10
@@ -13,7 +13,7 @@
 	// TFS 0.2 = TFS_02
 	// TFS 0.3 = TFS_03 (If you are using 0.3.6, set $config['salt'] to false)!
 	// TFS 0.4 = TFS_03
-	// TFS 1.X = TFS_10 (Current under development version)
+	// TFS 1.x = TFS_10 (Current under development version)
 	$config['ServerEngine'] = 'TFS_10';
 	// As far as I know, OTX is based on TFS_03, so make sure TFS version is configured TFS_03
 	$config['CustomVersion'] = false;
@@ -22,7 +22,7 @@
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
 	$config['site_url'] = "http://demo.znote.eu";
 
-	// Path to server folder without "/" at the end, ex: C:\Users\Username\Documents\GitHub\forgottenserver
+	// Path to server folder without "\" (or "/") at the end, ex: C:\Users\Username\Documents\GitHub\forgottenserver
 	$config['server_path'] = ''; 
 
 	// ------------------------ \\
@@ -128,7 +128,7 @@
 		array(12036,6,"The Ice Islands Quest",1),
 	);
 
-	// Achievements based on "https://github.com/otland/forgottenserver/blob/master/data/lib/core/achievements.lua" (TFS 1.X)
+	// Achievements based on "https://github.com/otland/forgottenserver/blob/master/data/lib/core/achievements.lua" (TFS 1.x)
 	$config['Ach'] = false;
 	$config['achievements'] = array(
 		35000 => array(
@@ -384,7 +384,7 @@
 		22 => 'Issavi'
 	);
 
-	// -- HOUSE AUCTION SYSTEM! (TFS 1.X ONLY)
+	// -- HOUSE AUCTION SYSTEM! (TFS 1.x ONLY)
 	$config['houseConfig'] = array(
 		'HouseListDefaultTown' => 8, // Default town id to display when visting house list page page.
 		'minimumBidSQM' => 200, // Minimum bid cost on auction (per SQM)
@@ -452,10 +452,10 @@
 			'cap' => 470,
 			'soul' => 100
 		),
-		// health, mana cap etc are calculated with $config['vocations_gain'] and 'base' values of $config['player']
+		// Health, mana cap etc are calculated with $config['vocations_gain'] and 'base' values of $config['player']
 		'create' => array(
 			'level' => 8,
-			'novocation' => array( // vocation id 0 (No vocation) special settings
+			'novocation' => array( // Vocation id 0 (No vocation) special settings
 				'level' => 1,
 				'forceTown' => true,
 				'townId' => 1
@@ -689,9 +689,9 @@
 	// If you don't do this, ban from admin panel won't work properly.
 	$config['website_char'] = 'God Website';
 
-	// ----------------\\
-	// ADVANCED STUFF  \\
-	// ----------------\\
+	// ---------------- \\
+	//  ADVANCED STUFF  \\
+	// ---------------- \\
 	// API config
 	$config['api'] = array(
 		'debug' => false,
@@ -718,7 +718,7 @@
 		'fromName' => $config['site_title'],
 	);
 	
-	// Don't touch this unless you know what you are doing. (modifying this(key value) also requires modifications in OT files /XML/groups.xml).
+	// Don't touch this unless you know what you are doing. (modifying these (key value) also requires modifications in OT files data/XML/groups.xml).
 	$config['ingame_positions'] = array(
 		1 => 'Player',
 		2 => 'Tutor',
@@ -871,7 +871,7 @@
 	// Configure the "buy now" buttons prices, first write price, then how many points you get.
 	// Giving some bonus points for higher donations will tempt users to donate more.
 	$config['paypal_prices'] = array(
-	// 	price => points,
+	//	price => points,
 		1 => 45, // -10% bonus
 		10 => 100, // 0% bonus
 		15 => 165, // +10% bonus
@@ -948,7 +948,7 @@
 	/// by leveling characters to sell. It can also discourages illegal/risky third-party account 
 	/// services. Since players can buy officially & support the server, dodgy competitors have to sell for cheaper.
 	/// Without admin interference this is organic to each individual community economy inflation.
-	/////////
+	//////////
 	$config['shop_auction'] = array(
 		'characterAuction' => false, // Enable/disable this system
 		// Account ID of the account that stores players in the auction.

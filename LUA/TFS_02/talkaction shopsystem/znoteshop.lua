@@ -2,11 +2,11 @@
 function onSay(cid, words, param)
 	local storage = 54073 -- Make sure to select non-used storage. This is used to prevent SQL load attacks.
 	local cooldown = 15 -- in seconds.
-	
+
 	if getPlayerStorageValue(cid, storage) <= os.time() then
 		setPlayerStorageValue(cid, storage, os.time() + cooldown)
 		local accid = getAccountNumberByPlayerName(getCreatureName(cid))
-		
+
 		local type_desc = {
 			"itemids",
 			"pending premium (skip)",
@@ -34,17 +34,17 @@ function onSay(cid, words, param)
 					description = type_desc[q_type]
 				end
 				print("Processing type "..q_type..": ".. description)
-				
+
 				-- ORDER TYPE 1 (Regular item shop products)
 				if q_type == 1 then
 					served = true
-					-- Get wheight
+					-- Get weight
 					local playerCap = getPlayerFreeCap(cid)
 					local itemweight = getItemWeight(q_itemid, q_count)
 					if playerCap >= itemweight then
 						db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
 						doPlayerAddItem(cid, q_itemid, q_count)
-						doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have recieved ".. q_count .." "..getItemName(q_itemid).."(s)!")
+						doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have received ".. q_count .." "..getItemName(q_itemid).."(s)!")
 					else
 						doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "Need more CAP!")
 					end
@@ -77,7 +77,7 @@ function onSay(cid, words, param)
 
 				-- ORDER TYPE 6 (Mounts)
 				-- Not supported on TFS 0.2
-				
+
 				-- Add custom order types here
 				-- Type 1 is for itemids (Already coded here)
 				-- Type 2 is for premium (Coded on web)
