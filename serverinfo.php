@@ -34,7 +34,7 @@ if (user_logged_in() && is_admin($user_data)) {
 		$stagesXML = simplexml_load_file("engine/XML/stages.xml");
 		if ($stagesXML !== false) {
 			$stagesData = array();
-			// Load config ( stages enabled or disabled)
+			// Load config (stages enabled or disabled)
 			if ($config['ServerEngine'] == 'TFS_10')
 				foreach ($stagesXML->config->attributes() as $name => $value)
 					$stagesData["$name"] = "$value";
@@ -146,12 +146,12 @@ if (user_logged_in() && is_admin($user_data)) {
 				$comment = strpos($rawLua[$i], '--');
 				if ($comment !== false)
 					$rawLua[$i] = substr($rawLua[$i], 0, $comment);
-				$rawLua[$i] = trim($rawLua[$i]); // Remove uneccesary whitespace
+				$rawLua[$i] = trim($rawLua[$i]); // Remove unnecessary whitespace
 				// If for some reason the line is empty, ignore it. (Could be a "=" symbol inside an inline Lua comment that we sliced away)
 				if (!empty($rawLua[$i])) {
 					// Built a relevant data array
 					$data = explode('=', $rawLua[$i]);
-					// Remove uneccesary whitespace
+					// Remove unnecessary whitespace
 					$data[0] = trim($data[0]);
 					$data[1] = trim($data[1]);
 					// TFS 0.3/4 compatibility
@@ -216,8 +216,8 @@ $stages = false;
 	<table class="table tbl-hover">
 		<tbody>
 			<tr class="yellow">
-				<td>Minium level</td>
-				<td>Maximun level</td>
+				<td>Minimum level</td>
+				<td>Maximum level</td>
 				<td>Multiplier</td>
 			</tr>
 			<?php foreach ($stagesData['stages'] as $stage): ?>
@@ -316,7 +316,7 @@ $stages = false;
 
 			<?php if ($luaConfig['experienceByKillingPlayers']): ?>
 				<tr>
-					<td>Experience gain kill treshhold:</td>
+					<td>Experience gain kill threshold:</td>
 					<td><?php echo $luaConfig['expFromPlayersLevelRange']; ?>% of your level</td>
 				</tr>
 			<?php endif; ?>
