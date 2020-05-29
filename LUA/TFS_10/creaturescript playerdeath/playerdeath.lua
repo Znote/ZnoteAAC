@@ -32,8 +32,11 @@ local function sendWarStatus(guildId, enemyGuildId, warId, playerName, killerNam
 	end
 end
 
-function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjustified)
-	local player = Player(cid)
+function onDeath(player, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
+	local playerId = player:getId()
+	if nextUseStaminaTime[playerId] then
+		nextUseStaminaTime[playerId] = nil
+	end
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.")
 	if not deathListEnabled then
@@ -41,27 +44,25 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 	end
 
 	local byPlayer = 0
-	local killerCreature = Creature(killer)
-	if not killerCreature then
-		killerName = "field item"
-	else
-		if killerCreature:isPlayer() then
+	local killerName
+	if killer then
+		if killer:isPlayer() then
 			byPlayer = 1
 		else
-			local master = killerCreature:getMaster()
-			if master and master ~= killerCreature and master:isPlayer() then
-				killerCreature = master
+			local master = killer:getMaster()
+			if master and master ~= killer and master:isPlayer() then
+				killer = master
 				byPlayer = 1
 			end
 		end
-		killerName = killerCreature:isMonster() and killerCreature:getType():getNameDescription() or killerCreature:getName()
+		killerName = killer:getName()
+	else
+		killerName = "field item"
 	end
 
 	local byPlayerMostDamage = 0
-	if mostDamage == 0 then
-		mostDamageName = "field item"
-	else
-		local mostDamageKiller = Creature(mostDamage)
+	local mostDamageKillerName
+	if mostDamageKiller then
 		if mostDamageKiller:isPlayer() then
 			byPlayerMostDamage = 1
 		else
@@ -71,7 +72,9 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 				byPlayerMostDamage = 1
 			end
 		end
-		mostDamageName = mostDamageKiller:isMonster() and mostDamageKiller:getType():getNameDescription() or mostDamageKiller:getName()
+		mostDamageName = mostDamageKiller:getName()
+	else
+		mostDamageName = "field item"
 	end
 
 	local playerGuid = player:getGuid()
@@ -89,18 +92,18 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 		result.free(resultId)
 	end
 
-	while deathRecords > maxDeathRecords do
-		db.query("DELETE FROM `player_deaths` WHERE `player_id` = " .. playerGuid .. " ORDER BY `time` LIMIT 1")
-		deathRecords = deathRecords - 1
+	local limit = deathRecords - maxDeathRecords
+	if limit > 0 then
+		db.asyncQuery("DELETE FROM `player_deaths` WHERE `player_id` = " .. playerGuid .. " ORDER BY `time` LIMIT " .. limit)
 	end
 
 	if byPlayer == 1 then
 		local targetGuild = player:getGuild()
 		targetGuild = targetGuild and targetGuild:getId() or 0
 		if targetGuild ~= 0 then
-			local killerGuild = killerCreature:getGuild()
+			local killerGuild = killer:getGuild()
 			killerGuild = killerGuild and killerGuild:getId() or 0
-			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(cid, killerCreature) then
+			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(playerId, killer:getId()) then
 				local warId = false
 				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR (`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId ~= false then
@@ -110,7 +113,7 @@ function onDeath(cid, corpse, killer, mostDamage, unjustified, mostDamage_unjust
 
 				if warId ~= false then
 					local playerName = player:getName()
-					db.query("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(playerName) .. ", " .. killerGuild .. ", " .. targetGuild .. ", " .. os.time() .. ", " .. warId .. ")")
+					db.asyncQuery("INSERT INTO `guildwar_kills` (`killer`, `target`, `killerguild`, `targetguild`, `time`, `warid`) VALUES (" .. db.escapeString(killerName) .. ", " .. db.escapeString(playerName) .. ", " .. killerGuild .. ", " .. targetGuild .. ", " .. os.time() .. ", " .. warId .. ")")
 					addEvent(sendWarStatus, 1000, killerGuild, targetGuild, warId, playerName, killerName)
 				end
 			end

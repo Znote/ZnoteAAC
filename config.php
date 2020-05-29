@@ -3,17 +3,17 @@
 		$isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 		define('ZNOTE_OS', ($isWindows) ? 'WINDOWS' : 'LINUX');
 	}
-	
+
 	// If you want to use items.php (not 100% yet, I guess)
-	// Tested with TFS items.xml master (1.3)
+	// Tested with TFS master items.xml (1.x)
 	$config['items'] = false;
-	
-	// Available options: TFS_02, TFS_03, OTHIRE
+
+	// Available options: TFS_02, TFS_03, OTHIRE, TFS_10
 	// OTHire = OTHIRE
 	// TFS 0.2 = TFS_02
-	// TFS 0.3 = TFS_03 (If ur using 0.3.6, set $config['salt'] to false)!
+	// TFS 0.3 = TFS_03 (If you are using 0.3.6, set $config['salt'] to false)!
 	// TFS 0.4 = TFS_03
-	// TFS 1.0 = TFS_10 (Under developement)
+	// TFS 1.x = TFS_10 (Current under development version)
 	$config['ServerEngine'] = 'TFS_10';
 	// As far as I know, OTX is based on TFS_03, so make sure TFS version is configured TFS_03
 	$config['CustomVersion'] = false;
@@ -22,14 +22,14 @@
 	$config['site_title_context'] = 'Because open communities are good communities. :3';
 	$config['site_url'] = "http://demo.znote.eu";
 
-	// Path to server folder without / Example: C:\Users\Alvaro\Documents\GitHub\forgottenserver
+	// Path to server folder without "\" (or "/") at the end, ex: C:\Users\Username\Documents\GitHub\forgottenserver
 	$config['server_path'] = ''; 
 
 	// ------------------------ \\
 	// MYSQL CONNECTION DETAILS \\
 	// ------------------------ \\
 
-	// phpmyadmin username for OT server: (DONT USE "root" if ur hosting to public.).
+	// phpmyadmin username for OT server: (DONT USE "root" if you are hosting to public).
 	$config['sqlUser'] = 'tfs13';
 
 	// phpmyadmin password for OT server:
@@ -67,7 +67,7 @@
 	// ------------------- \\
 	// Enable / disable Questlog function (true / false) 
 	$config['EnableQuests'] = false;
-	
+
 	// array for filling questlog (Questid, max value, name, end of the quest fill 1 for the last part 0 for all others)
 	$config['quests'] = array(
 		array(1501,100,"Killing in the Name of",0),
@@ -128,27 +128,27 @@
 		array(12036,6,"The Ice Islands Quest",1),
 	);
 
-	//Achievements based on "https://github.com/otland/forgottenserver/blob/master/data/lib/core/achievements.lua" (TFS 1.0)
+	// Achievements based on "https://github.com/otland/forgottenserver/blob/master/data/lib/core/achievements.lua" (TFS 1.x)
 	$config['Ach'] = false;
 	$config['achievements'] = array(
 		35000 => array(
-			'First Dragon', //name
-			'Rumours say that you will never forget your first Dragon', //comment
-			'points' => '1', //points
-			'img' => 'https://i.imgur.com/Nk2XDge.gif', //img link or folder (example)> 'images/dragon.png'
+			'First Dragon', // name
+			'Rumours say that you will never forget your first Dragon', // description
+			'points' => '1', // points
+			'img' => 'https://i.imgur.com/Nk2XDge.gif', // direct image link or path, ex: 'images/dragon.png'
 		),
 		35001 => array(
 			'Uniwheel',
-			'You\'re probably one of the very few people with this classic and unique ride, hope it doesn\'t break anytime soon.', //comment
-			'points' => '1', //points
-			'img' => 'https://i.imgur.com/0GYRgGj.gif', //img link or folder (example)> 'images/dragon.png'
+			'You\'re probably one of the very few people with this classic and unique ride, hope it doesn\'t break anytime soon.', // description
+			'points' => '1',
+			'img' => 'https://i.imgur.com/0GYRgGj.gif', // direct image link or path, ex: 'images/uniwheel.png'
 			'secret' => true
 		),
 		30001 => array(
 			'Allow Cookies?', 
 			'With a perfectly harmless smile you fooled all of those wicecrackers into eating your exploding cookies. Consider a boy or girl scout outfit next time to make the trick even better.', 
-			'points' => '10', // 1-3 points (1star), 4-6 points(2 stars), 7-9 points(3 stars), 10 points => (4 stars)
-			'secret' => true // show "secret" image
+			'points' => '10', // 1-3 points (1 star), 4-6 points (2 stars), 7-9 points(3 stars), 10 points => (4 stars)
+			'secret' => true // show "secret" badge
 		),
 		30002 => array(
 			'Backpack Tourist',
@@ -254,18 +254,17 @@
 		),
 	);
 
-	// TFS 1.0 powergamers and top online
-	//Before enabling powergamers, make sure that you have added LUA files and possible cloums to your server.
-	//files can be found at Lua folder.
-	
+	// TFS 1.x powergamers and top online
+	// Before enabling powergamers, make sure that you have added Lua files and added the SQL columns to your server db.
+	// files can be found at LUA folder.
 	$config['powergamers'] = array(
 		'enabled' => true, // Enable or disable page
-		'limit' => 20, //Number of players that it will show.
+		'limit' => 20, // Number of players that it will show.
 	);
 
 	$config['toponline'] = array(
 		'enabled' => true, // Enable or disable page
-		'limit' => 20, //Number of players that it will show.
+		'limit' => 20, // Number of players that it will show.
 	);
 
 	// Vocation IDs, names and which vocation ID they got promoted from
@@ -359,34 +358,36 @@
 		),
 	);
 	// Town ids and names: (In RME map editor, open map, click CTRL + T to view towns, their names and their IDs.
-	// townID => 'townName' etc: ['3'=>'Thais']
+	// townID => 'townName' ex: [1 => 'Rookgaard']
 	$config['towns'] = array(
-		1 => 'Venore',
-		2 => 'Thais',
-		3 => 'Kazordoon',
-		4 => 'Carlin',
+		1 => 'Rookgaard',
+		2 => 'Rookgaard Tutorial Island',
+		3 => 'Island Of Destiny',
+		4 => 'Dawnport',
 		5 => "Ab'Dendriel",
-		6 => 'Rookgaard',
-		7 => 'Liberty Bay',
-		8 => 'Port Hope',
-		9 => 'Ankrahmun',
-		10 => 'Darashia',
+		6 => 'Carlin',
+		7 => 'Kazordoon',
+		8 => 'Thais',
+		9 => 'Venore',
+		10 => 'Ankrahmun',
 		11 => 'Edron',
-		12 => 'Svargrond',
-		13 => 'Yalahar',
-		14 => 'Farmine',
-		28 => 'Gray Beach',
-		29 => 'Roshamuul',
-		30 => 'Rookgaard Tutorial Island',
-		31 => 'Isle of Solitude',
-		32 => 'Island Of Destiny',
-		33 => 'Rathleton'
+		12 => 'Farmine',
+		13 => 'Darashia',
+		14 => 'Liberty Bay',
+		15 => 'Port Hope',
+		16 => 'Svargrond',
+		17 => 'Yalahar',
+		18 => 'Gray Beach',
+		19 => 'Krailos',
+		20 => 'Rathleton',
+		21 => 'Roshamuul',
+		22 => 'Issavi'
 	);
 
-	// - TFS 1.0 ONLY -- HOUSE AUCTION SYSTEM!
+	// -- HOUSE AUCTION SYSTEM! (TFS 1.x ONLY)
 	$config['houseConfig'] = array(
-		'HouseListDefaultTown' => 1, // Default town id to display when visting house list page page.
-		'minimumBidSQM' => 200, // minimum bid cost on auction (per SQM)
+		'HouseListDefaultTown' => 8, // Default town id to display when visting house list page page.
+		'minimumBidSQM' => 200, // Minimum bid cost on auction (per SQM)
 		'auctionPeriod' => 24 * 60 * 60, // 24 hours auction time.
 		'housesPerPlayer' => 1,
 		'requirePremium' => false,
@@ -394,7 +395,7 @@
 		// Instant buy with shop points
 		'shopPoints' => array(
 			'enabled' => true,
-			// SQM => points cost
+			// SQM count => points cost
 			'cost' => array(
 				1 => 10,
 				25 => 15,
@@ -418,7 +419,7 @@
 		0 => 'Pending',
 		1 => 'Accepted',
 		2 => 'Rejected',
-		3 => 'Cancelled',
+		3 => 'Canceled',
 		4 => 'Ended by kill limit',
 		5 => 'Ended',
 	);
@@ -436,11 +437,12 @@
 	// Max characters on each account:
 	$config['max_characters'] = 7;
 
-	// Available character vocation users can create.
+	// Available character vocation users can choose (specify vocation ID).
 	$config['available_vocations'] = array(1, 2, 3, 4);
 
 	// Available towns (specify town ids, etc: (1, 2, 3); to display 3 town options (town id 1, 2 and 3).
-	$config['available_towns'] = array(1, 2, 4, 5);
+	// Town IDs are the ones from $config['towns'] array
+	$config['available_towns'] = array(6, 7, 8, 9);
 
 	$config['player'] = array(
 		'base' => array(
@@ -450,13 +452,13 @@
 			'cap' => 470,
 			'soul' => 100
 		),
-		// health, mana cap etc are calculated with $config['vocations_gain'] and 'base' values of $config['player']
+		// Health, mana cap etc are calculated with $config['vocations_gain'] and 'base' values of $config['player']
 		'create' => array(
 			'level' => 8,
-			'novocation' => array( // vocation id 0 (No vocation) special settings
-				'level' => 1, // Level
+			'novocation' => array( // Vocation id 0 (No vocation) special settings
+				'level' => 1,
 				'forceTown' => true,
-				'townId' => 30
+				'townId' => 1
 			),
 			'skills' => array( // See $config['vocations'] for proper vocation names of these IDs
 				// No vocation
@@ -532,12 +534,11 @@
 		)
 	);
 
-	// Minimum allowed character name letters. Etc 4 letters: "Kåre".
+	// Minimum allowed letters in character name. Ex: 4 letters: "Kare".
 	$config['minL'] = 3;
-	// Maximum allowed character name letters. Etc 20 letters: "Bobkåreolesofiesberg"
+	// Maximum allowed letters in character name. Ex: 20 letters: "Bobkareolesofiesberg"
 	$config['maxL'] = 20;
-
-	// Maximum allowed character name words. Etc 2 words = "Bob Kåre", 3 words: "Bob Arne Kåre" as max char name words.
+	// Maximum allowed words in character name. Ex: 2 words = "Bob Kare", 3 words: "Bob Arne Kare" as maximum char name words.
 	$config['maxW'] = 3;
 
 	// -------------- \\
@@ -563,19 +564,21 @@
 		'price_sqm' => '50', // price per house sqm
 	);
 
-	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed eg. 1 DAY, 2 HOUR, 3 MONTH etc. 
+	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed, ex: 1 DAY, 2 HOUR, 3 MONTH etc. 
 
 	$config['validate_IP'] = false;
 	$config['salt'] = false;
 
 	// Restricted names
 	$config['invalidNameTags'] = array(
-		"owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "amazon", "valkyrie", "carrion worm", "rotworm", "rotworm queen", "cockroach", "kongra", "merlkin", "sibang", "crystal spider", "giant spider", "poison spider", "scorpion", "spider", "tarantula", "achad", "axeitus headbanger", "bloodpaw", "bovinus", "colerian the barbarian", "cursed gladiator", "frostfur", "orcus the cruel", "rocky", "the hairy one", "avalanche", "drasilla", "grimgor guteater", "kreebosh the exile", "slim", "spirit of earth", "spirit of fire", "spirit of water", "the dark dancer", "the hag", "darakan the executioner", "deathbringer", "fallen mooh'tah master ghar", "gnorre chyllson", "norgle glacierbeard", "svoren the mad", "the masked marauder", "the obliverator", "the pit lord", "webster", "barbarian bloodwalker", "barbarian brutetamer", "barbarian headsplitter", "barbarian skullhunter", "bear", "panda", "polar bear", "braindeath", "beholder", "elder beholder", "gazer", "chicken", "dire penguin", "flamingo", "parrot", "penguin", "seagull", "terror bird", "bazir", "infernatil", "thul", "munster", "son of verminor", "xenia", "zoralurk", "big boss trolliver", "foreman kneebiter", "mad technomancer", "man in the cave", "lord of the elements", "the count", "the plasmother", "dracola", "the abomination", "the handmaiden", "mr. punish", "the countess sorrow", "the imperor", "massacre", "apocalypse", "brutus bloodbeard", "deadeye devious", "demodras", "dharalion", "fernfang", "ferumbras", "general murius", "ghazbaran", "grorlam", "lethal lissy", "morgaroth", "necropharus", "orshabaal", "ron the ripper", "the evil eye", "the horned fox", "the old widow", "tiquandas revenge", "apprentice sheng", "dog", "hellhound", "war wolf", "winter wolf", "wolf", "chakoya toolshaper", "chakoya tribewarden", "chakoya windcaller", "blood crab", "crab", "frost giant", "frost giantess", "ice golem", "yeti", "acolyte of the cult", "adept of the cult", "enlightened of the cult", "novice of the cult", "ungreez", "dark torturer", "demon", "destroyer", "diabolic imp", "fire devil", "fury", "hand of cursed fate", "juggernaut", "nightmare", "plaguesmith", "blue djinn", "efreet", "admin", "green djinn", "marid", "frost dragon", "wyrm", "sea serpent", "dragon lord", "dragon", "hydra", "dragon hatchling", "dragon lord hatchling", "frost dragon hatchling", "dwarf geomancer", "dwarf guard", "dwarf soldier", "dwarf", "dworc fleshhunter", "dworc venomsniper", "dworc voodoomaster", "elephant", "mammoth", "elf arcanist", "elf scout", "elf", "charged energy elemental", "energy elemental", "massive energy elemental", "overcharged energy elemental", "energy overlord", "cat", "lion", "tiger", "azure frog", "coral frog", "crimson frog", "green frog", "orchid frog", "toad", "jagged earth elemental", "muddy earth elemental", "earth elemental", "massive earth elemental", "earth overlord", "gargoyle", "stone golem", "ghost", "phantasm", "phantasm", "pirate ghost", "spectre", "cyclops smith", "cyclops drone", "behemoth", "cyclops", "slick water elemental", "roaring water elemental", "ice overlord", "water elemental", "massive water elemental", "ancient scarab", "butterfly", "bug", "centipede", "exp bug", "larva", "scarab", "wasp", "lizard sentinel", "lizard snakecharmer", "lizard templar", "minotaur archer", "minotaur guard", "minotaur mage", "minotaur", "squirrel", "goblin demon", "badger", "bat", "deer", "the halloween hare", "hyaena", "pig", "rabbit", "silver rabbit", "skunk", "wisp", "dark monk", "monk", "tha exp carrier", "necromancer", "priestess", "orc berserker", "orc leader", "orc rider", "orc shaman", "orc spearman", "orc warlord", "orc warrior", "orc", "goblin leader", "goblin scavenger", "goblin", "goblin assassin", "assasin", "bandit", "black knight", "hero", "hunter", "nomad", "smuggler", "stalker", "poacher", "wild warrior", "ashmunrah", "dipthrah", "mahrdis", "morguthis", "omruc", "rahemos", "thalas", "vashresamun", "pirate buccaneer", "pirate corsair", "pirate cutthroat", "pirate marauder", "carniphila", "spit nettle", "fire overlord", "massive fire elemental", "blistering fire elemental", "blazing fire elemental", "fire elemental", "hellfire fighter", "quara constrictor scout", "quara hydromancer scout", "quara mantassin scout", "quara pincher scout", "quara predator scout", "quara constrictor", "quara hydromancer", "quara mantassin", "quara pincher", "quara predator", "cave rat", "rat", "cobra", "crocodile", "serpent spawn", "snake", "wyvern", "black sheep", "sheep", "mimic", "betrayed wraith", "bonebeast", "demon skeleton", "lost soul", "pirate skeleton", "skeleton", "skeleton warrior", "undead dragon", "defiler", "slime2", "slime", "bog raider", "ice witch", "warlock", "witch", "bones", "fluffy", "grynch clan goblin", "hacker", "minishabaal", "primitive", "tibia bug", "undead minion", "annihilon", "hellgorak", "latrivan", "madareth", "zugurosh", "ushuriel", "golgordan", "thornback tortoise", "tortoise", "eye of the seven", "deathslicer", "flamethrower", "magicthrower", "plaguethrower", "poisonthrower", "shredderthrower", "troll champion", "frost troll", "island troll", "swamp troll", "troll", "banshee", "blightwalker", "crypt shambler", "ghoul", "lich", "mummy", "vampire", "grim reaper", "frost dragon", "mercenary", "zathroth", "goshnar", "durin", "demora", "orc champion", "dracula", "alezzo", "prince almirith", "elf warlord", "magebomb", "nightmare scion"
+		"owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "hitler", "cm", "gm", "game master", "anal", "anus", "arse", "ass", "asses", "assfucker", "assfukka", "asshole", "arsehole", "asswhole", "assmunch", "ballsack", "wanky", "whore", "whoar", "xxx", "xx", "yaoi", "yury", "bastard", "beastial", "bestial", "bellend", "bdsm", "beastiality", "bestiality", "bitch", "bitches", "bitchin", "bitching", "bimbo", "bimbos", "blow job", "blowjob", "blowjobs", "blue waffle", "boob", "boobs", "booobs", "boooobs", "booooobs", "booooooobs", "breasts", "booty call", "brown shower", "brown showers", "boner", "bondage", "buceta", "bukake", "bukkake", "bullshit", "bull shit", "busty", "butthole", "carpet muncher", "cawk", "chink", "cipa", "clit", "clits", "clitoris", "cnut", "cock", "cocks", "cockface", "cockhead", "cockmunch", "cockmuncher", "cocksuck", "cocksucked", "cocksucking", "cocksucks", "cocksucker", "cokmuncher", "coon", "cow girl", "cow girls", "cowgirl", "cowgirls", "crap", "crotch", "cum", "cummer", "cumming", "cuming", "cums", "cumshot", "cunilingus", "cunillingus", "cunnilingus", "cunt", "cuntlicker", "cuntlicking", "cunts", "damn", "dick", "dickhead", "dildo", "dildos", "dink", "dinks", "deepthroat", "deep throat", "dog style", "doggie style", "doggiestyle", "doggy style", "doggystyle", "donkeyribber", "doosh", "douche", "duche", "dyke", "ejaculate", "ejaculated", "ejaculates", "ejaculating", "ejaculatings", "ejaculation", "ejakulate", "erotic", "erotism", "fag", "faggot", "fagging", "faggit", "faggitt", "faggs", "fagot", "fagots", "fags", "fatass", "femdom", "fingering", "footjob", "foot job", "fuck", "fucks", "fucker", "fuckers", "fucked", "fuckhead", "fuckheads", "fuckin", "fucking", "fcuk", "fcuker", "fcuking", "felching", "fellate", "fellatio", "fingerfuck", "fingerfucked", "fingerfucker", "fingerfuckers", "fingerfucking", "fingerfucks", "fistfuck", "fistfucked", "fistfucker", "fistfuckers", "fistfucking", "fistfuckings", "fistfucks", "flange", "fook", "fooker", "fucka", "fuk", "fuks", "fuker", "fukker", "fukkin", "fukking", "futanari", "futanary", "gangbang", "gangbanged", "gang bang", "gokkun", "golden shower", "goldenshower", "gaysex", "goatse", "handjob", "hand job", "hentai", "hooker", "hoer", "homo", "horny", "incest", "jackoff", "jack off", "jerkoff", "jerk off", "jizz", "knob", "kinbaku", "labia", "masturbate", "masochist", "mofo", "mothafuck", "motherfuck", "motherfucker", "mothafucka", "mothafuckas", "mothafuckaz", "mothafucked", "mothafucker", "mothafuckers", "mothafuckin", "mothafucking", "mothafuckings", "mothafucks", "mother fucker", "motherfucked", "motherfucker", "motherfuckers", "motherfuckin", "motherfucking", "motherfuckings", "motherfuckka", "motherfucks", "milf", "muff", "negro", "nigga", "nigger", "nigg", "nipple", "nipples", "nob", "nob  jokey", "nobhead", "nobjocky", "nobjokey", "numbnuts", "nutsack", "nude", "nudes", "orgy", "orgasm", "orgasms", "panty", "panties", "penis", "playboy", "pinto", "porn", "porno", "pornography", "pron", "punheta", "pussy", "pussies", "puta", "rape", "raping", "rapist", "rectum", "retard", "rimming", "sadist", "sadism", "schlong", "scrotum", "sex", "semen", "shemale", "she male", "shibari", "shibary", "shit", "shitdick", "shitfuck", "shitfull", "shithead", "shiting", "shitings", "shits", "shitted", "shitters", "shitting", "shittings", "shitty", "shota", "skank", "slut", "sluts", "smut", "smegma", "spunk", "strip club", "stripclub", "tit", "tits", "titties", "titty", "titfuck", "tittiefucker", "titties", "tittyfuck", "tittywank", "titwank", "threesome", "three some", "throating", "twat", "twathead", "twatty", "twunt", "viagra", "vagina", "vulva", "viado", "wank", "wanker",
+	// Comment out the line bellow if you want to allow players to use creature names:
+		"acolyte of the cult", "adept of the cult", "amazon", "ancient scarab", "arachnophobica", "assassin", "azure frog", "badger", "bandit", "banshee", "barbarian bloodwalker", "barbarian brutetamer", "barbarian headsplitter", "barbarian skullhunter", "bat", "bear", "behemoth", "betrayed wraith", "biting book", "black knight", "black sphinx acolyte", "blightwalker", "blood beast", "blood crab", "blood hand", "blood priest", "blue djinn", "boar", "bog frog", "bog raider", "bonebeast", "bonelord", "boogy", "brain squid", "braindeath", "breach brood", "brimstone bug", "burning book", "burning gladiator", "burster spectre", "carniphila", "carrion worm", "cave devourer", "centipede", "chakoya toolshaper", "chakoya tribewarden", "chakoya windcaller", "choking fear", "clay guardian", "clomp", "cobra", "coral frog", "corym charlatan", "corym skirmisher", "corym vanguard", "crab", "crazed beggar", "crazed summer rearguard", "crazed summer vanguard", "crazed winter rearguard", "crazed winter vanguard", "crimson frog", "crocodile", "crypt defiler", "crypt shambler", "crypt warden", "crystal spider", "crystalcrusher", "cult believer", "cult enforcer", "cult scholar", "cyclops", "cyclops drone", "cyclops smith", "dark apprentice", "dark faun", "dark magician", "dark monk", "dark torturer", "dawnfire asura", "death blob", "deathling scout", "deathling spellsinger", "deepling guard", "deepling scout", "deepling spellsinger", "deepling warrior", "deepling worker", "deepworm", "defiler", "demon outcast", "demon skeleton", "demon", "destroyer", "devourer", "diabolic imp", "diamond servant", "diremaw", "dragon hatchling", "dragon lord hatchling", "dragon lord", "dragon", "draken abomination", "draken elite", "draken spellweaver", "draken warmaster", "dread intruder", "drillworm", "dwarf geomancer", "dwarf guard", "dwarf henchman", "dwarf soldier", "dwarf", "dworc fleshhunter", "dworc venomsniper", "dworc voodoomaster", "earth elemental", "efreet", "elder bonelord", "elder wyrm", "elephant", "elf arcanist", "elf scout", "elf", "emerald damselfly", "energetic book", "energy elemental", "enfeebled silencer", "enlightened of the cult", "enraged crystal golem", "eternal guardian", "falcon knight", "falcon paladin", "faun", "fire devil", "fire elemental", "firestarter", "forest fury", "fox", "frazzlemaw", "frost dragon hatchling", "frost dragon", "frost flower asura", "fury", "gargoyle", "gazer spectre", "ghastly dragon", "ghost", "ghoul", "giant spider", "gladiator", "gloom wolf", "glooth bandit", "glooth blob", "glooth brigand", "glooth golem", "gnarlhound", "guzzlemaw", "hand of cursed fate", "haunted treeling", "hellhound", "hellflayer", "hellfire fighter", "hellspawn", "hero", "honour guard", "hunter", "hydra", "ice golem", "ice witch", "infernalist", "juggernaut", "killer caiman", "kongra", "lancer beetle", "lamassu", "lich", "lizard chosen", "lizard dragon priest", "lizard high guard", "lizard legionnaire", "lizard sentinel", "lizard snakecharmer", "lizard templar", "lizard zaogun", "lost soul", "lumbering carnivor", "mad scientist", "mammoth", "marid", "marsh stalker", "medusa", "menacing carnivor", "mercury blob", "merlkin", "metal gargoyle", "midnight asura", "minotaur amazon", "minotaur archer", "minotaur cult follower", "minotaur cult prophet", "minotaur cult zealot", "minotaur guard", "minotaur hunter", "minotaur mage", "minotaur", "monk", "mooh'tah warrior", "moohtant", "mummy", "mutated bat", "mutated human", "mutated rat", "mutated tiger", "necromancer", "nightmare scion", "nightmare", "nightstalker", "nomad", "novice of the cult ", "nymph", "omnivora", "orc berserker", "orc leader", "orc rider", "orc shaman", "orc warlord", "orc warrior", "orc", "pirate buccaneer", "pirate corsair", "pirate cutthroat", "pirate ghost", "pirate marauder", "pirate skeleton", "pixie", "plaguesmith", "priestess", "pooka", "ravenous lava lurker", "renegade knight", "retching horror", "ripper spectre", "roaring lion", "rot elemental", "rotworm", "rustheap golem", "scarab", "scorpion", "sea serpent", "serpent spawn", "sibang", "silencer", "skeleton elite warrior", "souleater", "spectre", "spiky carnivor", "stone golem", "stonerefiner", "swamp troll", "tarantula", "terramite", "thornback tortoise", "toad", "tortoise", "twisted pooka", "undead elite gladiator", "undead gladiator", "valkyrie", "vampire bride", "vampire viscount", "vampire", "vexclaw", "vicious squire", "vile grandmaster", "vulcongra", "wailing widow", "war golem", "war wolf", "warlock", "wasp", "water elemental", "weakened frazzlemaw", "werebadger", "werebear", "wereboar", "werefox", "werewolf", "worm priestess", "wolf", "wyrm", "wyvern", "yielothax", "young sea serpent", "zombie", "adult goanna", "black sphinx acolyte", "burning gladiator", "cobra assassin", "cobra scout", "cobra vizier", "crypt warden", "feral sphinx", "lamassu", "manticore", "ogre rowdy", "ogre ruffian", "ogre sage", "priestess of the wild sun", "sphinx", "sun-marked goanna", "young goanna", "cursed prospector", "evil prospector", "flimsy lost soul", "freakish lost soul", "mean lost soul", "a shielded astral glyph", "abyssador", "an astral glyph", "ascending ferumbras", "annihilon", "apocalypse", "apprentice sheng", "arachir the ancient one", "armenius", "azerus", "barbaria", "baron brute", "battlemaster zunzu", "bazir", "big boss trolliver", "bones", "boogey", "bretzecutioner", "brokul", "bruise payne", "brutus bloodbeard", "bullwark", "chizzoron the distorter", "coldheart", "countess sorrow", "deadeye devious", "deathbine", "deathstrike", "demodras", "dharalion", "diblis the fair", "dirtbeard", "diseased bill", "diseased dan", "diseased fred", "doomhowl", "dracola", "dreadwing", "ekatrix", "energized raging mage", "esmeralda", "ethershreck", "evil mastermind", "fatality", "fazzrah", "fernfang", "feroxa", "ferumbras", "flameborn", "fleshcrawler", "fleshslicer", "fluffy", "foreman kneebiter", "freegoiz", "fury of the emperor", "furyosa", "gaz'haragoth", "general murius", "ghazbaran", "glitterscale", "gnomevil", "golgordan", "grand mother foulscale", "groam", "grorlam", "gorgo", "hairman the huge", "haunter", "hellgorak", "hemming", "heoni", "hide", "hirintror", "horadron", "horestis", "incineron", "infernatil", "inky", "jaul", "kerberos", "koshei the deathless", "kraknaknork's demon", "kraknaknork", "kroazur", "latrivan", "lethal lissy", "leviathan", "lisa", "lizard abomination", "lord of the elements", "mad mage", "mad technomancer", "madareth", "man in the cave", "massacre", "mawhawk", "menace", "mephiles", "minishabaal", "monstor", "morgaroth", "morik the gladiator", "mr. punish", "munster", "mutated zalamon", "necropharus", "obujos", "orshabaal", "paiz the pauperizer", "raging mage", "ribstride", "rocko", "ron the ripper", "rottie the rotworm", "rotworm queen", "scarlett etzel", "scorn of the emperor", "shardhead", "sharptooth", "sir valorcrest", "snake god essence", "snake thing", "spider queen", "spite of the emperor", "splasher", "stonecracker", "sulphur scuttler", "tanjis", "terofar", "teleskor", "the abomination", "the axeorcist", "the blightfather", "the bloodtusk", "the bloodweb", "the book of death", "the collector", "the count", "the weakened count", "the dreadorian", "the evil eye", "the frog prince", "the handmaiden", "the horned fox", "the keeper", "the imperor", "the many", "the noxious spawn", "the old widow", "the pale count", "the plasmother", "the snapper", "the distorted astral source", "the astral source", "thul", "tiquandas revenge", "tirecz", "tyrn", "tormentor", "tremorak", "tromphonyte", "ungreez", "ushuriel", "verminor", "versperoth", "warlord ruzad", "white pale", "wrath of the emperor", "xenia", "yaga the crone", "yakchal", "zanakeph", "zavarash", "zevelon duskbringer", "zomba", "zoralurk", "zugurosh", "zushuka", "zulazza the corruptor", "glooth bomb", "bibby bloodbath", "doctor perhaps", "mooh'tah master", "the welter"
 	);
 
 	// Use guild logo system
 	$config['use_guild_logos'] = true;
-	
+
 	// Use country flags
 	$config['country_flags'] = array(
 		'enabled' => true,
@@ -627,14 +630,14 @@
 	// Used for the Downloads page.
 	$config['client'] = 1098; // 954 = client 9.54
 
-	 // Download link to client.
+	// Download link to client.
 	$config['client_download'] = 'http://tibiaclient.otslist.eu/download/tibia'. $config['client'] .'.exe';
 	$config['client_download_linux'] = 'http://tibiaclient.otslist.eu/download/tibia'. $config['client'] .'.tgz';
 
 	$config['port'] = 7171; // Port number to connect to your OT.
-	
+
 	$config['status'] = array(
-		'status_check' => false, //enable or disable status checker
+		'status_check' => false, // Enable or disable status checker
 		'status_ip' => '127.0.0.1',
 		'status_port' => "7171",
 	);
@@ -643,11 +646,11 @@
 	$config['gameserver'] = array(
 		'ip' => '127.0.0.1',
 		'port' => 7172,
-		'name' => 'OTXServer-Global' // Must be identical to config.lua (OT config file) server name.
+		'name' => 'Forgotten' // Must be identical to config.lua (OT config file) server name.
 	);
 
 	// How often do you want highscores to update?
-	$config['cache_lifespan'] = 5;//60 * 15; // 15 minutes.
+	$config['cache_lifespan'] = 5; // 60 * 15; // 15 minutes.
 
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
@@ -662,11 +665,11 @@
 	$config['forum'] = array(
 		'enabled' => true,
 		'outfit_avatars' => true, // Show character outfit as forum avatar?
-		'player_position' => true, // Tutor, Community manager, God etc..?
+		'player_position' => true, // Show character position? ex: Tutor, Community Manager, God
 		'guildboard' => true,
 		'level' => 5,
-		'cooldownPost' => 1,//60,
-		'cooldownCreate' => 1,//180,
+		'cooldownPost' => 1, // 60,
+		'cooldownCreate' => 1, // 180,
 		'newPostsBumpThreads' => true,
 		'hidden' => '<font color="orange">[H]</font>',
 		'closed' => '<font color="red">[C]</font>',
@@ -682,14 +685,14 @@
 	);
 
 	// IMPORTANT! Write a character name(that exist) that will represent website bans!
-	// Or remember to create character "God Website" character exist.
-	// If you don't do this, bann from admin panel won't work properly.
-	$config['website_char'] = 'Luxitur';
+	// Or remember to create character named "God Website".
+	// If you don't do this, ban from admin panel won't work properly.
+	$config['website_char'] = 'God Website';
 
-	//----------------\\
-	// ADVANCED STUFF \\
-	//----------------\\
-	// Api config
+	// ---------------- \\
+	//  ADVANCED STUFF  \\
+	// ---------------- \\
+	// API config
 	$config['api'] = array(
 		'debug' => false,
 	);
@@ -715,7 +718,7 @@
 		'fromName' => $config['site_title'],
 	);
 	
-	// Don't touch this unless you know what you are doing. (modifying this(key value) also requires modifications in OT files /XML/commands.xml).
+	// Don't touch this unless you know what you are doing. (modifying these (key value) also requires modifications in OT files data/XML/groups.xml).
 	$config['ingame_positions'] = array(
 		1 => 'Player',
 		2 => 'Tutor',
@@ -725,18 +728,18 @@
 		6 => 'God',
 	);
 
-	// Enable OS advanced feautures? false = no, true = yes
+	// Enable OS advanced features? false = no, true = yes
 	$config['os_enabled'] = false;
 
 	// What kind of computer are you hosting this website on?
 	// Available options: LINUX or WINDOWS
-	$config['os'] = ZNOTE_OS;
+	$config['os'] = ZNOTE_OS; // Use 'ZNOTE_OS' to auto-detect
 
 	// Measure how much players are lagging in-game. (Not completed). 
 	$config['ping'] = false;
 
 	// BAN STUFF - Don't touch this unless you know what you are doing.
-	// You can order the lines the way you want, from top to bot, in which order you
+	// You can order the lines the way you want, from top to bottom, in which order you
 	// wish for them to be displayed in admin panel. Just make sure key[#] represent your description.
 	$config['ban_type'] = array(
 		4 => 'NOTATION_ACCOUNT',
@@ -760,7 +763,7 @@
 	);
 
 	// Ban reasons, for changes beside default values to work with client,
-	// you also need to edit sources (tools.cpp line 1096)
+	// you also need to edit sources (https://github.com/otland/forgottenserver/blob/master/src/enums.h#L29)
 	$config['ban_reason'] = array(
 		0 => 'Offensive Name',
 		1 => 'Invalid Name Format',
@@ -800,9 +803,9 @@
 		2592000 => '1 month',
 	);
 
-		// --------------- \\
-		// SECURITY STUFF  \\
-		// --------------- \\
+	// --------------- \\
+	// SECURITY STUFF  \\
+	// --------------- \\
 	$config['use_token'] = false;
 	// Set up captcha keys on https://www.google.com/recaptcha/
 	$config['use_captcha'] = false;
@@ -814,13 +817,13 @@
 	$config['session_prefix'] = 'znote_';
 
 	/*	Store visitor data
-		Store visitor data in the database, logging every IP visitng site, 
+		Store visitor data in the database, logging every IP visiting site, 
 		and how many times they have visited the site. And sometimes what
 		they do on the site.
-		
+
 		This helps to prevent POST SPAM (like register 1000 accounts in a few seconds)
 		and other things which can stress and slow down the server.
-		
+
 		The only downside is that database can get pretty fed up with much IP data
 		if table never gets flushed once in a while. So I highly recommend you
 		to configure flush_ip_logs if IPs are logged.
@@ -842,17 +845,18 @@
 	$config['ip_security'] = array(
 		'time_period' => 10, // In seconds
 		'max_activity' => 10, // page clicks/visits
-		'max_post' => 6, // register, create, highscore, character search such actions
+		'max_post' => 6, // register, create, highscore, character search and such actions
 		'max_account' => 1, // register
 		'max_character' => 1, // create char
-		'max_forum_post' => 1, // Create threads and post in forum
+		'max_forum_post' => 1, // create threads and post in forum
 	);
 
 	//////////////
 	/// PAYPAL ///
 	//////////////
+	// https://www.paypal.com/
 
-	// Write your paypal address here, and what currency you want to recieve money in.
+	// Write your paypal address here, and what currency you want to receive money in.
 	$config['paypal'] = array(
 		'enabled' => false,
 		'email' => 'edit@me.com', // Example: paypal@mail.com
@@ -879,11 +883,13 @@
 	/////////////////
 	/// PAGSEGURO ///
 	/////////////////
-	// Write your pagseguro address here, and what currency you want to recieve money in.
+	// https://pagseguro.uol.com.br/
+
+	// Write your pagseguro address here, and what currency you want to receive money in.
 	$config['pagseguro'] = array(
 		'enabled' => false,
 		'sandbox' => false,
-		'email' => '', // Example: pagseguro@mail.com
+		'email' => 'edit@me.com', // Example: pagseguro@mail.com
 		'token' => '',
 		'currency' => 'BRL',
 		'product_name' => '',
@@ -905,9 +911,10 @@
 	//////////////////
 	/// PAYGOL SMS ///
 	//////////////////
+	// https://www.paygol.com/
 	// !!! Paygol takes 60%~ of the money, and send aprox 40% to your paypal.
 	// You can configure paygol to send each month, then they will send money
-	// to you 1 month after recieving 50+ eur.
+	// to you 1 month after receiving 50+ eur.
 	$config['paygol'] = array(
 		'enabled' => false,
 		'serviceID' => 86648, // Service ID from paygol.com
@@ -941,7 +948,7 @@
 	/// by leveling characters to sell. It can also discourages illegal/risky third-party account 
 	/// services. Since players can buy officially & support the server, dodgy competitors have to sell for cheaper.
 	/// Without admin interference this is organic to each individual community economy inflation.
-	/////////
+	//////////
 	$config['shop_auction'] = array(
 		'characterAuction' => false, // Enable/disable this system
 		// Account ID of the account that stores players in the auction.
@@ -956,14 +963,14 @@
 	);
 
 	/*
-		type 1 = items
+		type 1 = Items
 		type 2 = Premium days
 		type 3 = Change character gender
 		type 4 = Change character name
 		type 5 = Buy outfit (put outfit id as itemid), 
 		(put addon id as count [0 = nothing, 1 = first addon, 2 = second addon, 3 = both addons])
 		type 6 = Buy mount (put mount id as itemid)
-		type 7 = buy house (hardcoded in the house system, type used for data log)
+		type 7 = Buy house (hardcoded in the house system, type used for data log)
 		type 8+ = custom coded stuff
 	*/
 	$config['shop_offers'] = array(
@@ -971,7 +978,7 @@
 			'type' => 1,
 			'itemid' => 2160, // item to get in-game
 			'count' => 5, // Stack number (5x itemid)
-			'description' => "Crystal coin", // Description shown on website
+			'description' => "5 x Crystal coin", // Description shown on website
 			'points' => 100, // How many points this offer costs
 		),
 		2 => array(
@@ -1039,10 +1046,10 @@
 	// You can find your secret token by logging in on OTServers.eu and go to 'MY SERVER' then 'Encourage players to vote'.
 	$config['otservers_eu_voting'] = [
 		'enabled' => false,
-		'simpleVoteUrl' => '', //This url is used if the player isn't logged in.
+		'simpleVoteUrl' => '', // This url is used if the player isn't logged in.
 		'voteUrl' => 'https://api.otservers.eu/vote_link.php',
 		'voteCheckUrl' => 'https://api.otservers.eu/vote_check.php',
-		'secretToken' => '', //Enter your secret token. Do not share with anyone!
-		'landingPage' => '/voting.php?action=reward', //The user will be redirected to this page after voting
-		'points' => '1' //Amount of points to give as reward
+		'secretToken' => '', // Enter your secret token. Do not share with anyone!
+		'landingPage' => '/voting.php?action=reward', // The user will be redirected to this page after voting
+		'points' => '1' // Amount of points to give as reward
 	];

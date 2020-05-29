@@ -1,3 +1,4 @@
+-- <talkaction words="!shop" script="znoteshop.lua"/>
 -- Znote Shop v1.1 for Znote AAC on TFS 1.2+
 function onSay(player, words, param)
 	local storage = 54073 -- Make sure to select non-used storage. This is used to prevent SQL load attacks.
@@ -5,7 +6,7 @@ function onSay(player, words, param)
 
 	if player:getStorageValue(storage) <= os.time() then
 		player:setStorageValue(storage, os.time() + cooldown)
-		
+
 		local type_desc = {
 			"itemids",
 			"pending premium (skip)",
@@ -34,11 +35,11 @@ function onSay(player, words, param)
 					description = type_desc[q_type]
 				end
 				print("Processing type "..q_type..": ".. description)
-				
+
 				-- ORDER TYPE 1 (Regular item shop products)
 				if q_type == 1 then
 					served = true
-					-- Get wheight
+					-- Get weight
 					if player:getFreeCapacity() >= ItemType(q_itemid):getWeight(q_count) then
 						db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
 						player:addItem(q_itemid, q_count)
@@ -90,22 +91,21 @@ function onSay(player, words, param)
 
 				-- ORDER TYPE 7 (Direct house purchase)
 				if orderType == 7 then
-				    served = true
-				    local house = House(orderItemId)
-				    -- Logged in player is not neccesarily the player that bough the house. So we need to load player from db.
-				    local buyerQuery = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = "..orderCount.." LIMIT 1")
-				    if buyerQuery ~= false then
-				        local buyerName = result.getDataString(buyerQuery, "name")
-				        result.free(buyerQuery)
-				        if house then
-				            db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
-				            house:setOwnerGuid(orderCount)
-				            player:sendTextMessage(MESSAGE_INFO_DESCR, "You have successfully bought the house "..house:getName().." on "..buyerName..", be sure to have the money for the rent in the bank.")
-				            print("Process complete. [".. buyerName .."] has recieved house: ["..house:getName().."]")
-				        end
-				    end
+					served = true
+					local house = House(orderItemId)
+					-- Logged in player is not necessarily the player that bough the house. So we need to load player from db.
+					local buyerQuery = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = "..orderCount.." LIMIT 1")
+					if buyerQuery ~= false then
+						local buyerName = result.getString(buyerQuery, "name")
+						result.free(buyerQuery)
+						if house then
+							db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
+							house:setOwnerGuid(orderCount)
+							player:sendTextMessage(MESSAGE_INFO_DESCR, "You have successfully bought the house "..house:getName().." on "..buyerName..", be sure to have the money for the rent in the bank.")
+							print("Process complete. [".. buyerName .."] has received house: ["..house:getName().."]")
+						end
+					end
 				end
-				
 
 				-- Add custom order types here
 				-- Type 1 is for itemids (Already coded here)

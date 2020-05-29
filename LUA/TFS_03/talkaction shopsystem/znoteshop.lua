@@ -2,11 +2,11 @@
 function onSay(cid, words, param)
 	local storage = 54073 -- Make sure to select non-used storage. This is used to prevent SQL load attacks.
 	local cooldown = 15 -- in seconds.
-	
+
 	if getPlayerStorageValue(cid, storage) <= os.time() then
 		setPlayerStorageValue(cid, storage, os.time() + cooldown)
 		local accid = getAccountNumberByPlayerName(getCreatureName(cid))
-		
+
 		local type_desc = {
 			"itemids",
 			"pending premium (skip)",
@@ -29,28 +29,28 @@ function onSay(cid, words, param)
 				local q_type = result.getDataInt(orderQuery, "type")
 				local q_itemid = result.getDataInt(orderQuery, "itemid")
 				local q_count = result.getDataInt(orderQuery, "count")
-				
+
 				local description = "Unknown or custom type"
 				if type_desc[q_type] ~= nil then 
 					description = type_desc[q_type]
 				end
 				print("Processing type "..q_type..": ".. description)
-				
+
 				-- ORDER TYPE 1 (Regular item shop products)
 				if q_type == 1 then
 					served = true
-					-- Get wheight
+					-- Get weight
 					local playerCap = getPlayerFreeCap(cid)
 					local itemweight = getItemWeightById(q_itemid, q_count)
 						if playerCap >= itemweight and getTileInfo(getCreaturePosition(cid)).protection then
-							--backpack check
+							-- backpack check
 							local backpack = getPlayerSlotItem(cid, 3)
 							local gotItem = false
 							if(backpack and backpack.itemid > 0) then
 								local received = doAddContainerItem(getPlayerSlotItem(cid, 3).uid, q_itemid,q_count)
 								if(received ~= false) then
 									db.executeQuery("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
-									doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have recieved ".. q_count .." "..getItemNameById(q_itemid).."(s)!")
+									doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Congratulations! You have received ".. q_count .." "..getItemNameById(q_itemid).."(s)!")
 									gotItem = true
 								end
 							end
@@ -100,7 +100,7 @@ function onSay(cid, words, param)
 						doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "You already have this mount!")
 					end
 				end
-				
+
 				-- Add custom order types here
 				-- Type 1 is for itemids (Already coded here)
 				-- Type 2 is for premium (Coded on web)
@@ -120,7 +120,7 @@ function onSay(cid, words, param)
 		else
 			doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "You have no orders.")
 		end
-		
+
 	else
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Can only be executed once every "..cooldown.." seconds. Remaining cooldown: ".. getPlayerStorageValue(cid, storage) - os.time())
 	end
