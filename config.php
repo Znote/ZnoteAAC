@@ -446,7 +446,7 @@
 		'base' => array(
 			'level' => 8,
 			'health' => 185,
-			'mana' => 40,
+			'mana' => 90,
 			'cap' => 470,
 			'soul' => 100
 		),
