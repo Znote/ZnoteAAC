@@ -62,23 +62,23 @@ function fetchLatestDeaths_03($rowz = 30, $killers = false) {
 	//while ($showdeaths = mysql_fetch_assoc($getdeaths)) {
     if ($getdeaths !== false) {
     	for ($i = 0; $i < count($getdeaths); $i++) {
-	        $pid = $getdeaths[$i]['player_id'];  
-	        $level = $getdeaths[$i]['level'];  
-	        $kid = user_get_kid($getdeaths[$i]['id']); 
-			
-			$killedby = user_name(user_get_killer_id($kid)); 
-			
+	        $pid = $getdeaths[$i]['player_id'];
+	        $level = $getdeaths[$i]['level'];
+	        $kid = user_get_kid($getdeaths[$i]['id']);
+
+			$killedby = user_name(user_get_killer_id($kid));
+
 			if ($killedby == false) {
-				$killedby = user_get_killer_m_name($kid); 
-				$player = 0; 
+				$killedby = user_get_killer_m_name($kid);
+				$player = 0;
 			} else {
-				$player = 1; 
+				$player = 1;
 			}
 			if ($killedby === false) {
 				$player = 2;
 				$killedby = "Deleted player.";
 			}
-	        $getname = mysql_select_single("SELECT `name` FROM `players` WHERE `id` = '$pid' LIMIT 1;");  
+	        $getname = mysql_select_single("SELECT `name` FROM `players` WHERE `id` = '$pid' LIMIT 1;");
 			$name = $getname['name'];
 			$row = array();
 			$row['level'] = $level;
@@ -151,7 +151,7 @@ function fetchAllHouses_03() {
 	return mysql_select_multi("SELECT * FROM `houses`;");
 }
 
-// TFS Storage value functions (Warning, I think these things are saved in cache, 
+// TFS Storage value functions (Warning, I think these things are saved in cache,
 // and thus require server to be offline, or affected players to be offline while using)
 
 // Get player storage list
@@ -171,7 +171,7 @@ function getGlobalStorage($storage) {
 function setGlobalStorage($storage, $value) {
 	$storage = (int)$storage;
 	$value = (int)$value;
-	
+
 	// If the storage does not exist yet
 	if (getGlobalStorage($storage) === false) {
 		mysql_insert("INSERT INTO `global_storage` (`key`, `world_id`, `value`) VALUES ('$storage', 0, '$value')");
@@ -196,7 +196,7 @@ function setPlayerStorage($player_id, $storage, $value) {
 	$storage = (int)$storage;
 	$value = (int)$value;
 	$player_id = (int)$player_id;
-	
+
 	// If the storage does not exist yet
 	if (getPlayerStorage($storage) === false) {
 		mysql_insert("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ('$player_id', '$storage', '$value')");
@@ -254,7 +254,7 @@ function guild_remove_member_10($cid) {
 function guild_change_rank($rid, $name) {
 	$rid = (int)$rid;
 	$name = sanitize($name);
-	
+
 	mysql_update("UPDATE `guild_ranks` SET `name`='$name' WHERE `id`=$rid");
 }
 
@@ -266,20 +266,20 @@ function guild_change_leader($nCid, $oCid) {
 	$ranks = get_guild_rank_data($gid);
 	$leader_rid = 0;
 	$vice_rid = 0;
-	
-	
+
+
 	// Get rank id for leader and vice leader.
 	foreach ($ranks as $rank) {
 		if ($rank['level'] == 3) $leader_rid = $rank['id'];
 		if ($rank['level'] == 2) $vice_rid = $rank['id'];
 	}
-	
+
 	$status = false;
 	if ($leader_rid > 0 && $vice_rid > 0) $status = true;
-	
+
 	// Verify that we found the rank ids for vice leader and leader.
 	if ($status) {
-		
+
 		// Update players and set their new rank id
 		if (config('ServerEngine') !== 'TFS_10') {
 			mysql_update("UPDATE `players` SET `rank_id`='$leader_rid' WHERE `id`=$nCid LIMIT 1;");
@@ -288,11 +288,11 @@ function guild_change_leader($nCid, $oCid) {
 			mysql_update("UPDATE `guild_membership` SET `rank_id`='$leader_rid' WHERE `player_id`=$nCid LIMIT 1;");
 			mysql_update("UPDATE `guild_membership` SET `rank_id`='$vice_rid' WHERE `player_id`=$oCid LIMIT 1;");
 		}
-		
+
 		// Update guilds set new ownerid
 		guild_new_leader($nCid, $gid);
 	}
-	
+
 	return $status;
 }
 
@@ -432,20 +432,20 @@ function update_player_guild_position_10($cid, $rid) {
 function update_player_guildnick($cid, $nick) {
     $cid = (int)$cid;
     $nick = sanitize($nick);
-    if (!empty($nick)) { 
+    if (!empty($nick)) {
 
     mysql_update("UPDATE `players` SET `guildnick`='$nick' WHERE `id`=$cid");
     } else {
-    mysql_update("UPDATE `players` SET `guildnick`= NULL WHERE `id`=$cid");
+    mysql_update("UPDATE `players` SET `guildnick`='' WHERE `id`=$cid");
     }
 }
 function update_player_guildnick_10($cid, $nick) {
     $cid = (int)$cid;
     $nick = sanitize($nick);
-    if (!empty($nick)) { 
+    if (!empty($nick)) {
     mysql_update("UPDATE `guild_membership` SET `nick`='$nick' WHERE `player_id`=$cid");
     } else {
-    mysql_update("UPDATE `guild_membership` SET `nick`= NULL WHERE `player_id`=$cid");
+    mysql_update("UPDATE `guild_membership` SET `nick`='' WHERE `player_id`=$cid");
     }
 }
 
@@ -460,7 +460,7 @@ function create_guild($cid, $name) {
 	$cid = (int)$cid;
 	$name = sanitize($name);
 	$time = time();
-	
+
 	// Create the guild
 	if (config('ServerEngine') !== 'OTHIRE')
 		mysql_insert("INSERT INTO `guilds` (`name`, `ownerid`, `creationdata`, `motd`) VALUES ('$name', '$cid', '$time', '');");
@@ -469,7 +469,7 @@ function create_guild($cid, $name) {
 
 	// Get guild id
 	$gid = get_guild_id($name);
-	
+
 	// Get rank id for guild leader
 	$data = mysql_select_single("SELECT `id` FROM `guild_ranks` WHERE `guild_id`='$gid' AND `level`='3' LIMIT 1;");
 	$rid = ($data !== false) ? $data['id'] : false;
@@ -510,7 +510,7 @@ function get_player_guild_data($cid) {
 	$cid = (int)$cid;
 	if (config('ServerEngine') !== 'TFS_10') $playerdata = mysql_select_single("SELECT `rank_id` FROM `players` WHERE `id`='$cid' LIMIT 1;");
 	else $playerdata = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='$cid' LIMIT 1;");
-	
+
 	if ($playerdata !== false) {
 		$rankdata = mysql_select_single("SELECT `guild_id`, `level` AS `rank_level`, `name` AS `rank_name` FROM `guild_ranks` WHERE `id`='". $playerdata['rank_id'] ."' LIMIT 1;");
 		if ($rankdata !== false) {
@@ -599,7 +599,7 @@ function get_guild_war($warid) {
 function get_guild_war03($warid) {
 	$warid = (int)$warid; // Sanitizing the parameter id
 
-	$war = mysql_select_single("SELECT `id`, `guild_id`, `enemy_id`, `status`, `begin`, `end` 
+	$war = mysql_select_single("SELECT `id`, `guild_id`, `enemy_id`, `status`, `begin`, `end`
 		FROM `guild_wars` WHERE `id`=$warid ORDER BY `begin` DESC LIMIT 0, 30");
 	if ($war !== false) {
 		$war['guild1'] = $war['guild_id'];
@@ -680,10 +680,10 @@ function set_ingame_position($name, $acctype) {
 function set_ingame_position03($name, $acctype) {
 	$acctype = (int)$acctype;
 	$name = sanitize($name);
-	
+
 	$acc_id = user_character_account_id($name);
 	$char_id = user_character_id($name);
-	
+
 	$group_id = 2;
 	if ($acctype == 1) {
 		$group_id = 1;
@@ -691,7 +691,7 @@ function set_ingame_position03($name, $acctype) {
 	mysql_update("UPDATE `players` SET `group_id` = '$acctype' WHERE `id` =$char_id;");
 }
 
-// Set rule violation. 
+// Set rule violation.
 // Return true if success, query error die if failed, and false if $config['website_char'] is not recognized.
 function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $comment) {
 	$charid = user_character_id($charname);
@@ -699,19 +699,19 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 	$actionid = (int)$actionid;
 	$reasonid = (int)$reasonid;
 	$time = (int)($time + time());
-	
+
 	$data = user_character_data($charid, 'account_id', 'lastip');
-	
+
 	$accountid = $data['account_id'];
 	$charip = $data['lastip'];
-	
+
 	$comment = sanitize($comment);
-	
+
 	// ...
 	$bannedby = config('website_char');
 	if (user_character_exist($bannedby)) {
 		$bannedby = user_character_id($bannedby);
-		
+
 		if (Config('ServerEngine') === 'TFS_02')
 		mysql_insert("INSERT INTO `bans` (`type` ,`ip` ,`mask` ,`player` ,`account` ,`time` ,`reason_id` ,`action_id` ,`comment` ,`banned_by`) VALUES ('$typeid', '$charip', '4294967295', '$charid', '$accountid', '$time', '$reasonid', '$actionid', '$comment', '$bannedby');");
 		elseif (Config('ServerEngine') === 'TFS_03') {
@@ -720,19 +720,19 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 				case 1: // IP ban
 					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charip', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
-				
+
 				case 2: // namelock
 					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
-				
+
 				case 3: // acc ban
 					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$accountid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
-				
+
 				case 4: // notation
 					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
-				
+
 				case 5: // deletion
 					mysql_insert("INSERT INTO `bans` (`type`, `value`, `param`, `active`, `expires`, `added`, `admin_id`, `comment`) VALUES ('$typeid', '$charid', '4294967295', '1', '$time', '$now', '$bannedby', '$comment');");
 				break;
@@ -740,32 +740,32 @@ function set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $co
 		}
 		elseif (Config('ServerEngine') === 'TFS_10') {
 			$now = time();
-			
+
 			switch ($typeid) {
 				case 1: // IP ban
 					mysql_insert("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ('$charip', '$comment', '$now', '$time', '$bannedby');");
 				break;
-				
+
 				case 2: // namelock
 					mysql_insert("INSERT INTO `player_namelocks` (`player_id`, `reason`, `namelocked_at`, `namelocked_by`) VALUES ('$charid', 'comment', '$now', '$bannedby');");
 				break;
-				
+
 				case 3: // acc ban
 					mysql_insert("INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ('$accountid', '$comment', '$now', '$time', '$bannedby');");
 				break;
-				
+
 				case 4: // notation
 					data_dump(false, array('status' => false), "Function deprecated. Ban option does not exist in TFS 1.0.");
 					die();
 				break;
-				
+
 				case 5: // deletion
 					data_dump(false, array('status' => false), "Function deprecated. Ban option does not exist in TFS 1.0.");
 					die();
 				break;
 			}
 		}
-		
+
 		return true;
 	} else {
 		return false;
@@ -835,7 +835,7 @@ function user_delete_character($char_id) {
 // Delete character with supplied id with a delay.
 function user_delete_character_soft($char_id) {
 	$char_id = (int)$char_id;
-	
+
 	$char_name = user_character_name($char_id);
 	$original_acc_id = user_character_account_id($char_name);
 	if(!user_character_pending_delete($char_name))
@@ -878,18 +878,18 @@ function user_character_list($account_id) {
 		for ($i = 0; $i < $count; $i++) {
 			$characters[$i]['vocation'] = vocation_id_to_name($characters[$i]['vocation']); // Change vocation id to vocation name
 			$characters[$i]['town_id'] = town_id_to_name($characters[$i]['town_id']); // Change town id to town name
-			
-			// Make lastlogin human read-able. 
+
+			// Make lastlogin human read-able.
 			if ($characters[$i]['lastlogin'] != 0) {
 				$characters[$i]['lastlogin'] = getClock($characters[$i]['lastlogin'], true, false);
 			} else {
 				$characters[$i]['lastlogin'] = 'Never.';
 			}
-			
-			$characters[$i]['online'] = online_id_to_name($characters[$i]['online']); // 0 to "offline", 1 to "ONLINE". 
+
+			$characters[$i]['online'] = online_id_to_name($characters[$i]['online']); // 0 to "offline", 1 to "ONLINE".
 		}
 	}
-	
+
 	return $characters;
 }
 
@@ -954,7 +954,7 @@ function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false, $outfi
 
 			// Generate SQL WHERE-clause for vocation if $v is set
 			$v = '';
-			if ($vGrp !== 'all') 
+			if ($vGrp !== 'all')
 				$v = (strpos($vGrp, ',') !== false) ? 'AND `p`.`vocation` IN ('. $vGrp . ')' : 'AND `p`.`vocation` = \''.intval($vGrp).'\'';
 
 			if ($tfs == 'TFS_10') {
@@ -962,7 +962,7 @@ function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false, $outfi
 				if ($flags === false) { // In this case we only need to query players table
 					$v = str_replace('`p`.', '', $v);
 					$outfits = str_replace('`p`.', '', $outfits);
-					
+
 					$vocGroups[$vGrp][1] = mysql_select_multi("SELECT `name`, `vocation`, `skill_club` AS `value` $outfits FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_club` DESC LIMIT 0, $rows;");
 					$vocGroups[$vGrp][2] = mysql_select_multi("SELECT `name`, `vocation`, `skill_sword` AS `value` $outfits FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_sword` DESC LIMIT 0, $rows;");
 					$vocGroups[$vGrp][3] = mysql_select_multi("SELECT `name`, `vocation`, `skill_axe` AS `value` $outfits FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_axe` DESC LIMIT 0, $rows;");
@@ -972,7 +972,7 @@ function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false, $outfi
 					$vocGroups[$vGrp][7] = mysql_select_multi("SELECT `name`, `vocation`, `experience`, `level` AS `value` $outfits FROM `players` WHERE `group_id` < $g $v ORDER BY `experience` DESC LIMIT 0, $rows;");
 					$vocGroups[$vGrp][8] = mysql_select_multi("SELECT `name`, `vocation`, `maglevel` AS `value` $outfits FROM `players` WHERE `group_id` < $g $v ORDER BY `maglevel` DESC LIMIT 0, $rows;");
 					$vocGroups[$vGrp][9] = mysql_select_multi("SELECT `name`, `vocation`, `skill_fist` AS `value` $outfits FROM `players` WHERE `group_id` < $g $v ORDER BY `skill_fist` DESC LIMIT 0, $rows;");
-				
+
 				} else { // Inner join znote_accounts table to retrieve the flag
 					$vocGroups[$vGrp][1] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_club` AS `value`, `za`.`flag` $outfits FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_club` DESC LIMIT 0, $rows;");
 					$vocGroups[$vGrp][2] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_sword` AS `value`, `za`.`flag` $outfits FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_sword` DESC LIMIT 0, $rows;");
@@ -985,7 +985,7 @@ function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false, $outfi
 					$vocGroups[$vGrp][9] = mysql_select_multi("SELECT `p`.`name`, `p`.`vocation`, `p`.`skill_fist` AS `value`, `za`.`flag` $outfits FROM `players` AS `p` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id` WHERE `p`.`group_id` < $g $v ORDER BY `p`.`skill_fist` DESC LIMIT 0, $rows;");
 				}
 			} else { // TFS 0.2, 0.3, 0.4
-				
+
 				if ($flags === false) {
 					$vocGroups[$vGrp][9] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` $outfits FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 0 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
 					$vocGroups[$vGrp][1] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation` $outfits FROM `player_skills` AS `s` LEFT JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` WHERE `s`.`skillid` = 1 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
@@ -998,7 +998,7 @@ function fetchAllScores($rows, $tfs, $g, $vlist, $v = -1, $flags = false, $outfi
 					$outfits = str_replace('`p`.', '', $outfits);
 					$vocGroups[$vGrp][7] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `experience`, `level` AS `value` $outfits $outfits FROM `players` WHERE `group_id` < $g $v ORDER BY `experience` DESC limit 0, $rows;");
 					$vocGroups[$vGrp][8] = mysql_select_multi("SELECT `id`, `name`, `vocation`, `maglevel` AS `value` $outfits $outfits FROM `players` WHERE `group_id` < $g $v ORDER BY `maglevel` DESC limit 0, $rows;");
-					
+
 				} else { // Inner join znote_accounts table to retrieve the flag
 					$vocGroups[$vGrp][9] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation`, `za`.`flag` AS `flag` $outfits FROM `player_skills` AS `s` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 0 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
 					$vocGroups[$vGrp][1] = mysql_select_multi("SELECT `s`.`player_id` AS `id`, `s`.`value` AS `value`, `p`.`name` AS `name`, `p`.`vocation` AS `vocation`, `za`.`flag` AS `flag` $outfits FROM `player_skills` AS `s` INNER JOIN `players` AS `p` ON `s`.`player_id`=`p`.`id` INNER JOIN `znote_accounts` AS `za` ON `p`.`account_id`=`za`.`account_id`  WHERE `s`.`skillid` = 1 AND `p`.`group_id` < $g $v ORDER BY `s`.`value` DESC LIMIT 0, $rows;");
@@ -1050,11 +1050,11 @@ function user_recover($mode, $edom, $email, $character, $ip) {
 				'id' => $edom,
 				'email' => $email
 			);
-		}		
+		}
 	}
 	// Determine if the submitted information is correct and herit from same account
 	if (user_account_fields_verify_value($verify_data)) {
-		
+
 		// Structure account id fetch method correctly
 		if ($mode == 'username') {
 			$account_id = user_account_id_from_password($verify_data['password']);
@@ -1066,7 +1066,7 @@ function user_recover($mode, $edom, $email, $character, $ip) {
 		}
 		// get account id from character name
 		$player_account_id = user_character_account_id($character);
-		
+
 		//Verify that players.account_id matches account.id
 		if ($player_account_id == $account_id) {
 			// verify IP match (IP = accounts.email_new) \\
@@ -1082,7 +1082,7 @@ function user_recover($mode, $edom, $email, $character, $ip) {
 					} else {
 						$name_data = user_data($account_id, 'id');
 						echo '<br><p>Your account number is:</p> <h3>'. $name_data['id'] .'</h3>';
-					}	
+					}
 				} else {
 					$newpass = substr(sha1(rand(1000000, 99999999)), 8);
 					echo '<br><p>Your new password is:</p> <h3>'. $newpass .'</h3><p>Remember to login and change it!</p>';
@@ -1109,15 +1109,15 @@ function user_account_id_from_name($id) {
 		return $result['name'];
 	} else {
 		$result = mysql_select_single("SELECT `id` FROM `accounts` WHERE `id` = '" . $id . "' LIMIT 1;");
-		return $result['id'];		
-	}	
+		return $result['id'];
+	}
 }
 
 // Add additional premium days to account id
 function user_account_add_premdays($accid, $days) {
 	$accid = (int)$accid;
 	$days = (int)$days;
-	
+
 	if (config('ServerEngine') !== 'OTHIRE') {
 		$data = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='$accid';");
 		$tmp = $data['premdays'];
@@ -1127,10 +1127,10 @@ function user_account_add_premdays($accid, $days) {
 		$data = mysql_select_single("SELECT `premend` FROM `accounts` WHERE `id`='$accid';");
 		$tmp = $data['premend'];
 		if($tmp == 0)
-			$tmp = time() + ($days * 24 * 60 * 60); 
+			$tmp = time() + ($days * 24 * 60 * 60);
 		else
 			$tmp = $tmp + ($days * 24 * 60 * 60);
-		mysql_update("UPDATE `accounts` SET `premend`='$tmp' WHERE `id`='$accid'");		
+		mysql_update("UPDATE `accounts` SET `premend`='$tmp' WHERE `id`='$accid'");
 	}
 }
 
@@ -1155,7 +1155,7 @@ function user_character_account_id($character) {
 function user_account_fields_verify_value($verify_data) {
 	$verify = array();
 	array_walk($verify_data, 'array_sanitize');
-	
+
 	foreach ($verify_data as $field=>$data) {
 		$verify[] = '`'. $field .'` = \''. $data .'\'';
 	}
@@ -1167,13 +1167,13 @@ function user_account_fields_verify_value($verify_data) {
 function user_update_account($update_data) {
 	$update = array();
 	array_walk($update_data, 'array_sanitize');
-	
+
 	foreach ($update_data as $field=>$data) {
 		$update[] = '`'. $field .'` = \''. $data .'\'';
 	}
-	
+
 	$user_id = (int)getSession('user_id');
-	
+
 	mysql_update("UPDATE `accounts` SET ". implode(', ', $update) ." WHERE `id`=". $user_id .";");
 }
 
@@ -1181,13 +1181,13 @@ function user_update_account($update_data) {
 function user_update_znote_account($update_data) {
 	$update = array();
 	array_walk($update_data, 'array_sanitize');
-	
+
 	foreach ($update_data as $field=>$data) {
 		$update[] = '`'. $field .'` = \''. $data .'\'';
 	}
-	
+
 	$user_id = (int)getSession('user_id');
-	
+
 	mysql_update("UPDATE `znote_accounts` SET ". implode(', ', $update) ." WHERE `account_id`=". $user_id .";");
 }
 
@@ -1195,7 +1195,7 @@ function user_update_znote_account($update_data) {
 function user_change_password($user_id, $password) {
 	$user_id = sanitize($user_id);
 	$password = sha1($password);
-	
+
 	mysql_update("UPDATE `accounts` SET `password`='$password' WHERE `id`=$user_id");
 }
 // .3 compatibility
@@ -1204,7 +1204,7 @@ function user_change_password03($user_id, $password) {
 		$user_id = sanitize($user_id);
 		$salt = user_data($user_id, 'salt');
 		$password = sha1($salt['salt'].$password);
-		
+
 		mysql_update("UPDATE `accounts` SET `password`='$password' WHERE `id`=$user_id");
 	} else {
 		user_change_password($user_id, $password);
@@ -1215,39 +1215,39 @@ function user_change_password03($user_id, $password) {
 function user_character_set_hide($char_id, $value) {
 	$char_id = sanitize($char_id);
 	$value = sanitize($value);
-	
+
 	mysql_update("UPDATE `znote_players` SET `hide_char`='$value' WHERE `player_id`=$char_id");
 }
 
 // CREATE ACCOUNT
 function user_create_account($register_data, $maildata) {
 	array_walk($register_data, 'array_sanitize');
-	
+
 	if (config('ServerEngine') == 'TFS_03' && config('salt') === true) {
 		$register_data['salt'] = generate_recovery_key(18);
 		$register_data['password'] = sha1($register_data['salt'].$register_data['password']);
 	} else $register_data['password'] = sha1($register_data['password']);
-	
+
 	$ip = $register_data['ip'];
 	$created = $register_data['created'];
 	$flag = $register_data['flag'];
-	
+
 	unset($register_data['ip']);
 	unset($register_data['created']);
 	unset($register_data['flag']);
-	
+
 	if (config('ServerEngine') == 'TFS_10') $register_data['creation'] = $created;
 
 	$fields = '`'. implode('`, `', array_keys($register_data)) .'`';
 	$data = '\''. implode('\', \'', $register_data) .'\'';
 
 	mysql_insert("INSERT INTO `accounts` ($fields) VALUES ($data)");
-	
+
 	$account_id = (isset($register_data['name'])) ? user_id($register_data['name']) : user_id($register_data['id']);
 	$activeKey = rand(100000000,999999999);
 	$active = ($maildata['register']) ? 0 : 1;
 	mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `active`, `active_email`, `activekey`, `flag`) VALUES ('$account_id', '$ip', '$created', '$active', '0', '$activeKey', '$flag')");
-	
+
 	if ($maildata['register']) {
 
 		$thisurl = config('site_url') . "$_SERVER[REQUEST_URI]";
@@ -1256,12 +1256,12 @@ function user_create_account($register_data, $maildata) {
 		$mailer = new Mail($maildata);
 
 		$title = "Please authenticate your account at $_SERVER[HTTP_HOST].";
-		
+
 		$body = "<h1>Please click on the following link to authenticate your account:</h1>";
 		$body .= "<p><a href='$thisurl'>$thisurl</a></p>";
 		$body .= "<p>Thank you for registering and enjoy your stay at $maildata[fromName].</p>";
 		$body .= "<hr><p>I am an automatic no-reply e-mail. Any emails sent back to me will be ignored.</p>";
-		
+
 		$mailer->sendMail($register_data['email'], $title, $body, $register_data['name']);
 	}
 }
@@ -1278,15 +1278,15 @@ function user_create_character($character_data) {
 	$skills = $create['skills'][$vocation];
 
 	$outfit = ($character_data['sex'] == 1) ? $create['male_outfit'] : $create['female_outfit'];
-	
+
 	$leveldiff = $create['level'] - $base['level'];
 
 	$gains = $cnf['vocations_gain'][$vocation];
-	
+
 	$health	= $base['health'] + ( $gains['hp']  * $leveldiff );
 	$mana	= $base['mana']   + ( $gains['mp']  * $leveldiff );
 	$cap	= $base['cap']    + ( $gains['cap'] * $leveldiff );
-	
+
 	// This is TFS 0.2 compatible import data with Znote AAC mysql schema
 	if (config('ServerEngine') !== 'OTHIRE') {
 		$import_data = array(
@@ -1375,14 +1375,14 @@ function user_create_character($character_data) {
 			'loss_items' => 10,
 			'online' => 0,
 			'balance' => 0
-		);		
+		);
 	}
-	
+
 	// Clients below 7.8 don't have outfit addons
 	if (isset($import_data['lookaddons']) && config('client') < 780) {
 		unset($import_data['lookaddons']);
 	}
-	
+
 	// TFS 1.0 variations
 	if ($cnf['ServerEngine'] === 'TFS_10') {
 		unset($import_data['rank_id']);
@@ -1403,12 +1403,12 @@ function user_create_character($character_data) {
 		$import_data['skill_shielding'] = $skills['shield'];
 		$import_data['skill_fishing'] = $skills['fishing'];
 	}
-	
+
 	// If you are no vocation (id 0), use these details instead:
 	if ($vocation === 0) {
 		$import_data['level'] = $create['novocation']['level'];
 		$import_data['experience'] = level_to_experience($create['novocation']['level']);
-		
+
 		if ($create['novocation']['forceTown'] === true) {
 			$import_data['town_id'] = $create['novocation']['townId'];
 		}
@@ -1416,12 +1416,12 @@ function user_create_character($character_data) {
 
 	$fields = array_keys($import_data); // Fetch select fields
 	$data = array_values($import_data); // Fetch insert data
-	
+
 	$fields_sql = implode("`, `", $fields); // Convert array into SQL compatible string
 	$data_sql = implode("', '", $data); // Convert array into SQL compatible string
 
 	mysql_insert("INSERT INTO `players`(`$fields_sql`) VALUES ('$data_sql');");
-	
+
 	$created = time();
 	$charid = user_character_id($import_data['name']);
 	mysql_insert("INSERT INTO `znote_players`(`player_id`, `created`, `hide_char`, `comment`) VALUES ('$charid', '$created', '0', '');");
@@ -1472,13 +1472,13 @@ function user_character_data($user_id) {
 function user_znote_character_data($character_id) {
 	$data = array();
 	$charid = (int)$character_id;
-	
+
 	$func_num_args = func_num_args();
 	$func_get_args = func_get_args();
-	
+
 	if ($func_num_args > 1)  {
 		unset($func_get_args[0]);
-		
+
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
 		$data = mysql_select_single("SELECT $fields FROM `znote_players` WHERE `player_id` = $charid;");
 		return $data;
@@ -1490,12 +1490,12 @@ function user_znote_character_data($character_id) {
 // echo $znoteAAC['version'];
 function user_znote_data() {
 	$data = array();
-	
+
 	$func_num_args = func_num_args();
 	$func_get_args = func_get_args();
-	
+
 	if ($func_num_args > 0)  {
-		
+
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
 		return mysql_select_single("SELECT $fields FROM `znote`;");
 	} else return false;
@@ -1506,47 +1506,47 @@ function user_znote_data() {
 function user_znote_account_data($account_id) {
 	$data = array();
 	$accid = (int)$account_id;
-	
+
 	$func_num_args = func_num_args();
 	$func_get_args = func_get_args();
-	
+
 	if ($func_num_args > 1)  {
 		unset($func_get_args[0]);
-		
+
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
 		return mysql_select_single("SELECT $fields FROM `znote_accounts` WHERE `account_id` = $accid LIMIT 1;");
 	} else return false;
 }
 
 // return query data from znote_visitors table
-// See documentation on user_data, but this uses $longip instead. 
+// See documentation on user_data, but this uses $longip instead.
 function user_znote_visitor_data($longip) {
 	$data = array();
 	$longip = (int)$longip;
-	
+
 	$func_num_args = func_num_args();
 	$func_get_args = func_get_args();
-	
+
 	if ($func_num_args > 1)  {
 		unset($func_get_args[0]);
-		
+
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
 		return mysql_select_single("SELECT $fields FROM `znote_visitors` WHERE `ip` = $longip;");
 	} else return false;
 }
 
 // return query data from znote_visitors_details table
-// See documentation on user_data, but this uses $longip instead. 
+// See documentation on user_data, but this uses $longip instead.
 function user_znote_visitor_details_data($longip) {
 	$data = array();
 	$longip = (int)$longip;
-	
+
 	$func_num_args = func_num_args();
 	$func_get_args = func_get_args();
-	
+
 	if ($func_num_args > 1)  {
 		unset($func_get_args[0]);
-		
+
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
 		return mysql_select_single("SELECT $fields FROM `znote_visitors_details` WHERE `ip` = $longip;");
 	} else return false;
@@ -1560,13 +1560,13 @@ function user_znote_visitor_details_data($longip) {
 function user_data($user_id) {
 	$data = array();
 	$user_id = sanitize($user_id);
-	
+
 	$func_num_args = func_num_args();
 	$func_get_args = func_get_args();
-	
+
 	if ($func_num_args > 1)  {
 		unset($func_get_args[0]);
-		
+
 		$fields = '`'. implode('`, `', $func_get_args) .'`';
 		return mysql_select_single("SELECT $fields FROM `accounts` WHERE `id` = $user_id LIMIT 1;");
 	} else return false;
@@ -1590,7 +1590,7 @@ function user_exist($username) {
 }
 
 function user_name($id) { //USERNAME FROM PLAYER ID
-    $id = (int)$id; 
+    $id = (int)$id;
     $name = mysql_select_single("SELECT `name` FROM `players` WHERE `id`='$id';");
     if ($name !== false) return $name['name'];
     else return false;
@@ -1661,7 +1661,7 @@ function user_login_id_03($username, $password) {
 		if (user_exist($username)) {
 			$user_id = user_id($username);
 			$username = sanitize($username);
-			
+
 			$data = mysql_select_single("SELECT `salt`, `id`, `name`, `password` FROM `accounts` WHERE `id`='$user_id';");
 			$salt = $data['salt'];
 			if (!empty($salt)) $password = sha1($salt.$password);

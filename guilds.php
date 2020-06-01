@@ -10,12 +10,12 @@ function guild_list($TFSVersion) {
 				$guilds = mysql_select_multi("SELECT `t`.`id`, `t`.`name`, `t`.`creationdate`, (SELECT count(p.rank_id) FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =`t`.`id`) AS `total` FROM `guilds` as `t` ORDER BY `t`.`name`;");
 			else
 				$guilds = mysql_select_multi("SELECT `t`.`id`, `t`.`name`, `t`.`creationdata`, `motd`, (SELECT count(p.rank_id) FROM players AS p LEFT JOIN guild_ranks AS gr ON gr.id = p.rank_id WHERE gr.guild_id =`t`.`id`) AS `total` FROM `guilds` as `t` ORDER BY `t`.`name`;");
-		else 
+		else
 			$guilds = mysql_select_multi("SELECT `id`, `name`, `creationdata`, `motd`, (SELECT COUNT('guild_id') FROM `guild_membership` WHERE `guild_id`=`id`) AS `total` FROM `guilds` ORDER BY `name`;");
-		
+
 		// Add level data info to guilds
-		if ($guilds !== false) 
-			for ($i = 0; $i < count($guilds); $i++) 
+		if ($guilds !== false)
+			for ($i = 0; $i < count($guilds); $i++)
 				$guilds[$i]['level'] = get_guild_level_data($guilds[$i]['id']);
 
 		$cache->setContent($guilds);
@@ -29,7 +29,7 @@ function guild_list($TFSVersion) {
 include 'layout/overall/header.php';
 
 if (user_logged_in() === true) {
-	
+
 	// fetch data
 	$char_count = user_character_list_count($session_user_id);
 	$char_array = user_character_list($user_data['id']);
@@ -92,7 +92,7 @@ if (isset($guilds) && !empty($guilds) && $guilds !== false) {
 <?php } else echo '<p>Guild list is empty.</p>';?>
 <!-- user stuff -->
 <?php
-if (user_logged_in() === true) {	
+if (user_logged_in() === true) {
 	// post verifications
 	// CREATE GUILD
 	if (!empty($_POST['selected_char']) && !empty($_POST['guild_name'])) {
@@ -105,25 +105,25 @@ if (user_logged_in() === true) {
 				$char_data = user_character_data($user_id, 'level');
 				$char_data['online'] = (user_is_online_10($user_id)) ? 1 : 0;
 			}
-			
+
 			// If character level is high enough
 			if ($char_data['level'] >= $config['create_guild_level']) {
-			
+
 				// If character is offline
 				if ($char_data['online'] == 0) {
 					$acc_data = user_data($user_data['id'], 'premdays');
-					
+
 					// If character is premium
 					if ($config['guild_require_premium'] == false || $acc_data['premdays'] > 0) {
-					
+
 						if (get_character_guild_rank($user_id) < 1) {
-						
+
 							if (preg_match("/^[a-zA-Z_ ]+$/", $_POST['guild_name'])) {
 							// Only allow normal symbols as guild name
 								if (strlen($_POST['guild_name']) < 31) {
 
 								$guildname = sanitize($_POST['guild_name']);
-								
+
 								$gid = get_guild_id($guildname);
 								if ($gid === false) {
 									create_guild($user_id, $guildname);
@@ -140,10 +140,10 @@ if (user_logged_in() === true) {
 			} else echo $name .' is level '. $char_data['level'] .'. But you need level '. $config['create_guild_level'] .'+ to create your own guild!';
 		}
 	}
-	// end	
+	// end
 	?>
-	
-	
+
+
 	<!-- FORMS TO CREATE GUILD-->
 	<form action="" method="post">
 		<ul>
@@ -152,17 +152,17 @@ if (user_logged_in() === true) {
 				<select name="selected_char">
 				<?php
 				for ($i = 0; $i < $char_count; $i++) {
-					echo '<option value="'. $characters[$i] .'">'. $characters[$i] .'</option>'; 	
+					echo '<option value="'. $characters[$i] .'">'. $characters[$i] .'</option>';
 				}
 				?>
 				</select>
 				<input type="text" name="guild_name">
-				
+
 				<input type="submit" value="Create Guild">
 			</li>
 		</ul>
 	</form>
-	
+
 	<?php
 } else echo 'You need to be logged in to create guilds.';
 ?>
@@ -184,23 +184,23 @@ if (user_logged_in() === true) {
 	$inv_data = guild_invite_list($gid);
 	$players = get_guild_players($gid);
 	$inv_count = 0;
-	
+
 	// Calculate invite count
 	if ($inv_data !== false) {
 		foreach ($inv_data as $inv) {
 			++$inv_count;
 		}
 	}
-	
+
 	// calculate visitor access
 	$highest_access = 0;
 	if (user_logged_in() === true) {
 		// Get visitor access in this guild
 		foreach ($players as $player) {
 			$rid = $player['rank_id'];
-			
+
 			for ($i = 0; $i < $char_count; $i++) {
-				
+
 				$playerRank = $charactersRank[$i];
 
 				if ($playerRank == $rid) {
@@ -277,7 +277,7 @@ if (user_logged_in() === true) {
 <table>
 	<tr class="yellow">
 		<td>Name:</td>
-		<?php 
+		<?php
 		if ($highest_access == 2 || $highest_access == 3) {
 			echo '<td>Remove:</td>';
 		}
@@ -349,7 +349,7 @@ if (user_logged_in() === true) {
 <?php
 // Only guild leaders
 if (user_logged_in() === true) {
-	
+
 	// Uninvite and joinguild is also used for visitors who reject their invitation.
 	if (!empty($_POST['uninvite'])) {
 		//
@@ -380,7 +380,7 @@ if (user_logged_in() === true) {
 			}
 		}
 	}
-	
+
 	if (!empty($_POST['leave_guild'])) {
 		$name = sanitize($_POST['leave_guild']);
 		$cidd = user_character_id($name);
@@ -394,37 +394,39 @@ if (user_logged_in() === true) {
 			exit();
 		} else echo '<font color="red" size="4">Character must be offline first!</font>';
 	}
-	
+
 if ($highest_access >= 2) {
 	// Guild leader stuff
-	
+
 	// Change Guild Nick
 	if (!empty($_POST['player_guildnick'])) {
-		$p_cid = user_character_id($_POST['player_guildnick']);
-		$p_guild = get_player_guild_data($p_cid);
-		if (preg_match("/^[a-zA-Z_ ]+$/", $_POST['guildnick']) || empty($_POST['guildnick'])) { 
-			// Only allow normal symbols as guild nick
-			$p_nick = sanitize($_POST['guildnick']);
-			if ($p_guild['guild_id'] == $gid) {
-				if ($config['ServerEngine'] !== 'TFS_10') $chardata = user_character_data($p_cid, 'online');
-				else $chardata['online'] = (user_is_online_10($p_cid)) ? 1 : 0;
-				if ($chardata['online'] == 0) {
-					if ($config['ServerEngine'] !== 'TFS_10') update_player_guildnick($p_cid, $p_nick);
-					else update_player_guildnick_10($p_cid, $p_nick);
-					header('Location: guilds.php?name='. $_GET['name']);
-					exit();
-				} else echo '<font color="red" size="4">Character not offline.</font>';
-			}       
-		} else echo '<font color="red" size="4">Character guild nick may only contain a-z, A-Z and spaces.</font>';
+		if ($config['guild_allow_nicknames']) {
+			$p_cid = user_character_id($_POST['player_guildnick']);
+			$p_guild = get_player_guild_data($p_cid);
+			if (preg_match("/^[a-zA-Z_ ]+$/", $_POST['guildnick']) || empty($_POST['guildnick'])) {
+				// Only allow normal symbols as guild nick
+				$p_nick = sanitize($_POST['guildnick']);
+				if ($p_guild['guild_id'] == $gid) {
+					if ($config['ServerEngine'] !== 'TFS_10') $chardata = user_character_data($p_cid, 'online');
+					else $chardata['online'] = (user_is_online_10($p_cid)) ? 1 : 0;
+					if ($chardata['online'] == 0) {
+						if ($config['ServerEngine'] !== 'TFS_10') update_player_guildnick($p_cid, $p_nick);
+						else update_player_guildnick_10($p_cid, $p_nick);
+						header('Location: guilds.php?name='. $_GET['name']);
+						exit();
+					} else echo '<font color="red" size="4">Character not offline.</font>';
+				}
+			} else echo '<font color="red" size="4">Character guild nick may only contain a-z, A-Z and spaces.</font>';
+		} else echo '<font color="red" size="4">Change guild nickname feature has been disabled.</font>';
 	}
-	
+
 	// Promote character to guild position
 	if (!empty($_POST['promote_character']) && !empty($_POST['promote_position'])) {
 		// Verify that promoted character is from this guild.
 		$p_rid = $_POST['promote_position'];
 		$p_cid = user_character_id($_POST['promote_character']);
 		$p_guild = get_player_guild_data($p_cid);
-		
+
 		if ($p_guild['guild_id'] == $gid) {
 			// Do the magic.
 			if ($config['ServerEngine'] !== 'TFS_10') $chardata = user_character_data($p_cid, 'online');
@@ -435,13 +437,13 @@ if ($highest_access >= 2) {
 				header('Location: guilds.php?name='. $_GET['name']);
 				exit();
 			} else echo '<font color="red" size="4">Character not offline.</font>';
-			
+
 		}
 	}
 	if (!empty($_POST['invite'])) {
 		if (user_character_exist($_POST['invite'])) {
 			// Make sure they are not in another guild
-			
+
 			if ($config['ServerEngine'] != 'TFS_10') {
 				$charname = sanitize($_POST['invite']);
 				$playerdata = mysql_select_single("SELECT `id`, `rank_id` FROM `players` WHERE `name`='$charname' LIMIT 1;");
@@ -452,7 +454,7 @@ if ($highest_access >= 2) {
 				$membership = mysql_select_single("SELECT `rank_id` FROM `guild_membership` WHERE `player_id`='$charid' LIMIT 1;");
 			}
 			if (!$membership) {
-				// 
+				//
 				$status = false;
 				if ($inv_data !== false) {
 					foreach ($inv_data as $inv) {
@@ -462,7 +464,7 @@ if ($highest_access >= 2) {
 				foreach ($players as $player) {
 					if ($player['name'] == $_POST['invite']) $status = true;
 				}
-				
+
 				if ($status == false) {
 					guild_invite_player($charid, $gid);
 					header('Location: guilds.php?name='. $_GET['name']);
@@ -479,13 +481,13 @@ if ($highest_access >= 2) {
 		header('Location: guilds.php?name='. $_GET['name']);
 		exit();
 	}
-	
+
 	if (!empty($_POST['disband'])) {
-		// 
+		//
 		$gidd = (int)$_POST['disband'];
 		$members = get_guild_players($gidd);
 		$online = false;
-		
+
 		// First figure out if anyone are online.
 		foreach ($members as $member) {
 			if ($config['ServerEngine'] !== 'TFS_10') $chardata = user_character_data(user_character_id($member['name']), 'online');
@@ -494,26 +496,26 @@ if ($highest_access >= 2) {
 				$online = true;
 			}
 		}
-		
+
 		if (!$online) {
 			// Then remove guild rank from every player.
 			if ($config['ServerEngine'] !== 'TFS_10') foreach ($members as $member) guild_player_leave(user_character_id($member['name']));
 			else foreach ($members as $member) guild_player_leave_10(user_character_id($member['name']));
-			
+
 			// Remove all guild invitations to this guild
 			if ($inv_count > 0) guild_remove_invites($gidd);
-			
+
 			// Then remove the guild itself.
 			guild_delete($gidd);
 			header('Location: success.php');
 			exit();
 		} else echo '<font color="red" size="4">All members must be offline to disband the guild.</font>';
 	}
-	
+
 	if (!empty($_POST['new_leader'])) {
 		$new_leader = (int)$_POST['new_leader'];
 		$old_leader = guild_leader($gid);
-		
+
 		$online = false;
 		if ($config['ServerEngine'] !== 'TFS_10') {
 			$newData = user_character_data($new_leader, 'online');
@@ -523,7 +525,7 @@ if ($highest_access >= 2) {
 			$oldData['online'] = (user_is_online_10($old_leader)) ? 1 : 0;
 		}
 		if ($newData['online'] == 1 || $oldData['online'] == 1) $online = true;
-		
+
 		if ($online == false) {
 			if (guild_change_leader($new_leader, $old_leader)) {
 				header('Location: guilds.php?name='. $_GET['name']);
@@ -531,13 +533,13 @@ if ($highest_access >= 2) {
 			} else echo '<font color="red" size="4">Something went wrong when attempting to change leadership.</font>';
 		} else echo '<font color="red" size="4">The new and old leader must be offline to change leadership.</font>';
 	}
-	
+
 	if (!empty($_POST['change_ranks'])) {
 		$c_gid = (int)$_POST['change_ranks'];
 		$c_ranks = get_guild_rank_data($c_gid);
 		$rank_data = array();
 		$rank_ids = array();
-		
+
 		// Feed new rank data
 		foreach ($c_ranks as $rank) {
 			$tmp = 'rank_name!'. $rank['level'];
@@ -546,19 +548,19 @@ if ($highest_access >= 2) {
 				$rank_ids[$rank['level']] = $rank['id'];
 			}
 		}
-		
+
 		foreach ($rank_data as $level => $name) {
 			guild_change_rank($rank_ids[$level], $name);
 		}
-		
+
 		header('Location: guilds.php?name='. $_GET['name']);
 		exit();
 	}
-	
+
 	if (!empty($_POST['remove_member'])) {
 		$name = sanitize($_POST['remove_member']);
 		$cid = user_character_id($name);
-		
+
 		if ($config['ServerEngine'] !== 'TFS_10') guild_remove_member($cid);
 		else guild_remove_member_10($cid);
 		header('Location: guilds.php?name='. $_GET['name']);
@@ -570,20 +572,20 @@ if ($highest_access >= 2) {
 			$forumExist = mysql_select_single("SELECT `id` FROM `znote_forum` WHERE `guild_id`='$gid' LIMIT 1;");
 				if ($forumExist === false) {
 					// Insert data
-					mysql_insert("INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`) 
-						VALUES ('Guild', 
-							'1', 
-							'0', 
-							'0', 
+					mysql_insert("INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`)
+						VALUES ('Guild',
+							'1',
+							'0',
+							'0',
 							'$gid');");
 					echo '<h1>Guild board has been created.</h1>';
 				} else echo '<h1>Guild board already exist.</h1>';
-			
+
 		} else {
 			echo '<h1>Error: Guild board system is disabled.</h1>';
 		}
 	}
-	
+
 	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'OTHIRE' || $config['ServerEngine'] == 'TFS_10' && $config['guildwar_enabled'] === true) {
 		if (!empty($_POST['warinvite'])) {
 			$targetGuild = get_guild_id($_POST['warinvite']);
@@ -595,12 +597,12 @@ if ($highest_access >= 2) {
 						if ($inv['id'] == $targetGuild) $status = true;
 					}
 				}
-				
+
 				$check_guild = get_guild_name($gid);
 				foreach ($check_guild as $guild) {
 					if ($guild['name'] == $_POST['warinvite']) $status = true;
 				}
-				
+
 				if ((int)$gid === (int)$targetGuild) $status = true;
 
 				$wars = mysql_select_multi("SELECT `id`, `guild1`, `guild2`, `status` FROM `guild_wars` WHERE (`guild1` = '$gid' OR `guild1` = '$targetGuild') AND (`guild2` = '$gid' OR `guild2` = '$targetGuild') AND `status` IN (0, 1);");
@@ -613,26 +615,26 @@ if ($highest_access >= 2) {
 				} else echo '<font color="red" size="4">This guild has already been invited to war(or you\'re trying to invite your own).</FONT>';
 			} else echo '<font color="red" size="4">That guild name does not exist.</font>';
 		}
-	
+
 		if (!empty($_POST['cancel_war_invite'])) {
 			cancel_war_invitation($_POST['cancel_war_invite'], $gid);
 			header('Location: guilds.php?name='. $_GET['name']);
 			exit();
 		}
-	
+
 		if (!empty($_POST['reject_war_invite'])) {
 			reject_war_invitation($_POST['reject_war_invite'], $gid);
 			header('Location: guilds.php?name='. $_GET['name']);
 			exit();
 		}
-	
+
 		if (!empty($_POST['accept_war_invite'])) {
 			accept_war_invitation($_POST['accept_war_invite'], $gid);
 			header('Location: guilds.php?name='. $_GET['name']);
 			exit();
 		}
 	}
-	
+
 	$members = count_guild_members($gid);
 	$ranks = get_guild_rank_data($gid);
 	?>
@@ -667,7 +669,7 @@ if ($highest_access >= 2) {
 				</ul>
 			</form>
 
-		<?php 
+		<?php
 
 			if (!empty($_FILES['file'])) {
 
@@ -696,32 +698,34 @@ if ($highest_access >= 2) {
 				</li>
 			</ul>
 		</form>
-		<!-- FORMS TO CHANGE GUILD NICK -->
-		<form action="" method="post">
-			<ul>
-				<li>
-					Change Guild Nick:<br>
-					<select name="player_guildnick">
-					<?php
-					//$gid = get_guild_id($_GET['name']);
-					//$players = get_guild_players($gid);
+		<?php if ($config['guild_allow_nicknames']): ?>
+	    <!-- FORMS TO CHANGE GUILD NICK -->
+			<form action="" method="post">
+				<ul>
+					<li>
+						Change Guild Nick:<br>
+						<select name="player_guildnick">
+						<?php
+						//$gid = get_guild_id($_GET['name']);
+						//$players = get_guild_players($gid);
 
-					foreach ($players as $player) {
-						if ($player['rank_level'] != 3) {
-							echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>'; 
-						} else {
-							if ($highest_access == 3) {
-								echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>'; 
+						foreach ($players as $player) {
+							if ($player['rank_level'] != 3) {
+								echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>';
+							} else {
+								if ($highest_access == 3) {
+									echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>';
+								}
 							}
 						}
-					}
-					?>
-					</select>
-					<input type="text" name="guildnick" maxlength="15" placeholder="leave blank to erase">
-					<input type="submit" value="Change Nick">
-				</li>
-			</ul>
-		</form>
+						?>
+						</select>
+						<input type="text" name="guildnick" maxlength="15" placeholder="leave blank to erase">
+						<input type="submit" value="Change Nick">
+					</li>
+				</ul>
+			</form>
+		<?php endif; ?>
 		<!-- END FORMS TO CHANGE GUILD NICK -->
 		<?php if ($members > 1) { ?>
 		<!-- FORMS TO PROMOTE CHARACTER-->
@@ -735,8 +739,8 @@ if ($highest_access >= 2) {
 					//$players = get_guild_players($gid);
 					foreach ($players as $player) {
 						if ($player['rank_level'] != 3) {
-							echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>'; 
-						}	
+							echo '<option value="'. $player['name'] .'">'. $player['name'] .'</option>';
+						}
 					}
 					?>
 					</select>
@@ -745,10 +749,10 @@ if ($highest_access >= 2) {
 						foreach ($ranks as $rank) {
 							if ($rank['level'] != 3) {
 								if ($rank['level'] != 2) {
-									echo '<option value="'. $rank['id'] .'">'. $rank['name'] .'</option>'; 
+									echo '<option value="'. $rank['id'] .'">'. $rank['name'] .'</option>';
 								} else {
 									if ($highest_access == 3) {
-										echo '<option value="'. $rank['id'] .'">'. $rank['name'] .'</option>'; 
+										echo '<option value="'. $rank['id'] .'">'. $rank['name'] .'</option>';
 									}
 								}
 							}
@@ -819,7 +823,7 @@ if ($highest_access >= 2) {
 					//$players = get_guild_players($gid);
 					foreach ($players as $player) {
 						if ($player['rank_level'] != 3) {
-							echo '<option value="'. $player['id'] .'">'. $player['name'] .'</option>'; 
+							echo '<option value="'. $player['id'] .'">'. $player['name'] .'</option>';
 						}
 					}
 					?>
@@ -862,7 +866,7 @@ if ($highest_access >= 2) {
 				echo '</center></td><td><a href="guilds.php?name='.$war['name2'].'">'.$war['name2'].'</a></td></tr>';
 			}
 		}
-	
+
 			if ($i == 0)
 				echo '<tr><td colspan="3"><center>Currently there are no pending invitations.</center></td></tr>';
 				echo '</table>';
@@ -907,7 +911,7 @@ if ($config['guildwar_enabled'] === true) {
 				}
 				?>
 		</table>
-		<?php 
+		<?php
 	}
 }
 ?>

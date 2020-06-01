@@ -23,7 +23,7 @@
 	$config['site_url'] = "http://demo.znote.eu";
 
 	// Path to server folder without "\" (or "/") at the end, ex: C:\Users\Username\Documents\GitHub\forgottenserver
-	$config['server_path'] = ''; 
+	$config['server_path'] = '';
 
 	// ------------------------ \\
 	// MYSQL CONNECTION DETAILS \\
@@ -49,7 +49,7 @@
 		- getClock() = returns current time in numbers.
 		- getClock(time(), true) = returns current time in formatted date
 		- getClock(false, true) = same as above
-		- getClock(false, true, false) = get current time, don't adjust timezone 
+		- getClock(false, true, false) = get current time, don't adjust timezone
 		- echo getClock($profile_data['lastlogin'], true); = from characterprofile,
 		explains when user was last logged in. */
 	function getClock($time = false, $format = false, $adjust = true) {
@@ -65,7 +65,7 @@
 	// ------------------- \\
 	// CUSTOM SERVER STUFF \\
 	// ------------------- \\
-	// Enable / disable Questlog function (true / false) 
+	// Enable / disable Questlog function (true / false)
 	$config['EnableQuests'] = false;
 
 	// array for filling questlog (Questid, max value, name, end of the quest fill 1 for the last part 0 for all others)
@@ -145,8 +145,8 @@
 			'secret' => true
 		),
 		30001 => array(
-			'Allow Cookies?', 
-			'With a perfectly harmless smile you fooled all of those wicecrackers into eating your exploding cookies. Consider a boy or girl scout outfit next time to make the trick even better.', 
+			'Allow Cookies?',
+			'With a perfectly harmless smile you fooled all of those wicecrackers into eating your exploding cookies. Consider a boy or girl scout outfit next time to make the trick even better.',
 			'points' => '10', // 1-3 points (1 star), 4-6 points (2 stars), 7-9 points(3 stars), 10 points => (4 stars)
 			'secret' => true // show "secret" badge
 		),
@@ -157,7 +157,7 @@
 		),
 		30003 => array(
 			'Bearhugger',
-			'Warm, furry and cuddly - though that same bear you just hugged would probably rip you into pieces if he had been conscious, he reminded you of that old teddy bear which always slept in your bed when you were still small.', 
+			'Warm, furry and cuddly - though that same bear you just hugged would probably rip you into pieces if he had been conscious, he reminded you of that old teddy bear which always slept in your bed when you were still small.',
 			'points' => '4'
 		),
 		30004 => array(
@@ -167,23 +167,23 @@
 		),
 		30005 => array(
 			'Chorister',
-			'Lalalala... you now know the cult\'s hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics.', 
+			'Lalalala... you now know the cult\'s hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics.',
 			'points' => '1'
 		),
 		30006 => array(
 			'Fountain of Life',
-			'You found and took a sip from the Fountain of Life. Thought it didn\'t grant you eternal life, you feel changed and somehow at peace.', 
+			'You found and took a sip from the Fountain of Life. Thought it didn\'t grant you eternal life, you feel changed and somehow at peace.',
 			'points' => '1',
 			'secret' => true
 		),
 		30007 => array(
 			'Here, Fishy Fishy!',
-			'Ah, the smell of the sea! Standing at the shore and casting a line is one of your favourite activities. For you, fishing is relaxing - and at the same time, providing easy food. Perfect!', 
+			'Ah, the smell of the sea! Standing at the shore and casting a line is one of your favourite activities. For you, fishing is relaxing - and at the same time, providing easy food. Perfect!',
 			'points' => '1'
 		),
 		30008 => array(
 			'Honorary Barbarian',
-			'You\'ve hugged bears, pushed mammoths and proved your drinking skills. And even though you have a slight hangover, a partially fractured rib and some greasy hair on your tongue, you\'re quite proud to call yourself a honorary barbarian from now on.', 
+			'You\'ve hugged bears, pushed mammoths and proved your drinking skills. And even though you have a slight hangover, a partially fractured rib and some greasy hair on your tongue, you\'re quite proud to call yourself a honorary barbarian from now on.',
 			'points' => '1'
 		),
 		30009 => array(
@@ -193,12 +193,12 @@
 		),
 		300010 => array(
 			'Just in Time',
-			'You\'re a fast runner and are good at delivering wares which are bound to decay just in the nick of time, even if you can\'t use any means of transportation or if your hands get cold or smelly in the process.', 
+			'You\'re a fast runner and are good at delivering wares which are bound to decay just in the nick of time, even if you can\'t use any means of transportation or if your hands get cold or smelly in the process.',
 			'points' => '1'
 		),
 		30011 => array(
 			'Matchmaker',
-			'You don\'t believe in romance to be a coincidence or in love at first sight. In fact - love potions, bouquets of flowers and cheesy poems do the trick much better than ever could. Keep those hormones flowing!', 
+			'You don\'t believe in romance to be a coincidence or in love at first sight. In fact - love potions, bouquets of flowers and cheesy poems do the trick much better than ever could. Keep those hormones flowing!',
 			'points' => '1',
 			'secret' => true
 		),
@@ -216,7 +216,7 @@
 		),
 		30014 => array(
 			'Secret Agent',
-			'Pack your spy gear and get ready for some dangerous missions in service of a secret agency. You\'ve shown you want to - but can you really do it? Time will tell.', 
+			'Pack your spy gear and get ready for some dangerous missions in service of a secret agency. You\'ve shown you want to - but can you really do it? Time will tell.',
 			'points' => '1',
 			'secret' => true
 		),
@@ -232,7 +232,7 @@
 		),
 		30017 => array(
 			'Worm Whacker',
-			'Weehee! Whack those worms! You sure know how to handle a big hammer.', 
+			'Weehee! Whack those worms! You sure know how to handle a big hammer.',
 			'points' => '1',
 			'secret' => true
 		),
@@ -243,7 +243,7 @@
 		),
 		30019 => array(
 			'Amateur Actor',
-			'You helped bringing Princess Buttercup, Doctor Dumbness and Lucky the Wonder Dog to life - and will probably dream of them tonight, since you memorised your lines perfectly. What a .. special piece of.. screenplay.', 
+			'You helped bringing Princess Buttercup, Doctor Dumbness and Lucky the Wonder Dog to life - and will probably dream of them tonight, since you memorised your lines perfectly. What a .. special piece of.. screenplay.',
 			'points' => '2'
 		),
 		30020 => array(
@@ -269,39 +269,39 @@
 
 	// Vocation IDs, names and which vocation ID they got promoted from
 	$config['vocations'] = array(
-		0 => array( 
+		0 => array(
 			'name' => 'No vocation',
 			'fromVoc' => false
 		),
-		1 => array( 
+		1 => array(
 			'name' => 'Sorcerer',
 			'fromVoc' => false
 		),
-		2 => array( 
+		2 => array(
 			'name' => 'Druid',
 			'fromVoc' => false
 		),
-		3 => array( 
+		3 => array(
 			'name' => 'Paladin',
 			'fromVoc' => false
 		),
-		4 => array( 
+		4 => array(
 			'name' => 'Knight',
 			'fromVoc' => false
 		),
-		5 => array( 
+		5 => array(
 			'name' => 'Master Sorcerer',
 			'fromVoc' => 1
 		),
-		6 => array( 
+		6 => array(
 			'name' => 'Elder Druid',
 			'fromVoc' => 2
 		),
-		7 => array( 
+		7 => array(
 			'name' => 'Royal Paladin',
 			'fromVoc' => 3
 		),
-		8 => array( 
+		8 => array(
 			'name' => 'Elite Knight',
 			'fromVoc' => 4
 		)
@@ -424,7 +424,7 @@
 		5 => 'Ended',
 	);
 
-	/* -- SUB PAGES -- 
+	/* -- SUB PAGES --
 		Some custom layouts/templates have custom pages, they can use
 		this sub page functionality for that.
 	*/
@@ -564,7 +564,7 @@
 		'price_sqm' => '50', // price per house sqm
 	);
 
-	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed, ex: 1 DAY, 2 HOUR, 3 MONTH etc. 
+	$config['delete_character_interval'] = '3 DAY'; // Delay after user character delete request is executed, ex: 1 DAY, 2 HOUR, 3 MONTH etc.
 
 	$config['validate_IP'] = false;
 	$config['salt'] = false;
@@ -605,7 +605,7 @@
 		'equipment' => true,
 		'skills' => true,
 		'outfits' => true,
-		// Player storage (storage_value + outfitId) 
+		// Player storage (storage_value + outfitId)
 		// used to see if player has outfit.
 		// see LUA scripts folder for otserv code
 		'storage_value' => 10000
@@ -619,6 +619,11 @@
 
 	// Do you need to have premium account to create a guild?
 	$config['guild_require_premium'] = true;
+
+	// There is a TFS 1.3 bug related to guild nicks
+	// https://github.com/otland/forgottenserver/issues/2561
+	// So if your using TFS 1.x, you might need to disable guild nicks until the crash has been fixed.
+	$config['guild_allow_nicknames'] = true;
 
 	$config['guildwar_enabled'] = false;
 
@@ -712,13 +717,13 @@
 		'host' => "mailserver.znote.eu", // Outgoing mail server host.
 		'securityType' => 'ssl', // ssl or tls
 		'port' => 465, // SMTP port number - likely to be 465(ssl) or 587(tls)
-		'email' => 'noreply@znote.eu', 
+		'email' => 'noreply@znote.eu',
 		'username' => 'noreply@znote.eu', // Likely the same as email
 		'password' => 'emailpassword', // The password.
 		'debug' => false, // Enable debugging if you have problems and are looking for errors.
 		'fromName' => $config['site_title'],
 	);
-	
+
 	// Don't touch this unless you know what you are doing. (modifying these (key value) also requires modifications in OT files data/XML/groups.xml).
 	$config['ingame_positions'] = array(
 		1 => 'Player',
@@ -736,7 +741,7 @@
 	// Available options: LINUX or WINDOWS
 	$config['os'] = ZNOTE_OS; // Use 'ZNOTE_OS' to auto-detect
 
-	// Measure how much players are lagging in-game. (Not completed). 
+	// Measure how much players are lagging in-game. (Not completed).
 	$config['ping'] = false;
 
 	// BAN STUFF - Don't touch this unless you know what you are doing.
@@ -818,7 +823,7 @@
 	$config['session_prefix'] = 'znote_';
 
 	/*	Store visitor data
-		Store visitor data in the database, logging every IP visiting site, 
+		Store visitor data in the database, logging every IP visiting site,
 		and how many times they have visited the site. And sometimes what
 		they do on the site.
 
@@ -832,7 +837,7 @@
 	$config['log_ip'] = false;
 
 	// Flush IP logs each configured seconds, 60 * 15 = 15 minutes.
-	// Set to false to entirely disable ip log flush. 
+	// Set to false to entirely disable ip log flush.
 	// It is important to flush for optimal performance.
 	$config['flush_ip_logs'] = 59 * 27;
 
@@ -946,7 +951,7 @@
 	/// Let players sell, buy and bid on characters.
 	/// Creates a deeper shop economy, encourages players to spend more money in shop for points.
 	/// Pay to win/progress mechanic, but also lets people who can barely afford points to gain it
-	/// by leveling characters to sell. It can also discourages illegal/risky third-party account 
+	/// by leveling characters to sell. It can also discourages illegal/risky third-party account
 	/// services. Since players can buy officially & support the server, dodgy competitors have to sell for cheaper.
 	/// Without admin interference this is organic to each individual community economy inflation.
 	//////////
@@ -968,7 +973,7 @@
 		type 2 = Premium days
 		type 3 = Change character gender
 		type 4 = Change character name
-		type 5 = Buy outfit (put outfit id as itemid), 
+		type 5 = Buy outfit (put outfit id as itemid),
 		(put addon id as count [0 = nothing, 1 = first addon, 2 = second addon, 3 = both addons])
 		type 6 = Buy mount (put mount id as itemid)
 		type 7 = Buy house (hardcoded in the house system, type used for data log)
