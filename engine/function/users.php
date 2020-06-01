@@ -1387,6 +1387,7 @@ function user_create_character($character_data) {
 	if ($cnf['ServerEngine'] === 'TFS_10') {
 		unset($import_data['rank_id']);
 		unset($import_data['guildnick']);
+		unset($import_data['direction']);
 		unset($import_data['loss_experience']);
 		unset($import_data['loss_mana']);
 		unset($import_data['loss_skills']);
