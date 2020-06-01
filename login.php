@@ -2,7 +2,7 @@
 require_once 'engine/init.php';
 
 // Client 11 loginWebService
-if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === 'TFS_10') {
+if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === 'TFS_10' && $config['client'] >= 1100) {
 
 	function jsonError($message, $code = 3) {
 		die(json_encode(array('errorCode' => $code, 'errorMessage' => $message)));
