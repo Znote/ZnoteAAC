@@ -643,6 +643,7 @@
 	);
 
 	// Gameserver info is used for client 11+ loginWebService
+	$config['login_web_service'] = true; // loginWebService for client 11+ enabled?
 	$config['gameserver'] = array(
 		'ip' => '127.0.0.1',
 		'port' => 7172,
