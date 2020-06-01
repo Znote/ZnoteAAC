@@ -1391,7 +1391,6 @@ function user_create_character($character_data) {
 		unset($import_data['loss_experience']);
 		unset($import_data['loss_mana']);
 		unset($import_data['loss_skills']);
-		unset($import_data['loss_mana']);
 		unset($import_data['premend']);
 		unset($import_data['online']);
 
