@@ -433,19 +433,18 @@ function update_player_guildnick($cid, $nick) {
 	$cid = (int)$cid;
 	$nick = sanitize($nick);
 	if (!empty($nick)) {
-
-	mysql_update("UPDATE `players` SET `guildnick`='$nick' WHERE `id`=$cid");
+		mysql_update("UPDATE `players` SET `guildnick`='$nick' WHERE `id`=$cid");
 	} else {
-	mysql_update("UPDATE `players` SET `guildnick`='' WHERE `id`=$cid");
+		mysql_update("UPDATE `players` SET `guildnick`='' WHERE `id`=$cid");
 	}
 }
 function update_player_guildnick_10($cid, $nick) {
 	$cid = (int)$cid;
 	$nick = sanitize($nick);
 	if (!empty($nick)) {
-	mysql_update("UPDATE `guild_membership` SET `nick`='$nick' WHERE `player_id`=$cid");
+		mysql_update("UPDATE `guild_membership` SET `nick`='$nick' WHERE `player_id`=$cid");
 	} else {
-	mysql_update("UPDATE `guild_membership` SET `nick`='' WHERE `player_id`=$cid");
+		mysql_update("UPDATE `guild_membership` SET `nick`='' WHERE `player_id`=$cid");
 	}
 }
 
