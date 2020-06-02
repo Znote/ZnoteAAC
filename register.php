@@ -37,16 +37,16 @@ if (empty($_POST) === false) {
 			$errors[] = 'This account name is blocked for registration.';
 		}
 		if ($config['ServerEngine'] !== 'OTHIRE' && $config['client'] >= 830) {
-		    if (preg_match("/^[a-zA-Z0-9]+$/", $_POST['username']) == false) {
-		        $errors[] = 'Your account name can only contain characters a-z, A-Z and 0-9.';
-		    }
+			if (preg_match("/^[a-zA-Z0-9]+$/", $_POST['username']) == false) {
+				$errors[] = 'Your account name can only contain characters a-z, A-Z and 0-9.';
+			}
 		} else {
-		    if (preg_match("/^[0-9]+$/", $_POST['username']) == false) {
-		        $errors[] = 'Your account can only contain numbers 0-9.';
-		    }
-		    if ((int)$_POST['username'] < 100000 || (int)$_POST['username'] > 999999999) {
-		        $errors[] = 'Your account number must be a value between 6-8 numbers long.';
-		    }
+			if (preg_match("/^[0-9]+$/", $_POST['username']) == false) {
+				$errors[] = 'Your account can only contain numbers 0-9.';
+			}
+			if ((int)$_POST['username'] < 100000 || (int)$_POST['username'] > 999999999) {
+				$errors[] = 'Your account number must be a value between 6-8 numbers long.';
+			}
 		}
 		// name restriction
 		$resname = explode(" ", $_POST['username']);
@@ -83,9 +83,9 @@ if (empty($_POST) === false) {
 		if (validate_ip(getIP()) === false && $config['validate_IP'] === true) {
 			$errors[] = 'Failed to recognize your IP address. (Not a valid IPv4 address).';
 		}
-	        if (strlen($_POST['flag']) < 1) {
-                        $errors[] = 'Please choose country.';
-                }
+			if (strlen($_POST['flag']) < 1) {
+						$errors[] = 'Please choose country.';
+				}
 	}
 }
 

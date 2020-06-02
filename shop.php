@@ -376,18 +376,18 @@ foreach ($shop_list as $key => $offer) {
 <?php if ($shop['enableShopConfirmation']) { ?>
 <script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 <script>
-    $(document).ready(function(){
-        $(".needconfirmation").each(function(e){
-            $(this).click(function(e){
-                var itemname = $(this).attr("data-item-name");
-                var itemcost = $(this).attr("data-item-cost");
+	$(document).ready(function(){
+		$(".needconfirmation").each(function(e){
+			$(this).click(function(e){
+				var itemname = $(this).attr("data-item-name");
+				var itemcost = $(this).attr("data-item-cost");
 				var r = confirm("Do you really want to purchase "+itemname+" for "+itemcost+" points?")
 				if(r == false){
 					e.preventDefault();
 				}			
-            });
-        });
-    });
+			});
+		});
+	});
 </script>
 <?php }
 

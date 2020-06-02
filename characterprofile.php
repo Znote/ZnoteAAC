@@ -1,5 +1,5 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
- 
+
 if ($config['log_ip']) {
 	znote_visitor_insert_detailed_data(4);
 }
@@ -323,7 +323,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 											<div class="inventory_outfit">
 												<img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $profile_data['looktype']; ?>&addons=<?php echo $profile_data['lookaddons']; ?>&head=<?php echo $profile_data['lookhead']; ?>&body=<?php echo $profile_data['lookbody']; ?>&legs=<?php echo $profile_data['looklegs']; ?>&feet=<?php echo $profile_data['lookfeet']; ?>" alt="img">
 											</div>
-										<?php endif;  ?>
+										<?php endif; ?>
 									</div>
 								<?php endif; ?>
 
@@ -456,15 +456,15 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 									border-radius: 3px;
 								}
 								#piv_flex .itm { background-image: url("/engine/img/bg.png"); }
-								#piv_flex .itm-1  { left: 48px; top: 39px; }
-								#piv_flex .itm-2  { left: 11px; top: 53px; }
-								#piv_flex .itm-3  { left: 85px; top: 53px; }
-								#piv_flex .itm-4  { left: 48px; top: 76px; }
-								#piv_flex .itm-5  { left: 85px; top: 90px; }
-								#piv_flex .itm-6  { left: 11px; top: 90px; }
-								#piv_flex .itm-7  { left: 48px; top: 113px; }
-								#piv_flex .itm-8  { left: 48px; top: 150px; }
-								#piv_flex .itm-9  { left: 11px; top: 127px; }
+								#piv_flex .itm-1 { left: 48px; top: 39px; }
+								#piv_flex .itm-2 { left: 11px; top: 53px; }
+								#piv_flex .itm-3 { left: 85px; top: 53px; }
+								#piv_flex .itm-4 { left: 48px; top: 76px; }
+								#piv_flex .itm-5 { left: 85px; top: 90px; }
+								#piv_flex .itm-6 { left: 11px; top: 90px; }
+								#piv_flex .itm-7 { left: 48px; top: 113px; }
+								#piv_flex .itm-8 { left: 48px; top: 150px; }
+								#piv_flex .itm-9 { left: 11px; top: 127px; }
 								#piv_flex .itm-10 { left: 85px; top: 127px; }
 								#piv_cap {
 									position: absolute;
@@ -589,24 +589,24 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 
 								/* Outfit column positions */
 								<?php for ($column = 1; $column <= $outfit_columns; $column++): ?>
-									#piv_o_container .o:nth-child(<?php echo $outfit_columns.'n+'.$column;?>) { right: <?php echo 10 + 40 * ($outfit_columns-$column); ?>px;  }
+									#piv_o_container .o:nth-child(<?php echo $outfit_columns.'n+'.$column;?>) { right: <?php echo 10 + 40 * ($outfit_columns-$column); ?>px; }
 								<?php endfor; ?>
 
 								/* Outfit row positions */
 								<?php for ($row = 1; $row <= $outfit_rows; $row++): ?>
-									#piv_o_container .o:nth-child(n+<?php echo $outfit_columns * ($row-1)+1; ?>):nth-child(-n+<?php echo $outfit_columns*$row; ?>) { bottom: <?php echo 10 + 33 * ($outfit_rows-$row); ?>px;  }
+									#piv_o_container .o:nth-child(n+<?php echo $outfit_columns * ($row-1)+1; ?>):nth-child(-n+<?php echo $outfit_columns*$row; ?>) { bottom: <?php echo 10 + 33 * ($outfit_rows-$row); ?>px; }
 								<?php endfor; ?>
 
 								#piv_o_container .o.grayimg {
-								    filter: none;
-								    -webkit-filter: grayscale(100%);
-								    -moz-filter: grayscale(100%);
-								    -ms-filter: grayscale(100%);
-								    -o-filter: grayscale(100%);
-								    opacity: .5;
-								    filter: alpha(opacity=50);
-								    margin-left: -25pt;
-								    margin-top: -25px;
+									filter: none;
+									-webkit-filter: grayscale(100%);
+									-moz-filter: grayscale(100%);
+									-ms-filter: grayscale(100%);
+									-o-filter: grayscale(100%);
+									opacity: .5;
+									filter: alpha(opacity=50);
+									margin-left: -25pt;
+									margin-top: -25px;
 								}
 							</style>
 						</td>
@@ -650,7 +650,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				<!-- <div id="accordion">
 					<h3>Show/hide player achievements</h3>
 					<div>
-						
+
 					</div>
 				</div><br> -->
 				<input type="checkbox" id="ac_toggle_hide" name="ac_toggle_hide">
@@ -743,9 +743,9 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 										$mostdmg = ($d['mostdamage_is_player']) 
 										? "<a href='characterprofile.php?name=".$d['mostdamage_by']."'>".$d['mostdamage_by']."</a>" 
 										: $d['mostdamage_by'];
-										
+
 										echo "<br>and by $mostdmg.";
-										
+
 										if ($d['mostdamage_unjustified']) { 
 											echo " <font color='red' style='font-style: italic;'>(unjustified)</font>"; 
 										}
@@ -824,15 +824,15 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				?>
 			</tbody>
 		</table>
-		
+
 		<!-- QUEST PROGRESSION -->
 		<?php
 		$totalquests = 0;
 		$completedquests = 0;
 		$firstrun = 1;
-		
+
 		if ($config['EnableQuests'] == true) {
-			$sqlquests =  mysql_select_multi("
+			$sqlquests = mysql_select_multi("
 				SELECT `player_id`, `key`, `value` 
 				FROM player_storage 
 				WHERE `player_id` = {$user_id}

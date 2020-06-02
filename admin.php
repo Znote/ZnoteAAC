@@ -1,7 +1,7 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
 
 if(!isset($_SESSION['csrf_token'])){
-        $_SESSION['csrf_token']=bin2hex(random_bytes_compat(5,$crypto_strong));
+	$_SESSION['csrf_token'] = bin2hex(random_bytes_compat(5, $crypto_strong));
 	if(!$crypto_strong){
 		// we don't really care, the csrf token doesn't really have to be cryptographically strong.
 	}
@@ -26,7 +26,7 @@ if (empty($_POST) === false) {
 	// BAN system!
 	if (!empty($_POST['ban_char']) && !empty($_POST['ban_type']) && !empty($_POST['ban_action']) && !empty($_POST['ban_reason']) && !empty($_POST['ban_time']) && !empty($_POST['ban_comment'])) {
 		if (user_character_exist($_POST['ban_char'])) {
-			
+
 			// Decrypt and store values
 			$charname = $_POST['ban_char'];
 			$typeid = (int)$_POST['ban_type'] - $enc;
@@ -47,9 +47,8 @@ if (empty($_POST) === false) {
 			$errors[] = 'Character '. hhb_tohtml(getValue($_POST['ban_char'])) .' does not exist.';
 		}
 	}
-	
-	
-	// delete character:
+
+	// Delete character:
 	if (empty($_POST['del_name']) === false) {
 		if (user_character_exist($_POST['del_name'])) {
 			user_delete_character(user_character_id($_POST['del_name']));
@@ -58,13 +57,13 @@ if (empty($_POST) === false) {
 			$errors[] = 'Character '. hhb_tohtml(getValue($_POST['del_name'])) .' does not exist.';
 		}
 	}
-	
+
 	// Reset password for char name
 	if (empty($_POST['reset_pass']) === false && empty($_POST['new_pass']) === false) {
 		// reset_pass = character name
 		if (user_character_exist($_POST['reset_pass'])) {
 			$acc_id = user_character_account_id($_POST['reset_pass']);
-			
+
 			if ($acc_id != $session_user_id) {
 				if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' || $config['ServerEngine'] == 'OTHIRE') {
 					user_change_password($acc_id, $_POST['new_pass']);
@@ -100,7 +99,7 @@ if (empty($_POST) === false) {
 		$points += $znote_account['points'];
 		mysql_update("UPDATE `znote_accounts` SET `points`='$points' WHERE `account_id`='". $account['account_id'] ."';");
 	}
-	
+
 	// Set character position
 	if (empty($_POST['position_name']) === false && empty($_POST['position_type']) === false) {
 		if (user_character_exist($_POST['position_name'])) {
@@ -122,7 +121,7 @@ if (empty($_POST) === false) {
 			$errors[] = 'Character '. hhb_tohtml(getValue($_POST['position_name'])) .' does not exist.';
 		}
 	}
-	
+
 	// Teleport Player
 	if (isset($_POST['from']) && in_array($_POST['from'], ['all', 'only'])) {
 		$from = $_POST['from'];
@@ -193,7 +192,7 @@ echo "Last cached on: ". hhb_tohtml(getClock($basic['cached'], true)) .".<br>";
 						<input type="text" name="ban_char" placeholder="Character name...">
 					</td>
 				</tr>
-				
+
 				<!-- row 2 -->
 				<tr>
 					<td>
@@ -220,7 +219,7 @@ echo "Last cached on: ". hhb_tohtml(getClock($basic['cached'], true)) .".<br>";
 						</select>
 					</td>
 				</tr>
-				
+
 				<!-- row 3 -->
 				<tr>
 					<td>
@@ -234,7 +233,7 @@ echo "Last cached on: ". hhb_tohtml(getClock($basic['cached'], true)) .".<br>";
 						</select>
 					</td>
 				</tr>
-				
+
 				<!-- row 4 -->
 				<tr>
 					<td>

@@ -1,16 +1,16 @@
 <?php require_once 'engine/init.php';
 protect_page();
-include 'layout/overall/header.php'; 
+include 'layout/overall/header.php';
 // Convert a seconds integer value into days, hours, minutes and seconds string.
 function toDuration($is) {
 	$duration['day'] = $is / (24 * 60 * 60);
 	if (($duration['day'] - (int)$duration['day']) > 0) 
 		$duration['hour'] = ($duration['day'] - (int)$duration['day']) * 24;
 	if (isset($duration['hour'])) {
-		if (($duration['hour'] - (int)$duration['hour']) > 0) 
+		if (($duration['hour'] - (int)$duration['hour']) > 0)
 			$duration['minute'] = ($duration['hour'] - (int)$duration['hour']) * 60;
 		if (isset($duration['minute'])) {
-			if (($duration['minute'] - (int)$duration['minute']) > 0) 
+			if (($duration['minute'] - (int)$duration['minute']) > 0)
 				$duration['second'] = ($duration['minute'] - (int)$duration['minute']) * 60;
 		}
 	}
@@ -49,23 +49,23 @@ if ($auction['characterAuction']) {
 	$step = $auction['step'];
 	$step_duration = $auction['step_duration'];
 	$actions = array(
-		'list',   // list all available players in auction
-		'view',   // view a specific player
-		'create', // select which character to add and initial price
-		'add',    // add character to list
-		'bid',    // Bid or buy a specific player
-		'refund', // Refund a player you added back to your account
-		'claim'   // Claim a character you won through purchase or bid
+		'list',		// list all available players in auction
+		'view',		// view a specific player
+		'create',	// select which character to add and initial price
+		'add',		// add character to list
+		'bid',		// Bid or buy a specific player
+		'refund',	// Refund a player you added back to your account
+		'claim'		// Claim a character you won through purchase or bid
 	);
 
 	// Default action is list, but $_GET or $_POST will override it.
 	$action = 'list';
 	// Load selected string from actions array based on input, strict whitelist validation
-	if (isset( $_GET['action']) && in_array( $_GET['action'], $actions)) { 
-		$action = $actions[array_search( $_GET['action'], $actions, true)]; 
+	if (isset( $_GET['action']) && in_array( $_GET['action'], $actions)) {
+		$action = $actions[array_search( $_GET['action'], $actions, true)];
 	}
-	if (isset($_POST['action']) && in_array($_POST['action'], $actions)) { 
-		$action = $actions[array_search($_POST['action'], $actions, true)]; 
+	if (isset($_POST['action']) && in_array($_POST['action'], $actions)) {
+		$action = $actions[array_search($_POST['action'], $actions, true)];
 	}
 
 	// Passive check to see if bid period has expired and someone won a deal
@@ -86,8 +86,8 @@ if ($auction['characterAuction']) {
 		if (!empty($soldIds)) {
 			mysql_update("
 				UPDATE `znote_auction_player`
-				SET `sold`=1 
-				WHERE `id` IN(".implode(',', $soldIds).") 
+				SET `sold` = 1
+				WHERE `id` IN(".implode(',', $soldIds).")
 				LIMIT ".COUNT($soldIds).";
 			");
 		}
@@ -106,13 +106,13 @@ if ($auction['characterAuction']) {
 			// The account of the buyer, if he can afford what he is trying to pay
 			$account = mysql_select_single("
 				SELECT 
-					`a`.`id`, 
+					`a`.`id`,
 					`za`.`points`
-				FROM `accounts` a 
+				FROM `accounts` a
 				INNER JOIN `znote_accounts` za 
 					ON `a`.`id` = `za`.`account_id`
-				WHERE `a`.`id`= {$this_account_id} 
-				AND `za`.`points` >= {$price} 
+				WHERE `a`.`id`= {$this_account_id}
+				AND `za`.`points` >= {$price}
 				LIMIT 1;
 			");
 			//data_dump($account, false, "Buyer account:");
@@ -120,23 +120,23 @@ if ($auction['characterAuction']) {
 			// The character to buy, presuming it isn't sold, buyer isn't the owner, buyer can afford it
 			if ($account !== false) {
 				$character = mysql_select_single("
-					SELECT 
+					SELECT
 						`za`.`id` AS `zaid`,
 						`za`.`player_id`,
 						`za`.`original_account_id`,
 						`za`.`bidder_account_id`,
 						`za`.`time_begin`,
 						`za`.`time_end`,
-						`za`.`price`, 
-						`za`.`bid`, 
-						`za`.`deposit`, 
-						`za`.`sold` 
+						`za`.`price`,
+						`za`.`bid`,
+						`za`.`deposit`,
+						`za`.`sold`
 					FROM `znote_auction_player` za
 					WHERE `za`.`id` = {$zaid}
-					AND `za`.`sold` = 0 
-					AND `za`.`original_account_id` != {$this_account_id} 
+					AND `za`.`sold` = 0
+					AND `za`.`original_account_id` != {$this_account_id}
 					AND `za`.`price` <= {$price} 
-					AND `za`.`bid`+{$step} <= {$price} 
+					AND `za`.`bid`+{$step} <= {$price}
 					LIMIT 1
 				");
 				//data_dump($character, false, "Character to buy:");
@@ -146,8 +146,8 @@ if ($auction['characterAuction']) {
 					if ($character['bid'] > 0 && $character['bidder_account_id'] > 0) {
 						mysql_update("
 							UPDATE `znote_accounts`
-							SET `points` = `points`+{$character['bid']} 
-							WHERE `account_id` = {$character['bidder_account_id']} 
+							SET `points` = `points`+{$character['bid']}
+							WHERE `account_id` = {$character['bidder_account_id']}
 							LIMIT 1;
 						");
 						// If previous bidder is not you, increase bidding period by 1 hour
@@ -156,7 +156,7 @@ if ($auction['characterAuction']) {
 							mysql_update("
 								UPDATE `znote_auction_player`
 								SET `time_end` = `time_end`+{$step_duration}
-								WHERE `id` = {$character['zaid']} 
+								WHERE `id` = {$character['zaid']}
 								LIMIT 1;
 							");
 						}
@@ -164,15 +164,15 @@ if ($auction['characterAuction']) {
 					// Remove points from buyer
 					mysql_update("
 						UPDATE `znote_accounts`
-						SET `points` = `points`-{$price} 
-						WHERE `account_id` = {$account['id']} 
+						SET `points` = `points`-{$price}
+						WHERE `account_id` = {$account['id']}
 						LIMIT 1;
 					");
 					// Update auction, and set new bidder data
 					$time = time();
 					mysql_update("
 						UPDATE `znote_auction_player`
-						SET 
+						SET
 							`bidder_account_id` = {$account['id']},
 							`bid` = {$price},
 							`sold` = CASE WHEN {$time} >= `time_end` THEN 1 ELSE 0 END
@@ -183,8 +183,8 @@ if ($auction['characterAuction']) {
 					if (time() >= $character['time_end']) {
 						mysql_update("
 							UPDATE `znote_accounts`
-							SET `points` = `points`+{$character['deposit']} 
-							WHERE `account_id` = {$account['id']} 
+							SET `points` = `points`+{$character['deposit']}
+							WHERE `account_id` = {$account['id']}
 							LIMIT 1;
 						");
 					} else {
@@ -197,7 +197,7 @@ if ($auction['characterAuction']) {
 		}
 	}
 
-	// See a specific character in auction, 
+	// See a specific character in auction,
 	// silently fallback to list if he doesn't exist or is already sold
 	if ($action === 'view') { // View a character in the auction
 		if (!isset($zaid)) {
@@ -206,7 +206,7 @@ if ($auction['characterAuction']) {
 		if ($zaid !== false) {
 			// Retrieve basic character information
 			$character = mysql_select_single("
-				SELECT 
+				SELECT
 					`za`.`id` AS `zaid`,
 					`za`.`player_id`,
 					`za`.`original_account_id`,
@@ -214,33 +214,33 @@ if ($auction['characterAuction']) {
 					`za`.`time_begin`,
 					`za`.`time_end`,
 					CASE WHEN `za`.`price` > `za`.`bid` 
-						THEN `za`.`price` 
+						THEN `za`.`price`
 						ELSE `za`.`bid`+{$step} 
 					END AS `price`,
-					CASE WHEN `za`.`original_account_id` = {$this_account_id} 
+					CASE WHEN `za`.`original_account_id` = {$this_account_id}
 						THEN 1
 						ELSE 0
 					END AS `own`,
-					CASE WHEN `za`.`original_account_id` = {$this_account_id} 
+					CASE WHEN `za`.`original_account_id` = {$this_account_id}
 						THEN `p`.`name`
 						ELSE ''
 					END AS `name`,
-					CASE WHEN `za`.`original_account_id` = {$this_account_id} 
+					CASE WHEN `za`.`original_account_id` = {$this_account_id}
 						THEN `za`.`bid`
 						ELSE 0
 					END AS `bid`,
-					CASE WHEN `za`.`original_account_id` = {$this_account_id} 
+					CASE WHEN `za`.`original_account_id` = {$this_account_id}
 						THEN `za`.`deposit`
 						ELSE 0
 					END AS `deposit`,
-					`p`.`vocation`, 
-					`p`.`level`, 
-					`p`.`balance`, 
-					`p`.`lookbody` AS `body`, 
-					`p`.`lookfeet` AS `feet`, 
-					`p`.`lookhead` AS `head`, 
-					`p`.`looklegs` AS `legs`, 
-					`p`.`looktype` AS `type`, 
+					`p`.`vocation`,
+					`p`.`level`,
+					`p`.`balance`,
+					`p`.`lookbody` AS `body`,
+					`p`.`lookfeet` AS `feet`,
+					`p`.`lookhead` AS `head`,
+					`p`.`looklegs` AS `legs`,
+					`p`.`looktype` AS `type`,
 					`p`.`lookaddons` AS `addons`,
 					`p`.`maglevel` AS `magic`,
 					`p`.`skill_fist` AS `fist`,
@@ -277,9 +277,9 @@ if ($auction['characterAuction']) {
 					ORDER BY MIN(`pid`) ASC
 				");
 				$account = mysql_select_single("
-					SELECT `points` 
-					FROM `znote_accounts` 
-					WHERE `account_id`={$this_account_id} 
+					SELECT `points`
+					FROM `znote_accounts`
+					WHERE `account_id` = {$this_account_id}
 					AND `points` >= {$character['price']}
 					LIMIT 1;
 				");
@@ -448,11 +448,11 @@ if ($auction['characterAuction']) {
 		if ($pid > 0 && $cost >= $auction['lowestPrice']) {
 			$account = mysql_select_single("
 				SELECT `a`.`id`, `a`.`password`, `za`.`points`
-				FROM `accounts` a 
+				FROM `accounts` a
 				INNER JOIN `znote_accounts` za 
 					ON `a`.`id` = `za`.`account_id`
-				WHERE `a`.`id`= {$this_account_id} 
-				AND `a`.`password`='{$password}' 
+				WHERE `a`.`id`= {$this_account_id}
+				AND `a`.`password`='{$password}'
 				AND `za`.`points` >= {$deposit}
 				LIMIT 1
 			;");
@@ -460,34 +460,34 @@ if ($auction['characterAuction']) {
 				// Check if player exist, is offline and not already in auction
 				// And is not a tutor or a GM+.
 				$player = mysql_select_single("
-					SELECT `p`.`id`, `p`.`name`, 
-					CASE 
-						WHEN `po`.`player_id` IS NULL 
+					SELECT `p`.`id`, `p`.`name`,
+					CASE
+						WHEN `po`.`player_id` IS NULL
 						THEN 0
 						ELSE 1
 					END AS `online`,
-					CASE 
-						WHEN `za`.`player_id` IS NULL 
+					CASE
+						WHEN `za`.`player_id` IS NULL
 						THEN 0
 						ELSE 1
 					END AS `alreadyInAuction`
-					FROM `players` p 
-					LEFT JOIN `players_online` po 
+					FROM `players` p
+					LEFT JOIN `players_online` po
 						ON `p`.`id` = `po`.`player_id`
-					LEFT JOIN `znote_auction_player` za 
-						ON `p`.`id` = `za`.`player_id` 
-						AND `p`.`account_id` = `za`.`original_account_id` 
+					LEFT JOIN `znote_auction_player` za
+						ON `p`.`id` = `za`.`player_id`
+						AND `p`.`account_id` = `za`.`original_account_id`
 						AND `za`.`claimed` = 0
 					WHERE `p`.`id` = {$pid}
-					AND `p`.`account_id` = {$this_account_id} 
+					AND `p`.`account_id` = {$this_account_id}
 					AND `p`.`group_id` = 1
 					LIMIT 1
 				;");
 				// Verify storage account ID exist
 				$storage_account = mysql_select_single("
-					SELECT `id` 
-					FROM `accounts` 
-					WHERE `id`={$auction['storage_account_id']} 
+					SELECT `id`
+					FROM `accounts`
+					WHERE `id`={$auction['storage_account_id']}
 					LIMIT 1;
 				");
 				if ($storage_account === false) {
@@ -534,22 +534,22 @@ if ($auction['characterAuction']) {
 			mysql_update("
 				UPDATE `players`
 				SET `account_id` = {$auction['storage_account_id']} 
-				WHERE `id` = {$pid} 
+				WHERE `id` = {$pid}
 				LIMIT 1;
 			");
 			// Hide character from public character list (in pidprofile.php)
 			mysql_update("
 				UPDATE `znote_players`
-				SET `hide_char` = 1 
-				WHERE `player_id` = {$pid} 
+				SET `hide_char` = 1
+				WHERE `player_id` = {$pid}
 				LIMIT 1;
 			");
 			// Remove deposit from account
 			$afterDeposit = $account['points'] - $deposit;
 			mysql_update("
 				UPDATE `znote_accounts`
-				SET `points` = {$afterDeposit} 
-				WHERE `account_id` = {$account['id']} 
+				SET `points` = {$afterDeposit}
+				WHERE `account_id` = {$account['id']}
 				LIMIT 1;
 			");
 		}
@@ -565,7 +565,7 @@ if ($auction['characterAuction']) {
 			$time = time();
 			// If original account is the one trying to get it back,
 			// and bidding period is over, 
-			// and its not labelled as sold
+			// and its not labeled as sold
 			// and nobody has bid on it
 			$character = mysql_select_single("
 				SELECT `player_id`
@@ -573,9 +573,9 @@ if ($auction['characterAuction']) {
 				WHERE `id`= {$zaid} 
 				AND `original_account_id` = {$this_account_id} 
 				AND `time_end` <= {$time} 
-				AND `bidder_account_id` = 0 
+				AND `bidder_account_id` = 0
 				AND `bid` = 0
-				AND `sold` = 0 
+				AND `sold` = 0
 				LIMIT 1
 			");
 			//data_dump($character, false, "Character");
@@ -583,22 +583,22 @@ if ($auction['characterAuction']) {
 				// Move character to buyer account and give it a new name
 				mysql_update("
 					UPDATE `players`
-					SET `account_id` = {$this_account_id}   
-					WHERE `id` = {$character['player_id']} 
+					SET `account_id` = {$this_account_id}
+					WHERE `id` = {$character['player_id']}
 					LIMIT 1;
 				");
 				// Set label to sold
 				mysql_update("
 					UPDATE `znote_auction_player`
-					SET `sold` = 1 
-					WHERE `id`= {$zaid} 
+					SET `sold` = 1
+					WHERE `id`= {$zaid}
 					LIMIT 1;
 				");
 				// Show character in public character list (in characterprofile.php)
 				mysql_update("
 					UPDATE `znote_players`
-					SET `hide_char` = 0 
-					WHERE `player_id` = {$character['player_id']} 
+					SET `hide_char` = 0
+					WHERE `player_id` = {$character['player_id']}
 					LIMIT 1;
 				");
 			}
@@ -650,56 +650,56 @@ if ($auction['characterAuction']) {
 			// end name validation
 			if (empty($errors)) {
 				// Make sure you have access to claim this zaid character.
-				// And that you havent already claimed it.
+				// And that you haven't already claimed it.
 				// And that the character isn't online...
 				$character = mysql_select_single("
-					SELECT 
+					SELECT
 						`za`.`id` AS `zaid`,
 						`za`.`player_id`,
-						`p`.`account_id` 
+						`p`.`account_id`
 					FROM `znote_auction_player` za
-					INNER JOIN `players` p 
+					INNER JOIN `players` p
 						ON `za`.`player_id` = `p`.`id`
 					LEFT JOIN `players_online` po 
 						ON `p`.`id` = `po`.`player_id`
 					WHERE `za`.`id` = {$zaid}
 					AND `za`.`sold` = 1
-					AND `p`.`account_id` != {$this_account_id} 
-					AND `za`.`bidder_account_id` = {$this_account_id} 
-					AND `po`.`player_id` IS NULL 
+					AND `p`.`account_id` != {$this_account_id}
+					AND `za`.`bidder_account_id` = {$this_account_id}
+					AND `po`.`player_id` IS NULL
 				");
 				//data_dump($character, false, "Character");
 				if ($character !== false) {
 					// Set character to claimed
 					mysql_update("
-						UPDATE `znote_auction_player` 
-						SET `claimed`='1' 
-						WHERE `id` = {$character['zaid']} 
+						UPDATE `znote_auction_player`
+						SET `claimed`='1'
+						WHERE `id` = {$character['zaid']}
 					");
 					// Move character to buyer account and give it a new name
 					mysql_update("
 						UPDATE `players`
 						SET `name` = '{$name}',
-							`account_id` = {$this_account_id}   
-						WHERE `id` = {$character['player_id']} 
+							`account_id` = {$this_account_id}
+						WHERE `id` = {$character['player_id']}
 						LIMIT 1;
 					");
 					// Show character in public character list (in characterprofile.php)
 					mysql_update("
 						UPDATE `znote_players`
-						SET `hide_char` = 0 
-						WHERE `player_id` = {$character['player_id']} 
+						SET `hide_char` = 0
+						WHERE `player_id` = {$character['player_id']}
 						LIMIT 1;
 					");
 					// Remove character from other players VIP lists
 					mysql_delete("
-						DELETE FROM `account_viplist` 
-						WHERE `player_id` = {$character['player_id']} 
+						DELETE FROM `account_viplist`
+						WHERE `player_id` = {$character['player_id']}
 					");
 					// Remove the character deathlist
 					mysql_delete("
-						DELETE FROM `player_deaths` 
-						WHERE `player_id` = {$character['player_id']} 
+						DELETE FROM `player_deaths`
+						WHERE `player_id` = {$character['player_id']}
 					");
 				} else {
 					$errors[] = "You either don't have access to claim this character, or you have already claimed it, or this character isn't sold yet, or we were unable to find this auction order.";
@@ -715,7 +715,7 @@ if ($auction['characterAuction']) {
 			<table class="auction_error">
 				<tr class="yellow">
 					<td>#</td>
-					<td>Issues occured while claiming your name</td>
+					<td>Issues occurred while claiming your name</td>
 				</tr>
 				<?php foreach($errors as $i => $error): ?>
 					<tr>
@@ -734,28 +734,28 @@ if ($auction['characterAuction']) {
 		// If this account have successfully bought or won an auction
 		// Intercept the list action and let the user do claim actions
 		$pending = mysql_select_multi("
-			SELECT 
-				`za`.`id` AS `zaid`, 
-				CASE WHEN `za`.`price` > `za`.`bid` 
-					THEN `za`.`price` 
-					ELSE `za`.`bid` 
+			SELECT
+				`za`.`id` AS `zaid`,
+				CASE WHEN `za`.`price` > `za`.`bid`
+					THEN `za`.`price`
+					ELSE `za`.`bid`
 				END AS `price`,
 				`za`.`time_begin`,
 				`za`.`time_end`,
-				`p`.`vocation`, 
-				`p`.`level`, 
-				`p`.`lookbody` AS `body`, 
-				`p`.`lookfeet` AS `feet`, 
-				`p`.`lookhead` AS `head`, 
-				`p`.`looklegs` AS `legs`, 
-				`p`.`looktype` AS `type`, 
+				`p`.`vocation`,
+				`p`.`level`,
+				`p`.`lookbody` AS `body`,
+				`p`.`lookfeet` AS `feet`,
+				`p`.`lookhead` AS `head`,
+				`p`.`looklegs` AS `legs`,
+				`p`.`looktype` AS `type`,
 				`p`.`lookaddons` AS `addons`
-			FROM `znote_auction_player` za 
+			FROM `znote_auction_player` za
 			INNER JOIN `players` p
 				ON `za`.`player_id` = `p`.`id`
-			WHERE `p`.`account_id` = {$auction['storage_account_id']} 
+			WHERE `p`.`account_id` = {$auction['storage_account_id']}
 			AND `za`.`claimed` = 0
-			AND `za`.`sold` = 1 
+			AND `za`.`sold` = 1
 			AND `za`.`bidder_account_id` = {$this_account_id}
 			ORDER BY `p`.`level` desc
 		");
@@ -803,25 +803,25 @@ if ($auction['characterAuction']) {
 		// Show the list
 		$characters = mysql_select_multi("
 			SELECT 
-				`za`.`id` AS `zaid`, 
-				CASE WHEN `za`.`price` > `za`.`bid` 
+				`za`.`id` AS `zaid`,
+				CASE WHEN `za`.`price` > `za`.`bid`
 					THEN `za`.`price` 
-					ELSE `za`.`bid`+{$step} 
+					ELSE `za`.`bid`+{$step}
 				END AS `price`,
 				`za`.`time_begin`,
 				`za`.`time_end`,
-				`p`.`vocation`, 
-				`p`.`level`, 
-				`p`.`lookbody` AS `body`, 
-				`p`.`lookfeet` AS `feet`, 
-				`p`.`lookhead` AS `head`, 
-				`p`.`looklegs` AS `legs`, 
-				`p`.`looktype` AS `type`, 
+				`p`.`vocation`,
+				`p`.`level`,
+				`p`.`lookbody` AS `body`,
+				`p`.`lookfeet` AS `feet`,
+				`p`.`lookhead` AS `head`,
+				`p`.`looklegs` AS `legs`,
+				`p`.`looktype` AS `type`,
 				`p`.`lookaddons` AS `addons`
-			FROM `znote_auction_player` za 
+			FROM `znote_auction_player` za
 			INNER JOIN `players` p
 				ON `za`.`player_id` = `p`.`id`
-			WHERE `p`.`account_id` = {$auction['storage_account_id']} 
+			WHERE `p`.`account_id` = {$auction['storage_account_id']}
 			AND `za`.`sold` = 0
 			ORDER BY `p`.`level` desc;
 		");
@@ -831,7 +831,7 @@ if ($auction['characterAuction']) {
 			<p>Admin: <a href="/admin_auction.php">Character auction history</a></p>
 			<?php
 		}
-		if (is_array($characters) && !empty($characters)): 
+		if (is_array($characters) && !empty($characters)):
 			?>
 			<table class="auction_char">
 				<tr class="yellow">
@@ -875,20 +875,20 @@ if ($auction['characterAuction']) {
 		$minToCreate = (int)ceil(($auction['lowestPrice'] / 100) * $auction['deposit']);
 		$own_characters = mysql_select_multi("
 			SELECT 
-				`p`.`id`, 
-				`p`.`name`, 
-				`p`.`level`, 
-				`p`.`vocation`, 
-				`a`.`points` 
-			FROM `players` p 
+				`p`.`id`,
+				`p`.`name`,
+				`p`.`level`,
+				`p`.`vocation`,
+				`a`.`points`
+			FROM `players` p
 			INNER JOIN `znote_accounts` a 
 				ON `p`.`account_id` = `a`.`account_id`
-			LEFT JOIN `znote_auction_player` za 
-				ON `p`.`id` = `za`.`player_id` 
-				AND `p`.`account_id` = `za`.`original_account_id` 
+			LEFT JOIN `znote_auction_player` za
+				ON `p`.`id` = `za`.`player_id`
+				AND `p`.`account_id` = `za`.`original_account_id`
 				AND `za`.`claimed` = 0
-			LEFT JOIN `players_online` po 
-				ON `p`.`id` = `po`.`player_id` 
+			LEFT JOIN `players_online` po
+				ON `p`.`id` = `po`.`player_id`
 			WHERE `p`.`account_id`={$this_account_id}
 			AND `za`.`player_id` IS NULL
 			AND `po`.`player_id` IS NULL
@@ -905,7 +905,7 @@ if ($auction['characterAuction']) {
 				<input type="hidden" name="action" value="add">
 				<p>Character: (Must be offline)</p>
 				<select name="pid">
-					<?php if(is_array($own_characters) && !empty($own_characters)) 
+					<?php if(is_array($own_characters) && !empty($own_characters))
 					foreach($own_characters as $char): ?>
 						<option value="<?php echo $char['id']; ?>">
 							<?php echo "Level: ", $char['level'], " ", vocation_id_to_name($char['vocation']), ": ", $char['name']; ?>
