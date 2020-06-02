@@ -14,10 +14,10 @@ if(!function_exists('curl_version')):
 	// CURL enabled. Lets create an API web request to github.
 	$request = curl_init();
 	curl_setopt($request, CURLOPT_URL, 'https://api.github.com/repos/Znote/ZnoteAAC/contributors');
-    curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($request, CURLOPT_USERAGENT, 'ZnoteAAC'); // GitHub requires user agent header.
 	curl_setopt($request, CURLOPT_SSL_VERIFYPEER, false);
-	
+
 	// Load contributors and close the request.
 	$developers = json_decode(curl_exec($request), true); // Sorted by contributions.
 	curl_close($request);

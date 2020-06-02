@@ -59,9 +59,9 @@ function onSay(cid, words, param)
 					local outfits = {}
 
 					if itemid > 1000 then
-					    local first = math.floor(itemid/1000)
-					    table.insert(outfits, first)
-					    itemid = itemid - (first * 1000)
+						local first = math.floor(itemid/1000)
+						table.insert(outfits, first)
+						itemid = itemid - (first * 1000)
 					end
 					table.insert(outfits, itemid)
 

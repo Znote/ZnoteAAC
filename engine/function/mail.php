@@ -89,10 +89,10 @@ class Mail {
 		//send the message, check for errors
 		$status = false;
 		if (!$mail->send()) {
-		    echo "Mailer Error: " . $mail->ErrorInfo;
-		    exit();
+			echo "Mailer Error: " . $mail->ErrorInfo;
+			exit();
 		} else {
-		    $status = true;
+			$status = true;
 		}
 		return $status;
 	}

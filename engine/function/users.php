@@ -58,13 +58,13 @@ function fetchLatestDeaths_03($rowz = 30, $killers = false) {
 	$countz = 0;
 	if ($rowz === false || $killers === true) $getdeaths = mysql_select_multi("SELECT * FROM player_deaths ORDER BY date DESC;");
 	else $getdeaths = mysql_select_multi("SELECT * FROM `player_deaths` ORDER BY `date` DESC LIMIT 0, $rowz;");
-    $data = false;
+	$data = false;
 	//while ($showdeaths = mysql_fetch_assoc($getdeaths)) {
-    if ($getdeaths !== false) {
-    	for ($i = 0; $i < count($getdeaths); $i++) {
-	        $pid = $getdeaths[$i]['player_id'];
-	        $level = $getdeaths[$i]['level'];
-	        $kid = user_get_kid($getdeaths[$i]['id']);
+	if ($getdeaths !== false) {
+		for ($i = 0; $i < count($getdeaths); $i++) {
+			$pid = $getdeaths[$i]['player_id'];
+			$level = $getdeaths[$i]['level'];
+			$kid = user_get_kid($getdeaths[$i]['id']);
 
 			$killedby = user_name(user_get_killer_id($kid));
 
@@ -78,7 +78,7 @@ function fetchLatestDeaths_03($rowz = 30, $killers = false) {
 				$player = 2;
 				$killedby = "Deleted player.";
 			}
-	        $getname = mysql_select_single("SELECT `name` FROM `players` WHERE `id` = '$pid' LIMIT 1;");
+			$getname = mysql_select_single("SELECT `name` FROM `players` WHERE `id` = '$pid' LIMIT 1;");
 			$name = $getname['name'];
 			$row = array();
 			$row['level'] = $level;
@@ -98,47 +98,47 @@ function fetchLatestDeaths_03($rowz = 30, $killers = false) {
 					}
 				}
 			} else $data[] = $row;
-	    }
-    }
+		}
+	}
 	return $data;
 }
 
 // Support list
 function support_list() {
-    $TFS = Config('ServerEngine');
+	$TFS = Config('ServerEngine');
 
-    if ($TFS == 'TFS_10') $staffs = mysql_select_multi("SELECT `p`.`id`, `a`.`type` as `group_id`, `p`.`name`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `p`.`account_id` = `a`.`id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
-    else $staffs = mysql_select_multi("SELECT `a`.`type` as `group_id`, `p`.`name`, `p`.`online`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `a`.`id` = `p`.`account_id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
+	if ($TFS == 'TFS_10') $staffs = mysql_select_multi("SELECT `p`.`id`, `a`.`type` as `group_id`, `p`.`name`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `p`.`account_id` = `a`.`id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
+	else $staffs = mysql_select_multi("SELECT `a`.`type` as `group_id`, `p`.`name`, `p`.`online`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `a`.`id` = `p`.`account_id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
 
-    foreach($staffs as $k => $v)  {
-        foreach($staffs as $key => $value)  {
-            if($k != $key && $v['account_id'] == $value['account_id']) {
-                unset($staffs[$k]);
-            }
-        }
-    }
-    $staffs = array_values($staffs);
+	foreach($staffs as $k => $v)  {
+		foreach($staffs as $key => $value)  {
+			if($k != $key && $v['account_id'] == $value['account_id']) {
+				unset($staffs[$k]);
+			}
+		}
+	}
+	$staffs = array_values($staffs);
 
-    if ($staffs !== false && $TFS == 'TFS_10') {
-        for ($i = 0; $i < count($staffs); $i++) {
-            // Fix online status on TFS 1.0
-            $staffs[$i]['online'] = (isset($staffs[$i]['id']) && user_is_online_10($staffs[$i]['id'])) ? 1 : 0;
-            unset($staffs[$i]['id']);
-        }
-    }
-    return $staffs;
+	if ($staffs !== false && $TFS == 'TFS_10') {
+		for ($i = 0; $i < count($staffs); $i++) {
+			// Fix online status on TFS 1.0
+			$staffs[$i]['online'] = (isset($staffs[$i]['id']) && user_is_online_10($staffs[$i]['id'])) ? 1 : 0;
+			unset($staffs[$i]['id']);
+		}
+	}
+	return $staffs;
 }
 
 function support_list03() {
-    $staffs = mysql_select_multi("SELECT `group_id`, `name`, `online`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
+	$staffs = mysql_select_multi("SELECT `group_id`, `name`, `online`, `account_id` FROM `players` WHERE `group_id` > 1 ORDER BY `group_id` ASC;");
 
-    if ($staffs !== false) {
-        for ($i = 0; $i < count($staffs); $i++) {
-            // $staffs[$i]['']
-            unset($staffs[$i]['account_id']);
-        }
-    }
-    return $staffs;
+	if ($staffs !== false) {
+		for ($i = 0; $i < count($staffs); $i++) {
+			// $staffs[$i]['']
+			unset($staffs[$i]['account_id']);
+		}
+	}
+	return $staffs;
 }
 
 // NEWS
@@ -430,23 +430,23 @@ function update_player_guild_position_10($cid, $rid) {
 
 // Update player's guild nick
 function update_player_guildnick($cid, $nick) {
-    $cid = (int)$cid;
-    $nick = sanitize($nick);
-    if (!empty($nick)) {
+	$cid = (int)$cid;
+	$nick = sanitize($nick);
+	if (!empty($nick)) {
 
-    mysql_update("UPDATE `players` SET `guildnick`='$nick' WHERE `id`=$cid");
-    } else {
-    mysql_update("UPDATE `players` SET `guildnick`='' WHERE `id`=$cid");
-    }
+	mysql_update("UPDATE `players` SET `guildnick`='$nick' WHERE `id`=$cid");
+	} else {
+	mysql_update("UPDATE `players` SET `guildnick`='' WHERE `id`=$cid");
+	}
 }
 function update_player_guildnick_10($cid, $nick) {
-    $cid = (int)$cid;
-    $nick = sanitize($nick);
-    if (!empty($nick)) {
-    mysql_update("UPDATE `guild_membership` SET `nick`='$nick' WHERE `player_id`=$cid");
-    } else {
-    mysql_update("UPDATE `guild_membership` SET `nick`='' WHERE `player_id`=$cid");
-    }
+	$cid = (int)$cid;
+	$nick = sanitize($nick);
+	if (!empty($nick)) {
+	mysql_update("UPDATE `guild_membership` SET `nick`='$nick' WHERE `player_id`=$cid");
+	} else {
+	mysql_update("UPDATE `guild_membership` SET `nick`='' WHERE `player_id`=$cid");
+	}
 }
 
 // Get guild data, using guild id.
@@ -554,9 +554,9 @@ function get_guilds_list() {
 
 // Get array of player data related to a guild.
 function get_guild_players($gid) {
-    $gid = (int)$gid; // Sanitizing the parameter id
-    if (config('ServerEngine') !== 'TFS_10') return mysql_select_multi("SELECT `p`.`id`, `p`.`rank_id`, `p`.`name`, `p`.`level`, `p`.`guildnick`, `p`.`vocation`, `p`.`online`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `p`.`rank_id` WHERE `gr`.`guild_id` ='$gid' ORDER BY `gr`.`id`, `p`.`name`;");
-    else return mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `gm`.`rank_id`, `gm`.`nick` AS `guildnick`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_membership` AS `gm` ON `gm`.`player_id` = `p`.`id` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `gm`.`rank_id` WHERE `gm`.`guild_id` = '$gid' ORDER BY `gm`.`rank_id`, `p`.`name`");
+	$gid = (int)$gid; // Sanitizing the parameter id
+	if (config('ServerEngine') !== 'TFS_10') return mysql_select_multi("SELECT `p`.`id`, `p`.`rank_id`, `p`.`name`, `p`.`level`, `p`.`guildnick`, `p`.`vocation`, `p`.`online`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `p`.`rank_id` WHERE `gr`.`guild_id` ='$gid' ORDER BY `gr`.`id`, `p`.`name`;");
+	else return mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `gm`.`rank_id`, `gm`.`nick` AS `guildnick`, `gr`.`name` AS `rank_name`, `gr`.`level` AS `rank_level` FROM `players` AS `p` LEFT JOIN `guild_membership` AS `gm` ON `gm`.`player_id` = `p`.`id` LEFT JOIN `guild_ranks` AS `gr` ON `gr`.`id` = `gm`.`rank_id` WHERE `gm`.`guild_id` = '$gid' ORDER BY `gm`.`rank_id`, `p`.`name`");
 }
 
 // Get guild level data (avg level, total level, count of players)
@@ -660,20 +660,20 @@ function gesior_sql_killer($did) {
 
 // ADMIN FUNCTIONS
 function set_ingame_position($name, $acctype) {
-    $acctype = (int)$acctype;
-    $name = sanitize($name);
+	$acctype = (int)$acctype;
+	$name = sanitize($name);
 
-    $acc_id = user_character_account_id($name);
-    $char_id = user_character_id($name);
+	$acc_id = user_character_account_id($name);
+	$char_id = user_character_id($name);
 
-    $group_id = 1;
-    if ($acctype == 4) {
-        $group_id = 2;
-    } elseif ($acctype >= 5) {
-        $group_id = 3;
-    }
-    mysql_update("UPDATE `accounts` SET `type` = '$acctype' WHERE `id` =$acc_id;");
-    mysql_update("UPDATE `players` SET `group_id` = '$group_id' WHERE `id` =$char_id;");
+	$group_id = 1;
+	if ($acctype == 4) {
+		$group_id = 2;
+	} elseif ($acctype >= 5) {
+		$group_id = 3;
+	}
+	mysql_update("UPDATE `accounts` SET `type` = '$acctype' WHERE `id` =$acc_id;");
+	mysql_update("UPDATE `players` SET `group_id` = '$group_id' WHERE `id` =$char_id;");
 }
 
 // .3
@@ -1285,7 +1285,7 @@ function user_create_character($character_data) {
 
 	$health	= $base['health'] + ( $gains['hp']  * $leveldiff );
 	$mana	= $base['mana']   + ( $gains['mp']  * $leveldiff );
-	$cap	= $base['cap']    + ( $gains['cap'] * $leveldiff );
+	$cap	= $base['cap']	+ ( $gains['cap'] * $leveldiff );
 
 	// This is TFS 0.2 compatible import data with Znote AAC mysql schema
 	if (config('ServerEngine') !== 'OTHIRE') {
@@ -1590,10 +1590,10 @@ function user_exist($username) {
 }
 
 function user_name($id) { //USERNAME FROM PLAYER ID
-    $id = (int)$id;
-    $name = mysql_select_single("SELECT `name` FROM `players` WHERE `id`='$id';");
-    if ($name !== false) return $name['name'];
-    else return false;
+	$id = (int)$id;
+	$name = mysql_select_single("SELECT `name` FROM `players` WHERE `id`='$id';");
+	if ($name !== false) return $name['name'];
+	else return false;
 }
 
 // Checks that character name exist

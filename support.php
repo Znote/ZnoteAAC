@@ -4,7 +4,7 @@ $cache = new Cache('engine/cache/support');
 if ($cache->hasExpired()) {
 	// Fetch all staffs in-game.
 	if ($config['ServerEngine'] == 'TFS_03') {
-	    $staffs = support_list03();
+		$staffs = support_list03();
 	} else $staffs = support_list();
 	// Fetch group ids and names from config.php
 	$groups = $config['ingame_positions'];

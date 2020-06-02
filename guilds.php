@@ -699,7 +699,7 @@ if ($highest_access >= 2) {
 			</ul>
 		</form>
 		<?php if ($config['guild_allow_nicknames']): ?>
-	    <!-- FORMS TO CHANGE GUILD NICK -->
+		<!-- FORMS TO CHANGE GUILD NICK -->
 			<form action="" method="post">
 				<ul>
 					<li>
