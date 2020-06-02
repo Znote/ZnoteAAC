@@ -1284,16 +1284,16 @@ function user_create_character($character_data) {
 
 	$health	= $base['health'] + ( $gains['hp']  * $leveldiff );
 	$mana	= $base['mana']   + ( $gains['mp']  * $leveldiff );
-	$cap	= $base['cap']	+ ( $gains['cap'] * $leveldiff );
+	$cap	= $base['cap']    + ( $gains['cap'] * $leveldiff );
 
 	// This is TFS 0.2 compatible import data with Znote AAC mysql schema
 	if (config('ServerEngine') !== 'OTHIRE') {
 		$import_data = array(
-			'name'	=>	$character_data['name'],
+			'name' => $character_data['name'],
 			'group_id' => 1,
 			'account_id' => $character_data['account_id'],
 			'level' => $create['level'],
-			'vocation'	=>	$vocation,
+			'vocation' => $vocation,
 			'health' => $health,
 			'healthmax' => $health,
 			'experience' => level_to_experience($create['level']),
@@ -1334,11 +1334,11 @@ function user_create_character($character_data) {
 		);
 	} else {
 		$import_data = array(
-			'name'	=>	$character_data['name'],
+			'name' => $character_data['name'],
 			'group_id' => 1,
 			'account_id' => $character_data['account_id'],
 			'level' => $create['level'],
-			'vocation'	=>	$vocation,
+			'vocation' => $vocation,
 			'health' => $health,
 			'healthmax' => $health,
 			'experience' => level_to_experience($create['level']),
