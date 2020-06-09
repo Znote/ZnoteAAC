@@ -26,7 +26,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 		$password = SHA1($jsonObject->password);
 		$token = (isset($jsonObject->token)) ? sanitize($jsonObject->token) : false;
 		
-		$fields = '`id`, `premdays`, `secret`';
+		$fields = '`id`, `premdays`';
 		if ($config['twoFactorAuthenticator']) $fields .= ', `secret`';
 
 		$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `name`='{$username}' AND `password`='{$password}' LIMIT 1;");
