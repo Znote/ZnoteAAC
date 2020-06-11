@@ -2,125 +2,218 @@
 require_once 'engine/init.php';
 
 // Client 11 loginWebService
+// DEV: Uncomment all //error_log lines and tail error.log file to see communication from and to client.
+// ...: Configure webserver to don't display PHP errors/warnings so the client can parse the json response.
 if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === 'TFS_10' && $config['login_web_service'] == true) {
 
-	function jsonError($message, $code = 3) {
-		die(json_encode(array('errorCode' => $code, 'errorMessage' => $message)));
+	function sendError($message, $code = 3) {
+		$response = json_encode(array('errorCode' => $code, 'errorMessage' => $message));
+		//error_log("\nServer = " . $response . "\n-");
+		die($response);
 	}
+
+	function sendMessage($message) {
+		$response = json_encode($message);
+		//error_log("\nServer = " . $response . "\n\n-");
+		die($response);
+	}
+
 
 	header("Content-Type: application/json");
 	$input = file_get_contents("php://input");
+	//error_log("\n\n\nClient = " . $input . "\n");
 
-	// Based on tests, input length should be at least 67+ chars.
-	if (strlen($input) > 10) {
-		/* {
-			'accountname' => 'username',
-			'password' => 'superpass',
-			'stayloggedin' => true,
-			'token' => '123123', (or not set)
-			'type' => 'login', (What other types do we have?)
-		} */
-		$jsonObject = json_decode($input);
+	$client = json_decode($input);
 
-		$username = sanitize($jsonObject->accountname);
-		$password = SHA1($jsonObject->password);
-		$token = (isset($jsonObject->token)) ? sanitize($jsonObject->token) : false;
-		
-		$fields = '`id`, `premdays`';
-		if ($config['twoFactorAuthenticator']) $fields .= ', `secret`';
+	if (!isset($client->type)) {
+		sendError("Type missing.");
+	}
 
-		$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `name`='{$username}' AND `password`='{$password}' LIMIT 1;");
-		if ($account === false) {
-			jsonError('Wrong username and/or password.');
-		}
+	switch($client->type) {
+		// {"count":0,"isreturner":true,"offset":0,"showrewardnews":false,"type":"news"}
+		case "cacheinfo":
+			// {"type":"cacheinfo"}
+			sendMessage(array(
+				'playersonline' => user_count_online(),
+				'twitchstreams' => 0,
+				'twitchviewer' => 0,
+				'gamingyoutubestreams' => 0,
+				'gamingyoutubeviewer' => 0
+			));
+			break;
 
-		if ($config['twoFactorAuthenticator'] === true && $account['secret'] !== null) {
-			if ($token === false) {
-				jsonError('Submit a valid two-factor authentication token.', 6);
-			} else {
-				require_once("engine/function/rfc6238.php");
-				if (TokenAuth6238::verify($account['secret'], $token) !== true) {
-					jsonError('Two-factor authentication failed, token is wrong.', 6);
+		case 'eventschedule':
+			// {"type":"eventschedule"}
+			sendMessage(array(
+				'eventlist' => array()
+			));
+			/*
+			array(
+				array(
+					'description' => "Description text.\n\nTest",
+					'startdate' => 1590979202,
+					'colordark' => "#735D10", // HEX color code
+					'name' => "Full Moon",
+					'enddate' => 1590979202 + (300 * 24 * 60 * 60),
+					'isseasonal' => false,
+					'colorlight' => "#8B6D05"
+				),
+                array(
+					'description' => "Winterberries can now be found all over Tibia!",
+                    'startdate' => 1590979202,
+					'colordark' => "#7A4C1F",
+					'name' => "Annual Autumn Vintage",
+					'enddate' => 1590979202 + (7 * 24 * 60 * 60),
+					'isseasonal' => false,
+					'colorlight' => "#935416"
+				),
+                array(
+					'description' => "This is the time of witches, ghosts and vampires.",
+                    'startdate' => 1590979202,
+					'colordark' => "#235c00",
+					'name' => "Halloween Event",
+					'enddate' => 1590979202 + (30 * 24 * 60 * 60),
+					'isseasonal' => false,
+					'colorlight' => "#2d7400"
+				)
+			)
+			*/
+			break;
+
+		case 'boostedcreature':
+			// {"type":"boostedcreature"}
+			sendMessage(array(
+				//'boostedcreature' => false,
+				'raceid' => 219
+			));
+			break;
+
+		case 'news':
+			// {"count":0,"isreturner":true,"offset":0,"showrewardnews":false,"type":"news"}
+			sendMessage(array(
+				'gamenews' => array(), // element structure?
+				'categorycounts' => array(
+					'support' => 1,
+					'game contents' => 2,
+					'useful info' => 3,
+					'major updates' => 4,
+					'client features' => 5
+				),
+				'maxeditdate' => 1590979202
+			));
+			break;
+
+		case "login":
+			/* {
+				'accountname' => 'username',
+				'password' => 'superpass',
+				'stayloggedin' => true,
+				'token' => '123123', (or not set)
+				'type' => 'login',
+			} */
+
+			$username = sanitize($client->accountname);
+			$password = SHA1($client->password);
+			$token = (isset($client->token)) ? sanitize($client->token) : false;
+
+			$fields = '`id`, `premdays`';
+			if ($config['twoFactorAuthenticator']) $fields .= ', `secret`';
+
+			$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `name`='{$username}' AND `password`='{$password}' LIMIT 1;");
+			if ($account === false) {
+				sendError('Wrong username and/or password.');
+			}
+
+			if ($config['twoFactorAuthenticator'] === true && $account['secret'] !== null) {
+				if ($token === false) {
+					sendError('Submit a valid two-factor authentication token.', 6);
+				} else {
+					require_once("engine/function/rfc6238.php");
+					if (TokenAuth6238::verify($account['secret'], $token) !== true) {
+						sendError('Two-factor authentication failed, token is wrong.', 6);
+					}
 				}
 			}
-		}
 
-		$players = mysql_select_multi("SELECT `name`, `sex`, `level`, `vocation`, `lookbody`, `looktype`, `lookhead`, `looklegs`, `lookfeet`, `lookaddons`, `deletion` FROM `players` WHERE `account_id`='".$account['id']."';");
-		if ($players !== false) {
+			$players = mysql_select_multi("SELECT `name`, `sex`, `level`, `vocation`, `lookbody`, `looktype`, `lookhead`, `looklegs`, `lookfeet`, `lookaddons`, `deletion` FROM `players` WHERE `account_id`='".$account['id']."';");
+			if ($players !== false) {
 
-			$gameserver = $config['gameserver'];
-			// todo: Fix dynamic desition to pass along token. (and verify that it works). Hostname: otx11.lan
-			$sessionKey = $username."\n".$jsonObject->password;
-			if (strlen($account['secret']) > 5) $sessionKey .= "\n".$token."\n".floor(time() / 30);
-			$response = array(
-				'session' => array(
-					'fpstracking' => false,
-					'optiontracking' => false,
-					'isreturner' => true,
-					'returnernotification' => false,
-					'showrewardnews' => false,
-					'tournamentticketpurchasestate' => 0,
-					'emailcoderequest' => false,
-					'sessionkey' => $sessionKey,
-					'lastlogintime' => 0,
-					'ispremium' => ($account['premdays'] > 0) ? true : false,
-					'premiumuntil' => time() + ($account['premdays'] * 86400),
-					'status' => 'active'
-				),
-				'playdata' => array(
-					'worlds' => array(
-						array(
-							'id' => 0,
-							'name' => $gameserver['name'],
-							'externaladdress' => $gameserver['ip'],
-							'externalport' => $gameserver['port'],
-							'previewstate' => 0,
-							'location' => 'ALL',
-							'pvptype' => 'pvp',
-							'externaladdressunprotected' => $gameserver['ip'],
-							'externaladdressprotected' => $gameserver['ip'],
-							'externalportunprotected' => $gameserver['port'],
-							'externalportprotected' => $gameserver['port'],
-							'istournamentworld' => false,
-							'restrictedstore' => false,
-							'currenttournamentphase' => 2,
-							'anticheatprotection' => false
-						)
+				$gameserver = $config['gameserver'];
+				// todo: Fix dynamic desition to pass along token. (and verify that it works). Hostname: otx11.lan
+				$sessionKey = $username."\n".$client->password;
+				if (isset($account['secret']) && strlen($account['secret']) > 5) $sessionKey .= "\n".$token."\n".floor(time() / 30);
+
+				$response = array(
+					'session' => array(
+						'fpstracking' => false,
+						'optiontracking' => false,
+						'isreturner' => true,
+						'returnernotification' => false,
+						'showrewardnews' => false,
+						'tournamentticketpurchasestate' => 0,
+						'emailcoderequest' => false,
+						'sessionkey' => $sessionKey,
+						'lastlogintime' => 0,
+						'ispremium' => ($account['premdays'] > 0) ? true : false,
+						'premiumuntil' => time() + ($account['premdays'] * 86400),
+						'status' => 'active'
 					),
-					'characters' => array(
-						//array( 'worldid' => ASD, 'name' => asd, 'ismale' => true, 'tutorial' => false ),
+					'playdata' => array(
+						'worlds' => array(
+							array(
+								'id' => 0,
+								'name' => $gameserver['name'],
+								'externaladdress' => $gameserver['ip'],
+								'externalport' => $gameserver['port'],
+								'previewstate' => 0,
+								'location' => 'ALL',
+								'pvptype' => 'pvp',
+								'externaladdressunprotected' => $gameserver['ip'],
+								'externaladdressprotected' => $gameserver['ip'],
+								'externalportunprotected' => $gameserver['port'],
+								'externalportprotected' => $gameserver['port'],
+								'istournamentworld' => false,
+								'restrictedstore' => false,
+								'currenttournamentphase' => 2,
+								'anticheatprotection' => false
+							)
+						),
+						'characters' => array(
+							//array( 'worldid' => ASD, 'name' => asd, 'ismale' => true, 'tutorial' => false ),
+						)
 					)
-				)
-			);
-
-			foreach ($players as $player) {
-				$response['playdata']['characters'][] = array(
-					'worldid' => 0,
-					'name' => $player['name'],
-					'ismale' => ($player['sex'] === 1) ? true : false,
-					'tutorial' => false,
-					'level' => intval($player['level']),
-					'vocation' => vocation_id_to_name($player['vocation']),
-					'outfitid' => intval($player['looktype']),
-					'headcolor' => intval($player['lookhead']),
-					'torsocolor' => intval($player['lookbody']),
-					'legscolor' => intval($player['looklegs']),
-					'detailcolor' => intval($player['lookfeet']),
-					'addonsflags' => intval($player['lookaddons']),
-					'ishidden' => intval($player['deletion']) === 1,
-					'istournamentparticipant' => false,
-					'remainingdailytournamentplaytime' => 0
 				);
-			}
 
-			//error_log("= SESSION KEY: " . $response['session']['sessionkey']);
-			die(json_encode($response));
-		} else {
-			jsonError("Character list is empty.");
-		}
-	} else {
-		jsonError("Unrecognized event.");
+				foreach ($players as $player) {
+					$response['playdata']['characters'][] = array(
+						'worldid' => 0,
+						'name' => $player['name'],
+						'ismale' => ($player['sex'] === 1) ? true : false,
+						'tutorial' => false,
+						'level' => intval($player['level']),
+						'vocation' => vocation_id_to_name($player['vocation']),
+						'outfitid' => intval($player['looktype']),
+						'headcolor' => intval($player['lookhead']),
+						'torsocolor' => intval($player['lookbody']),
+						'legscolor' => intval($player['looklegs']),
+						'detailcolor' => intval($player['lookfeet']),
+						'addonsflags' => intval($player['lookaddons']),
+						'ishidden' => intval($player['deletion']) === 1,
+						'istournamentparticipant' => false,
+						'remainingdailytournamentplaytime' => 0
+					);
+				}
+
+				sendMessage($response);
+			} else {
+				sendError("Character list is empty.");
+			}
+			break;
+
+		default:
+			sendError("Unsupported type: " . sanitize($client->type));
 	}
+
 } // End client 11 loginWebService
 
 logged_in_redirect();
