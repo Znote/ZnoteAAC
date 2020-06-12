@@ -1,0 +1,30 @@
+@media screen and (max-width:1300px){
+	.main {
+		width: 1100px;
+	}
+	.banner {
+		height: 214px;
+	}
+}
+
+@media screen and (max-width:1200px){
+	.main {
+		width: 1000px;
+	}
+	.banner {
+		height: 192px;
+	}
+}
+
+@media screen and (max-width:1100px){
+	.main {
+		width: 900px;
+	}
+	nav .container > div > ul > li > a {
+		padding: 20px 10px;
+	}
+	.banner {
+		height: 170px;
+	}
+
+}
