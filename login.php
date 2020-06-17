@@ -139,7 +139,30 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 			if ($players !== false) {
 
 				$gameserver = $config['gameserver'];
-				// todo: Fix dynamic desition to pass along token. (and verify that it works). Hostname: otx11.lan
+				// Override $config['gameserver'] if server has installed Lua script for loginWebService
+				$sql_elements = mysql_select_multi("
+					SELECT
+						`key`,
+			            `value`
+					FROM `znote_global_storage`
+					WHERE `key` IN('SERVER_NAME', 'IP', 'GAME_PORT')
+				");
+				if ($sql_elements !== false) {
+					foreach ($sql_elements AS $element) {
+						switch ($element['key']) {
+							case 'SERVER_NAME':
+								$gameserver['name'] = $element['value'];
+								break;
+							case 'IP':
+								$gameserver['ip'] = $element['value'];
+								break;
+							case 'GAME_PORT':
+								$gameserver['port'] = (int)$element['value'];
+								break;
+						}
+					}
+				}
+
 				$sessionKey = $username."\n".$client->password;
 				if (isset($account['secret']) && strlen($account['secret']) > 5) $sessionKey .= "\n".$token."\n".floor(time() / 30);
 
