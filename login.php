@@ -34,7 +34,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 		case "cacheinfo":
 			// {"type":"cacheinfo"}
 			sendMessage(array(
-				'playersonline' => user_count_online(),
+				'playersonline' => (int)user_count_online(),
 				'twitchstreams' => 0,
 				'twitchviewer' => 0,
 				'gamingyoutubestreams' => 0,
