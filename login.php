@@ -106,20 +106,33 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 		case "login":
 			/* {
 				'accountname' => 'username',
+				"email":"my@email.com",
 				'password' => 'superpass',
 				'stayloggedin' => true,
 				'token' => '123123', (or not set)
 				'type' => 'login',
 			} */
 
-			$username = sanitize($client->accountname);
+			$email = (isset($client->email)) ? sanitize($client->email) : false;
+			$username = (isset($client->accountname)) ? sanitize($client->accountname) : false;
 			$password = SHA1($client->password);
 			$token = (isset($client->token)) ? sanitize($client->token) : false;
 
 			$fields = '`id`, `premdays`';
 			if ($config['twoFactorAuthenticator']) $fields .= ', `secret`';
 
-			$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `name`='{$username}' AND `password`='{$password}' LIMIT 1;");
+			$account = false;
+
+			if ($email !== false) {
+				$fields .= ', `name`';
+				$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `email`='{$email}' AND `password`='{$password}' LIMIT 1;");
+				if ($account !== false) {
+					$username = $account['name'];
+				}
+			} elseif ($username !== false) {
+				$account = mysql_select_single("SELECT {$fields} FROM `accounts` WHERE `name`='{$username}' AND `password`='{$password}' LIMIT 1;");
+			}
+
 			if ($account === false) {
 				sendError('Wrong username and/or password.');
 			}
@@ -163,7 +176,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 					}
 				}
 
-				$sessionKey = $username."\n".$client->password;
+				$sessionKey = ($email !== false) ? $email."\n".$client->password : $username."\n".$client->password;
 				if (isset($account['secret']) && strlen($account['secret']) > 5) $sessionKey .= "\n".$token."\n".floor(time() / 30);
 
 				$response = array(
