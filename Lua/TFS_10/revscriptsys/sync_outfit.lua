@@ -1,3 +1,5 @@
+local creatureevent = CreatureEvent("SincOutfit")
+
 -- Sync outfits that player own with Znote AAC 
 -- So its possible to see which full sets player 
 -- has in characterprofile.php 
@@ -30,7 +32,7 @@ znote_outfit_list = {
 	}
 }
 
-function onLogin(player)
+function creatureevent.onLogin(player)
 	-- storage_value + 1000 storages (highest outfit id) must not be used in other script. 
 	-- Must be identical to Znote AAC config.php: $config['EQ_shower'] -> storage_value
 	local storage_value = 10000
@@ -44,3 +46,5 @@ function onLogin(player)
 	end
 	return true
 end
+
+creatureevent:register()

@@ -1,0 +1,3 @@
+Step 1: Replace the one that comes with tfs with this one
+
+Step 2: Restart OT server, and it should work. :)

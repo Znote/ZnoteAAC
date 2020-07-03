@@ -32,7 +32,9 @@ local function sendWarStatus(guildId, enemyGuildId, warId, playerName, killerNam
 	end
 end
 
-function onDeath(player, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
+local creatureevent = CreatureEvent("PlayerDeath")
+
+function creatureevent.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
 	local playerId = player:getId()
 	if nextUseStaminaTime[playerId] then
 		nextUseStaminaTime[playerId] = nil
@@ -120,3 +122,14 @@ function onDeath(player, corpse, killer, mostDamageKiller, lastHitUnjustified, m
 		end
 	end
 end
+
+creatureevent:register()
+
+local creatureeventLogin = CreatureEvent("creatureeventLogin")
+
+function creatureeventLogin.onLogin(player)
+	player:registerEvent("PlayerDeath")
+	return true
+end
+
+creatureeventLogin:register()
