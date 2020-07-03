@@ -1,0 +1,4 @@
+1. Add below line to XML file: data/creaturescripts/creaturescripts.xml
+<event type="login" name="znote_syncoutfits" script="syncoutfit.lua" />
+
+2. Place Lua file syncoutfit.lua in folder: data/creaturescripts/scripts/

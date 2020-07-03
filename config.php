@@ -256,7 +256,7 @@
 
 	// TFS 1.x powergamers and top online
 	// Before enabling powergamers, make sure that you have added Lua files and added the SQL columns to your server db.
-	// files can be found at LUA folder.
+	// files can be found at Lua folder.
 	$config['powergamers'] = array(
 		'enabled' => true, // Enable or disable page
 		'limit' => 20, // Number of players that it will show.
@@ -607,7 +607,7 @@
 		'outfits' => true,
 		// Player storage (storage_value + outfitId)
 		// used to see if player has outfit.
-		// see LUA scripts folder for otserv code
+		// see Lua scripts folder for otserv code
 		'storage_value' => 10000
 	);
 
@@ -936,7 +936,7 @@
 	////////////
 	/// SHOP ///
 	////////////
-	// If useDB is set to true, player can shop in-game as well using Znote LUA shop system plugin.
+	// If useDB is set to true, player can shop in-game as well using Znote Lua shop system plugin.
 	$config['shop'] = array(
 		'enabled' => false,
 		'loginToView' => false, // Do user need to login to see the shop offers?
