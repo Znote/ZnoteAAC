@@ -8,7 +8,7 @@ if($undelete_id) {
 	$undelete_q1 = mysql_select_single('SELECT `character_name` FROM `znote_deleted_characters` WHERE `done` = 0 AND `id` = ' . $undelete_id . ' AND `original_account_id` = ' . $session_user_id . ' AND NOW() < `time`');
 	if($undelete_q1) {
 		mysql_delete('DELETE FROM `znote_deleted_characters` WHERE `id` = ' . $undelete_id);
-		echo 'Pending delete of ' . $undelete_q1['character_name'] . ' has been successfully cancelled.<br/>';
+		echo 'Pending delete of ' . $undelete_q1['character_name'] . ' has been successfully canceled.<br/>';
 	}
 }
 #endregion
@@ -30,12 +30,12 @@ if (isset($_GET['authenticate']) && $config['mailserver']['myaccount_verify_emai
 				$user = (int) $user['id'];
 				$active = (int) $user['active'];
 				$active_email = (int) $user['active_email'];
-				$verify_points = ($active_email == 0 && $config['mailserver']['verify_email_points'] > 0) 
+				$verify_points = ($active_email == 0 && $config['mailserver']['verify_email_points'] > 0)
 					? ", `points` = `points` + {$config['mailserver']['verify_email_points']}" 
 					: '';
 				// Enable the account to login
 				if ($active == 0 || $active_email == 0) {
-					$new_activeKey = rand(100000000,999999999);
+					$new_activeKey = rand(100000000, 999999999);
 					mysql_update("UPDATE `znote_accounts` SET `active`='1', `active_email`='1', `activekey`='{$new_activeKey}' {$verify_points} WHERE `id`= {$user} LIMIT 1;");
 				}
 				echo '<h1>Congratulations!</h1> <p>Your email has been verified.</p>';
@@ -70,7 +70,7 @@ if (isset($_GET['authenticate']) && $config['mailserver']['myaccount_verify_emai
 			?>
 			<h1>Email authentication sent</h1>
 			<p>We have sent you an email with a verification link to your email address: <strong><?php echo $user_data['email']; ?></strong></p>
-			<p>If you can't find the email within 5 minutes, check your <strong>junk/trash inbox (spam filter)</strong> as it may be mislocated there.</p>
+			<p>If you can't find the email within 5 minutes, check your <strong>junk/trash inbox (spam filter)</strong> as it may be misplaced there.</p>
 			<?php
 		} else {
 			echo '<h1>Authentication failed</h1> <p>Failed to verify user when trying to send a verification email.</p>';
@@ -305,16 +305,20 @@ if ($render_page) {
 		<h1>My account</h1>
 		<p>Welcome to your account page, <?php if ($config['ServerEngine'] !== 'OTHIRE') echo $user_data['name']; else echo $user_data['id']; ?><br>
 			<?php if ($config['ServerEngine'] !== 'OTHIRE') {
-			echo 'You have ' .$user_data['premdays']. ' days remaining premium account.'; 
+				if ($user_data['premdays'] != 0) {
+					echo 'You have ' .$user_data['premdays']. ' remaining premium account days.';
+				} else {
+					echo 'You are free account.';
+				}
 			} else {
 				if ($user_data['premend'] != 0) {
 					echo 'Your premium account will last till ';
 					echo date("d/m/Y", $user_data['premend']);
 				} else {
 					echo 'You do not have premium account days.';
-				}				
+				}
 			} 
-			if ($config['mailserver']['myaccount_verify_email']): 
+			if ($config['mailserver']['myaccount_verify_email']):
 				?><br>Email: <?php echo $user_data['email'];
 				if ($user_znote_data['active_email'] == 1) {
 					?> (Verified).<?php
@@ -325,7 +329,6 @@ if ($render_page) {
 		</p>
 		<?php
 		if ($config['ServerEngine'] === 'TFS_10' && $config['twoFactorAuthenticator']) {
-
 			$query = mysql_select_single("SELECT `secret` FROM `accounts` WHERE `id`='".(int)$session_user_id."' LIMIT 1;");
 			$status = ($query['secret'] === NULL) ? false : true;
 			?><p>Account security with Two-factor Authentication: <a href="twofa.php"><?php echo ($status) ? 'Enabled' : 'Disabled'; ?></a></p><?php
@@ -362,9 +365,9 @@ if ($render_page) {
 							<?php
 							for ($i = 0; $i < $char_count; $i++) {
 								if (user_character_hide($characters[$i]) == 1) {
-									echo '<option value="'. $characters[$i] . '">'. $characters[$i] .'</option>'; 	
+									echo '<option value="'. $characters[$i] . '">'. $characters[$i] .'</option>';
 								} else {
-									echo '<option value="'. $characters[$i] . '">'. $characters[$i] .'</option>'; 	
+									echo '<option value="'. $characters[$i] . '">'. $characters[$i] .'</option>';
 								}
 							}
 							?>
