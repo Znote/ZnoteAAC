@@ -6,7 +6,7 @@
 					- http://you-site/pagseguro_ipn.php
 				- Página de redirecionamento:
 					- A. Página fixa de redirecionamento
-						- http://you-site/znote/pagseguro_retorno.php
+						- http://you-site/pagseguro_retorno.php
 					- B. Redirecionamento com o código da transação
 						- transaction
 				- Gerar o Token e copiar para a próxima etapa
