@@ -105,28 +105,27 @@ function fetchLatestDeaths_03($rowz = 30, $killers = false) {
 
 // Support list
 function support_list() {
-	$TFS = Config('ServerEngine');
-
-	if ($TFS == 'TFS_10') $staffs = mysql_select_multi("SELECT `p`.`id`, `a`.`type` as `group_id`, `p`.`name`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `p`.`account_id` = `a`.`id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
-	else $staffs = mysql_select_multi("SELECT `a`.`type` as `group_id`, `p`.`name`, `p`.`online`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `a`.`id` = `p`.`account_id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
-
-	foreach($staffs as $k => $v)  {
-		foreach($staffs as $key => $value)  {
-			if($k != $key && $v['account_id'] == $value['account_id']) {
-				unset($staffs[$k]);
-			}
-		}
+    $TFS = Config('ServerEngine');
+    if ($TFS == 'TFS_10') $staffs = mysql_select_multi("SELECT `p`.`id`, `a`.`type` as `group_id`, `p`.`name`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `p`.`account_id` = `a`.`id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
+    else $staffs = mysql_select_multi("SELECT `a`.`type` as `group_id`, `p`.`name`, `p`.`online`, `p`.`account_id` FROM `players` AS `p` INNER JOIN `accounts` AS `a` ON `a`.`id` = `p`.`account_id` WHERE `a`.`type` > 1 ORDER BY `p`.`account_id` DESC, `p`.`group_id` ASC, `p`.`level` ASC;");
+	if ($staffs !== false) {
+		foreach($staffs as $k => $v)  {
+	        foreach($staffs as $key => $value)  {
+	            if($k != $key && $v['account_id'] == $value['account_id']) {
+	                unset($staffs[$k]);
+	            }
+	        }
+	    }
+	    $staffs = array_values($staffs);
+	    if ($TFS == 'TFS_10') {
+	        for ($i = 0; $i < count($staffs); $i++) {
+	            // Fix online status on TFS 1.0
+	            $staffs[$i]['online'] = (isset($staffs[$i]['id']) && user_is_online_10($staffs[$i]['id'])) ? 1 : 0;
+	            unset($staffs[$i]['id']);
+	        }
+	    }
 	}
-	$staffs = array_values($staffs);
-
-	if ($staffs !== false && $TFS == 'TFS_10') {
-		for ($i = 0; $i < count($staffs); $i++) {
-			// Fix online status on TFS 1.0
-			$staffs[$i]['online'] = (isset($staffs[$i]['id']) && user_is_online_10($staffs[$i]['id'])) ? 1 : 0;
-			unset($staffs[$i]['id']);
-		}
-	}
-	return $staffs;
+    return $staffs;
 }
 
 function support_list03() {

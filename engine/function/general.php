@@ -70,10 +70,10 @@ function generate_recovery_key($lenght) {
 	$tmp = rand(1000, 9000);
 	$tmp += time();
 	$tmp = sha1($tmp);
-	
+
 	$results = '';
 	for ($i = 0; $i < $lenght; $i++) $results = $results.''.$tmp[$i];
-	
+
 	return $results;
 }
 
@@ -81,7 +81,7 @@ function generate_recovery_key($lenght) {
 function calculate_discount($orig, $new) {
 	$orig = (int)$orig;
 	$new = (int)$new;
-	
+
 	$tmp = '';
 	if ($new >= $orig) {
 		if ($new != $orig) {
@@ -122,14 +122,14 @@ function znote_visitors_get_data() {
 function znote_visitor_set_data($visitor_data) {
 	$exist = false;
 	$ip = getIPLong();
-	
+
 	foreach ((array)$visitor_data as $row) {
 		if ($ip == $row['ip']) {
 			$exist = true;
 			$value = $row['value'];
 		}
 	}
-	
+
 	if ($exist && isset($value)) {
 		// Update the value
 		$value++;
@@ -178,7 +178,7 @@ function create_token() {
 		var_dump($token, $token2);
 		$_SESSION['token'] = $token2;
 	#}
-	
+
 	echo "<input type=\"hidden\" name=\"token\" value=\"". $_SESSION['token'] ."\" />";
 }
 function reset_token() {
@@ -393,10 +393,10 @@ function protect_page() {
 }
 
 // When function is called, you will be redirected to protect_page and deny access to rest of page, as long as you are not admin.
-function admin_only($user_data) {	
+function admin_only($user_data) {
 	// Chris way
 	$gotAccess = is_admin($user_data);
-	
+
 	if ($gotAccess == false) {
 		logged_in_redirect();
 		exit();
@@ -407,7 +407,7 @@ function is_admin($user_data) {
 	if (config('ServerEngine') === 'OTHIRE')
 		return in_array($user_data['id'], config('page_admin_access')) ? true : false;
 	else
-		return in_array($user_data['name'], config('page_admin_access')) ? true : false;	
+		return in_array($user_data['name'], config('page_admin_access')) ? true : false;
 }
 
 function array_sanitize(&$item) {
@@ -472,7 +472,7 @@ function check_image($image) {
 
 				// Last one
 				if ($path_info['extension'] === 'gif') {
-					
+
 					// Resize image
 					$img = resize_imagex($image_data, 100, 100);
 
@@ -594,5 +594,20 @@ function random_bytes_compat($length, &$crypto_strong = null) {
         $ret .= chr(mt_rand(0, 255));
     }
     return $ret;
+}
+
+// hash_equals legacy support < 5.6
+if(!function_exists('hash_equals')) {
+    function hash_equals($str1, $str2) {
+        if(strlen($str1) != strlen($str2)) {
+            return false;
+        }
+		$res = $str1 ^ $str2;
+		$ret = 0;
+		for($i = strlen($res) - 1; $i >= 0; $i--) {
+			$ret |= ord($res[$i]);
+		}
+		return !$ret;
+    }
 }
 ?>

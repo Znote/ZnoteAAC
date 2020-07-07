@@ -7,7 +7,7 @@ if ($config['log_ip']) {
 if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 	$name = getValue($_GET['name']);
 	$user_id = user_character_exist($name);
-	
+
 	if ($user_id !== false) {
 		$loadOutfits = $config['show_outfits']['characterprofile'];
 
@@ -22,7 +22,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				}
 			}
 			$profile_data['online'] = user_is_online_10($user_id);
-			
+
 			if ($config['Ach']) {
 				$user_id = (int) $user_id;
 				$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`={$user_id} LIMIT 1");
@@ -42,7 +42,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				}
 			}
 		}
-		
+
 		$profile_znote_data = user_znote_character_data($user_id, 'created', 'hide_char', 'comment');
 		$guild_exist = false;
 		if (get_character_guild_rank($user_id) > 0) {
@@ -61,9 +61,9 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							<div class="outfit">
 								<img src="<?php echo $config['show_outfits']['imageServer']; ?>?id=<?php echo $profile_data['looktype']; ?>&addons=<?php echo $profile_data['lookaddons']; ?>&head=<?php echo $profile_data['lookhead']; ?>&body=<?php echo $profile_data['lookbody']; ?>&legs=<?php echo $profile_data['looklegs']; ?>&feet=<?php echo $profile_data['lookfeet']; ?>" alt="img">
 							</div>
-						<?php endif; 
+						<?php endif;
 						$flags = $config['country_flags'];
-						if ($flags['enabled'] && $flags['characterprofile']) { 
+						if ($flags['enabled'] && $flags['characterprofile']) {
 							$account_data = user_znote_account_data($profile_data['account_id'], 'flag');
 							if (strlen($account_data['flag']) > 0):
 								?><!-- Player country data -->
@@ -131,16 +131,16 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 						'TFS_03' => 'town'
 						// Default: town_id
 					);
-					$column_town_id = (isset($column_town_id[$config['ServerEngine']])) 
-					? $column_town_id[$config['ServerEngine']] 
+					$column_town_id = (isset($column_town_id[$config['ServerEngine']]))
+					? $column_town_id[$config['ServerEngine']]
 					: 'town_id';
 
 					$houses = mysql_select_multi("
-						SELECT `id`, `owner`, `name`, `{$column_town_id}` AS `town_id` 
-						FROM `houses` 
+						SELECT `id`, `owner`, `name`, `{$column_town_id}` AS `town_id`
+						FROM `houses`
 						WHERE `owner` = {$user_id};
 					");
-					
+
 					if ($houses !== false) {
 						foreach ($houses as $h): ?>
 							<tr>
@@ -161,7 +161,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 					<td>Created</td>
 					<td><?php echo getClock($profile_znote_data['created'], true); ?></td>
 				</tr>
-				
+
 				<!-- EQ shower -->
 				<?php if ($config['EQ_shower']['enabled']): ?>
 					<tr>
@@ -170,30 +170,30 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 						$imageServer = $config['shop']['imageServer'];
 						$imageType = $config['shop']['imageType'];
 						$PEQ = mysql_select_multi("
-							SELECT 
-								`player_id`, 
-								`pid`, 
-								`itemtype`, 
-								`count` 
-							FROM `player_items` 
-							WHERE `player_id`={$user_id} 
+							SELECT
+								`player_id`,
+								`pid`,
+								`itemtype`,
+								`count`
+							FROM `player_items`
+							WHERE `player_id`={$user_id}
 							AND `pid`<'11'
 						");
 
-						$soulStamina = (in_array($config['ServerEngine'], ['TFS_10'])) 
-							? " `soul`, `stamina`," 
+						$soulStamina = (in_array($config['ServerEngine'], ['TFS_10']))
+							? " `soul`, `stamina`,"
 							: " `p`.`soul`, `p`.`stamina`,";
-						
+
 						if ($config['client'] < 780) {
 							$soulStamina = " 0 AS `soul`, 0 AS `stamina`,";
 						}
 
-						$player_query = (in_array($config['ServerEngine'], ['TFS_10'])) 
-							? /* true */ "SELECT 
+						$player_query = (in_array($config['ServerEngine'], ['TFS_10']))
+							? /* true */ "SELECT
 									`health`, `healthmax`,
 									`mana`, `manamax`,
 									`cap`,
-									`experience`, `level`, 
+									`experience`, `level`,
 									{$soulStamina}
 									`maglevel`,
 									`skill_fist`,
@@ -203,14 +203,14 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 									`skill_dist`,
 									`skill_shielding`,
 									`skill_fishing`
-								FROM `players` 
-								WHERE `id`={$user_id} 
-								LIMIT 1;" 
-							: /* false */ "SELECT 
+								FROM `players`
+								WHERE `id`={$user_id}
+								LIMIT 1;"
+							: /* false */ "SELECT
 									`p`.`health`, `p`.`healthmax`,
 									`p`.`mana`, `p`.`manamax`,
 									`p`.`cap`,
-									`p`.`experience`, `p`.`level`, 
+									`p`.`experience`, `p`.`level`,
 									{$soulStamina}
 									`p`.`maglevel`,
 									`fist`.`value` AS `skill_fist`,
@@ -220,7 +220,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 									`dist`.`value` AS `skill_dist`,
 									`shield`.`value` AS `skill_shielding`,
 									`fish`.`value` AS `skill_fishing`
-								FROM `players` AS `p` 
+								FROM `players` AS `p`
 								LEFT JOIN `player_skills` AS `fist` ON `p`.`id` = `fist`.`player_id` AND `fist`.`skillid` = 0
 								LEFT JOIN `player_skills` AS `club` ON `p`.`id` = `club`.`player_id` AND `club`.`skillid` = 1
 								LEFT JOIN `player_skills` AS `sword` ON `p`.`id` = `sword`.`player_id` AND `sword`.`skillid` = 2
@@ -243,7 +243,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 						else {
 							$bar_mana = 100;
 						}
-						
+
 						$outfit_server = $config['show_outfits']['imageServer'];
 						$outfit_storage = $config['EQ_shower']['storage_value'];
 
@@ -282,15 +282,15 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 						}
 
 						$highest_outfit_id = MAX($outfit_list);
-						$outfit_storage_max = $outfit_storage + $highest_outfit_id + 1; 
+						$outfit_storage_max = $outfit_storage + $highest_outfit_id + 1;
 
 						$player_outfits = array();
 						$storage_sql = mysql_select_multi("
-							SELECT `key`, `value` 
-							FROM `player_storage` 
-							WHERE `player_id`={$user_id} 
-							AND `key` > {$outfit_storage} 
-							AND `key` < {$outfit_storage_max} 
+							SELECT `key`, `value`
+							FROM `player_storage`
+							WHERE `player_id`={$user_id}
+							AND `key` > {$outfit_storage}
+							AND `key` < {$outfit_storage_max}
 						");
 						if ($storage_sql !== false && !empty($storage_sql)) {
 							foreach ($storage_sql as $row) {
@@ -315,7 +315,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 										<div id="piv_lifebar"></div><div id="piv_lifetext"><span><?php echo $playerstats['health']; ?></span></div>
 										<div id="piv_manabar"></div><div id="piv_manatext"><span><?php echo $playerstats['mana']; ?></span></div>
 										<?php if ($PEQ !== false && !empty($PEQ)): foreach($PEQ as $item): ?>
-											<img class="itm itm-<?php echo $item['pid']; ?>" 
+											<img class="itm itm-<?php echo $item['pid']; ?>"
 											src="<?php echo "http://{$imageServer}/".$item['itemtype'].".{$imageType}"; ?>">
 										<?php endforeach; endif; ?>
 										<span id="piv_cap">Cap:<br><?php echo $playerstats['cap']; ?></span>
@@ -387,7 +387,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 									/*align-items: center;*/
 									justify-content: space-between;
 									width: 100%;
-									font-family: Verdana,Geneva,sans-serif; 
+									font-family: Verdana,Geneva,sans-serif;
 									font-size: 7.0pt;
 									line-height: 1;
 									color: rgb(201,201,201);
@@ -633,11 +633,11 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 		<?php endif; ?>
 
 		<!-- Achievements start -->
-		<?php if ($config['Ach']): 
+		<?php if ($config['Ach']):
 			$achievements = mysql_select_multi("
-				SELECT `player_id`, `value`, `key` 
-				FROM `player_storage` 
-				WHERE `player_id`='$user_id' 
+				SELECT `player_id`, `value`, `key`
+				FROM `player_storage`
+				WHERE `player_id`='$user_id'
 				AND `key` LIKE '30___';
 			");
 			$c_achs = $config['achievements'];
@@ -695,7 +695,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				</script>
 			<?php endif; ?>
 		<?php endif; ?>
-		
+
 		<!-- DEATH LIST -->
 		<table class="deathlist">
 			<thead>
@@ -707,50 +707,50 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				<?php
 				if ($config['ServerEngine'] == 'TFS_10') {
 					$deaths = mysql_select_multi("
-						SELECT 
-							`player_id`, 
-							`time`, 
-							`level`, 
-							`killed_by`, 
-							`is_player`, 
-							`mostdamage_by`, 
-							`mostdamage_is_player`, 
-							`unjustified`, 
-							`mostdamage_unjustified` 
-						FROM `player_deaths` 
-						WHERE `player_id`=$user_id 
-						ORDER BY `time` DESC 
+						SELECT
+							`player_id`,
+							`time`,
+							`level`,
+							`killed_by`,
+							`is_player`,
+							`mostdamage_by`,
+							`mostdamage_is_player`,
+							`unjustified`,
+							`mostdamage_unjustified`
+						FROM `player_deaths`
+						WHERE `player_id`=$user_id
+						ORDER BY `time` DESC
 						LIMIT 10;
 					");
 
 					if ($deaths) {
 						foreach ($deaths as $d) {
-							$lasthit = ($d['is_player']) 
-							? "<a href='characterprofile.php?name=".$d['killed_by']."'>".$d['killed_by']."</a>" 
+							$lasthit = ($d['is_player'])
+							? "<a href='characterprofile.php?name=".$d['killed_by']."'>".$d['killed_by']."</a>"
 							: $d['killed_by'];
 
 							?>
 							<tr>
 								<td><?php echo getClock($d['time'], true, true); ?></td>
 								<td>
-									<?php 
-									echo "Killed at level ".$d['level']." by {$lasthit}"; 
+									<?php
+									echo "Killed at level ".$d['level']." by {$lasthit}";
 									if ($d['unjustified']) {
 										echo " <font color='red' style='font-style: italic;'>(unjustified)</font>";
 									}
 									$mostdmg = ($d['mostdamage_by'] !== $d['killed_by']) ? true : false;
 									if ($mostdmg) {
-										$mostdmg = ($d['mostdamage_is_player']) 
-										? "<a href='characterprofile.php?name=".$d['mostdamage_by']."'>".$d['mostdamage_by']."</a>" 
+										$mostdmg = ($d['mostdamage_is_player'])
+										? "<a href='characterprofile.php?name=".$d['mostdamage_by']."'>".$d['mostdamage_by']."</a>"
 										: $d['mostdamage_by'];
 
 										echo "<br>and by $mostdmg.";
 
-										if ($d['mostdamage_unjustified']) { 
-											echo " <font color='red' style='font-style: italic;'>(unjustified)</font>"; 
+										if ($d['mostdamage_unjustified']) {
+											echo " <font color='red' style='font-style: italic;'>(unjustified)</font>";
 										}
-									} else { 
-										echo " <b>(soloed)</b>"; 
+									} else {
+										echo " <b>(soloed)</b>";
 									}
 									?>
 								</td>
@@ -767,7 +767,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				} elseif ($config['ServerEngine'] == 'TFS_02') {
 					$array = user_fetch_deathlist($user_id);
 					if ($array) {
-						foreach ($array as $value): 
+						foreach ($array as $value):
 							if ($value['is_player'] == 1) {
 								$value['killed_by'] = 'player: <a href="characterprofile.php?name='. $value['killed_by'] .'">'. $value['killed_by'] .'</a>';
 							} else {
@@ -803,8 +803,8 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 								}
 							} else {
 								$value[3] = user_get_killer_m_name(user_get_kid($value['id']));
-								if ($value[3] === false) { 
-									$value[3] = 'deleted player.'; 
+								if ($value[3] === false) {
+									$value[3] = 'deleted player.';
 								}
 							}
 							?>
@@ -813,7 +813,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 								<td><?php echo 'Killed at level '. $value['level'] .' by '. $value[3]; ?></td>
 							</tr>
 						<?php endforeach;
-					} else { 
+					} else {
 						?>
 						<tr>
 							<td colspan="2">This player has never died.</td>
@@ -833,18 +833,20 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 
 		if ($config['EnableQuests'] == true) {
 			$sqlquests = mysql_select_multi("
-				SELECT `player_id`, `key`, `value` 
-				FROM player_storage 
+				SELECT `player_id`, `key`, `value`
+				FROM player_storage
 				WHERE `player_id` = {$user_id}
 			");
 			if (isset($config['quests']) && !empty($config['quests'])) {
 				foreach ($config['quests'] as $cquest) {
 					$totalquests = $totalquests + 1;
-					foreach ($sqlquests as $dbquest) {
-						if ($cquest[0] == $dbquest['key'] && $cquest[1] == $dbquest['value']) {
-							$completedquests = $completedquests + 1;
-						}
-					}
+					if ($sqlquests !== false) {
+                        foreach ($sqlquests as $dbquest) {
+    						if ($cquest[0] == $dbquest['key'] && $cquest[1] == $dbquest['value']) {
+    							$completedquests = $completedquests + 1;
+    						}
+    					}
+                    }
 					if ($cquest[3] == 1) {
 						if ($completedquests != 0) {
 							if ($firstrun == 1): ?>
@@ -877,7 +879,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				}
 			}
 		}
-		
+
 		if ($firstrun == 0): ?>
 			</tbody></table>
 		<?php endif; ?>
@@ -885,55 +887,71 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 
 		<!-- CHARACTER LIST -->
 		<?php
-		if (user_character_hide($profile_data['name']) != 1 && user_character_list_count(user_character_account_id($name)) > 1) 
-		{
-		?>
+		// Backward compatibility
+		$select_online = "CASE WHEN `l`.`player_id` IS NULL THEN 0 else 1 END as `online`";
+		$join_online = "LEFT JOIN `players_online` as `l` ON `p`.`id` = `l`.`player_id`";
+		if ($config['ServerEngine'] != 'TFS_10') {
+			$select_online = "`p`.`online`";
+			$join_online = "";
+		}
+
+		// Load other visible characters
+		$otherChars = mysql_select_multi("
+			SELECT
+				`p`.`id`,
+				`p`.`name`,
+				`p`.`level`,
+				`p`.`vocation`,
+				`p`.`lastlogin`,
+				{$select_online}
+			FROM `players` as `o`
+			JOIN `players` as `p`
+				ON `o`.`account_id` = `p`.`account_id`
+			LEFT JOIN `znote_players` as `z`
+				ON `p`.`id` = `z`.`player_id`
+			{$join_online}
+			WHERE `o`.`id` = {$user_id}
+			AND `p`.`id` != `o`.`id`
+			AND `z`.`hide_char` = 0
+			ORDER BY `p`.`experience` DESC;
+		");
+
+		// Render table if there are any characters to show
+		if ($otherChars !== false) {
+			?>
 			<li>
 				<b>Other visible characters on this account:</b><br>
-				<?php
-				$characters = user_character_list(user_character_account_id($profile_data['name']));
-				// characters: [0] = name, [1] = level, [2] = vocation, [3] = town_id, [4] = lastlogin, [5] = online
-				if ($characters && count($characters) > 0) {
-					?>
-					<table id="characterprofileTable" class="table table-striped table-hover">
-						<tr class="yellow">
-							<th>Name:</th>
-							<th>Level:</th>
-							<th>Vocation:</th>
-							<th>Last login:</th>
-							<th>Status:</th>
-						</tr>
-						
-						<?php
-						// Design and present the list
-						foreach ($characters as $char) {
-							if ($char['name'] != $profile_data['name']) {
-								if (hide_char_to_name(user_character_hide($char['name'])) != 'hidden'): ?>
-									<tr>
-										<td><a href="characterprofile.php?name=<?php echo $char['name']; ?>"><?php echo $char['name']; ?></a></td>
-										<td><?php echo (int)$char['level']; ?></td>
-										<td><?php echo $char['vocation']; ?></td>
-										<td><?php echo $char['lastlogin']; ?></td>
-										<td><?php echo $char['online']; ?></td>
-									</tr>
-								<?php endif;
-							}
-						}
-					?>
-					</table>
+				<table id="characterprofileTable" class="table table-striped table-hover">
+					<tr class="yellow">
+						<th>Name:</th>
+						<th>Level:</th>
+						<th>Vocation:</th>
+						<th>Last login:</th>
+						<th>Status:</th>
+					</tr>
 					<?php
-				}/* else {
-					echo '<b><font color="green">This player has never died.</font></b>';
-				}*/
-				?>
+					// Add character rows
+					foreach ($otherChars as $char):
+						?>
+						<tr>
+							<td><a href="characterprofile.php?name=<?php echo $char['name']; ?>"><?php echo $char['name']; ?></a></td>
+							<td><?php echo (int)$char['level']; ?></td>
+							<td><?php echo vocation_id_to_name($char['vocation']); ?></td>
+							<td><?php echo ($char['lastlogin'] != 0) ? getClock($char['lastlogin'], true, true) : 'Never.'; ?></td>
+							<td><?php echo ($char['online']) ? 'online' : 'offline'; ?></td>
+						</tr>
+						<?php
+					endforeach;
+					?>
+				</table>
 			</li>
-		<?php
+			<?php
 		}
 		?>
 		<!-- END CHARACTER LIST -->
-		
+
 		<p class="address">Address: <a href="<?php echo ($config['htwrite']) ? "//" . $_SERVER['HTTP_HOST']."/" . $profile_data['name'] : "//" . $_SERVER['HTTP_HOST'] . "/characterprofile.php?name=" . $profile_data['name']; ?>"><?php echo ($config['htwrite']) ? $_SERVER['HTTP_HOST']."/". $profile_data['name'] : $_SERVER['HTTP_HOST']."/characterprofile.php?name=". $profile_data['name']; ?></a></p>
-		
+
 		<?php
 	} else {
 		echo htmlentities(strip_tags($name, ENT_QUOTES)) . ' does not exist.';
