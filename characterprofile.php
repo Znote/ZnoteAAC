@@ -909,10 +909,13 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				ON `o`.`account_id` = `p`.`account_id`
 			LEFT JOIN `znote_players` as `z`
 				ON `p`.`id` = `z`.`player_id`
+			LEFT JOIN `znote_players` as `z2`
+				ON `o`.`id` = `z2`.`player_id`
 			{$join_online}
 			WHERE `o`.`id` = {$user_id}
 			AND `p`.`id` != `o`.`id`
 			AND `z`.`hide_char` = 0
+			AND `z2`.`hide_char` = 0
 			ORDER BY `p`.`experience` DESC;
 		");
 
