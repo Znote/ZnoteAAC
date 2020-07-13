@@ -100,6 +100,7 @@ function onThink(interval, lastExecution)
 						end
 					end
 
+if Game.getClientVersion().min >= 870 then
 					-- ORDER TYPE 6 (Mounts)
 					if orderType == 6 then
 						served = true
@@ -114,6 +115,7 @@ function onThink(interval, lastExecution)
 							print("Process canceled. [".. player:getName() .."] already have mount: ["..orderItemId.."].")
 						end
 					end
+end
 
 					-- ORDER TYPE 7 (Direct house purchase)
 					if orderType == 7 then

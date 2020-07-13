@@ -76,6 +76,7 @@ function onSay(player, words, param)
 					end
 				end
 
+if Game.getClientVersion().min >= 870 then
 				-- ORDER TYPE 6 (Mounts)
 				if q_type == 6 then
 					served = true
@@ -88,6 +89,7 @@ function onSay(player, words, param)
 						player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this mount!")
 					end
 				end
+end
 
 				-- ORDER TYPE 7 (Direct house purchase)
 				if orderType == 7 then
