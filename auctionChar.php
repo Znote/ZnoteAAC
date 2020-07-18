@@ -4,7 +4,7 @@ include 'layout/overall/header.php';
 // Convert a seconds integer value into days, hours, minutes and seconds string.
 function toDuration($is) {
 	$duration['day'] = $is / (24 * 60 * 60);
-	if (($duration['day'] - (int)$duration['day']) > 0) 
+	if (($duration['day'] - (int)$duration['day']) > 0)
 		$duration['hour'] = ($duration['day'] - (int)$duration['day']) * 24;
 	if (isset($duration['hour'])) {
 		if (($duration['hour'] - (int)$duration['hour']) > 0)
@@ -73,8 +73,8 @@ if ($auction['characterAuction']) {
 	$expired_auctions = mysql_select_multi("
 		SELECT `id`
 		FROM `znote_auction_player`
-		WHERE `sold` = 0 
-		AND `time_end` < {$time} 
+		WHERE `sold` = 0
+		AND `time_end` < {$time}
 		AND `bidder_account_id` > 0
 	");
 	//data_dump($expired_auctions, $this_account_id, "expired_auctions");
@@ -105,11 +105,11 @@ if ($auction['characterAuction']) {
 		if ($zaid !== false && $price !== false) {
 			// The account of the buyer, if he can afford what he is trying to pay
 			$account = mysql_select_single("
-				SELECT 
+				SELECT
 					`a`.`id`,
 					`za`.`points`
 				FROM `accounts` a
-				INNER JOIN `znote_accounts` za 
+				INNER JOIN `znote_accounts` za
 					ON `a`.`id` = `za`.`account_id`
 				WHERE `a`.`id`= {$this_account_id}
 				AND `za`.`points` >= {$price}
@@ -135,7 +135,7 @@ if ($auction['characterAuction']) {
 					WHERE `za`.`id` = {$zaid}
 					AND `za`.`sold` = 0
 					AND `za`.`original_account_id` != {$this_account_id}
-					AND `za`.`price` <= {$price} 
+					AND `za`.`price` <= {$price}
 					AND `za`.`bid`+{$step} <= {$price}
 					LIMIT 1
 				");
@@ -176,7 +176,7 @@ if ($auction['characterAuction']) {
 							`bidder_account_id` = {$account['id']},
 							`bid` = {$price},
 							`sold` = CASE WHEN {$time} >= `time_end` THEN 1 ELSE 0 END
-						WHERE `id` = {$character['zaid']} 
+						WHERE `id` = {$character['zaid']}
 						LIMIT 1;
 					");
 					// If character is sold, return deposit back to sellers account
@@ -213,9 +213,9 @@ if ($auction['characterAuction']) {
 					`za`.`bidder_account_id`,
 					`za`.`time_begin`,
 					`za`.`time_end`,
-					CASE WHEN `za`.`price` > `za`.`bid` 
+					CASE WHEN `za`.`price` > `za`.`bid`
 						THEN `za`.`price`
-						ELSE `za`.`bid`+{$step} 
+						ELSE `za`.`bid`+{$step}
 					END AS `price`,
 					CASE WHEN `za`.`original_account_id` = {$this_account_id}
 						THEN 1
@@ -320,7 +320,7 @@ if ($auction['characterAuction']) {
 				if ($character['own'] == 0) {
 					if (is_array($account) && !empty($account)): ?>
 						<p>You have <strong><?php echo $account['points']; ?></strong> shop points remaining.</p>
-						
+
 						<?php if ((int)$character['bidder_account_id'] === $this_account_id): ?>
 							<p><strong>So far so good!</strong>
 								<br>You currently have the highest bid at: <?php echo (int)$character['price']-$step; ?>
@@ -449,7 +449,7 @@ if ($auction['characterAuction']) {
 			$account = mysql_select_single("
 				SELECT `a`.`id`, `a`.`password`, `za`.`points`
 				FROM `accounts` a
-				INNER JOIN `znote_accounts` za 
+				INNER JOIN `znote_accounts` za
 					ON `a`.`id` = `za`.`account_id`
 				WHERE `a`.`id`= {$this_account_id}
 				AND `a`.`password`='{$password}'
@@ -533,7 +533,7 @@ if ($auction['characterAuction']) {
 			// Move player to storage account
 			mysql_update("
 				UPDATE `players`
-				SET `account_id` = {$auction['storage_account_id']} 
+				SET `account_id` = {$auction['storage_account_id']}
 				WHERE `id` = {$pid}
 				LIMIT 1;
 			");
@@ -564,15 +564,15 @@ if ($auction['characterAuction']) {
 		if ($zaid !== false) {
 			$time = time();
 			// If original account is the one trying to get it back,
-			// and bidding period is over, 
+			// and bidding period is over,
 			// and its not labeled as sold
 			// and nobody has bid on it
 			$character = mysql_select_single("
 				SELECT `player_id`
 				FROM `znote_auction_player`
-				WHERE `id`= {$zaid} 
-				AND `original_account_id` = {$this_account_id} 
-				AND `time_end` <= {$time} 
+				WHERE `id`= {$zaid}
+				AND `original_account_id` = {$this_account_id}
+				AND `time_end` <= {$time}
 				AND `bidder_account_id` = 0
 				AND `bid` = 0
 				AND `sold` = 0
@@ -660,7 +660,7 @@ if ($auction['characterAuction']) {
 					FROM `znote_auction_player` za
 					INNER JOIN `players` p
 						ON `za`.`player_id` = `p`.`id`
-					LEFT JOIN `players_online` po 
+					LEFT JOIN `players_online` po
 						ON `p`.`id` = `po`.`player_id`
 					WHERE `za`.`id` = {$zaid}
 					AND `za`.`sold` = 1
@@ -724,7 +724,7 @@ if ($auction['characterAuction']) {
 					</tr>
 				<?php endforeach; ?>
 			</table>
-			<?php 
+			<?php
 		}
 		$action = 'list';
 	}
@@ -802,10 +802,10 @@ if ($auction['characterAuction']) {
 
 		// Show the list
 		$characters = mysql_select_multi("
-			SELECT 
+			SELECT
 				`za`.`id` AS `zaid`,
 				CASE WHEN `za`.`price` > `za`.`bid`
-					THEN `za`.`price` 
+					THEN `za`.`price`
 					ELSE `za`.`bid`+{$step}
 				END AS `price`,
 				`za`.`time_begin`,
@@ -856,9 +856,9 @@ if ($auction['characterAuction']) {
 						<?php endif; ?>
 						<td><a href="/auctionChar.php?action=view&zaid=<?php echo $character['zaid']; ?>">VIEW</a></td>
 						<td><?php echo $character['price']; ?></td>
-						<td><?php 
+						<td><?php
 							$ended = (time() > $character['time_end']) ? true : false;
-							echo getClock($character['time_begin'], true); 
+							echo getClock($character['time_begin'], true);
 							?>
 						</td>
 						<td><?php echo ($ended) ? 'Instant' : 'Bidding<br>('.toDuration(($character['time_end'] - time())).')'; ?></td>
@@ -874,14 +874,14 @@ if ($auction['characterAuction']) {
 	} elseif ($action === 'create') { // Add player to auction view
 		$minToCreate = (int)ceil(($auction['lowestPrice'] / 100) * $auction['deposit']);
 		$own_characters = mysql_select_multi("
-			SELECT 
+			SELECT
 				`p`.`id`,
 				`p`.`name`,
 				`p`.`level`,
 				`p`.`vocation`,
 				`a`.`points`
 			FROM `players` p
-			INNER JOIN `znote_accounts` a 
+			INNER JOIN `znote_accounts` a
 				ON `p`.`account_id` = `a`.`account_id`
 			LEFT JOIN `znote_auction_player` za
 				ON `p`.`id` = `za`.`player_id`
@@ -896,7 +896,7 @@ if ($auction['characterAuction']) {
 			AND `a`.`points` >= $minToCreate
 		;");
 		//data_dump($own_characters, false, "own_chars");
-		
+
 		if (is_array($own_characters) && !empty($own_characters)) {
 			$max = ($own_characters[0]['points'] / $auction['deposit']) * 100;
 			?>
