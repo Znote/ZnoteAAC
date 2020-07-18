@@ -71,7 +71,10 @@ if ($auction['characterAuction']) {
 	// Passive check to see if bid period has expired and someone won a deal
 	$time = time();
 	$expired_auctions = mysql_select_multi("
-		SELECT `id`
+		SELECT
+			`id`,
+			`original_account_id`,
+			(`bid`+`deposit`) as `points`
 		FROM `znote_auction_player`
 		WHERE `sold` = 0
 		AND `time_end` < {$time}
@@ -90,6 +93,14 @@ if ($auction['characterAuction']) {
 				WHERE `id` IN(".implode(',', $soldIds).")
 				LIMIT ".COUNT($soldIds).";
 			");
+			// Transfer points to seller account
+			foreach ($expired_auctions as $a) {
+				mysql_update("
+					UPDATE `znote_accounts`
+					SET `points` = (`points`+{$a['points']})
+					WHERE `account_id` = {$a['original_account_id']};
+				");
+			}
 		}
 	}
 	// end passive check
@@ -179,12 +190,12 @@ if ($auction['characterAuction']) {
 						WHERE `id` = {$character['zaid']}
 						LIMIT 1;
 					");
-					// If character is sold, return deposit back to sellers account
+					// If character is sold, give points to seller
 					if (time() >= $character['time_end']) {
 						mysql_update("
 							UPDATE `znote_accounts`
-							SET `points` = `points`+{$character['deposit']}
-							WHERE `account_id` = {$account['id']}
+							SET `points` = (`points`+{$character['deposit']}+{$price})
+							WHERE `account_id` = {$character['original_account_id']}
 							LIMIT 1;
 						");
 					} else {
