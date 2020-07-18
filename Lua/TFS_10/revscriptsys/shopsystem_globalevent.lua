@@ -1,6 +1,11 @@
 local globalevent = GlobalEvent("ShopSystemGlobal")
 
 function globalevent.onThink(...)
+	local shopTypes = {1,5,7}
+	-- If game support mount orders
+	if Game.getClientVersion().min >= 870 then
+		table.insert(shopTypes, 6);
+	end
 	local orderQuery = db.storeQuery([[
 		SELECT 
 			MIN(`po`.`player_id`) AS `player_id`,
@@ -13,7 +18,7 @@ function globalevent.onThink(...)
 			ON `po`.`player_id` = `p`.`id`
 		INNER JOIN `znote_shop_orders` AS `shop`
 			ON `p`.`account_id` = `shop`.`account_id`
-		WHERE `shop`.`type` IN(1,5,6,7)
+		WHERE `shop`.`type` IN(]] .. table.concat(shopTypes, ",") .. [[)
 		GROUP BY `shop`.`id`
 	]])
 	-- Detect if we got any results

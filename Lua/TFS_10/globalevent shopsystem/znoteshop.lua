@@ -1,6 +1,11 @@
 -- <globalevent name="Znote Shop" interval="30000" script="znoteshop.lua"/>
 -- Znote Auto Shop v2.1 for Znote AAC on TFS 1.2+
 function onThink(interval, lastExecution)
+	local shopTypes = {1,5,7}
+	-- If game support mount orders
+	if Game.getClientVersion().min >= 870 then
+		table.insert(shopTypes, 6);
+	end
 	local orderQuery = db.storeQuery([[
 		SELECT 
 			MIN(`po`.`player_id`) AS `player_id`,
@@ -13,7 +18,7 @@ function onThink(interval, lastExecution)
 			ON `po`.`player_id` = `p`.`id`
 		INNER JOIN `znote_shop_orders` AS `shop`
 			ON `p`.`account_id` = `shop`.`account_id`
-		WHERE `shop`.`type` IN(1,5,6,7)
+		WHERE `shop`.`type` IN(]] .. table.concat(shopTypes, ",") .. [[)
 		GROUP BY `shop`.`id`
 	]])
 	-- Detect if we got any results
@@ -100,6 +105,7 @@ function onThink(interval, lastExecution)
 						end
 					end
 
+if Game.getClientVersion().min >= 870 then
 					-- ORDER TYPE 6 (Mounts)
 					if orderType == 6 then
 						served = true
@@ -114,6 +120,7 @@ function onThink(interval, lastExecution)
 							print("Process canceled. [".. player:getName() .."] already have mount: ["..orderItemId.."].")
 						end
 					end
+end
 
 					-- ORDER TYPE 7 (Direct house purchase)
 					if orderType == 7 then
