@@ -67,7 +67,7 @@ if ($vocGroups) {
 	?>
 
 	<h1>Ranking for <?php echo skillName($type) .", ". (($vocation === 'all') ? 'any vocation' : vocation_id_to_name($vocation)) ?>.</h1>
-	
+
 	<form action="" method="GET">
 
 		<select name="type">

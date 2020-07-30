@@ -43,7 +43,7 @@ if (user_logged_in() && is_admin($user_data)) {
 					if (!in_array($attributes['group'], $groups))
 						$groups[] = $attributes['group'];
 				}
-				// Get spell vocations 
+				// Get spell vocations
 				$vocations = array();
 				foreach ($spell->vocation as $vocation) {
 					foreach ($vocation->attributes() as $attributeName => $attributeValue) {

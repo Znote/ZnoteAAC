@@ -7,11 +7,11 @@ function onThink(interval, lastExecution)
 		table.insert(shopTypes, 6);
 	end
 	local orderQuery = db.storeQuery([[
-		SELECT 
+		SELECT
 			MIN(`po`.`player_id`) AS `player_id`,
-			`shop`.`id`, 
-			`shop`.`type`, 
-			`shop`.`itemid`, 
+			`shop`.`id`,
+			`shop`.`type`,
+			`shop`.`itemid`,
 			`shop`.`count`
 		FROM `players_online` AS `po`
 		INNER JOIN `players` AS `p`
@@ -32,7 +32,7 @@ function onThink(interval, lastExecution)
 			"Mounts",
 			"Instant house purchase"
 		}
-		repeat 
+		repeat
 			local player_id = result.getNumber(orderQuery, 'player_id')
 			local orderId = result.getNumber(orderQuery, 'id')
 			local orderType = result.getNumber(orderQuery, 'type')
@@ -44,7 +44,7 @@ function onThink(interval, lastExecution)
 			if player ~= nil then
 
 				local description = "Unknown or custom type"
-				if type_desc[orderType] ~= nil then 
+				if type_desc[orderType] ~= nil then
 					description = type_desc[orderType]
 				end
 				print("Processing type "..orderType..": ".. description)
@@ -66,11 +66,11 @@ function onThink(interval, lastExecution)
 								player:addItem(orderItemId, orderCount)
 								player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. "!")
 								print("Process complete. [".. player:getName() .."] has received " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. ".")
-							else -- not enough slots 
+							else -- not enough slots
 								player:sendTextMessage(MESSAGE_STATUS_WARNING, "Your main backpack is full. You need to free up "..needslots.." available slots to get " .. orderCount .. " " .. ItemType(orderItemId):getName() .. "!")
 								print("Process canceled. [".. player:getName() .."] need more space in his backpack to get " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. ".")
 							end
-						else -- not enough cap 
+						else -- not enough cap
 							player:sendTextMessage(MESSAGE_STATUS_WARNING, "You need more CAP to carry this order!")
 							print("Process canceled. [".. player:getName() .."] need more cap to carry " .. orderCount .. "x " .. ItemType(orderItemId):getName() .. ".")
 						end
@@ -98,7 +98,7 @@ function onThink(interval, lastExecution)
 								player:addOutfitAddon(outfitId, orderCount)
 								player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received a new outfit!")
 								print("Process complete. [".. player:getName() .."] has received outfit: ["..outfitId.."] with addon: ["..orderCount.."]")
-							else -- Already has outfit 
+							else -- Already has outfit
 								player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this outfit and addon!")
 								print("Process canceled. [".. player:getName() .."] already have outfit: ["..outfitId.."] with addon: ["..orderCount.."].")
 							end
@@ -114,7 +114,7 @@ function onThink(interval, lastExecution)
 							player:addMount(orderItemId)
 							player:sendTextMessage(MESSAGE_INFO_DESCR, "Congratulations! You have received a new mount!")
 							print("Process complete. [".. player:getName() .."] has received mount: ["..orderItemId.."]")
-						else -- Already has mount 
+						else -- Already has mount
 							player:sendTextMessage(MESSAGE_STATUS_WARNING, "You already have this mount!")
 							print("Process canceled. [".. player:getName() .."] already have mount: ["..orderItemId.."].")
 						end
@@ -145,11 +145,11 @@ function onThink(interval, lastExecution)
 					if not served then -- If this order hasn't been processed yet (missing type handling?)
 						print("Znote shop: Type ["..orderType.."] not properly processed. Missing Lua code?")
 					end
-				else -- Not in protection zone 
+				else -- Not in protection zone
 					player:sendTextMessage(MESSAGE_INFO_DESCR, 'You have a pending shop order, please enter protection zone.')
 					print("Skipped one shop order. Reason: Player: [".. player:getName() .."] is not inside protection zone.")
 				end
-			else -- player not logged in 
+			else -- player not logged in
 				print("Skipped one shop order. Reason: Player with id [".. player_id .."] is not online.")
 			end
 

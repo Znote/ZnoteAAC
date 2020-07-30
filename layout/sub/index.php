@@ -40,7 +40,7 @@ if ($cache->hasExpired()) {
 
 // Design and present the list
 if ($news) {
-	
+
 	$total_news = count($news);
 	$row_news = $total_news / $config['news_per_page'];
 	$page_amount = ceil($total_news / $config['news_per_page']);
@@ -72,7 +72,7 @@ if ($news) {
 		} else {
 			for ($i = 0; $i < count($news); $i++) if ((int)$view === (int)$news[$i]['id']) $si = $i;
 		}
-		
+
 		if ($si !== false) {
 			echo "hello world!";
 			?>
@@ -118,7 +118,7 @@ if ($news) {
 					</div>
 				</div>
 				<?php
-			} 
+			}
 		}
 
 		echo '<select name="newspage" onchange="location = this.options[this.selectedIndex].value;">';
@@ -134,11 +134,11 @@ if ($news) {
 				echo '<option value="index.php?page='.$i.'">Page '.$i.'</option>';
 			}
 		}
-		
+
 		echo '</select>';
 
 	}
-	
+
 } else {
 	echo '<p>No news exist.</p>';
 }

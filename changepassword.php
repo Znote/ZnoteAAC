@@ -6,20 +6,20 @@ if (empty($_POST) === false) {
 	if (!Token::isValid($_POST['token'])) {
 		$errors[] = 'Token is invalid.';
 	}
-	
+
 	$required_fields = array('current_password', 'new_password', 'new_password_again');
-	
+
 	foreach($_POST as $key=>$value) {
 		if (empty($value) && in_array($key, $required_fields) === true) {
 			$errors[] = 'You need to fill in all fields.';
 			break 1;
 		}
 	}
-	
+
 	$pass_data = user_data($session_user_id, 'password');
 	//$pass_data['password'];
 	// $_POST['']
-	
+
 	// .3 compatibility
 	if ($config['ServerEngine'] == 'TFS_03' && $config['salt'] === true) {
 		$salt = user_data($session_user_id, 'salt');

@@ -1,7 +1,7 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
- 
+
  if($config['items'] == true) {
- 
+
 // Loading equipable items list
 $itemsCache = new Cache('engine/cache/items');
 if (user_logged_in() && is_admin($user_data)) {
@@ -13,10 +13,10 @@ if (user_logged_in() && is_admin($user_data)) {
 			$types = array();
 			$type_attr = array();
 			$groups = array();
- 
+
 			// This empty array will eventually contain all items grouped by type and indexed by item type
 			$items = array();
- 
+
 			// Loop through each XML item object
 			foreach ($itemsXML as $type => $item) {
 				// Get item types
@@ -41,11 +41,11 @@ if (user_logged_in() && is_admin($user_data)) {
 					if (!in_array($attr, $type_attr[$type]))
 						$type_attr[$type][] = $attr;
 				}
- 
+
 				// Loop through every <attribute> object inside the <item> object
 				$item_attributes = array();
 				$iai = array();
-				
+
 				foreach ($item as $attribute) {
 					foreach ($attribute->attributes() as $aName => $aValue) {
 						if($aName == 'key') {
@@ -68,22 +68,22 @@ if (user_logged_in() && is_admin($user_data)) {
 					if (!in_array($attr, $type_attr[$type]))
 						$type_attr[$type][] = $attr;
 				}
-				
+
 				// Add items with slotType or weaponType (TFS 1.x default)
 				if(isset($attributes['id'])) $id = (isset($attributes['id'])) ? $attributes['id'] : false;
 				if(isset($attributes['fromid'])) $id = (isset($attributes['name'])) ? $attributes['name'] : false;
 				if (isset($item_attributes['slotType']) || isset($item_attributes['weaponType'])) {
 					$items[$type][$id] = array('attributes' => $item_attributes);
-					
+
 					// Populate item array with potential relevant attributes for the item type
 					foreach ($type_attr[$type] as $att)
 						$items[$type][$id][$att] = (isset($attributes[$att])) ? $attributes[$att] : false;
 				}
-						
-						
+
+
 				$save = array($items);
-				
-				
+
+
 			}
 			$itemsCache->setContent($items);
 			$itemsCache->save();
@@ -103,12 +103,12 @@ if (user_logged_in() && is_admin($user_data)) {
 	$items = $itemsCache->load();
 }
 // End loading items list
- 
+
 if ($items) {
 	// Preparing data
 	$types = array_keys($items);
 	$itemServer = 'http://'.$config['shop']['imageServer'].'/';
- 
+
 	//slotType values and names
 	if(isset($_GET['slot'])) {
 		switch($_GET['slot']) {
@@ -177,16 +177,16 @@ if ($items) {
 				break;
 		}
 	}
- 
+
 	// Render HTML
 	if(isset($_GET['slot']) && ($slottype_name == 'null')) header("Location:items.php");
 	?>
- 
+
 		<h1 id="items">Items<?php if (isset($_GET['slot'])) echo ' ('.$slottype_name.')';?></h1>
 	<?php if(empty($_GET['slot'])) { ?>
 	<table>
 		<tbody>
-			<tr> 
+			<tr>
 				<td style="text-align:center;"><a href="?slot=helmet">Helmets<br><img src="<?php echo $itemServer.'2471.gif'; ?>" /></a></td>
 				<td style="text-align:center;"><a href="?slot=sword">Swords<br><img src="<?php echo $itemServer.'8931.gif'; ?>" /></a></td>
 				<td style="text-align:center;"><a href="?slot=shield">Shields & Spellbooks<br><img src="<?php echo $itemServer.'2523.gif'; ?>" /></a></td>
@@ -218,14 +218,14 @@ if ($items) {
 				<td>Name</td>
 				<td>Attributes</td>
 			</tr>
-	
-<?php	foreach ($items['item'] as $select) { 
+
+<?php	foreach ($items['item'] as $select) {
 			$attributes = array();
 			$extradef = NULL;
 			$element = NULL;
 				if (!empty($select['id'])) $itemid = $select['id'];
 				else $itemid = $select['fromid'];
-			
+
 			if (!empty($select['attributes'])) {
 				foreach ($select['attributes'] as $att => $value) {
 					if($att == 'slotType' || $att == 'weaponType') $slotType = $value;
@@ -233,16 +233,16 @@ if ($items) {
 						else $show = false;
 				}
 			}
-				
+
 			if($show == true) { ?>
 			<tr>
 				<td><img src="<?php echo $itemServer.$itemid.'.gif'; ?>" /></td>
 				<td><?php echo ucwords($select['name']); ?></td>
 				<td><?php
 				foreach ($select['attributes'] as $array => $value) {
-		
+
 					$extra = NULL;
-					if($value > 0) $extra = '+'; 
+					if($value > 0) $extra = '+';
 						switch ($array) {
 						case 'weight':
 							echo ucwords($array).': '.intval($value/100).'.'.substr($value, -2).' oz<br>';
@@ -358,7 +358,7 @@ if ($items) {
 						break;
 						case 'suppressCurse':
 							echo 'Suppress Curse: Yes<br>';
-						break; 
+						break;
 						Those are not necessary in my opinion, but if you want to show
 						**/
 						case 'speed':
@@ -369,18 +369,18 @@ if ($items) {
 						break;
 					}
 				}
-			?>				
+			?>
 				</td>
 			</tr>
-					
-					
+
+
 <?php
 			}
 		} ?>
-	
+
 		</tbody>
 	</table>
-				
+
 	<?php
 	}
 } else { ?>
@@ -390,5 +390,5 @@ if ($items) {
 } else {
 	echo 'Items\' page not enabled.';
 }
-include 'layout/overall/footer.php'; 
+include 'layout/overall/footer.php';
 ?>

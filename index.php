@@ -37,7 +37,7 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 				<?php
 			} else echo "No changelogs submitted.";
 		}
-		
+
 		$cache = new Cache('engine/cache/news');
 		if ($cache->hasExpired()) {
 			$news = fetchAllNews();
@@ -46,10 +46,10 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 		} else {
 			$news = $cache->load();
 		}
-		
+
 		// Design and present the list
 		if ($news) {
-			
+
 			$total_news = count($news);
 			$row_news = $total_news / $config['news_per_page'];
 			$page_amount = ceil($total_news / $config['news_per_page']);
@@ -81,7 +81,7 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 				} else {
 					for ($i = 0; $i < count($news); $i++) if ((int)$view === (int)$news[$i]['id']) $si = $i;
 				}
-				
+
 				if ($si !== false) {
 					?>
 					<table id="news">
@@ -126,7 +126,7 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 							</tr>
 						</table>
 						<?php
-					} 
+					}
 				}
 
 				echo '<select name="newspage" onchange="location = this.options[this.selectedIndex].value;">';
@@ -142,11 +142,11 @@ require_once 'engine/init.php'; include 'layout/overall/header.php';
 						echo '<option value="index.php?page='.$i.'">Page '.$i.'</option>';
 					}
 				}
-				
+
 				echo '</select>';
 
 			}
-			
+
 		} else {
 			echo '<p>No news exist.</p>';
 		}

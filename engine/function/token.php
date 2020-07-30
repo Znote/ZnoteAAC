@@ -3,7 +3,7 @@
 	class Token {
 		public static function generate() {
 			$token = sha1(uniqid(time(), true));
-			
+
 			$_SESSION['token'] = $token;
 		}
 		/**
@@ -80,7 +80,7 @@
 		**/
 		public static function debug($post) {
 			echo '<pre>', var_dump(array(
-				'post' => $post, 
+				'post' => $post,
 				'old_token' => $_SESSION['old_token'],
 				'token' => self::get()
 			)), '</pre>';

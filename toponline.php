@@ -1,6 +1,6 @@
 <?php
 require_once 'engine/init.php';
-include 'layout/overall/header.php'; 
+include 'layout/overall/header.php';
 if (!$config['toponline']['enabled']) {
 echo 'This page has been disabled at config.php.';
 include 'layout/overall/footer.php';
@@ -37,7 +37,7 @@ elseif($type == "sum")
 	$znotePlayers = mysql_select_multi('SELECT * FROM `znote_players` AS `z` JOIN `players` AS `p` WHERE `p`.`id`=`z`.`player_id` and `p`.`group_id` < 3 ORDER BY `z`.`onlinetimeall` DESC LIMIT '. $limit);
 elseif($type >= 1 && $type <= 4)
 	$znotePlayers = mysql_select_multi('SELECT * FROM `znote_players` AS `z` JOIN `players` AS `p` WHERE `p`.`id`=`z`.`player_id` and `p`.`group_id` < 3 ORDER BY `onlinetime' . (int) $type . '` DESC LIMIT '.$limit);
-	
+
 echo '<CENTER><H2>Most online on' .$config['site_title'] . '</H2></CENTER>
 <BR>
 <table class="table table-striped">
@@ -66,7 +66,7 @@ echo '</TR>';
 $number_of_rows = 1;
 if($znotePlayers)
 foreach($znotePlayers as $player)
-{	
+{
 	echo '<td><center>'. $number_of_rows . '.</center></td>';
 	echo '<td><a href="characterprofile.php?name=' .$player['name']. '">' .$player['name']. '</a>';
 	echo '<br> ' .$player['level']. ' '.htmlspecialchars(vocation_id_to_name($player['vocation'])).' ';

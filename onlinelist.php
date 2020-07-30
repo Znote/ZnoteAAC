@@ -17,7 +17,7 @@ if ($config['ServerEngine'] != 'OTHIRE') {
 	$outfitQuery = ($loadOutfits) ? ", `p`.`lookbody` AS `body`, `p`.`lookfeet` AS `feet`, `p`.`lookhead` AS `head`, `p`.`looklegs` AS `legs`, `p`.`looktype` AS `type`" : "";
 }
 
-// Small 30 seconds players_online cache. 
+// Small 30 seconds players_online cache.
 $cache = new Cache('engine/cache/onlinelist');
 $cache->setExpiration(30);
 if ($cache->hasExpired()) {
@@ -37,7 +37,7 @@ if ($cache->hasExpired()) {
 
 if (!empty($array) && $array !== false) {
 	?>
-	
+
 	<table id="onlinelistTable" class="table table-striped table-hover">
 		<tr class="yellow">
 			<?php if ($loadOutfits) echo "<th>Outfit</th>"; ?>

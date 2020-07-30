@@ -142,8 +142,8 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 				'created'	=>	time(),
 				'ip'		=>	getIPLong(),
 				'flag'		=> 	$_POST['flag']
-			);			
-		}	
+			);
+		}
 
 		user_create_account($register_data, $config['mailserver']);
 		if (!$config['mailserver']['debug']) header('Location: register.php?success');

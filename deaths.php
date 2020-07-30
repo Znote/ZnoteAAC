@@ -1,7 +1,7 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
 $cache = new Cache('engine/cache/deaths');
 if ($cache->hasExpired()) {
-	
+
 	if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10') {
 		$deaths = fetchLatestDeaths();
 	} else if ($config['ServerEngine'] == 'TFS_03' || $config['ServerEngine'] == 'OTHIRE') {
@@ -21,7 +21,7 @@ if ($deaths) {
 		<th>Time</th>
 		<th>Killer</th>
 	</tr>
-	<?php foreach ($deaths as $death) { 
+	<?php foreach ($deaths as $death) {
 		echo '<tr>';
 		echo "<td>At level ". $death['level'] .": <a href='characterprofile.php?name=". $death['victim'] ."'>". $death['victim'] ."</a></td>";
 		echo "<td>". getClock($death['time'], true) ."</td>";

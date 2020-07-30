@@ -83,7 +83,7 @@ class Player {
 	protected $_errors = array();
 
 	public function __construct($name_id_array, $fields = false, $query = true) {
-		
+
 		if (!is_array($name_id_array)) $this->_name_id = $name_id_array;
 
 		if ($name_id_array !== false) {
@@ -172,7 +172,7 @@ class Player {
 
 				if (array_key_exists($field, $this->_playerdata)) {
 					$this->_playerdata[$field] = $value;
-				
+
 				} elseif (array_key_exists($field, $this->_znotedata)) {
 					$this->_znotedata[$field] = $value;
 				}
@@ -186,12 +186,12 @@ class Player {
 		return (!empty($this->_errors)) ? $this->_errors : false;
 	}
 	public function dumpErrors() {
-		if ($this->getErrors() !== false) 
+		if ($this->getErrors() !== false)
 			data_dump($this->getErrors(), false, "Errors detected in player class:");
 	}
 
 	/**
-	 * Select player data from mysql. 
+	 * Select player data from mysql.
 	 *
 	 * @param  mixed (int, string) $name_id, array $fields
 	 * @access private
@@ -201,14 +201,14 @@ class Player {
 		$table = 'players';
 		$znote_table = 'znote_players';
 		$znote_fields = array();
-		
+
 		// Dynamic fields logic
 		switch (gettype($fields)) {
 			case 'boolean':
 				$field_elements = '*';
 				$znote_fields = array('comment', 'created', 'hide_char');
 				break;
-			
+
 			case 'string':
 				$fields = array($fields);
 
@@ -278,7 +278,7 @@ class Player {
 	public function create() {
 		// If player already have an id, the player already exist.
 		if (is_null($this->_playerdata['id']) && is_string($this->_playerdata['name'])) {
-			
+
 			// Confirm player does not exist
 			$name = format_character_name($this->_playerdata['name']);
 			$name = validate_name($name);
@@ -354,7 +354,7 @@ class Player {
 
 			array_walk($character_data, 'array_sanitize');
 			$cnf = fullConfig();
-			
+
 			if ($character_data['sex'] == 1) {
 				$outfit_type = $cnf['maleOutfitId'];
 			} else {

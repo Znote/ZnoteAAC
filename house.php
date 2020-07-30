@@ -29,7 +29,7 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 		$bid_char = (int)$bid_char;
 		$bid_amount = (int)$bid_amount;
 		$player = mysql_select_single("SELECT `id`, `account_id`, `name`, `level`, `balance` FROM `players` WHERE `id`='$bid_char' LIMIT 1;");
-		
+
 		if (user_logged_in() === true && $player['account_id'] == $session_user_id) {
 			// Does player have or need premium?
 			$premstatus = $config['houseConfig']['requirePremium'];
@@ -50,7 +50,7 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 								// Is bid higher than lowest bid?
 								if ($bid_amount > $minbid) {
 									// Should only apply to external players, allowing a player to up his pledge without
-									// being forced to pay his full previous bid. 
+									// being forced to pay his full previous bid.
 									if ($house['highest_bidder'] != $player['id']) $lastbid = $house['bid'] + 1;
 									else {
 										$lastbid = $house['last_bid'];
@@ -95,11 +95,11 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 	}
 
 	////////////////////////////////////////
-	// Instantly buy house with shop points 
-	if ($config['houseConfig']['shopPoints']['enabled'] 
-		&& isset($_POST['instantbuy']) 
+	// Instantly buy house with shop points
+	if ($config['houseConfig']['shopPoints']['enabled']
+		&& isset($_POST['instantbuy'])
 		&& $bid_char
-		&& $house['owner'] == 0 
+		&& $house['owner'] == 0
 		&& isset($house['points'])) {
 
 		$account_points = (int)$user_znote_data['points'];
@@ -110,48 +110,48 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 			$player = mysql_select_single("SELECT `id`, `account_id`, `name`, `level` FROM `players` WHERE `id`='$bid_char' LIMIT 1;");
 			$pHouseCount = mysql_select_single("SELECT COUNT('id') AS `value` FROM `houses` WHERE ((`highest_bidder`='$bid_char' AND `owner`='$bid_char') OR (`highest_bidder`='$bid_char') OR (`owner`='$bid_char')) AND `id`!='".$house['id']."' LIMIT 1;");
 
-			if (user_logged_in() === true 
+			if (user_logged_in() === true
 				&& $player['account_id'] == $session_user_id
 				&& $player['level'] >= $config['houseConfig']['levelToBuyHouse']
 				&& $pHouseCount['value'] < $config['houseConfig']['housesPerPlayer']) {
-				
+
 				$house_points = (int)$house['points'];
 				$house_id = $house['id'];
-				
+
 				// Remove points from account
 				mysql_update("
-					UPDATE `znote_accounts` 
-					SET `points` = `points`-{$house_points} 
-					WHERE `account_id`={$session_user_id} 
+					UPDATE `znote_accounts`
+					SET `points` = `points`-{$house_points}
+					WHERE `account_id`={$session_user_id}
 					LIMIT 1;
 				");
-				
+
 				// Give new ownership to house
 				mysql_update("
-					UPDATE `houses` 
+					UPDATE `houses`
 					SET `owner` = {$bid_char}
-					WHERE `id` = {$house_id} 
+					WHERE `id` = {$house_id}
 					LIMIT 1;
 				");
-				
+
 				// Log purchase in znote_shop_logs and znote_shop_orders
 				$time = time();
 				mysql_insert("
-					INSERT INTO `znote_shop_logs` 
-					(`account_id`, `player_id`, `type`, `itemid`, `count`, `points`, `time`) VALUES 
+					INSERT INTO `znote_shop_logs`
+					(`account_id`, `player_id`, `type`, `itemid`, `count`, `points`, `time`) VALUES
 					({$session_user_id}, {$bid_char}, 7, {$house_id}, 1, {$house_points}, {$time})
 				");
 				mysql_insert("
-					INSERT INTO `znote_shop_orders` 
-					(`account_id`, `type`, `itemid`, `count`, `time`) VALUES 
+					INSERT INTO `znote_shop_orders`
+					(`account_id`, `type`, `itemid`, `count`, `time`) VALUES
 					({$session_user_id}, 7, {$house_id}, {$bid_char}, {$time})
 				");
-				
+
 				// Reload house data
 				$house = mysql_select_single($house_SQL);
 				$minbid = $config['houseConfig']['minimumBidSQM'] * $house['size'];
 				if ($house['owner'] > 0) $house['ownername'] = user_name($house['owner']);
-				
+
 				// Congratulate user and tell them they still has to pay rent (if rent > 0)
 				?>
 				<p><strong>Congratulations!</strong>
@@ -178,7 +178,7 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 	?>
 	<h1>House: <?php echo $house['name']; ?></h1>
 	<ul>
-		<li><b>Town</b>: 
+		<li><b>Town</b>:
 		<?php
 		$town_name = &$config['towns'][$house['town_id']];
 		echo "<a href='houses.php?id=". $house['town_id'] ."'>". ($town_name ? $town_name : 'Specify town id ' . $house['town_id'] . ' name in config.php first.') ."</a>";

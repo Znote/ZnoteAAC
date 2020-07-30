@@ -1,4 +1,4 @@
-<?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
+<?php require_once 'engine/init.php'; include 'layout/overall/header.php';
 
 if(!isset($_SESSION['csrf_token'])){
 	$_SESSION['csrf_token'] = bin2hex(random_bytes_compat(5, $crypto_strong));
@@ -9,7 +9,7 @@ if(!isset($_SESSION['csrf_token'])){
 
 protect_page();
 admin_only($user_data);
-// Encryption (if select field has $key 0, it will return false, so add $enc + $key will return 100, subtract and you get 0, not false). 
+// Encryption (if select field has $key 0, it will return false, so add $enc + $key will return 100, subtract and you get 0, not false).
 $enc = 100;
 // Don't bother to think about cross site scripting here, since they can't access the page unless they are admin anyway.
 
@@ -35,14 +35,14 @@ if (empty($_POST) === false) {
 			$time = (int)$_POST['ban_time'] - $enc;
 			$comment = $_POST['ban_comment'];
 			//var_dump($charname, $typeid, $actionid, $reasonid, $time, $comment);
-			
+
 			if (set_rule_violation($charname, $typeid, $actionid, $reasonid, $time, $comment)) {
 				$errors[] = 'Violation entry has been set for '. hhb_tohtml($charname) .'.';
 			} else {
 				$errors[] = 'Website character name: '. hhb_tohtml($config['website_char']) .' does not exist. Create this character name or configure another name in config.php';
 				$errors[] = 'Website failed to recognize a character it can represent while inserting a rule violation.';
 			}
-			
+
 		} else {
 			$errors[] = 'Character '. hhb_tohtml(getValue($_POST['ban_char'])) .' does not exist.';
 		}
@@ -90,8 +90,8 @@ if (empty($_POST) === false) {
 
 		data_dump(
 			array(
-				'Old:' => $znote_account['points'], 
-				'New:' => $points, 
+				'Old:' => $znote_account['points'],
+				'New:' => $points,
 				'Total:' => ($znote_account['points'] + $points)
 				),
 			false,
@@ -175,7 +175,7 @@ echo "Last cached on: ". hhb_tohtml(getClock($basic['cached'], true)) .".<br>";
 </p>
 <ul>
 	<li>
-		<b>Permanently delete/erase character from database:</b> 
+		<b>Permanently delete/erase character from database:</b>
 		<form type="submit" action="" method="post">
 			<input type="hidden" name="csrf_token" value="<?php echo hhb_tohtml($_SESSION['csrf_token']);?>" />
 			<input type="text" name="del_name" placeholder="Character name...">
@@ -223,7 +223,7 @@ echo "Last cached on: ". hhb_tohtml(getClock($basic['cached'], true)) .".<br>";
 				<!-- row 3 -->
 				<tr>
 					<td>
-						Ban reason: 
+						Ban reason:
 						<select name="ban_reason">
 							<?php
 							foreach ($config['ban_reason'] as $key=>$value) {

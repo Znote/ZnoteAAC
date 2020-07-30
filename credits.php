@@ -65,10 +65,10 @@ endif;
 	<br><a href="https://otland.net/members/kiwi-dan.152/">Kiwi Dan</a> - Researching TFS 0.2 for me, participation in developement.
 	<br><a href="https://otland.net/members/amoaz.26626/">Amoaz</a> - Pentesting and security tips.
 	<br><a href="https://otland.net/members/evan.40401/">Evan</a>, <a href="https://otland.net/members/gremlee.12075/">Gremlee</a> - Researching TFS 0.3, constructive feedback, suggestion and participation.
-	<br><a href="https://otland.net/members/att3.98289/">ATT3</a> - Reporting and fixing bugs, TFS 1.0 research. 
+	<br><a href="https://otland.net/members/att3.98289/">ATT3</a> - Reporting and fixing bugs, TFS 1.0 research.
 	<br><a href="https://otland.net/members/mark.1/">Mark</a> - Old repository, TFS distributions which this AAC was primarily built for.
 	<br><a href="https://github.com/tedbro">Tedbro</a>, <a href="https://github.com/exura">Exura</a>, <a href="https://github.com/PrinterLUA">PrinterLUA</a> - Reporting bugs.
-	<br><a href="https://github.com/Nottinghster">Nottinghster</a> - OTHIRE distribution compatibility. 
+	<br><a href="https://github.com/Nottinghster">Nottinghster</a> - OTHIRE distribution compatibility.
 </p>
 <style>
 .contributors {

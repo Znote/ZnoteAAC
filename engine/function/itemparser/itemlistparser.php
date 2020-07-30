@@ -1,10 +1,10 @@
-<?php 
+<?php
 /* Returns a PHP array $id => 'name'
 	 $items = getItemList();
 	 echo $items[2160]; // Returns 'Crystal Coin'
 */
 
-function getItemList() {	
+function getItemList() {
 	return parseItems();
 }
 

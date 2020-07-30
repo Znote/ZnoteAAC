@@ -1,4 +1,4 @@
-<?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
+<?php require_once 'engine/init.php'; include 'layout/overall/header.php';
 $logged_in = user_logged_in();
 if ($logged_in === true) {
 	if (!empty($_POST['new'])) {
@@ -20,7 +20,7 @@ if ($logged_in === true) {
 		$doc->loadHTML($imageDom);
 		$xml=simplexml_import_dom($doc); // just to make xpath more simple
 		$images=$xml->xpath('//img');
-		foreach ($images as $img) { 
+		foreach ($images as $img) {
 			$imageSrc = (string)$img['src'];
 		}
 		$title = $_POST['title'];
@@ -63,7 +63,7 @@ if ($logged_in === true) {
 				<p>The image has already been posted. However, images will not be listed until a GM have verified it.</p>
 				<?php
 			}
-			
+
 		} else { // Failed to locate imageSrc
 			?>
 			<h1>Failed to find the image</h1>
@@ -81,7 +81,7 @@ if (empty($_POST)) {
 	</form>
 	<?php
 	}
-	
+
 	$cache = new Cache('engine/cache/gallery');
 	$images = $cache->load();
 	if (is_array($images) && !empty($images)) {
@@ -108,7 +108,7 @@ if (empty($_POST)) {
 			</table>
 		<?php }
 	} else echo '<h2>There are currently no public images.</h2>';
-	
+
 	if ($logged_in === false) echo 'You need to be logged in to add images.';
 }
 include 'layout/overall/footer.php';

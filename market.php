@@ -8,7 +8,7 @@ $compare = &$_GET['compare'];
 // If we failed to load items.xml, a string is returned (not an array)
 // with the attempted loaded file path.
 // So if $items is not an array, send an error message, include the footer and ignore rest of this page.
-if (is_array($items) === false): 
+if (is_array($items) === false):
 	?>
 	<h1>Marketplace</h1>
 	<p>Failed to load item list.</p>
@@ -112,7 +112,7 @@ if (!$compare) {
 		}
 		$condition = (!empty($query)) ? "`itemtype` IN (". implode(',', $query) .")" : false;
 	}
-	
+
 	// First list active bids
 	if ($condition === false) {
 		$offers = array();

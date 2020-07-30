@@ -1,9 +1,9 @@
--- Sync outfits that player own with Znote AAC 
--- So its possible to see which full sets player 
--- has in characterprofile.php 
+-- Sync outfits that player own with Znote AAC
+-- So its possible to see which full sets player
+-- has in characterprofile.php
 
 znote_outfit_list = {
-	{ -- Female outfits 
+	{ -- Female outfits
 		136, 137, 138, 139, 140, 141, 142, 147, 148,
 		149, 150, 155, 156, 157, 158, 252, 269, 270,
 		279, 288, 324, 329, 336, 366, 431, 433, 464,
@@ -15,7 +15,7 @@ znote_outfit_list = {
 		1187, 1203, 1205, 1207, 1211, 1246, 1244,
 		1252, 1271, 1280, 1283, 1289, 1293, 1332
 	},
-	{ -- Male outfits 
+	{ -- Male outfits
 		128, 129, 130, 131, 132, 133, 134, 143, 144,
 		145, 146, 151, 152, 153, 154, 251, 268, 273,
 		278, 289, 325, 328, 335, 367, 430, 432, 463,
@@ -31,14 +31,14 @@ znote_outfit_list = {
 }
 
 function onLogin(player)
-	-- storage_value + 1000 storages (highest outfit id) must not be used in other script. 
+	-- storage_value + 1000 storages (highest outfit id) must not be used in other script.
 	-- Must be identical to Znote AAC config.php: $config['EQ_shower'] -> storage_value
 	local storage_value = 10000
 	-- Loop through outfits
 	for _, outfit in pairs(znote_outfit_list[player:getSex() + 1]) do
-		if player:hasOutfit(outfit,3) then 
-			if player:getStorageValue(storage_value + outfit) ~= 3 then 
-				player:setStorageValue(storage_value + outfit, 3) 
+		if player:hasOutfit(outfit,3) then
+			if player:getStorageValue(storage_value + outfit) ~= 3 then
+				player:setStorageValue(storage_value + outfit, 3)
 			end
 		end
 	end

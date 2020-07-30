@@ -23,7 +23,7 @@
 			}
 			if ($status) {
 				?>
-				<li><a href="onlinelist.php">Players online: 
+				<li><a href="onlinelist.php">Players online:
 					<?php echo user_count_online(); ?></a></li>
 				<?php
 			}
