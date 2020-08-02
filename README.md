@@ -3,17 +3,17 @@ ZnoteAAC
 [![CodeFactor](https://www.codefactor.io/repository/github/znote/znoteaac/badge)](https://www.codefactor.io/repository/github/znote/znoteaac)
 ### What is Znote AAC?
 
-Znote AAC is a full-fledged website used together with an Open Tibia(OT) server. 
-It aims to be super easy to install and compatible with all the popular OT distributions. 
-It is created in PHP with a simple custom procedural framework. 
+Znote AAC is a full-fledged website used together with an Open Tibia(OT) server.
+It aims to be super easy to install and compatible with all the popular OT distributions.
+It is created in PHP with a simple custom procedural framework.
 
 ### Where do I download?
 
-We use github to distribute our versions, stable are tagged as releases, while development is the latest commit. 
+We use github to distribute our versions, stable are tagged as releases, while development is the latest commit.
 * [Stable](https://github.com/Znote/ZnoteAAC/releases)
 * [Development](https://github.com/Znote/ZnoteAAC/archive/master.zip)
 
-**NOTE:** Development version supports TFS 1.3, but you can expect bugs to occur. 
+**NOTE:** Development version supports TFS 1.3, but you can expect bugs to occur.
 
 ### Compatible OT distributions
 Znote AAC primarily aims to be compatible with [Forgotten Server](https://github.com/otland/forgottenserver)
@@ -26,7 +26,7 @@ Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC s
 * PHP Version 5.6 or higher. Mostly tested on 5.6 and 7.4. Most web stacks ships with this as default these days.
 
 ### Optionals
-* For email registration verification and account recovery: [PHPMailer](https://github.com/PHPMailer/PHPMailer/releases) Version 6.x, extracted and renamed to just "PHPMailer" in Znote AAC directory. 
+* For email registration verification and account recovery: [PHPMailer](https://github.com/PHPMailer/PHPMailer/releases) Version 6.x, extracted and renamed to just "PHPMailer" in Znote AAC directory.
 * PHP extension curl for PHPMailer, paypal and google reCaptcha services.
 * PHP extension openssl for google reCaptcha services.
 
@@ -36,8 +36,8 @@ Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC s
 Without modifying config.php, enter the website and wait for mysql connection error.
 This will show you the rest of the instructions as well as the mysql schema.
 
-2: Edit config.php and: 
-- modify $config['ServerEngine'] with correct TFS version you are running. (TFS_02, TFS_03, TFS_10, OTHIRE). 
+2: Edit config.php and:
+- modify $config['ServerEngine'] with correct TFS version you are running. (TFS_02, TFS_03, TFS_10, OTHIRE).
 - modify $config['page_admin_access'] with your admin account username(s).
 
 3: Before inserting correct SQL connection details, visit the website ( http://127.0.0.1/ ), it will generate a mysql schema you should import to your OT servers database.
@@ -48,7 +48,7 @@ This will show you the rest of the instructions as well as the mysql schema.
 
 6: Enjoy Znote AAC. You can look around [HERE](https://otland.net/forums/website-applications.118/) for plugins and resources to Znote AAC, for instance various free templates to use.
 
-7: Please note that you need PHP cURL enabled to make Paypal payments work. 
+7: Please note that you need PHP cURL enabled to make Paypal payments work.
 
 8: You may need to change directory access rights of /engine/cache to allow writing.
 
@@ -60,7 +60,7 @@ Znote AAC is very rich feature wise, here is an attempt at summarizing what we o
 - TFS 0.2
 - TFS 0.3/4
 - TFS 1.x
-- Distributions based on these (such as OTX). 
+- Distributions based on these (such as OTX).
 
 #### General
 - Server wide latest death list

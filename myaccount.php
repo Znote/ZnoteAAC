@@ -1,6 +1,6 @@
 <?php require_once 'engine/init.php';
 protect_page();
-include 'layout/overall/header.php'; 
+include 'layout/overall/header.php';
 #region CANCEL CHARACTER DELETE
 $undelete_id = @$_GET['cancel_delete_id'];
 if($undelete_id) {
@@ -31,7 +31,7 @@ if (isset($_GET['authenticate']) && $config['mailserver']['myaccount_verify_emai
 				$active = (int) $user['active'];
 				$active_email = (int) $user['active_email'];
 				$verify_points = ($active_email == 0 && $config['mailserver']['verify_email_points'] > 0)
-					? ", `points` = `points` + {$config['mailserver']['verify_email_points']}" 
+					? ", `points` = `points` + {$config['mailserver']['verify_email_points']}"
 					: '';
 				// Enable the account to login
 				if ($active == 0 || $active_email == 0) {
@@ -58,12 +58,12 @@ if (isset($_GET['authenticate']) && $config['mailserver']['myaccount_verify_emai
 			$mailer = new Mail($config['mailserver']);
 
 			$title = "Please authenticate your email at {$_SERVER['HTTP_HOST']}.";
-			
+
 			$body = "<h1>Please click on the following link to authenticate your account:</h1>";
 			$body .= "<p><a href='{$thisurl}'>{$thisurl}</a></p>";
 			$body .= "<p>Thank you for verifying your email and enjoy your stay at {$config['mailserver']['fromName']}.</p>";
 			$body .= "<hr><p>I am an automatic no-reply e-mail. Any emails sent back to me will be ignored.</p>";
-			
+
 			$user_name = ($config['ServerEngine'] !== 'OTHIRE') ? $user_data['name'] : $user_data['id'];
 			//echo "<h1>" . $title . "<h1>" . $body;
 			$mailer->sendMail($user_data['email'], $title, $body, $user_name);
@@ -317,7 +317,7 @@ if ($render_page) {
 				} else {
 					echo 'You do not have premium account days.';
 				}
-			} 
+			}
 			if ($config['mailserver']['myaccount_verify_email']):
 				?><br>Email: <?php echo $user_data['email'];
 				if ($user_znote_data['active_email'] == 1) {

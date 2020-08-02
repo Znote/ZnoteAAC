@@ -3,7 +3,7 @@ if ($config['ServerEngine'] == 'TFS_02' || $config['ServerEngine'] == 'TFS_10' |
 $cache = new Cache('engine/cache/killers');
 if ($cache->hasExpired()) {
 	$killers = fetchMurders();
-	
+
 	$cache->setContent($killers);
 	$cache->save();
 } else {
@@ -12,7 +12,7 @@ if ($cache->hasExpired()) {
 $cache = new Cache('engine/cache/victims');
 if ($cache->hasExpired()) {
 	$victims = fetchLoosers();
-	
+
 	$cache->setContent($victims);
 	$cache->save();
 } else {
@@ -36,7 +36,7 @@ if ($killers) {
 		<th>Name</th>
 		<th>Kills</th>
 	</tr>
-	<?php foreach ($killers as $killer) { 
+	<?php foreach ($killers as $killer) {
 		echo '<tr>';
 		echo "<td width='70%'><a href='characterprofile.php?name=". $killer['killed_by'] ."'>". $killer['killed_by'] ."</a></td>";
 		echo "<td width='30%'>". $killer['kills'] ."</td>";
@@ -54,7 +54,7 @@ if ($victims) {
 		<th>Name</th>
 		<th>Deaths</th>
 	</tr>
-	<?php foreach ($victims as $victim) { 
+	<?php foreach ($victims as $victim) {
 		echo '<tr>';
 		echo "<td width='70%'><a href='characterprofile.php?name=". $victim['name'] ."'>". $victim['name'] ."</a></td>";
 		echo "<td width='30%'>". $victim['Deaths'] ."</td>";
@@ -73,7 +73,7 @@ if ($latests) {
 		<th>Time</th>
 		<th>Victim</th>
 	</tr>
-	<?php foreach ($latests as $last) { 
+	<?php foreach ($latests as $last) {
 		echo '<tr>';
 		echo "<td width='35%'><a href='characterprofile.php?name=". $last['killed_by'] ."'>". $last['killed_by'] ."</a></td>";
 		echo "<td width='30%'>". getClock($last['time'], true) ."</td>";
@@ -95,7 +95,7 @@ if ($latests) {
 	}
 
 	if ($deaths && !empty($deaths)) {
-	?>	
+	?>
 		<h1>Latest Killers</h1>
 		<table id="deathsTable" class="table table-striped">
 			<tr class="yellow">
@@ -103,7 +103,7 @@ if ($latests) {
 				<th>Time</th>
 				<th>Victim</th>
 			</tr>
-			<?php foreach ($deaths as $death) { 
+			<?php foreach ($deaths as $death) {
 				echo '<tr>';
 				echo "<td><a href='characterprofile.php?name=". $death['killed_by'] ."'>". $death['killed_by'] ."</a></td>";
 				echo "<td>". getClock($death['time'], true) ."</td>";

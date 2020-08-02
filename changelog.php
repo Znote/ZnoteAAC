@@ -56,7 +56,7 @@ if (user_logged_in()) {
 $cache = new Cache('engine/cache/changelog');
 if ($updateCache === true) {
 	$changelogs = mysql_select_multi("SELECT `id`, `text`, `time`, `report_id`, `status` FROM `znote_changelog` ORDER BY `id` DESC;");
-	
+
 	$cache->setContent($changelogs);
 	$cache->save();
 } else {
@@ -87,14 +87,14 @@ if (isset($changelogs) && !empty($changelogs) && $changelogs !== false) {
 						<form action="" method="POST">
 							<input name="delete" type="hidden" value="<?php echo $changelog['id']; ?>">
 							<input name="action" type="hidden" value="1">
-							<input type="submit" value="DELETE">	
+							<input type="submit" value="DELETE">
 						</form>
 					</td>
 					<td>
 						<form action="" method="POST">
 							<input name="changelogId" type="hidden" value="<?php echo $changelog['id']; ?>">
 							<input name="action" type="hidden" value="2">
-							<input type="submit" value="UPDATE">	
+							<input type="submit" value="UPDATE">
 						</form>
 					</td>
 					<?php

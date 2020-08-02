@@ -1,7 +1,7 @@
-<?php 
+<?php
 require_once 'engine/init.php';
 // To direct users here, add: protect_page(); Here before loading header.
-include 'layout/overall/header.php'; 
+include 'layout/overall/header.php';
 if (user_logged_in() === true) {
 ?>
 
@@ -15,6 +15,6 @@ if (user_logged_in() === true) {
 <h1>Sorry, you need to be logged in to do that!</h1>
 <p>Please register or log in.</p>
 
-<?php 
+<?php
 }
 include 'layout/overall/footer.php'; ?>

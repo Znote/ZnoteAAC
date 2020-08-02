@@ -32,12 +32,12 @@ if ($config['mailserver']['accountRecovery']) {
 					}
 					$password = sha1($salt.$password);
 				}
-				
+
 				if ($config['ServerEngine'] != 'OTHIRE')
 					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`password` = '$password' LIMIT 1;");
 				else
 					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`password` = '$password' LIMIT 1;");
-				
+
 				if ($user !== false) {
 					// Found user
 
@@ -77,12 +77,12 @@ if ($config['mailserver']['accountRecovery']) {
 					}
 					$password = sha1($salt.$newpass);
 				}
-				
+
 				if ($config['ServerEngine'] != 'OTHIRE')
 					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`name`, `a`.`id` AS `account_id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`name` = '$username' LIMIT 1;");
 				else
 					$user = mysql_select_single("SELECT `p`.`id` AS `player_id`, `a`.`id` AS `account_id` FROM `players` `p` INNER JOIN `accounts` `a` ON `p`.`account_id` = `a`.`id` WHERE `p`.`name` = '$character' AND `a`.`email` = '$email' AND `a`.`id` = '$username' LIMIT 1;");
-				
+
 				if ($user !== false) {
 					// Found user
 					// Give him the new password
@@ -140,7 +140,7 @@ if ($config['mailserver']['accountRecovery']) {
 			}
 		} else echo "Captcha image verification was submitted wrong.";
 	} else {
-		
+
 		$a = (isset($_GET['a']) && !empty($_GET['a'])) ? (int)$_GET['a'] : false;
 		$k = (isset($_GET['k']) && !empty($_GET['k'])) ? (int)$_GET['k'] : false;
 
@@ -171,7 +171,7 @@ if ($config['mailserver']['accountRecovery']) {
 					<label for="email">Email:</label><input type="text" name="email" placeholder="name@mail.com"><br>
 					<label for="Character">Character: </label><input type="text" name="character"><br>
 					<?php
-					
+
 					if ($mode === 'password') {
 						echo '<label for="username">Username:</label> <input type="text" name="username"><br>';
 					} elseif ($mode === 'username') {

@@ -1,4 +1,4 @@
-<?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
+<?php require_once 'engine/init.php'; include 'layout/overall/header.php';
 protect_page();
 admin_only($user_data);
 $auction = $config['shop_auction'];
@@ -7,13 +7,13 @@ $step_duration = $auction['step_duration'];
 $loadOutfits = ($config['show_outfits']['highscores']) ? true : false;
 function toDuration($is) {
 	$duration['day'] = $is / (24 * 60 * 60);
-	if (($duration['day'] - (int)$duration['day']) > 0) 
+	if (($duration['day'] - (int)$duration['day']) > 0)
 		$duration['hour'] = ($duration['day'] - (int)$duration['day']) * 24;
 	if (isset($duration['hour'])) {
-		if (($duration['hour'] - (int)$duration['hour']) > 0) 
+		if (($duration['hour'] - (int)$duration['hour']) > 0)
 			$duration['minute'] = ($duration['hour'] - (int)$duration['hour']) * 60;
 		if (isset($duration['minute'])) {
-			if (($duration['minute'] - (int)$duration['minute']) > 0) 
+			if (($duration['minute'] - (int)$duration['minute']) > 0)
 				$duration['second'] = ($duration['minute'] - (int)$duration['minute']) * 60;
 		}
 	}
@@ -34,8 +34,8 @@ $time = time();
 $expired_auctions = mysql_select_multi("
 	SELECT `id`
 	FROM `znote_auction_player`
-	WHERE `sold` = 0 
-	AND `time_end` < {$time} 
+	WHERE `sold` = 0
+	AND `time_end` < {$time}
 	AND `bidder_account_id` > 0
 ");
 //data_dump($expired_auctions, $this_account_id, "expired_auctions");
@@ -47,8 +47,8 @@ if ($expired_auctions !== false) {
 	if (!empty($soldIds)) {
 		mysql_update("
 			UPDATE `znote_auction_player`
-			SET `sold`=1 
-			WHERE `id` IN(".implode(',', $soldIds).") 
+			SET `sold`=1
+			WHERE `id` IN(".implode(',', $soldIds).")
 			LIMIT ".COUNT($soldIds).";
 		");
 	}
@@ -56,72 +56,72 @@ if ($expired_auctions !== false) {
 // end passive check
 // Pending auctions
 $pending = mysql_select_multi("
-	SELECT 
-		`za`.`id` AS `zaid`, 
-		`za`.`price`,
-		`za`.`bid`,
-		`za`.`time_begin`,
-		`za`.`time_end`, 
-		`p`.`id` AS `player_id`, 
-		`p`.`name`, 
-		`p`.`vocation`, 
-		`p`.`level`, 
-		`p`.`lookbody` AS `body`, 
-		`p`.`lookfeet` AS `feet`, 
-		`p`.`lookhead` AS `head`, 
-		`p`.`looklegs` AS `legs`, 
-		`p`.`looktype` AS `type`, 
-		`p`.`lookaddons` AS `addons`
-	FROM `znote_auction_player` za 
-	INNER JOIN `players` p
-		ON `za`.`player_id` = `p`.`id`
-	WHERE `p`.`account_id` = {$auction['storage_account_id']} 
-	AND `za`.`claimed` = 0
-	AND `za`.`sold` = 1 
-	ORDER BY `za`.`time_end` desc
-");
-// ongoing auctions
-$ongoing = mysql_select_multi("
-	SELECT 
-		`za`.`id` AS `zaid`, 
+	SELECT
+		`za`.`id` AS `zaid`,
 		`za`.`price`,
 		`za`.`bid`,
 		`za`.`time_begin`,
 		`za`.`time_end`,
-		`p`.`vocation`, 
-		`p`.`level`, 
-		`p`.`lookbody` AS `body`, 
-		`p`.`lookfeet` AS `feet`, 
-		`p`.`lookhead` AS `head`, 
-		`p`.`looklegs` AS `legs`, 
-		`p`.`looktype` AS `type`, 
+		`p`.`id` AS `player_id`,
+		`p`.`name`,
+		`p`.`vocation`,
+		`p`.`level`,
+		`p`.`lookbody` AS `body`,
+		`p`.`lookfeet` AS `feet`,
+		`p`.`lookhead` AS `head`,
+		`p`.`looklegs` AS `legs`,
+		`p`.`looktype` AS `type`,
 		`p`.`lookaddons` AS `addons`
-	FROM `znote_auction_player` za 
+	FROM `znote_auction_player` za
 	INNER JOIN `players` p
 		ON `za`.`player_id` = `p`.`id`
-	WHERE `p`.`account_id` = {$auction['storage_account_id']} 
+	WHERE `p`.`account_id` = {$auction['storage_account_id']}
+	AND `za`.`claimed` = 0
+	AND `za`.`sold` = 1
+	ORDER BY `za`.`time_end` desc
+");
+// ongoing auctions
+$ongoing = mysql_select_multi("
+	SELECT
+		`za`.`id` AS `zaid`,
+		`za`.`price`,
+		`za`.`bid`,
+		`za`.`time_begin`,
+		`za`.`time_end`,
+		`p`.`vocation`,
+		`p`.`level`,
+		`p`.`lookbody` AS `body`,
+		`p`.`lookfeet` AS `feet`,
+		`p`.`lookhead` AS `head`,
+		`p`.`looklegs` AS `legs`,
+		`p`.`looktype` AS `type`,
+		`p`.`lookaddons` AS `addons`
+	FROM `znote_auction_player` za
+	INNER JOIN `players` p
+		ON `za`.`player_id` = `p`.`id`
+	WHERE `p`.`account_id` = {$auction['storage_account_id']}
 	AND `za`.`sold` = 0
 	ORDER BY `za`.`time_end` desc;
 ");
 // Completed auctions
 $completed = mysql_select_multi("
-	SELECT 
-		`za`.`id` AS `zaid`, 
+	SELECT
+		`za`.`id` AS `zaid`,
 		`za`.`price`,
 		`za`.`bid`,
 		`za`.`time_begin`,
-		`za`.`time_end`, 
-		`p`.`id` AS `player_id`, 
-		`p`.`name`, 
-		`p`.`vocation`, 
-		`p`.`level`, 
-		`p`.`lookbody` AS `body`, 
-		`p`.`lookfeet` AS `feet`, 
-		`p`.`lookhead` AS `head`, 
-		`p`.`looklegs` AS `legs`, 
-		`p`.`looktype` AS `type`, 
+		`za`.`time_end`,
+		`p`.`id` AS `player_id`,
+		`p`.`name`,
+		`p`.`vocation`,
+		`p`.`level`,
+		`p`.`lookbody` AS `body`,
+		`p`.`lookfeet` AS `feet`,
+		`p`.`lookhead` AS `head`,
+		`p`.`looklegs` AS `legs`,
+		`p`.`looktype` AS `type`,
 		`p`.`lookaddons` AS `addons`
-	FROM `znote_auction_player` za 
+	FROM `znote_auction_player` za
 	INNER JOIN `players` p
 		ON `za`.`player_id` = `p`.`id`
 	WHERE `za`.`claimed` = 1
@@ -132,7 +132,7 @@ $completed = mysql_select_multi("
 <p><strong>Let players sell, buy and bid on characters.</strong>
 	<br>Creates a deeper shop economy, encourages players to spend more money in shop for points.
 	<br>Pay to win/progress mechanic, but also lets people who can barely afford points to gain it
-	<br>by leveling characters to sell. It can also discourages illegal/risky third-party account 
+	<br>by leveling characters to sell. It can also discourages illegal/risky third-party account
 	<br>services. Since players can buy officially & support the server, dodgy competitors have to sell for cheaper.
 	<br>Without admin interference this is organic to each individual community economy inflation.</p>
 <?php data_dump($config['shop_auction'], false, "config.php: shop_auction") ?>
@@ -186,9 +186,9 @@ $completed = mysql_select_multi("
 				<td><a href="/auctionChar.php?action=view&zaid=<?php echo $character['zaid']; ?>">VIEW</a></td>
 				<td><?php echo $character['price']; ?></td>
 				<td><?php echo $character['bid']; ?></td>
-				<td><?php 
+				<td><?php
 					$ended = (time() > $character['time_end']) ? true : false;
-					echo getClock($character['time_begin'], true); 
+					echo getClock($character['time_begin'], true);
 					?>
 				</td>
 				<td><?php echo ($ended) ? 'Instant' : 'Bidding<br>('.toDuration(($character['time_end'] - time())).')'; ?></td>

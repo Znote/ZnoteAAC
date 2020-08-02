@@ -29,7 +29,7 @@
 		}
 		?>
 		<script type="text/javascript">
-			window.searchNames = <?php echo json_encode($names)?>;	
+			window.searchNames = <?php echo json_encode($names)?>;
 			$(function() {
 				if (window.searchNames.length > 0) {
 					$('#src_name').keyup(function(e) {

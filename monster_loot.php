@@ -1,6 +1,6 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php'; ?>
 
-<?php 
+<?php
 ###### MONSTER LOOT CHECKER ######
 ###### VERSION: 1.5
 
@@ -42,12 +42,12 @@ $rarity = array(
 ?>
 <br><br>
 
-<?php 
+<?php
 	$items = simplexml_load_file($otdir . '/data/items/items.xml') or die('<b>Could not load items!</b>');
-	foreach($items->item as $v) 
-		$itemList[(int)$v['id']] = $v['name']; 
+	foreach($items->item as $v)
+		$itemList[(int)$v['id']] = $v['name'];
 
-	if(isset($_GET['lootrate'])) { 
+	if(isset($_GET['lootrate'])) {
 		$config = parse_ini_file($otdir . '/config.lua');
 		$lootRate = $config['rate_loot'];
 	}

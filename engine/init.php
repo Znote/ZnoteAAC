@@ -8,7 +8,7 @@ $l_start = $l_time;
 function elapsedTime($l_start = false, $l_time = false) {
 	if ($l_start === false) global $l_start;
 	if ($l_time === false) global $l_time;
-	
+
 	$l_time = explode(' ', microtime());
 	$l_finish = $l_time[1] + $l_time[0];
 	return round(($l_finish - $l_start), 4);
@@ -32,7 +32,7 @@ if ($config['use_captcha'] && !extension_loaded('openssl')) {
 	die("php openSSL is not enabled. It is required to for captcha services.<br>1. Find your php.ini file.<br>2. Uncomment extension=php_openssl<br>Restart web server.<br><br><b>If you don't want this then disable use_captcha in config.php.</b>");
 }
 
-// References ( & ) works as an alias for a variable, 
+// References ( & ) works as an alias for a variable,
 // they point to the same memmory, instead of duplicating it.
 if (!isset($config['TFSVersion'])) $config['TFSVersion'] = &$config['ServerEngine'];
 if (!isset($config['ServerEngine'])) $config['ServerEngine'] = &$config['TFSVersion'];
@@ -62,7 +62,7 @@ $errors = array();
 // Log IP
 if ($config['log_ip']) {
 	$visitor_config = $config['ip_security'];
-	
+
 	$flush = $config['flush_ip_logs'];
 	if ($flush != false) {
 		$timef = $time - $flush;
@@ -72,14 +72,14 @@ if ($config['log_ip']) {
 			setCache($time);
 		}
 	}
-	
+
 	$visitor_data = znote_visitors_get_data();
-	
+
 	znote_visitor_set_data($visitor_data); // update or insert data
 	znote_visitor_insert_detailed_data(0); // detailed data
-	
+
 	$visitor_detailed = znote_visitors_get_detailed_data($visitor_config['time_period']);
-	
+
 	// max activity
 	$v_activity = 0;
 	$v_register = 0;
@@ -90,46 +90,46 @@ if ($config['log_ip']) {
 	foreach ((array)$visitor_detailed as $v_d) {
 		// Activity
 		if ($v_d['ip'] == getIPLong()) {
-			// count each type of visit			
+			// count each type of visit
 			switch ($v_d['type']) {
 				case 0: // max activity
 					$v_activity++;
 				break;
-				
+
 				case 1: // account registered
 					$v_register++;
 					$v_form++;
 				break;
-				
+
 				case 2: // character creations
 					$v_c_char++;
 					$v_form++;
 				break;
-				
+
 				case 3: // Highscore fetched
 					$v_highscore++;
 					$v_form++;
 				break;
-				
+
 				case 4: // character searched
 					$v_s_char++;
 					$v_form++;
 				break;
-				
+
 				case 5: // Other forms (login.?)
 					$v_form++;
 				break;
 			}
-			
+
 		}
 	}
-	
+
 	// Deny access if activity is too high
 	if ($v_activity > $visitor_config['max_activity']) die("Chill down. Your web activity is too big. max_activity");
 	if ($v_register > $visitor_config['max_account']) die("Chill down. You can't create multiple accounts that fast. max_account");
 	if ($v_c_char > $visitor_config['max_character']) die("Chill down. Your web activity is too big. max_character");
 	if ($v_form > $visitor_config['max_post']) die("Chill down. Your web activity is too big. max_post");
-	
+
 	//var_dump($v_activity, $v_register, $v_highscore, $v_c_char, $v_s_char, $v_form);
 	//echo ' <--- IP logging activity past 10 seconds.';
 }

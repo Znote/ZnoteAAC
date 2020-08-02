@@ -27,5 +27,5 @@
 	</li>
 </ol>
 
-<?php 
+<?php
 include 'layout/overall/footer.php'; ?>

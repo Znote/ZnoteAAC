@@ -18,7 +18,7 @@ if (!$config['forum']['enabled']) admin_only($user_data);
 	- Show in-game position
 
 	Changelog (1.3 -> 1.4):
-	- Fix SQL query error when editing Board name. 
+	- Fix SQL query error when editing Board name.
 */
 // BBCODE support:
 function TransformToBBCode($string) {
@@ -213,16 +213,16 @@ if ($admin && !empty($_POST)) {
 	if ($admin_board_create_closed === false) $admin_board_create_closed = 0;
 	if ($admin_board_create_hidden === false) $admin_board_create_hidden = 0;
 	if ($admin_board_create_guild_id === false) $admin_board_create_guild_id = 0;
-	
+
 	// Create board
 	if ($admin_board_create_name !== false) {
-		
+
 		// Insert data
-		mysql_insert("INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`) 
-			VALUES ('$admin_board_create_name', 
-				'$admin_board_create_access', 
-				'$admin_board_create_closed', 
-				'$admin_board_create_hidden', 
+		mysql_insert("INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`)
+			VALUES ('$admin_board_create_name',
+				'$admin_board_create_access',
+				'$admin_board_create_closed',
+				'$admin_board_create_hidden',
 				'$admin_board_create_guild_id');");
 		echo '<h1>Board has been created.</h1>';
 	}
@@ -233,12 +233,12 @@ if ($admin && !empty($_POST)) {
 		$admin_category_id = (int)$admin_category_id;
 
 		// Update the category
-		mysql_update("UPDATE `znote_forum` SET 
-			`name`='$admin_category_name', 
-			`access`='$admin_category_access', 
-			`closed`='$admin_category_closed', 
-			`hidden`='$admin_category_hidden', 
-			`guild_id`='$admin_category_guild_id' 
+		mysql_update("UPDATE `znote_forum` SET
+			`name`='$admin_category_name',
+			`access`='$admin_category_access',
+			`closed`='$admin_category_closed',
+			`hidden`='$admin_category_hidden',
+			`guild_id`='$admin_category_guild_id'
 			WHERE `id`='$admin_category_id' LIMIT 1;");
 		echo '<h1>Board has been updated successfully.</h1>';
 	}
@@ -247,7 +247,7 @@ if ($admin && !empty($_POST)) {
 	// edit category
 	if ($admin_category_edit !== false) {
 		$admin_category_id = (int)$admin_category_id;
-		$category = mysql_select_single("SELECT `id`, `name`, `access`, `closed`, `hidden`, `guild_id` 
+		$category = mysql_select_single("SELECT `id`, `name`, `access`, `closed`, `hidden`, `guild_id`
 			FROM `znote_forum` WHERE `id`='$admin_category_id' LIMIT 1;");
 		if ($category !== false) {
 			?>
@@ -276,7 +276,7 @@ if ($admin && !empty($_POST)) {
 						<td><label for="admin_category_closed">Closed:</label></td>
 						<td>
 							<select name="admin_category_closed" class="span12">
-								<?php 
+								<?php
 								if ($category['closed'] == 1) echo '<option value="1" selected>Yes</option>';
 								else echo '<option value="1">Yes</option>';
 								if ($category['closed'] == 0) echo '<option value="0" selected>No</option>';
@@ -289,7 +289,7 @@ if ($admin && !empty($_POST)) {
 						<td><label for="admin_category_hidden">Hidden:</label></td>
 						<td>
 							<select name="admin_category_hidden" class="span12">
-								<?php 
+								<?php
 								if ($category['hidden'] == 1) echo '<option value="1" selected>Yes</option>';
 								else echo '<option value="1">Yes</option>';
 								if ($category['hidden'] == 0) echo '<option value="0" selected>No</option>';
@@ -316,7 +316,7 @@ if ($admin && !empty($_POST)) {
 			</form>
 			<?php
 		} else echo '<h2>Category not found.</h2>';
-		
+
 	}
 
 	// delete category
@@ -425,16 +425,16 @@ if (!empty($_GET)) {
 				}
 
 				if ($access) {
-					mysql_insert("INSERT INTO `znote_forum_threads`	
-						(`forum_id`, `player_id`, `player_name`, `title`, `text`, `created`, `updated`, `sticky`, `hidden`, `closed`) 
+					mysql_insert("INSERT INTO `znote_forum_threads`
+						(`forum_id`, `player_id`, `player_name`, `title`, `text`, `created`, `updated`, `sticky`, `hidden`, `closed`)
 						VALUES (
-							'$create_thread_category', 
-							'$create_thread_cid', 
-							'". $charData[$create_thread_cid]['name'] ."', 
-							'$create_thread_title', 
-							'$create_thread_text', 
-							'". time() ."', 
-							'". time() ."', 
+							'$create_thread_category',
+							'$create_thread_cid',
+							'". $charData[$create_thread_cid]['name'] ."',
+							'$create_thread_title',
+							'$create_thread_text',
+							'". time() ."',
+							'". time() ."',
 							'0', '0', '0');");
 					SendGet(array('cat'=>$create_thread_category), 'forum.php');
 				} else echo '<p><b><font color="red">Permission to create thread denied.</font></b></p>';
@@ -561,11 +561,11 @@ if (!empty($_GET)) {
 				<table class="znoteTable ThreadTable table table-striped">
 					<tr class="yellow">
 						<th<?php if ($threadPlayer !== false) echo ' colspan="2"'; ?>>
-							<?php 
-							echo getClock($threadData['created'], true); 
+							<?php
+							echo getClock($threadData['created'], true);
 							if ($threadPlayer === false): ?>
-								 - Created by: 
-								<?php 
+								 - Created by:
+								<?php
 						 		echo "<a href='characterprofile.php?name=". $threadData['player_name'] ."'>". $threadData['player_name'] ."</a>";
 					 		endif;
 					 		?>
@@ -591,7 +591,7 @@ if (!empty($_GET)) {
 				<hr class="bighr">
 				<?php
 				if ($admin || $leader) {
-					// PlayerHaveAccess($yourChars, $thread['player_name']) || 
+					// PlayerHaveAccess($yourChars, $thread['player_name']) ||
 					// $yourChars
 					?>
 					<table class="adminTable table">
@@ -662,7 +662,7 @@ if (!empty($_GET)) {
 					$players = array();
 					$extra = false;
 					if ($config['forum']['outfit_avatars'] || $config['forum']['player_position']) {
-						$extra = true; 
+						$extra = true;
 
 						foreach($posts as $post)
 							if (!isset($players[$post['player_id']]))
@@ -682,7 +682,7 @@ if (!empty($_GET)) {
 								<th<?php if ($extra) echo ' colspan="2"'; ?>>
 									<?php echo getClock($post['created'], true);
 									if (!$extra): ?>
-										 - Posted by: 
+										 - Posted by:
 										 <?php echo "<a href='characterprofile.php?name=". $post['player_name'] ."'>". $post['player_name'] ."</a>";
 									 endif; ?>
 								</th>
@@ -771,7 +771,7 @@ if (!empty($_GET)) {
 				?>
 			<?php
 		}
-		
+
 	} else
 
 	/////////////////////
@@ -902,7 +902,7 @@ if (!empty($_GET)) {
 			} else echo "<p>You must have a character on your account that is level ". $config['forum']['level'] ."+ to create new threads.</p>";
 		} else echo "<p><font color='red'>Your permission to access this board has been denied.<br>If you are trying to access a Guild Board, you need level: ". $config['forum']['level'] ."+</font></p>";
 
-	}	
+	}
 } else {
 
 	//////////////////////
@@ -910,7 +910,7 @@ if (!empty($_GET)) {
 	if (!$admin) $categories = mysql_select_multi(
 		"SELECT `id`, `name`, `access`, `closed`, `hidden`, `guild_id` FROM `znote_forum` WHERE `access`<='$yourAccess' ORDER BY `name`;");
 		else $categories = mysql_select_multi("SELECT `id`, `name`, `access`, `closed`, `hidden`, `guild_id` FROM `znote_forum` ORDER BY `name`;");
-	
+
 	$guildboard = false;
 	?>
 	<table class="znoteTable table table-striped table-hover" id="forumCategoryTable">
@@ -966,7 +966,7 @@ if (!empty($_GET)) {
 						echo "[". $guildName[$category['guild_id']] ."] ";
 					}
 					echo $category['name'] ."</td>";
-					
+
 					// Admin columns
 					if ($admin) {
 						?>
@@ -1041,7 +1041,7 @@ if (!empty($_GET)) {
 						echo "[". $guildName[$board['guild_id']] ."] ";
 					}
 					echo $board['name'] ."</td>";
-					
+
 					// Admin columns
 					if ($admin) {
 						?>
@@ -1072,7 +1072,7 @@ if (!empty($_GET)) {
 		<h2>Create board:</h2>
 		<form action="" method="post">
 			<input type="text" name="admin_board_create_name" placeholder="Board name"><br><br>
-			
+
 			Required access: <select name="admin_board_create_access">
 				<?php
 				foreach($config['ingame_positions'] as $access => $name) {
@@ -1085,7 +1085,7 @@ if (!empty($_GET)) {
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</select><br>
-			
+
 			Board hidden: <select name="admin_board_create_hidden">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
@@ -1099,7 +1099,7 @@ if (!empty($_GET)) {
 				}
 				?>
 			</select><br><br>
-			
+
 			<input type="submit" value="Create Board" class="btn btn-primary">
 		</form>
 		<?php

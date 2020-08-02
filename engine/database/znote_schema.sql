@@ -262,35 +262,35 @@ INSERT INTO `znote_forum` (`name`, `access`, `closed`, `hidden`, `guild_id`) VAL
 
 -- Convert existing accounts in database to be Znote AAC compatible
 INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `flag`)
-SELECT 
-  `a`.`id` AS `account_id`, 
-  0 AS `ip`, 
-  UNIX_TIMESTAMP(CURDATE()) AS `created`, 
+SELECT
+  `a`.`id` AS `account_id`,
+  0 AS `ip`,
+  UNIX_TIMESTAMP(CURDATE()) AS `created`,
   '' AS `flag`
 FROM `accounts` AS `a`
 LEFT JOIN `znote_accounts` AS `z`
-  ON `a`.`id` = `z`.`account_id` 
+  ON `a`.`id` = `z`.`account_id`
 WHERE `z`.`created` IS NULL;
 
 -- Convert existing players in database to be Znote AAC compatible
 INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`)
-SELECT 
-  `p`.`id` AS `player_id`, 
-  UNIX_TIMESTAMP(CURDATE()) AS `created`, 
-  0 AS `hide_char`, 
+SELECT
+  `p`.`id` AS `player_id`,
+  UNIX_TIMESTAMP(CURDATE()) AS `created`,
+  0 AS `hide_char`,
   '' AS `comment`
 FROM `players` AS `p`
 LEFT JOIN `znote_players` AS `z`
-  ON `p`.`id` = `z`.`player_id` 
+  ON `p`.`id` = `z`.`player_id`
 WHERE `z`.`created` IS NULL;
 
 -- Delete duplicate account records
 DELETE `d` FROM `znote_accounts` AS `d`
 INNER JOIN (
-  SELECT `i`.`account_id`, 
+  SELECT `i`.`account_id`,
   MAX(`i`.`id`) AS `retain`
-  FROM `znote_accounts` AS `i` 
-  GROUP BY `i`.`account_id` 
+  FROM `znote_accounts` AS `i`
+  GROUP BY `i`.`account_id`
   HAVING COUNT(`i`.`id`) > 1
 ) AS `x`
   ON `d`.`account_id` = `x`.`account_id`
@@ -299,10 +299,10 @@ INNER JOIN (
 -- Delete duplicate player records
 DELETE `d` FROM `znote_players` AS `d`
 INNER JOIN (
-  SELECT `i`.`player_id`, 
+  SELECT `i`.`player_id`,
   MAX(`i`.`id`) AS `retain`
-  FROM `znote_players` AS `i` 
-  GROUP BY `i`.`player_id` 
+  FROM `znote_players` AS `i`
+  GROUP BY `i`.`player_id`
   HAVING COUNT(`i`.`id`) > 1
 ) AS `x`
   ON `d`.`player_id` = `x`.`player_id`

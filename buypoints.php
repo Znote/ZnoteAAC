@@ -1,6 +1,6 @@
 <?php require_once 'engine/init.php';
 protect_page();
-include 'layout/overall/header.php'; 
+include 'layout/overall/header.php';
 
 // Import from config:
 $pagseguro = $config['pagseguro'];

@@ -1,4 +1,4 @@
-<?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
+<?php require_once 'engine/init.php'; include 'layout/overall/header.php';
 protect_page();
 admin_only($user_data);
 // start
@@ -127,4 +127,4 @@ if ($images != false) {
 	<?php }
 } else echo '<h2>There are currently no deleted images.</h2>';
 // end
- include 'layout/overall/footer.php'; ?>
+include 'layout/overall/footer.php'; ?>

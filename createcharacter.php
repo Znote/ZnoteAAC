@@ -1,6 +1,6 @@
 <?php require_once 'engine/init.php';
 protect_page();
-include 'layout/overall/header.php'; 
+include 'layout/overall/header.php';
 
 if (empty($_POST) === false) {
 	// $_POST['']
@@ -11,7 +11,7 @@ if (empty($_POST) === false) {
 			break 1;
 		}
 	}
-	
+
 	// check errors (= user exist, pass long enough
 	if (empty($errors) === true) {
 		if (!Token::isValid($_POST['token'])) {
@@ -93,12 +93,12 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 			'lastip'	=>	getIPLong(),
 			'created'	=>	time()
 		);
-		
+
 		user_create_character($character_data);
 		header('Location: createcharacter.php?success');
 		exit();
 		//End register
-		
+
 	} else if (empty($errors) === false){
 		echo '<font color="red"><b>';
 		echo output_errors($errors);
@@ -136,12 +136,12 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 					<!-- Available towns to select from when creating character -->
 					Town:<br>
 					<select name="selected_town">
-						<?php 
-						foreach ($available_towns as $tid): 
+						<?php
+						foreach ($available_towns as $tid):
 							?>
 							<option value="<?php echo $tid; ?>"><?php echo town_id_to_name($tid); ?></option>
-							<?php 
-						endforeach; 
+							<?php
+						endforeach;
 						?>
 					</select>
 				</li>
@@ -149,7 +149,7 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 			else:
 				?>
 				<input type="hidden" name="selected_town" value="<?php echo end($available_towns); ?>">
-				<?php 
+				<?php
 			endif;
 
 			/* Form file */

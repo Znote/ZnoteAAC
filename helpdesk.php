@@ -28,7 +28,7 @@ if ($view !== false) {
 	}
 	?>
 	<h1>View Ticket #
-	<?php 
+	<?php
 		echo $ticketData['id'];
 		if ($ticketData['status'] === 'CLOSED') {
 			echo '<span style="color:red">[CLOSED]</SPAN>';
@@ -38,10 +38,10 @@ if ($view !== false) {
 		<tr class="yellow">
 			<th>
 				<?php
-					echo getClock($ticketData['creation'], true); 
+					echo getClock($ticketData['creation'], true);
 				?>
-				 - Created by: 
-				 <?php 
+				 - Created by:
+				 <?php
 				 	echo $ticketData['username'];
 				 ?>
 			</th>
@@ -60,11 +60,11 @@ if ($view !== false) {
 			<table class="znoteTable ThreadTable table table-striped">
 				<tr class="yellow">
 					<th>
-						<?php 
-							echo getClock($reply['created'], true); 
+						<?php
+							echo getClock($reply['created'], true);
 						?>
-						 - Posted by: 
-						 <?php 
+						 - Posted by:
+						 <?php
 						 	echo $reply['username'];
 						 ?>
 					</th>
@@ -100,7 +100,7 @@ if ($view !== false) {
 				break 1;
 			}
 		}
-		
+
 		// check errors (= user exist, pass long enough
 		if (empty($errors) === true) {
 			/* Token used for cross site scripting security */
@@ -112,7 +112,7 @@ if ($view !== false) {
 					$errors[] = "Please confirm that you're not a robot.";
 				}
 			}
-			// Reversed this if, so: first check if you need to validate, then validate. 
+			// Reversed this if, so: first check if you need to validate, then validate.
 			if ($config['validate_IP'] === true && validate_ip(getIP()) === false) {
 				$errors[] = 'Failed to recognize your IP address. (Not a valid IPv4 address).';
 			}
@@ -167,14 +167,14 @@ if ($view !== false) {
 				'creation' =>	time(),
 				'status'  =>	'Open'
 			);
-		
+
 			$fields = '`'. implode('`, `', array_keys($query)) .'`';
 			$data = '\''. implode('\', \'', $query) .'\'';
 			mysql_insert("INSERT INTO `znote_tickets` ($fields) VALUES ($data)");
 
 			header('Location: helpdesk.php?success');
 			exit();
-		
+
 		} else if (empty($errors) === false) {
 			echo '<font color="red"><b>';
 			echo output_errors($errors);
@@ -218,7 +218,7 @@ if ($view !== false) {
 				</li>
 			</ul>
 		</form>
-		<?php 
+		<?php
 	}
 }
 include 'layout/overall/footer.php';

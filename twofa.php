@@ -4,7 +4,7 @@ if ($config['ServerEngine'] !== 'TFS_10') {
 	?>
 	<h1>Server compatibility error</h1>
 	<p>Sorry, this server is not compatible with Two-Factor Authentication.<br>
-	TFS 1.2 or higher is required to run two-factor authentication, grab it 
+	TFS 1.2 or higher is required to run two-factor authentication, grab it
 	<a href="https://github.com/otland/forgottenserver/releases" target="_BLANK">here</a>.</p>
 	<?php
 } else {
@@ -34,15 +34,15 @@ if ($config['ServerEngine'] !== 'TFS_10') {
 	?>
 	<h1>Two-Factor Authentication</h1>
 	<p>Account security with Two-factor Authentication: <b><?php echo ($status) ? 'Enabled' : 'Disabled'; ?></b>.</p>
-	
+
 	<?php if ($status === false): ?>
 		<p><strong>Login with a token generated from this QR code to activate:</strong></p>
 	<?php else: ?>
 		<p>Click <a href="?disable">HERE</a> to disable Two-Factor Authentication and generate a new QR code.</p>
 	<?php endif; ?>
-	
+
 	<img
-		src="<?php echo TokenAuth6238::getBarCodeUrl($user_data['name'], $_SERVER["HTTP_HOST"], $query['znote_secret'], preg_replace('/\s+/', '', $config['site_title'])); ?>" 
+		src="<?php echo TokenAuth6238::getBarCodeUrl($user_data['name'], $_SERVER["HTTP_HOST"], $query['znote_secret'], preg_replace('/\s+/', '', $config['site_title'])); ?>"
 		alt="Two-Factor Authentication QR code image for this account."
 	/>
 

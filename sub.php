@@ -1,4 +1,4 @@
-<?php require_once 'engine/init.php'; require_once 'layout/overall/header.php'; 
+<?php require_once 'engine/init.php'; require_once 'layout/overall/header.php';
 if ($config['allowSubPages']) {
 	$page = (isset($_GET['page']) && !empty($_GET['page'])) ? getValue($_GET['page']) : '';
 	if (isset($subpages[$page]['file'])) require_once 'layout/sub/'.$subpages[$page]['file'];

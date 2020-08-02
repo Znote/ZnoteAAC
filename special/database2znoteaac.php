@@ -14,7 +14,7 @@ require '../engine/function/users.php';
 	$updated_char = 0;
 	// $updated_char += 1;
 	$updated_pass = 0;
-	
+
 	// install functions
 	function fetch_all_accounts() {
 		$results = mysql_select_multi("SELECT `id` FROM `accounts`");
@@ -24,17 +24,17 @@ require '../engine/function/users.php';
 		}
 		return (count($accounts) > 0) ? $accounts : false;
 	}
-	
+
 	function user_count_znote_accounts() {
 		$data = mysql_select_single("SELECT COUNT(`account_id`) AS `count` from `znote_accounts`;");
 		return ($data !== false) ? $data['count'] : 0;
 	}
-	
+
 	function user_character_is_compatible($pid) {
 		$data = mysql_select_single("SELECT COUNT(`player_id`) AS `count` from `znote_players` WHERE `player_id` = '$pid';");
 		return ($data !== false) ? $data['count'] : 0;
 	}
-	
+
 	function fetch_znote_accounts() {
 		$results = mysql_select_multi("SELECT `account_id` FROM `znote_accounts`");
 		$accounts = array();
@@ -44,7 +44,7 @@ require '../engine/function/users.php';
 		return (count($accounts) > 0) ? $accounts : false;
 	}
 	// end install functions
-	
+
 	// count all accounts, znote accounts, find out which accounts needs to be converted.
 	$all_account = fetch_all_accounts();
 	$znote_account = fetch_znote_accounts();
@@ -62,16 +62,16 @@ require '../engine/function/users.php';
 		}
 	}
 	// end ^
-	
+
 	// Send count status
 	if (isset($all_account) && $all_account !== false) {
 		echo '<br>';
 		echo 'Total accounts detected: '. count($all_account) .'.';
-		
+
 		if (isset($znote_account) && $znote_account !== false) {
 			echo '<br>';
 			echo 'Znote compatible accounts detected: '. count($znote_account) .'.';
-			
+
 			if (isset($old_accounts)) {
 				echo '<br>';
 				echo 'Old accounts detected: '. count($old_accounts) .'.';
@@ -87,7 +87,7 @@ require '../engine/function/users.php';
 		echo 'Total accounts detected: 0.';
 	}
 	// end count status
-	
+
 	// validate accounts
 	if (isset($old_accounts) && $old_accounts !== false) {
 		$time = time();
@@ -96,7 +96,7 @@ require '../engine/function/users.php';
 			// Make acc data compatible:
 			mysql_insert("INSERT INTO `znote_accounts` (`account_id`, `ip`, `created`, `flag`) VALUES ('$old', '0', '$time', '')");
 			$updated_acc += 1;
-			
+
 			// Fetch unsalted password
 			if ($config['ServerEngine'] == 'TFS_03' && $config['salt'] === true) {
 				$password = user_data($old, 'password', 'salt');
@@ -106,30 +106,30 @@ require '../engine/function/users.php';
 				$password = user_data($old, 'password');
 				$p_pass = $password['password'];
 			}
-			
+
 			// Verify lenght of password is less than 28 characters (most likely a plain password)
 			if (strlen($p_pass) < 28 && $old > 1) {
 				// encrypt it with sha1
 				if ($config['ServerEngine'] == 'TFS_02' || $config['salt'] === false) $p_pass = sha1($p_pass);
 				if ($config['ServerEngine'] == 'TFS_03' && $config['salt'] === true) $p_pass = sha1($password['salt'].$p_pass);
-				
+
 				// Update their password so they are sha1 encrypted
 				mysql_update("UPDATE `accounts` SET `password`='$p_pass' WHERE `id`='$old';");
 				$updated_pass += 1;
 			}
-			
+
 		}
 	}
-	
+
 	// validate players
 	if ($all_account !== false) {
 		$time = time();
 		foreach ($all_account as $all) {
-			
+
 			$chars = user_character_list_player_id($all);
 			if ($chars !== false) {
 				// since char list is not false, we found a character list
-				
+
 				// Lets loop through the character list
 				foreach ($chars as $c) {
 					// Is character not compatible yet?
@@ -138,13 +138,13 @@ require '../engine/function/users.php';
 						$cid =  $c['id'];
 						mysql_insert("INSERT INTO `znote_players` (`player_id`, `created`, `hide_char`, `comment`) VALUES ('$cid', '$time', '0', '')");
 						$updated_char += 1;
-						
+
 					}
 				}
 			}
 		}
 	}
-	
+
 	echo "<br><b><font color=\"green\">SUCCESS</font></b><br><br>";
 	echo 'Updated accounts: '. $updated_acc .'<br>';
 	echo 'Updated characters: : '. $updated_char .'<br>';

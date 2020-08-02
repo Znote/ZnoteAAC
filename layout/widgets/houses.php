@@ -6,10 +6,10 @@
 		<form action="houses.php" method="<?php if ($config['ServerEngine'] !== 'TFS_10') echo "post"; else echo "get" ;?>">
 			<select name="<?php if ($config['ServerEngine'] !== 'TFS_10') echo "selected"; else echo "id" ;?>">
 				<?php
-				foreach ($config['towns'] as $id => $name) 
+				foreach ($config['towns'] as $id => $name)
 					echo '<option value="'. $id .'">'. $name .'</option>';
 				?>
-			</select> 
+			</select>
 			<?php
 				/* Form file */
 				if ($config['ServerEngine'] !== 'TFS_10') Token::create();

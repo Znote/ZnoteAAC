@@ -52,8 +52,8 @@ if (!empty($_POST)) {
 	mysql_update("UPDATE `znote_player_reports` SET `status`='$status' WHERE `id`='$reportId' LIMIT 1;");
 	echo "<h1>Report status updated to ".$statusTypes[(int)$status] ."!</h1>";
 	// Update local array representation
-	foreach ($reports as $sid => $sa) 
-		foreach ($sa as $rid => $ra) 
+	foreach ($reports as $sid => $sa)
+		foreach ($sa as $rid => $ra)
 			if ($reportId == $rid) {
 				$reports[$status][$reportId] = $reports[$sid][$rid];
 				$reports[$status][$reportId]['status'] = $status;
@@ -74,7 +74,7 @@ if (!empty($_POST)) {
 			$updatechangelog = true;
 		} else {
 			// Create it
-			mysql_insert("INSERT INTO `znote_changelog` (`text`, `time`, `report_id`, `status`) 
+			mysql_insert("INSERT INTO `znote_changelog` (`text`, `time`, `report_id`, `status`)
 				VALUES ('$changelogText', '$time', '$changelogReportId', '$status');");
 			echo "<h2>Changelog message created!</h2>";
 			$updatechangelog = true;
@@ -85,14 +85,14 @@ if (!empty($_POST)) {
 			$cache->setContent(mysql_select_multi("SELECT `id`, `text`, `time`, `report_id`, `status` FROM `znote_changelog` ORDER BY `id` DESC;"));
 			$cache->save();
 		}
-		
+
 	}
 	// If we should give user price
 	if ($price > 0) {
-		$account = mysql_select_single("SELECT `a`.`id`, `a`.`email` FROM `accounts` AS `a` 
+		$account = mysql_select_single("SELECT `a`.`id`, `a`.`email` FROM `accounts` AS `a`
 			INNER JOIN `players` AS `p` ON `p`.`account_id` = `a`.`id`
 			WHERE `p`.`name` = '$playerName' LIMIT 1;");
-		
+
 		if ($account !== false) {
 			// transaction log
 			mysql_insert("INSERT INTO `znote_paypal` VALUES ('', '$reportId', 'report@admin.".$user_data['name']." to ".$account['email']."', '".$account['id']."', '0', '".$price."')");
@@ -127,7 +127,7 @@ if (!empty($_POST)) {
 			Player: <a target="_BLANK" href="characterprofile.php?name=<?php echo $report['name']; ?>"><?php echo $report['name']; ?></a>
 			<input type="hidden" name="playerName" value="<?php echo $report['name']; ?>">
 			<input type="hidden" name="id" value="<?php echo $report['id']; ?>">
-			<br>Set status: 
+			<br>Set status:
 			<select name="status">
 				<?php
 				foreach ($statusTypes as $sid => $sname)
@@ -199,7 +199,7 @@ if ($reportsData !== false) {
 		}
 		?>
 	</center>
-	<?php 
+	<?php
 } else echo "<h2>No reports submitted.</h2>";
 ?>
 <style>

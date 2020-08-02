@@ -1,5 +1,5 @@
 
--- getEternalStorage and setEternalStorage 
+-- getEternalStorage and setEternalStorage
 -- can be added to data/global.lua if you want to use eternal storage for another purpose than this.
 -- Regular TFS global storage values get reset every time server reboots. This does not.
 local function getEternalStorage(key, parser)
@@ -26,14 +26,14 @@ end
 
 -- SQL Query to execute: --
 --[[
-ALTER TABLE `znote_players` ADD `exphist_lastexp` BIGINT(255) NOT NULL DEFAULT '0', 
-ADD `exphist1` BIGINT(255) NOT NULL DEFAULT '0', 
-ADD `exphist2` BIGINT(255) NOT NULL DEFAULT '0', 
-ADD `exphist3` BIGINT(255) NOT NULL DEFAULT '0', 
-ADD `exphist4` BIGINT(255) NOT NULL DEFAULT '0', 
-ADD `exphist5` BIGINT(255) NOT NULL DEFAULT '0', 
-ADD `exphist6` BIGINT(255) NOT NULL DEFAULT '0', 
-ADD `exphist7` BIGINT(255) NOT NULL DEFAULT '0', 
+ALTER TABLE `znote_players` ADD `exphist_lastexp` BIGINT(255) NOT NULL DEFAULT '0',
+ADD `exphist1` BIGINT(255) NOT NULL DEFAULT '0',
+ADD `exphist2` BIGINT(255) NOT NULL DEFAULT '0',
+ADD `exphist3` BIGINT(255) NOT NULL DEFAULT '0',
+ADD `exphist4` BIGINT(255) NOT NULL DEFAULT '0',
+ADD `exphist5` BIGINT(255) NOT NULL DEFAULT '0',
+ADD `exphist6` BIGINT(255) NOT NULL DEFAULT '0',
+ADD `exphist7` BIGINT(255) NOT NULL DEFAULT '0',
 ADD `onlinetimetoday` BIGINT(20) NOT NULL DEFAULT '0',
 ADD `onlinetime1` BIGINT(20) NOT NULL DEFAULT '0',
 ADD `onlinetime2` BIGINT(20) NOT NULL DEFAULT '0',

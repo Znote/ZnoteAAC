@@ -20,14 +20,14 @@ if ($loggedin === true) {
 		// Sanitizing post, setting default buy value
 		$buy = false;
 		$post = (int)$_POST['buy'];
-		
+
 		foreach ($shop_list as $key => $value) {
 			if ($key === $post) {
 				$buy = $value;
 			}
 		}
 		if ($buy === false) die("Error: Shop offer ID mismatch.");
-		
+
 		// Verify that user can afford this offer.
 		if ($player_points >= $buy['points']) {
 			$data = mysql_select_single("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$cid';");
@@ -39,12 +39,12 @@ if ($loggedin === true) {
 			$expense_points = $buy['points'];
 			$new_points = $old_points - $expense_points;
 			$update_account = mysql_update("UPDATE `znote_accounts` SET `points`='$new_points' WHERE `account_id`='$cid'");
-			
+
 			$data = mysql_select_single("SELECT `points` FROM `znote_accounts` WHERE `account_id`='$cid';");
 			$verify = $data['points'];
 			if ((int)$old_points == (int)$verify) die("2: Failed to equalize your points.". var_dump((int)$old_points, (int)$verify, $new_points, $expense_points));
-			
-			// If this is an outfit offer, convert array into an integer. 
+
+			// If this is an outfit offer, convert array into an integer.
 			if ($buy['type'] == 5) {
 				if (is_array($buy['itemid'])) {
 					if (COUNT($buy['itemid']) == 2) $buy['itemid'] = ($buy['itemid'][0] * 1000) + $buy['itemid'][1];
@@ -70,10 +70,10 @@ if ($loggedin === true) {
 				mysql_insert("INSERT INTO `znote_shop_orders` (`account_id`, `type`, `itemid`, `count`, `time`) VALUES ('$cid', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '$time')");
 				echo '<font color="green" size="4">Your order is ready to be delivered. Write this command in-game to get it: [!shop].<br>Make sure you are in depot and can carry it before executing the command!</font>';
 			}
-			
+
 			// No matter which type, we will always log it.
 			mysql_insert("INSERT INTO `znote_shop_logs` (`account_id`, `player_id`, `type`, `itemid`, `count`, `points`, `time`) VALUES ('$cid', '0', '". $buy['type'] ."', '". $buy['itemid'] ."', '". $buy['count'] ."', '". $buy['points'] ."', '$time')");
-			
+
 		} else echo '<font color="red" size="4">You need more points, this offer cost '.$buy['points'].' points.</font>';
 		//var_dump($buy);
 		//echo '<font color="red" size="4">'. $_POST['buy'] .'</font>';
@@ -111,7 +111,7 @@ $category_outfits = array();
 $category_mounts = array();
 $category_misc = array();
 foreach ($shop_list as $key => $offer) {
-	
+
 	switch ($offer['type']) {
 		case 1:
 			$category_items[$key] = $offer;
@@ -188,7 +188,7 @@ foreach ($shop_list as $key => $offer) {
 			});
 		}
 	}
-	// Mozilla, Opera, Webkit 
+	// Mozilla, Opera, Webkit
 	if ( document.addEventListener ) {
 		document.addEventListener( "DOMContentLoaded", function(){
 		document.removeEventListener( "DOMContentLoaded", arguments.callee, false);
@@ -277,7 +277,7 @@ foreach ($shop_list as $key => $offer) {
 		<td>Points:</td>
 		<?php if ($loggedin === true): ?><td>Action:</td><?php endif; ?>
 	</tr>
-	<?php foreach ($category_outfits as $key => $offers): 
+	<?php foreach ($category_outfits as $key => $offers):
 		if (!is_array($offers['itemid'])) $offers['itemid'] = [$offers['itemid']];
 		if (COUNT($offers['itemid']) > 2): ?>
 			<tr class="special">
@@ -384,7 +384,7 @@ foreach ($shop_list as $key => $offer) {
 				var r = confirm("Do you really want to purchase "+itemname+" for "+itemcost+" points?")
 				if(r == false){
 					e.preventDefault();
-				}			
+				}
 			});
 		});
 	});

@@ -19,7 +19,7 @@ function talkaction.onSay(player)
 		print("Player: " .. player:getName() .. " triggered !shop talkaction.")
 		-- Create the query
 		local orderQuery = db.storeQuery("SELECT `id`, `type`, `itemid`, `count` FROM `znote_shop_orders` WHERE `account_id` = " .. player:getAccountId() .. ";")
-		local served = false 
+		local served = false
 
 		-- Detect if we got any results
 		if orderQuery ~= false then
@@ -31,7 +31,7 @@ function talkaction.onSay(player)
 				local q_count = result.getNumber(orderQuery, "count")
 
 				local description = "Unknown or custom type"
-				if type_desc[q_type] ~= nil then 
+				if type_desc[q_type] ~= nil then
 					description = type_desc[q_type]
 				end
 				print("Processing type "..q_type..": ".. description)

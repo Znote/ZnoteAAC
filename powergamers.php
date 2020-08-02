@@ -1,6 +1,6 @@
 <?php
 require_once 'engine/init.php';
-include 'layout/overall/header.php'; 
+include 'layout/overall/header.php';
 if (!$config['powergamers']['enabled']) {
 echo 'This page has been disabled at config.php.';
 include 'layout/overall/footer.php';
@@ -24,13 +24,13 @@ include 'layout/overall/footer.php';
 	}
 	$limit = $config['powergamers']['limit'];
 
-	if(!empty($days) && !empty($vocation)) 
+	if(!empty($days) && !empty($vocation))
 		$znotePlayers = mysql_select_multi('SELECT `a`.`id`, `b`.`player_id`, `a`.`name`, `a`.`vocation`, `a`.`level`, `a`.`group_id`, `a`.`experience`, `b`.`exphist_lastexp`, `b`.`exphist1`, `b`.`exphist2`, `b`.`exphist3`, `b`.`exphist4`, `b`.`exphist5`, `b`.`exphist6`, `b`.`exphist7`, (`a`.`experience` - `b`.`exphist_lastexp`) AS `expdiff` FROM `players` `a` JOIN `znote_players` `b` ON `a`.`id` = `b`.`player_id`  WHERE `a`.`group_id` < 2 AND `a`.`vocation`='. (int)$vocation .' OR `a`.`vocation`='. ((int)$vocation +4) .' ORDER BY `exphist' . (int)$days . '` DESC LIMIT '.$limit);
 	elseif(empty($days) && !empty($vocation)) {
 		$znotePlayers = mysql_select_multi('SELECT `a`.`id`, `b`.`player_id`, `a`.`name`, `a`.`vocation`, `a`.`level`, `a`.`group_id`, `a`.`experience`, `b`.`exphist_lastexp`, `b`.`exphist1`, `b`.`exphist2`, `b`.`exphist3`, `b`.`exphist4`, `b`.`exphist5`, `b`.`exphist6`, `b`.`exphist7`,   (`a`.`experience` - `b`.`exphist_lastexp`)  AS `expdiff` FROM `players` `a` JOIN `znote_players` `b` ON `a`.`id` = `b`.`player_id`  WHERE `a`.`group_id` < 2 AND `a`.`vocation`='. (int)$vocation .' OR `a`.`vocation`='. ((int)$vocation +4) .' ORDER BY `expdiff` DESC LIMIT '.$limit);
-	}elseif(!empty($days) && empty($vocation)) 
+	}elseif(!empty($days) && empty($vocation))
 		$znotePlayers = mysql_select_multi('SELECT `a`.`id`, `b`.`player_id`, `a`.`name`, `a`.`vocation`, `a`.`level`, `a`.`group_id`, `a`.`experience`, `b`.`exphist_lastexp`, `b`.`exphist1`, `b`.`exphist2`, `b`.`exphist3`, `b`.`exphist4`, `b`.`exphist5`, `b`.`exphist6`, `b`.`exphist7`, (`a`.`experience` - `b`.`exphist_lastexp`) AS `expdiff` FROM `players` `a` JOIN `znote_players` `b` ON `a`.`id` = `b`.`player_id`  WHERE `a`.`group_id` < 2 ORDER BY `exphist' . (int)$days . '` DESC LIMIT '.$limit);
-	else 
+	else
 		$znotePlayers = mysql_select_multi('SELECT `a`.`id`, `b`.`player_id`, `a`.`name`, `a`.`vocation`, `a`.`level`, `a`.`group_id`, `a`.`experience`, `b`.`exphist_lastexp`, `b`.`exphist1`, `b`.`exphist2`, `b`.`exphist3`, `b`.`exphist4`, `b`.`exphist5`, `b`.`exphist6`, `b`.`exphist7`,   (`a`.`experience` - `b`.`exphist_lastexp`)  AS `expdiff` FROM `players` `a` JOIN `znote_players` `b` ON `a`.`id` = `b`.`player_id`  WHERE `a`.`group_id` < 2 ORDER BY `expdiff` DESC LIMIT '.$limit);
 
 	$showVoc = (!empty($vocation)) ? $vocation : 0;

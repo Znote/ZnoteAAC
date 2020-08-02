@@ -79,8 +79,8 @@ if ($type !== false && $text !== false && $type <= 4 || $type > 4 && $type <= 6)
 		case 1: // Search titles
 			$results = mysql_select_multi("SELECT `id` AS `thread_id`, `forum_id`, `title`, `text`, `player_name` FROM `znote_forum_threads` WHERE $textTitleSql ORDER BY `id` DESC LIMIT $searchResults;");
 			// Filter out search results in custom access boards.
-			for ($i = 0; $i < count($results); $i++) 
-				if (!in_array($results[$i]['forum_id'], $allowedForums)) 
+			for ($i = 0; $i < count($results); $i++)
+				if (!in_array($results[$i]['forum_id'], $allowedForums))
 					$results[$i]['forum_id'] = false;
 				else {
 					$results[$i]['title'] = stripBBCode($results[$i]['title']);
@@ -90,7 +90,7 @@ if ($type !== false && $text !== false && $type <= 4 || $type > 4 && $type <= 6)
 			//if ($results !== false) data_dump($results, false, "Search results");
 			//else echo "<br><b>No results.</b>";
 			break;
-		
+
 		case 2: // Search posts
 			$results = mysql_select_multi("SELECT `thread_id`, `player_name`, `text` FROM `znote_forum_posts` WHERE $textPostSql ORDER BY `id` DESC LIMIT $searchResults;");
 			// Missing ['forum_id'], ['title'], lets get them
@@ -110,12 +110,12 @@ if ($type !== false && $text !== false && $type <= 4 || $type > 4 && $type <= 6)
 			} // DONE. :)
 			//data_dump(false, $results, "DATA");
 			break;
-		
+
 		case 3: // Search authors last threads
 			$results = mysql_select_multi("SELECT `id` AS `thread_id`, `forum_id`, `title`, `text`, `player_name` FROM `znote_forum_threads` WHERE $textAuthorSql ORDER BY `id` DESC LIMIT $searchResults;");
 			// Filter out search results in custom access boards.
-			for ($i = 0; $i < count($results); $i++) 
-				if (!in_array($results[$i]['forum_id'], $allowedForums)) 
+			for ($i = 0; $i < count($results); $i++)
+				if (!in_array($results[$i]['forum_id'], $allowedForums))
 					$results[$i]['forum_id'] = false;
 				else {
 					$results[$i]['title'] = stripBBCode($results[$i]['title']);
@@ -125,7 +125,7 @@ if ($type !== false && $text !== false && $type <= 4 || $type > 4 && $type <= 6)
 			//if ($results !== false) data_dump($results, false, "Search results");
 			//else echo "<br><b>No results.</b>";
 			break;
-		
+
 		case 4: // Search authors last posts
 			$results = mysql_select_multi("SELECT `thread_id`, `player_name`, `text` FROM `znote_forum_posts` WHERE $textAuthorSql ORDER BY `id` DESC LIMIT $searchResults;");
 			// Missing ['forum_id'], ['title'], lets get them
@@ -148,8 +148,8 @@ if ($type !== false && $text !== false && $type <= 4 || $type > 4 && $type <= 6)
 		case 5: // Search latest titles
 			$results = mysql_select_multi("SELECT `id` AS `thread_id`, `forum_id`, `title`, `text`, `player_name` FROM `znote_forum_threads` ORDER BY `id` DESC LIMIT $searchResults;");
 			// Filter out search results in custom access boards.
-			for ($i = 0; $i < count($results); $i++) 
-				if (!in_array($results[$i]['forum_id'], $allowedForums)) 
+			for ($i = 0; $i < count($results); $i++)
+				if (!in_array($results[$i]['forum_id'], $allowedForums))
 					$results[$i]['forum_id'] = false;
 				else {
 					$results[$i]['title'] = stripBBCode($results[$i]['title']);
@@ -220,5 +220,5 @@ if ($type !== false && $text !== false && $type <= 4 || $type > 4 && $type <= 6)
 	} else echo "No results.";
 } else echo "<br><b>You must fill in all fields!</b>";
 
-include 'layout/overall/footer.php'; 
+include 'layout/overall/footer.php';
 ?>

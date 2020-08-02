@@ -10,7 +10,7 @@
 
 	// Use same date format when changing: yyyy-mm-dd hh:mm
 	$countDown = "2020-06-10 01:00";
-	
+
 	// Hide countdown after 1 day (24 hours) after countDown
 	$countDown_hide = 1 * 24 * 60 * 60;
 

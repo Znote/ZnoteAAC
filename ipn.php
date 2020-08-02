@@ -6,7 +6,7 @@
 	// Require the functions to connect to database and fetch config values
 	require 'config.php';
 	require 'engine/database/connect.php';
-	
+
 	// Fetch and sanitize POST and GET values
 	function getValue($value) {
 		return (!empty($value)) ? sanitize($value) : false;
@@ -14,7 +14,7 @@
 	function sanitize($data) {
 		return htmlentities(strip_tags(mysql_znote_escape_string($data)));
 	}
-	
+
 	function VerifyPaypalIPN(array $IPN = null){
 		if(empty($IPN)){
 			$IPN = $_POST;
@@ -60,8 +60,8 @@
 	// Fetch paypal configurations
 	$paypal = $config['paypal'];
 	$prices = $config['paypal_prices'];
-	
-	// Send an empty HTTP 204 OK response to acknowledge receipt of the notification 
+
+	// Send an empty HTTP 204 OK response to acknowledge receipt of the notification
 	http_response_code(204);
 
 	// Build the required acknowledgement message out of the notification just received
@@ -82,19 +82,19 @@
 
 	$connectedIp = $_SERVER['REMOTE_ADDR'];
 	mysql_insert("INSERT INTO `znote_paypal` VALUES ('0', '0', 'Connection from IP: $connectedIp', '0', '0', '0')");
-	
+
 	$status = VerifyPaypalIPN();
 	if ($status) {
 		// Check that the payment_status is Completed
 		if ($payment_status == 'Completed') {
 
-			
+
 			// Check that txn_id has not been previously processed
 			$txn_id_check = mysql_select_single("SELECT `txn_id` FROM `znote_paypal` WHERE `txn_id`='$txn_id'");
 			if ($txn_id_check !== true) {
 				// Check that receiver_email is your Primary PayPal email
 				if ($receiver_email == $paypal['email']) {
-					
+
 					$status = true;
 					$paidMoney = 0;
 					$paidPoints = 0;
@@ -108,12 +108,12 @@
 
 					if ($paidMoney == 0) $status = false; // Wrong ammount of money
 					if ($payment_currency != $paypal['currency']) $status = false; // Wrong currency
-					
+
 					// Verify that the user havent messed around with POST data
 					if ($status) {
 						// transaction log
 						mysql_insert("INSERT INTO `znote_paypal` VALUES ('0', '$txn_id', '$payer_email', '$custom', '".$paidMoney."', '".$paidPoints."')");
-						
+
 						// Process payment
 						$data = mysql_select_single("SELECT `points` AS `old_points` FROM `znote_accounts` WHERE `account_id`='$custom';");
 

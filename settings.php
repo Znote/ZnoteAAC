@@ -47,7 +47,7 @@ if (isset($_GET['success']) === true && empty($_GET['success']) === true) {
 		if ($user_znote_data['active_email'] > 0) {
 			$update_znote_data['points'] = $user_znote_data['points'] - $config['mailserver']['verify_email_points'];
 		}
-		
+
 		user_update_account($update_data);
 		user_update_znote_account($update_znote_data);
 		header('Location: settings.php?success');

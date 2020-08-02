@@ -2,8 +2,8 @@
 
 /*	PLAYER SKILLS REPAIR SCRIPT IF YOU SOMEHOW DELETE PLAYER SKILLS
 	---------------------------------------------------------------
-		Place in root web directory, login to admin account, 
-		and enter site.com/repairSkills.php (with big S). 
+		Place in root web directory, login to admin account,
+		and enter site.com/repairSkills.php (with big S).
 */
 
 protect_page();
@@ -32,7 +32,7 @@ if ($players !== false) {
 				if ($i != 6) $query .= "('". $char['id'] ."', '$i', '10', '0'), ";
 				else $query .= "('". $char['id'] ."', '$i', '10', '0');";
 			}
-			
+
 			mysql_insert($query);
 		} else $Salready++;
 	}

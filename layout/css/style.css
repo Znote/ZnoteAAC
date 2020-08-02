@@ -143,7 +143,6 @@ nav .container > div > ul > li > ul {
 	border-bottom: 1px solid var(--border);
 }
 
-
 .main {
 	width: 1220px;
 	margin: 2rem auto;
@@ -151,15 +150,10 @@ nav .container > div > ul > li > ul {
 	z-index: 1;
 }
 
-
-
-
 .ellipsis {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-
-
 
 .alert-box {
 	max-width: 500px;

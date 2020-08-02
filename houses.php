@@ -9,7 +9,7 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 
 	/* Token used for cross site scripting security */
 	if (isset($_POST['token']) && Token::isValid($_POST['token'])) {
-		
+
 		$townid = (int)$_POST['selected'];
 		$cache = new Cache('engine/cache/houses');
 		$array = array();
@@ -17,7 +17,7 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 			$tmp = fetchAllHouses_03();
 			$cache->setContent($tmp);
 			$cache->save();
-			
+
 			foreach ($tmp as $t) {
 				if ($t['town'] == $townid) $array[] = $t;
 			}
@@ -29,7 +29,7 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 			}
 			$array = isset($array) ? $array : false;
 		}
-		
+
 		// Design and present the list
 		if ($array) {
 			?>
@@ -44,7 +44,7 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 					<th>Beds:</th>
 					<th>Price:</th>
 					<th>Owner:</th>
-					
+
 				</tr>
 					<?php
 					foreach ($array as $value) {
@@ -91,7 +91,7 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 		$cache = new Cache('engine/cache/houses/sqldata');
 		if ($cache->hasExpired()) {
 			$house_query = mysql_select_multi('SELECT `players`.`name`, `houses`.`id` FROM `players`, `houses` WHERE `houses`.`owner` = `players`.`id`;');
-			
+
 			$cache->setContent($house_query);
 			$cache->save();
 		} else

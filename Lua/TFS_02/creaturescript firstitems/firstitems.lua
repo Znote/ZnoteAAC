@@ -47,13 +47,13 @@ function onLogin(cid)
 			for i = 1, table.getn(sorcItems), 1 do
 				doPlayerAddItem(cid, sorcItems[i], 1, false)
 			end
-		
+
 		elseif getPlayerVocation(cid) == 2 then
 			-- Druid
 			for i = 1, table.getn(druidItems), 1 do
 				doPlayerAddItem(cid, druidItems[i], 1, false)
 			end
-		
+
 		elseif getPlayerVocation(cid) == 3 then
 			-- Paladin
 			for i = 1, table.getn(pallyItems), 1 do
@@ -61,7 +61,7 @@ function onLogin(cid)
 			end
 			-- 8 arrows
 			doPlayerAddItem(cid, 2544, 8, false)
-		
+
 		elseif getPlayerVocation(cid) == 4 then
 			-- Knight
 			for i = 1, table.getn(kinaItems), 1 do

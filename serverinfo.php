@@ -2,13 +2,13 @@
 // Calculate integer values into days, hours, minutes, seconds
 function toDuration($ms) {
 	$duration['day'] = $ms / (24 * 60 * 60 * 1000);
-	if (($duration['day'] - (int)$duration['day']) > 0) 
+	if (($duration['day'] - (int)$duration['day']) > 0)
 		$duration['hour'] = ($duration['day'] - (int)$duration['day']) * 24;
 	if (isset($duration['hour'])) {
-		if (($duration['hour'] - (int)$duration['hour']) > 0) 
+		if (($duration['hour'] - (int)$duration['hour']) > 0)
 			$duration['minute'] = ($duration['hour'] - (int)$duration['hour']) * 60;
 		if (isset($duration['minute'])) {
-			if (($duration['minute'] - (int)$duration['minute']) > 0) 
+			if (($duration['minute'] - (int)$duration['minute']) > 0)
 				$duration['second'] = ($duration['minute'] - (int)$duration['minute']) * 60;
 		}
 	}

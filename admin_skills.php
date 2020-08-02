@@ -1,4 +1,4 @@
-<?php require_once 'engine/init.php'; include 'layout/overall/header.php'; 
+<?php require_once 'engine/init.php'; include 'layout/overall/header.php';
 protect_page();
 admin_only($user_data);
 
@@ -19,7 +19,7 @@ if (isset($_POST['pid']) && (int)$_POST['pid'] > 0) {
 	if (!$status) {
 		// New player level
 		$level = (int)$_POST['level'];
-		
+
 		// Fetch stat gain for vocation
 		$statgain = $config['vocations_gain'][(int)$_POST['vocation']];
 		$playercnf = $config['player'];
@@ -39,7 +39,7 @@ if (isset($_POST['pid']) && (int)$_POST['pid'] > 0) {
 			$basecap = $config['nvCap'];
 		}
 		*/
-		
+
 		$LevelsFromBase = $level - $playercnf['base']['level'];
 		$newhp = $playercnf['base']['health'] + ($statgain['hp'] * $LevelsFromBase);
 		$newmp = $playercnf['base']['mana'] + ($statgain['mp'] * $LevelsFromBase);
