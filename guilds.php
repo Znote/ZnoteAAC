@@ -360,7 +360,7 @@ if (user_logged_in() === true) {
 	if (!empty($_POST['joinguild'])) {
 		$joining_player_id = (int)$_POST['joinguild'];
 		// Join a guild
-		foreach ($inv_data as $inv) {
+		if ($inv_data !== false) foreach ($inv_data as $inv) {
 			if ((int)$inv['player_id'] == $joining_player_id) {
 				if ($config['ServerEngine'] !== 'TFS_10') $chardata = user_character_data($joining_player_id, 'online');
 				else $chardata['online'] = (user_is_online_10($joining_player_id)) ? 1 : 0;
