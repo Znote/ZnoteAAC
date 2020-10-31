@@ -1119,13 +1119,18 @@ function user_account_add_premdays($accid, $days) {
 
 	if (config('ServerEngine') !== 'OTHIRE') {
 		if ($tfs_10_hasPremDays) {
-			$data = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='$accid';");
-			$tmp = $data['premdays'];
-			$tmp += $days;
-			mysql_update("UPDATE `accounts` SET `premdays`='$tmp' WHERE `id`='$accid'");
+			if (mysql_select_single("SHOW COLUMNS from `accounts` WHERE `Field` = 'lastday'") === false) {
+				mysql_update("UPDATE `accounts` SET `premdays` = `premdays`+{$days} WHERE `id`='{$accid}'");
+			} else {
+				mysql_update("	UPDATE `accounts` 
+								SET `premdays` = `premdays`+{$days} 
+								,`lastday` = GREATEST(`lastday`,UNIX_TIMESTAMP(CURDATE())) + ({$days} * 86400)
+								WHERE `id`='{$accid}'
+				");
+			}
 		} else {
 			mysql_update("	UPDATE `accounts` 
-							SET `premium_ends_at` = GREATEST(CAST(`premium_ends_at` as signed) - UNIX_TIMESTAMP(CURDATE()), 0) + ({$days} * 86400) + UNIX_TIMESTAMP(CURDATE())
+							SET `premium_ends_at` = GREATEST(`premium_ends_at`, UNIX_TIMESTAMP(CURDATE())) + ({$days} * 86400)
 							WHERE `id`='{$accid}';
 			");
 		}
