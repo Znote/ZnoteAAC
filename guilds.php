@@ -111,10 +111,9 @@ if (user_logged_in() === true) {
 
 				// If character is offline
 				if ($char_data['online'] == 0) {
-					$acc_data = user_data($user_data['id'], 'premdays');
 
 					// If character is premium
-					if ($config['guild_require_premium'] == false || $acc_data['premdays'] > 0) {
+					if ($config['guild_require_premium'] == false || $user_data['premdays'] > 0) {
 
 						if (get_character_guild_rank($user_id) < 1) {
 

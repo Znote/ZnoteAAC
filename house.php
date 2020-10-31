@@ -32,11 +32,7 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 
 		if (user_logged_in() === true && $player['account_id'] == $session_user_id) {
 			// Does player have or need premium?
-			$premstatus = $config['houseConfig']['requirePremium'];
-			if ($premstatus) {
-				$premstatus = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='".$player['account_id']."' LIMIT 1;");
-				$premstatus = ($premstatus['premdays'] > 0) ? true : false;
-			} else $premstatus = true;
+			$premstatus = ($config['houseConfig']['requirePremium'] && $user_data['premdays']  == 0) ? false : true;
 			if ($premstatus) {
 				// Can player have or bid on more houses?
 				$pHouseCount = mysql_select_single("SELECT COUNT('id') AS `value` FROM `houses` WHERE ((`highest_bidder`='$bid_char' AND `owner`='$bid_char') OR (`highest_bidder`='$bid_char') OR (`owner`='$bid_char')) AND `id`!='".$house['id']."' LIMIT 1;");

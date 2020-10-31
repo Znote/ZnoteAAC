@@ -1113,14 +1113,22 @@ function user_account_id_from_name($id) {
 
 // Add additional premium days to account id
 function user_account_add_premdays($accid, $days) {
+	global $tfs_10_hasPremDays; // Initialized in engine/init.php
 	$accid = (int)$accid;
 	$days = (int)$days;
 
 	if (config('ServerEngine') !== 'OTHIRE') {
-		$data = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='$accid';");
-		$tmp = $data['premdays'];
-		$tmp += $days;
-		mysql_update("UPDATE `accounts` SET `premdays`='$tmp' WHERE `id`='$accid'");
+		if ($tfs_10_hasPremDays) {
+			$data = mysql_select_single("SELECT `premdays` FROM `accounts` WHERE `id`='$accid';");
+			$tmp = $data['premdays'];
+			$tmp += $days;
+			mysql_update("UPDATE `accounts` SET `premdays`='$tmp' WHERE `id`='$accid'");
+		} else {
+			mysql_update("	UPDATE `accounts` 
+							SET `premium_ends_at` = GREATEST(CAST(`premium_ends_at` as signed) - UNIX_TIMESTAMP(CURDATE()), 0) + ({$days} * 86400) + UNIX_TIMESTAMP(CURDATE())
+							WHERE `id`='{$accid}';
+			");
+		}
 	} else {
 		$data = mysql_select_single("SELECT `premend` FROM `accounts` WHERE `id`='$accid';");
 		$tmp = $data['premend'];

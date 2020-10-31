@@ -50,11 +50,22 @@ if (isset($_SESSION['token'])) {
 }
 Token::generate();
 
+$tfs_10_hasPremDays = true; // https://github.com/otland/forgottenserver/pull/2813
+
 if (user_logged_in() === true) {
 	$session_user_id = getSession('user_id');
-	if ($config['ServerEngine'] !== 'OTHIRE')
-		$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premdays');
-	else
+	if ($config['ServerEngine'] !== 'OTHIRE') {
+		if ($config['ServerEngine'] == 'TFS_10') {
+			$hasPremDays = mysql_select_single("SHOW COLUMNS from `accounts` WHERE `Field` = 'premdays'");
+			if ($hasPremDays === false) {
+				$tfs_10_hasPremDays = false;
+				$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premium_ends_at');
+				$user_data['premdays'] = ($user_data['premium_ends_at'] - time() > 0) ? floor(($user_data['premium_ends_at'] - time()) / 86400) : 0;
+			} else {
+				$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premdays');
+			}
+		}
+	} else
 		$user_data = user_data($session_user_id, 'id', 'password', 'email', 'premend');
 	$user_znote_data = user_znote_account_data($session_user_id, 'ip', 'created', 'points', 'cooldown', 'flag' ,'active_email');
 }
