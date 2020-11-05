@@ -69,7 +69,6 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 				}
 				$xml = new DOMDocument;
 				$xml->load($file_path);
-				$tmplist = [];
 				$tableevent = $xml->getElementsByTagName('event');
 
 				if (!function_exists("parseEvent")) {
