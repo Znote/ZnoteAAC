@@ -44,40 +44,77 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 
 		case 'eventschedule':
 			// {"type":"eventschedule"}
-			sendMessage(array(
-				'eventlist' => array()
-			));
-			/*
-			array(
-				array(
-					'description' => "Description text.\n\nTest",
-					'startdate' => 1590979202,
-					'colordark' => "#735D10", // HEX color code
-					'name' => "Full Moon",
-					'enddate' => 1590979202 + (300 * 24 * 60 * 60),
-					'isseasonal' => false,
-					'colorlight' => "#8B6D05"
-				),
-                array(
-					'description' => "Winterberries can now be found all over Tibia!",
-                    'startdate' => 1590979202,
-					'colordark' => "#7A4C1F",
-					'name' => "Annual Autumn Vintage",
-					'enddate' => 1590979202 + (7 * 24 * 60 * 60),
-					'isseasonal' => false,
-					'colorlight' => "#935416"
-				),
-                array(
-					'description' => "This is the time of witches, ghosts and vampires.",
-                    'startdate' => 1590979202,
-					'colordark' => "#235c00",
-					'name' => "Halloween Event",
-					'enddate' => 1590979202 + (30 * 24 * 60 * 60),
-					'isseasonal' => false,
-					'colorlight' => "#2d7400"
-				)
-			)
-			*/
+			$eventlist = [];
+				$file_path = $config['server_path'] . 'data/XML/events.xml';
+				/*  <?xml version="1.0" encoding="UTF-8"?>
+					<events>
+						<event name="Otservbr example 1" startdate="11/03/2020" enddate="11/30/2020" >
+							<ingame exprate="250" lootrate="200" spawnrate="100" skillrate="200" />
+							<description description="Otserver br example 1 description double exp and a half, double loot !chance!, regular spawn and double skill" />
+							<colors colordark="#235c00" colorlight="#2d7400" />
+							<details displaypriority="6" isseasonal="0" specialevent="0" />
+						</event>
+						<event name="Otservbr example 2" startdate="12/01/2020" enddate="12/26/2020" >
+							<ingame exprate="50" lootrate="300" spawnrate="150" skillrate="100" />
+							<description description="Otserver br example 2 description 50% less exp, triple loot !chance!, 50% faster spawn and regular skill" />
+							<colors colordark="#735D10" colorlight="#8B6D05" />
+							<details displaypriority="6" isseasonal="0" specialevent="0" />
+						</event>
+					</events>
+				*/
+				if (!file_exists($file_path)) {
+					sendMessage(array(
+						'eventlist' => array()
+					));
+				}
+				$xml = new DOMDocument;
+				$xml->load($file_path);
+				$tmplist = [];
+				$tableevent = $xml->getElementsByTagName('event');
+
+				if (!function_exists("parseEvent")) {
+					function parseEvent($table1, $date, $table2) {
+						if ($table1) {
+							if ($date) {
+								if ($table2) {
+									$date = $table1->getAttribute('startdate');
+									return date_create("{$date}")->format('U');
+								} else {
+									$date = $table1->getAttribute('enddate');
+									return date_create("{$date}")->format('U');
+								}
+							} else {
+								foreach($table1 as $attr) {
+									if ($attr) {
+										return $attr->getAttribute($table2);
+									}
+								}
+							}
+						}
+						return;
+					}
+				}
+
+				foreach ($tableevent as $event) {
+					if ($event) {
+						$eventlist[] = array(
+							'colorlight' => parseEvent($event->getElementsByTagName('colors'), false, 'colorlight'),
+							'colordark' => parseEvent($event->getElementsByTagName('colors'), false, 'colordark'),
+							'description' => parseEvent($event->getElementsByTagName('description'), false, 'description'),
+							'displaypriority' => intval(parseEvent($event->getElementsByTagName('details'), false, 'displaypriority')),
+							'enddate' => intval(parseEvent($event, true, false)),
+							'isseasonal' => (intval(parseEvent($event->getElementsByTagName('details'), false, 'isseasonal')) == 1) ? true : false,
+							'name' => $event->getAttribute('name'),
+							'startdate' => intval(parseEvent($event, true, true)),
+							'specialevent' => intval(parseEvent($event->getElementsByTagName('details'), false, 'specialevent'))
+						);
+					}
+				}
+
+				sendMessage(array(
+					'eventlist' => $eventlist, 
+					'lastupdatetimestamp' => time()
+				));
 			break;
 
 		case 'boostedcreature':
