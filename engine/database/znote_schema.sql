@@ -3,63 +3,63 @@
 SET @znote_version = '1.5_SVN';
 
 CREATE TABLE IF NOT EXISTS `znote` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `version` varchar(30) NOT NULL COMMENT 'Znote AAC version',
-  `installed` int(10) NOT NULL,
-  `cached` int(11) DEFAULT NULL,
+  `installed` int NOT NULL,
+  `cached` int DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_accounts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `account_id` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `account_id` int NOT NULL,
   `ip` bigint(20) UNSIGNED NOT NULL,
-  `created` int(10) NOT NULL,
-  `points` int(10) DEFAULT 0,
-  `cooldown` int(10) DEFAULT 0,
+  `created` int NOT NULL,
+  `points` int DEFAULT 0,
+  `cooldown` int DEFAULT 0,
   `active` tinyint(4) NOT NULL DEFAULT '0',
   `active_email` tinyint(4) NOT NULL DEFAULT '0',
-  `activekey` int(11) NOT NULL DEFAULT '0',
+  `activekey` int NOT NULL DEFAULT '0',
   `flag` varchar(20) NOT NULL,
   `secret` char(16) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_news` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(30) NOT NULL,
   `text` text NOT NULL,
-  `date` int(11) NOT NULL,
-  `pid` int(11) NOT NULL,
+  `date` int NOT NULL,
+  `pid` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_images` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(30) NOT NULL,
   `desc` text NOT NULL,
-  `date` int(11) NOT NULL,
-  `status` int(11) NOT NULL,
+  `date` int NOT NULL,
+  `status` int NOT NULL,
   `image` varchar(30) NOT NULL,
-  `account_id` int(11) NOT NULL,
+  `account_id` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_paypal` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `txn_id` varchar(30) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `accid` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
-  `points` int(11) NOT NULL,
+  `accid` int NOT NULL,
+  `price` int NOT NULL,
+  `points` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_paygol` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `account_id` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
-  `points` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `account_id` int NOT NULL,
+  `price` int NOT NULL,
+  `points` int NOT NULL,
   `message_id` varchar(255) NOT NULL,
   `service_id` varchar(255) NOT NULL,
   `shortcode` varchar(255) NOT NULL,
@@ -73,104 +73,104 @@ CREATE TABLE IF NOT EXISTS `znote_paygol` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_players` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `player_id` int(11) NOT NULL,
-  `created` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `player_id` int NOT NULL,
+  `created` int NOT NULL,
   `hide_char` tinyint(4) NOT NULL,
   `comment` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_player_reports` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
-  `posx` int(6) NOT NULL,
-  `posy` int(6) NOT NULL,
-  `posz` int(6) NOT NULL,
+  `posx` intNOT NULL,
+  `posy` intNOT NULL,
+  `posz` intNOT NULL,
   `report_description` VARCHAR(255) NOT NULL,
-  `date` INT(11) NOT NULL,
+  `date` int NOT NULL,
   `status` TINYINT(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_changelog` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `text` VARCHAR(255) NOT NULL,
-  `time` INT(11) NOT NULL,
-  `report_id` INT(11) NOT NULL,
+  `time` int NOT NULL,
+  `report_id` int NOT NULL,
   `status` TINYINT(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_shop` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` int(11) NOT NULL,
-  `itemid` int(11) DEFAULT NULL,
-  `count` int(11) NOT NULL DEFAULT '1',
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` int NOT NULL,
+  `itemid` int DEFAULT NULL,
+  `count` int NOT NULL DEFAULT '1',
   `description` varchar(255) NOT NULL,
-  `points` int(11) NOT NULL DEFAULT '10',
+  `points` int NOT NULL DEFAULT '10',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_shop_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `account_id` int(11) NOT NULL,
-  `player_id` int(11) NOT NULL,
-  `type` int(11) NOT NULL,
-  `itemid` int(11) NOT NULL,
-  `count` int(11) NOT NULL,
-  `points` int(11) NOT NULL,
-  `time` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `account_id` int NOT NULL,
+  `player_id` int NOT NULL,
+  `type` int NOT NULL,
+  `itemid` int NOT NULL,
+  `count` int NOT NULL,
+  `points` int NOT NULL,
+  `time` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_shop_orders` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `account_id` int(11) NOT NULL,
-  `type` int(11) NOT NULL,
-  `itemid` int(11) NOT NULL,
-  `count` int(11) NOT NULL,
-  `time` int(11) NOT NULL DEFAULT '0',
+  `id` int NOT NULL AUTO_INCREMENT,
+  `account_id` int NOT NULL,
+  `type` int NOT NULL,
+  `itemid` int NOT NULL,
+  `count` int NOT NULL,
+  `time` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_visitors` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `ip` bigint(20) NOT NULL,
-  `value` int(11) NOT NULL,
+  `value` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_visitors_details` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `ip` bigint(20) NOT NULL,
-  `time` int(11) NOT NULL,
+  `time` int NOT NULL,
   `type` tinyint(4) NOT NULL,
-  `account_id` int(11) NOT NULL,
+  `account_id` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 -- Forum 1/3 (boards)
 CREATE TABLE IF NOT EXISTS `znote_forum` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `access` tinyint(4) NOT NULL,
   `closed` tinyint(4) NOT NULL,
   `hidden` tinyint(4) NOT NULL,
-  `guild_id` int(11) NOT NULL,
+  `guild_id` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 -- Forum 2/3 (threads)
 CREATE TABLE IF NOT EXISTS `znote_forum_threads` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `forum_id` int(11) NOT NULL,
-  `player_id` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `forum_id` int NOT NULL,
+  `player_id` int NOT NULL,
   `player_name` varchar(50) NOT NULL,
   `title` varchar(50) NOT NULL,
   `text` text NOT NULL,
-  `created` int(11) NOT NULL,
-  `updated` int(11) NOT NULL,
+  `created` int NOT NULL,
+  `updated` int NOT NULL,
   `sticky` tinyint(4) NOT NULL,
   `hidden` tinyint(4) NOT NULL,
   `closed` tinyint(4) NOT NULL,
@@ -179,20 +179,20 @@ CREATE TABLE IF NOT EXISTS `znote_forum_threads` (
 
 -- Forum 3/3 (posts)
 CREATE TABLE IF NOT EXISTS `znote_forum_posts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `thread_id` int(11) NOT NULL,
-  `player_id` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `thread_id` int NOT NULL,
+  `player_id` int NOT NULL,
   `player_name` varchar(50) NOT NULL,
   `text` text NOT NULL,
-  `created` int(11) NOT NULL,
-  `updated` int(11) NOT NULL,
+  `created` int NOT NULL,
+  `updated` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 -- Pending characters for deletion
 CREATE TABLE IF NOT EXISTS `znote_deleted_characters` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `original_account_id` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `original_account_id` int NOT NULL,
   `character_name` varchar(255) NOT NULL,
   `time` datetime NOT NULL,
   `done` tinyint(1) NOT NULL,
@@ -200,30 +200,30 @@ CREATE TABLE IF NOT EXISTS `znote_deleted_characters` (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_guild_wars` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `limit` int(11) NOT NULL DEFAULT '0',
+  `id` int NOT NULL AUTO_INCREMENT,
+  `limit` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 -- Helpdesk system
 CREATE TABLE IF NOT EXISTS `znote_tickets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `owner` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `owner` int NOT NULL,
   `username` varchar(32) CHARACTER SET latin1 NOT NULL,
   `subject` text CHARACTER SET latin1 NOT NULL,
   `message` text CHARACTER SET latin1 NOT NULL,
   `ip` bigint(20) NOT NULL,
-  `creation` int(11) NOT NULL,
+  `creation` int NOT NULL,
   `status` varchar(20) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `znote_tickets_replies` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tid` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tid` int NOT NULL,
   `username` varchar(32) CHARACTER SET latin1 NOT NULL,
   `message` text CHARACTER SET latin1 NOT NULL,
-  `created` int(11) NOT NULL,
+  `created` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -235,15 +235,15 @@ CREATE TABLE IF NOT EXISTS `znote_global_storage` (
 
 -- Character auction system
 CREATE TABLE IF NOT EXISTS `znote_auction_player` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `player_id` int(11) NOT NULL,
-  `original_account_id` int(11) NOT NULL,
-  `bidder_account_id` int(11) NOT NULL,
-  `time_begin` int(11) NOT NULL,
-  `time_end` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
-  `bid` int(11) NOT NULL,
-  `deposit` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `player_id` int NOT NULL,
+  `original_account_id` int NOT NULL,
+  `bidder_account_id` int NOT NULL,
+  `time_begin` int NOT NULL,
+  `time_end` int NOT NULL,
+  `price` int NOT NULL,
+  `bid` int NOT NULL,
+  `deposit` int NOT NULL,
   `sold` tinyint(1) NOT NULL,
   `claimed` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
