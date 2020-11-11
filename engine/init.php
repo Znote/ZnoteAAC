@@ -64,6 +64,8 @@ if (user_logged_in() === true) {
 			} else {
 				$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premdays');
 			}
+		} else {
+			$user_data = user_data($session_user_id, 'id', 'name', 'password', 'email', 'premdays');
 		}
 	} else
 		$user_data = user_data($session_user_id, 'id', 'password', 'email', 'premend');
