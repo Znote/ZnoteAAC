@@ -32,10 +32,28 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 
 		// Design and present the list
 		if ($array) {
+			$guild_support = (isset($array[0]['guild'])) ? true : false;
 			?>
 			<h2>
 				<?php echo ucfirst(town_id_to_name($townid)); ?> house list.
 			</h2>
+			<div class="well widget">
+				<div class="header">
+					Town list / houses
+				</div>
+				<div class="body">
+					<form action="houses.php" method="<?php if ($config['ServerEngine'] !== 'TFS_10') echo "post"; else echo "get" ;?>">
+						<select name="<?php if ($config['ServerEngine'] !== 'TFS_10') echo "selected"; else echo "id" ;?>">
+							<?php
+							foreach ($config['towns'] as $id => $name)
+								echo '<option value="'. $id .'">'. $name .'</option>';
+							?>
+						</select>
+						<?php Token::create(); ?>
+						<input type="submit" value="Fetch houses">
+					</form>
+				</div>
+			</div>
 			<table id="housesTable" class="table table-striped">
 				<tr class="yellow">
 					<th>Name:</th>
@@ -57,8 +75,13 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 						if ($value['owner'] == 0)
 							echo "<td>None</td>";
 						else {
-							$data = user_character_data($value['owner'], 'name');
-							echo '<td><a href="characterprofile.php?name='. $data['name'] .'">'. $data['name'] .'</a></td>';
+							if ($guild_support && $value['guild'] == 1) {
+								$guild_name = get_guild_name($value['owner']);
+								echo '<td><a href="guilds.php?name='. $guild_name .'">'. $guild_name .'</a></td>';
+							} else {
+								$data = user_character_data($value['owner'], 'name');
+								echo '<td><a href="characterprofile.php?name='. $data['name'] .'">'. $data['name'] .'</a></td>';
+							}
 						}
 						echo '</tr>';
 					}
@@ -76,10 +99,25 @@ if (empty($_POST) === false && $config['ServerEngine'] === 'TFS_03') {
 	}
 } else {
 	if (empty($_POST) === true && $config['ServerEngine'] === 'TFS_03') {
-		if ($config['allowSubPages'])
-			header('Location: sub.php?page=houses');
-		else
-			echo 'Sub page system disabled.';
+		?>
+		<div class="well widget">
+			<div class="header">
+				Town list / houses
+			</div>
+			<div class="body">
+				<form action="houses.php" method="<?php if ($config['ServerEngine'] !== 'TFS_10') echo "post"; else echo "get" ;?>">
+					<select name="<?php if ($config['ServerEngine'] !== 'TFS_10') echo "selected"; else echo "id" ;?>">
+						<?php
+						foreach ($config['towns'] as $id => $name)
+							echo '<option value="'. $id .'">'. $name .'</option>';
+						?>
+					</select>
+					<?php Token::create(); ?>
+					<input type="submit" value="Fetch houses">
+				</form>
+			</div>
+		</div>
+		<?php
 	} else if ($config['ServerEngine'] === 'TFS_02' || $config['ServerEngine'] == 'OTHIRE') {
 		$house = $config['house'];
 		if (!is_file($house['house_file'])) {
