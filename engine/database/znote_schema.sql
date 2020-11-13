@@ -84,9 +84,9 @@ CREATE TABLE IF NOT EXISTS `znote_players` (
 CREATE TABLE IF NOT EXISTS `znote_player_reports` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
-  `posx` intNOT NULL,
-  `posy` intNOT NULL,
-  `posz` intNOT NULL,
+  `posx` int NOT NULL,
+  `posy` int NOT NULL,
+  `posz` int NOT NULL,
   `report_description` VARCHAR(255) NOT NULL,
   `date` int NOT NULL,
   `status` TINYINT(3) NOT NULL DEFAULT '0',
