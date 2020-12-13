@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS `znote_images` (
   `desc` text NOT NULL,
   `date` int NOT NULL,
   `status` int NOT NULL,
-  `image` varchar(30) NOT NULL,
+  `image` varchar(50) NOT NULL,
+  `delhash` varchar(30) NOT NULL,
   `account_id` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;

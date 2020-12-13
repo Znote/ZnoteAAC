@@ -703,6 +703,16 @@
 		'debug' => false,
 	);
 
+	// website.com/gallery.php
+	// website.com/admin_gallery.php
+	// we use imgur as image host, and need to register app with them and add client/secret id.
+	// https://github.com/Znote/ZnoteAAC/wiki/IMGUR-powered-Gallery-page
+	$config['gallery'] = array(
+		'Client Name' => 'ZnoteAAC-Gallery',
+		'Client ID' => '4dfcdc4f2cabca6',
+		'Client Secret' => '697af737777c99a8c0be07c2f4419aebb2c48ac5'
+	);
+
 	// Email Server configurations (SMTP)
 	/*	Please consider using a released stable version of PHPMailer or you may run into issues.
 		Download PHPMailer: https://github.com/PHPMailer/PHPMailer/releases

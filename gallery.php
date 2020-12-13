@@ -1,35 +1,51 @@
 <?php require_once 'engine/init.php'; include 'layout/overall/header.php';
+
+/* SETUP INSTALLATION
+ - See comments above $config['gallery'] in config.php */
+ 
 $logged_in = user_logged_in();
 if ($logged_in === true) {
 	if (!empty($_POST['new'])) {
 		?>
 		<h1>Create image article</h1>
-		<p>Works with "Image Code" text from <a href="http://www.freeimagehosting.net/" target="_BLANK">www.freeimagehosting.net</a></p>
-		<form action="" method="post">
-			Image Code:<br /><input type="text" name="image" size="70"><br />
+		<p>This gallery is powered by IMGUR image host.</p>
+		<form action="" method="post" enctype="multipart/form-data">
+			Select image to upload:<br><input type="file" name="imagefile" id="imagefile"><br>
 			Image Title:<br /><input type="text" name="title" size="70"><br />
 			Image Description:<br /><textarea name="desc" cols="55" rows="15"></textarea><br />
-			<input type="submit" name="Submit" value="Post Image Article">
+			<input type="submit" value="Upload Image" name="submit">
 		</form>
 		<?php
 	}
-	if (!empty($_POST['image']) && !empty($_POST['title']) && !empty($_POST['desc'])) {
-		$imageDom = $_POST['image'];
-		$imageSrc = false;
-		$doc=new DOMDocument();
-		$doc->loadHTML($imageDom);
-		$xml=simplexml_import_dom($doc); // just to make xpath more simple
-		$images=$xml->xpath('//img');
-		foreach ($images as $img) {
-			$imageSrc = (string)$img['src'];
-		}
+
+	if (isset($_FILES['imagefile']) && !empty($_FILES['imagefile'])) {
+		$image = file_get_contents($_FILES['imagefile']['tmp_name']);
+		$imgurClientID = $config['gallery']['Client ID'];
+
+		// Post image to imgur
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://api.imgur.com/3/image/");
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, [
+			"type" => "file", 
+			"name" => $_FILES['imagefile']['name'],
+			"image" => $image
+		]);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			"Authorization: Client-ID {$imgurClientID}"
+		));
+		$response = json_decode(curl_exec($ch));
+		$image_url = $response->data->link;
+		$image_delete = $response->data->deletehash;
 		$title = $_POST['title'];
 		$desc = $_POST['desc'];
 
-		if ($imageSrc !== false) {
+		if ($image_url !== false) {
 
 			// Insert to database
-			$inserted = insertImage((int)$session_user_id, $title, $desc, $imageSrc);
+			$inserted = insertImage((int)$session_user_id, $title, $desc, $image_url, $image_delete);
 			if ($inserted === true) {
 				?>
 				<h1>Image Posted</h1>
@@ -43,7 +59,7 @@ if ($logged_in === true) {
 					</tr>
 					<tr>
 						<td>
-							<a href="<?php echo $imageSrc; ?>" target="_BLANK"><img class="galleryImage" src="<?php echo $imageSrc; ?>" alt="<?php echo $title; ?>"/></a>
+							<a href="<?php echo $image_url; ?>" target="_BLANK"><img class="galleryImage" style="max-width: 100%;" src="<?php echo $image_url; ?>" alt="<?php echo $title; ?>"/></a>
 						</td>
 					</tr>
 					<tr>
@@ -93,7 +109,7 @@ if (empty($_POST)) {
 				</tr>
 				<tr>
 					<td>
-						<a href="<?php echo $image['image']; ?>" target="_BLANK"><img class="galleryImage" src="<?php echo $image['image']; ?>" alt="<?php echo $image['title']; ?>"/></a>
+						<a href="<?php echo $image['image']; ?>" target="_BLANK"><img class="galleryImage" style="max-width: 100%;" src="<?php echo $image['image']; ?>" alt="<?php echo $image['title']; ?>"/></a>
 					</td>
 				</tr>
 				<tr>

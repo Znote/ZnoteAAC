@@ -6,21 +6,22 @@
 // Fetch Images
 function fetchImages($status) {
 	$status = (int)$status;
-	return mysql_select_multi("SELECT `id`, `title`, `desc`, `date`, `status`, `image`, `account_id` FROM znote_images WHERE `status`='$status' ORDER BY `date` DESC;");
+	return mysql_select_multi("SELECT `id`, `title`, `desc`, `date`, `status`, `image`, `delhash`, `account_id` FROM znote_images WHERE `status`='$status' ORDER BY `date` DESC;");
 }
 
 // Insert image data
-function insertImage($account_id, $title, $desc, $image) {
+function insertImage($account_id, $title, $desc, $image, $image_delete) {
 	$title = sanitize($title);
 	$desc = sanitize($desc);
 	$image = sanitize($image);
+	$image_delete = sanitize($image_delete);
 	$account_id = (int)$account_id;
 	$time = time();
 
 	// Insert only if image dosn't already exist there
 	$exist = mysql_select_single("SELECT `id` FROM `znote_images` WHERE `image`='$image' LIMIT 1;");
 	if ($exist === false) {
-		mysql_insert("INSERT INTO `znote_images` (`title`, `desc`, `date`, `status`, `image`, `account_id`) VALUES ('$title', '$desc', '$time', '1', '$image', '$account_id');");
+		mysql_insert("INSERT INTO `znote_images` (`title`, `desc`, `date`, `status`, `image`, `delhash`, `account_id`) VALUES ('$title', '$desc', '$time', '1', '$image', '$image_delete', '$account_id');");
 		return true;
 	}
 	return false;

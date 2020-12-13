@@ -15,6 +15,21 @@ if (isset($_POST['remove'])) {
 	$data = explode(":", $_POST['remove']);
 	$did = (int)$data[0];
 	echo 'Image '. $did .' removed.';
+
+	$delhash = $_POST['delhash'];
+	$imgurClientID = $config['gallery']['Client ID'];
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, "https://api.imgur.com/3/image/{$delhash}");
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		"Authorization: Client-ID {$imgurClientID}"
+	));
+	$response = json_decode(curl_exec($ch));
+
 	mysql_delete("DELETE FROM `znote_images` WHERE `id`='$did' LIMIT 1;");
 }
 
@@ -106,6 +121,7 @@ if ($images != false) {
 			<tr class="yellow">
 				<td><h2><?php echo $image['title']; ?><form action="" method="post">
 				<input type="submit" name="accept" value="<?php echo $image['id']; ?>:Recover Image"/>
+				<input type="hidden" name="delhash" value="<?php echo $image['delhash']; ?>">
 				<input type="submit" name="remove" value="<?php echo $image['id']; ?>:Remove Image"/>
 				</form></h2></td>
 			</tr>
