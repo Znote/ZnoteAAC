@@ -173,7 +173,7 @@ if (!empty($_POST['selected_character'])) {
 						$errors[] = 'Your name may only contain a-z, A-Z and spaces.';
 					} else if (strlen($newname) < $config['minL'] || strlen($newname) > $config['maxL']) {
 						$errors[] = 'Your character name must be between ' . $config['minL'] . ' - ' . $config['maxL'] . ' characters long.';
-					} else if (!ctype_upper($newname{0})) {
+					} else if (!ctype_upper($newname[0])) {
 						$errors[] = 'The first letter of a name has to be a capital letter!';
 					}
 
