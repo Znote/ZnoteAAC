@@ -185,7 +185,7 @@ echo "Last cached on: ". hhb_tohtml(getClock($basic['cached'], true)) .".<br>";
 		<b>Ban character and/or account:</b>
 		<form action="" method="post">
 			<input type="hidden" name="csrf_token" value="<?php echo hhb_tohtml($_SESSION['csrf_token']);?>" />
-			<table style="background-color:lightblue;">
+			<table>
 				<!-- row 1 -->
 				<tr>
 					<td>
