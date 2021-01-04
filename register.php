@@ -65,18 +65,8 @@ if (empty($_POST) === false) {
 		if (strlen($_POST['password']) < 6) {
 			$errors[] = 'Your password must be at least 6 characters.';
 		}
-		if($config['client'] >= 1200) {
-			if (strlen($_POST['password']) > 100) {
-				// client 12.x accepts more than 200 characters
-				// don't know the exact value, but lets limit it to 100 characters as it was before
-				$errors[] = 'Your password must be less than 100 characters.';
-			}
-		}
-		else {
-			if (strlen($_POST['password']) > 29) {
-				// older client accepts 29 characters
-				$errors[] = 'Your password must be less than 30 characters.';
-			}
+		if (strlen($_POST['password']) > 29) {
+			$errors[] = 'Your password must be less than 30 characters.';
 		}
 		if ($_POST['password'] !== $_POST['password_again']) {
 			$errors[] = 'Your passwords do not match.';
