@@ -148,8 +148,8 @@ if ($config['log_ip']) {
 }
 
 // Sub page override system
-$filename = explode('/', $_SERVER['PHP_SELF']);
-$filename = $filename[count($filename)-1];
+$filename = explode('/', $_SERVER['SCRIPT_NAME']);
+$filename = $filename[count($filename) - 1];
 $page_filename = str_replace('.php', '', $filename);
 if ($config['allowSubPages']) {
 	require_once 'layout/sub.php';
