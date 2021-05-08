@@ -19,9 +19,9 @@
 		if ($cache->hasExpired()) {
 			$names_sql = mysql_select_multi('SELECT `name` FROM `players` ORDER BY `name` ASC;');
 			$names = array();
-			foreach ($names_sql as $name) {
+			if ($names_sql !== false): foreach ($names_sql as $name) {
 				$names[] = $name['name'];
-			}
+			} endif;
 			$cache->setContent($names);
 			$cache->save();
 		} else {
