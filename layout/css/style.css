@@ -66,7 +66,7 @@ nav .container > div > ul > li,
 nav .container > div > ul > li > a { padding: 20px; }
 nav .container > div > ul > li:hover > ul,
 nav .container > div > ul > li > a,
-nav .container > div > ul > li > ul > li > a { display: block; }
+nav .container > div > ul > li > ul > li > a { display: block; z-index: 1; }
 nav .container > div > ul > li > ul > li > a { padding: 10px 20px; }
 nav .container, .preventCollapse, .ellipsis { overflow: hidden; }
 
