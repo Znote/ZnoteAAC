@@ -305,8 +305,8 @@ $stages = false;
 			</tr>
 			<?php if (isset($luaConfig['timeToDecreaseFrags'])): ?>
 				<tr>
-					<td>Time to decrease frags</td>
-					<td><?php echo toDuration($luaConfig['timeToDecreaseFrags']); ?></td>
+					<td>Time to decrease frags</td><!-- Legacy servers might need to remove *1000 -->
+					<td><?php echo toDuration($luaConfig['timeToDecreaseFrags']*1000); ?></td>
 				</tr>
 			<?php endif; ?>
 			<tr>
@@ -359,7 +359,7 @@ $stages = false;
 			</tr>
 			<tr>
 				<td>One player online per account</td>
-				<td><?php echo toYesNo($luaConfig['stairJumpExhaustion']); ?></td>
+				<td><?php echo toYesNo($luaConfig['onePlayerOnlinePerAccount']); ?></td>
 			</tr>
 			<tr>
 				<td>Max players online server limit</td>
