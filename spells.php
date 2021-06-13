@@ -33,6 +33,11 @@ if (user_logged_in() && is_admin($user_data)) {
 				//if (isset($attributes['id'])) unset($attributes['id']);
 				//if (isset($attributes['conjureId'])) unset($attributes['conjureId']);
 				if (isset($attributes['function'])) unset($attributes['function']);
+
+				// Alias attributes
+				if (isset($attributes['level'])) $attributes['lvl'] = $attributes['level'];
+				if (isset($attributes['magiclevel'])) $attributes['maglv'] = $attributes['magiclevel'];
+
 				// Populate type attributes
 				foreach (array_keys($attributes) as $attr) {
 					if (!in_array($attr, $type_attr[$type]))
@@ -67,6 +72,7 @@ if (user_logged_in() && is_admin($user_data)) {
 						$spells[$type][$name][$att] = (isset($attributes[$att])) ? $attributes[$att] : false;
 				}
 			}
+
 			// Sort the spell list properly
 			foreach (array_keys($spells) as $type) {
 				usort($spells[$type], function ($a, $b) {
@@ -155,12 +161,16 @@ if ($spells) {
 				<td><?php echo $spell['mana']; ?></td>
 				<td><?php
 				if (!empty($spell['vocations'])) {
-					$names = array();
-					foreach ($spell['vocations'] as $id) {
-						if (isset($configVoc[$id]))
-							$names[] = $configVoc[$id]['name'];
+					if ($getVoc !== 'all') {
+						echo $configVoc[$getVoc]['name'];
+					} else {
+						$names = array();
+						foreach ($spell['vocations'] as $id) {
+							if (isset($configVoc[$id]))
+								$names[] = $configVoc[$id]['name'];
+						}
+						echo implode(',<br>', $names);
 					}
-					echo implode(',<br>', $names);
 				}
 				?></td>
 			</tr>
@@ -187,12 +197,16 @@ if ($spells) {
 				<td><img src="<?php echo $itemServer.$spell['id'].'.gif'; ?>" alt="Rune image"></td>
 				<td><?php
 				if (!empty($spell['vocations'])) {
-					$names = array();
-					foreach ($spell['vocations'] as $id) {
-						if (isset($configVoc[$id]))
-							$names[] = $configVoc[$id]['name'];
+					if ($getVoc !== 'all') {
+						echo $configVoc[$getVoc]['name'];
+					} else {
+						$names = array();
+						foreach ($spell['vocations'] as $id) {
+							if (isset($configVoc[$id]))
+								$names[] = $configVoc[$id]['name'];
+						}
+						echo implode(',<br>', $names);
 					}
-					echo implode(',<br>', $names);
 				}
 				?></td>
 			</tr>
@@ -200,6 +214,7 @@ if ($spells) {
 		</tbody>
 	</table>
 
+	<?php if (isset($spells['conjure'])): ?>
 	<h2 id="spell_conjure">Conjure Spells</h2>
 	<a href="#spells">Jump to top</a>
 	<table class="table tbl-hover">
@@ -225,12 +240,16 @@ if ($spells) {
 				<td><img src="<?php echo $itemServer.$spell['conjureId'].'.gif'; ?>" alt="Rune image"></td>
 				<td><?php
 				if (!empty($spell['vocations'])) {
-					$names = array();
-					foreach ($spell['vocations'] as $id) {
-						if (isset($configVoc[$id]))
-							$names[] = $configVoc[$id]['name'];
+					if ($getVoc !== 'all') {
+						echo $configVoc[$getVoc]['name'];
+					} else {
+						$names = array();
+						foreach ($spell['vocations'] as $id) {
+							if (isset($configVoc[$id]))
+								$names[] = $configVoc[$id]['name'];
+						}
+						echo implode(',<br>', $names);
 					}
-					echo implode(',<br>', $names);
 				}
 				?></td>
 			</tr>
@@ -238,6 +257,7 @@ if ($spells) {
 		</tbody>
 	</table>
 	<a href="#spells">Jump to top</a>
+	<?php endif; ?>
 	<?php
 } else {
 	?>
@@ -252,6 +272,6 @@ foreach ($spells as $type => $spells) {
 }
 
 // All spell attributes?
-'group', 'words', 'lvl', 'maglv', 'charges', 'allowfaruse', 'blocktype', 'mana', 'soul', 'prem', 'aggressive', 'range', 'selftarget', 'needtarget', 'blockwalls', 'needweapon', 'exhaustion', 'groupcooldown', 'needlearn', 'casterTargetOrDirection', 'direction', 'params', 'playernameparam', 'conjureId', 'reagentId', 'conjureCount', 'vocations'
+'group', 'words', 'lvl', 'level', 'maglv', 'magiclevel', 'charges', 'allowfaruse', 'blocktype', 'mana', 'soul', 'prem', 'aggressive', 'range', 'selftarget', 'needtarget', 'blockwalls', 'needweapon', 'exhaustion', 'groupcooldown', 'needlearn', 'casterTargetOrDirection', 'direction', 'params', 'playernameparam', 'conjureId', 'reagentId', 'conjureCount', 'vocations'
 */
 include 'layout/overall/footer.php'; ?>
