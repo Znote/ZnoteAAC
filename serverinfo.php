@@ -135,8 +135,22 @@ if (user_logged_in() && is_admin($user_data)) {
 		);
 		// This will be the populated array with filtered relevant data
 		$luaConfig = array();
+
+		// Remove everything between first { and last }
+		$poststring = $_POST['configData'];
+		$first = strpos($poststring, '{');
+		if ($first !== false) {
+			$last = strripos($poststring, '}');
+			if ($last !== false) {
+				$sliced_string = substr($poststring, 0, $first).substr($poststring, $last+1);
+				$poststring = $sliced_string;
+			} else {
+				die("Lua process error: Syntax error in config.lua");
+			}
+		}
+
 		// Explode the string into string array by newline
-		$rawLua = explode("\n", $_POST['configData']);
+		$rawLua = explode("\n", $poststring);
 		// Clean up the array
 		$length = count($rawLua);
 		for ($i = 0; $i < $length; $i++) {
@@ -169,7 +183,9 @@ if (user_logged_in() && is_admin($user_data)) {
 							if (strpos($data[1], '"') === false) {
 								if (!in_array($data[1], array_keys($luaConfig))) {
 									// Type cast: integer
-									$data[1] = eval('return (' . $data[1] . ');');
+									if (strlen($data[1]) > 0) {
+										$data[1] = eval('return (' . $data[1] . ');');
+									}
 								} else {
 									// Type cast: Load value from another key
 									$data[1] = (isset($luaConfig[$data[1]])) ? $luaConfig[$data[1]] : null;
