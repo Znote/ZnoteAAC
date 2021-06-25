@@ -30,16 +30,20 @@ if (empty($_POST) === false) {
 			if (strlen($_POST['name']) < $config['minL'] || strlen($_POST['name']) > $config['maxL']) {
 				$errors[] = 'Your character name must be between ' . $config['minL'] . ' - ' . $config['maxL'] . ' characters long.';
 			}
-			// name restriction
-			$resname = explode(" ", $_POST['name']);
-			foreach($resname as $res) {
-				if(in_array(strtolower($res), $config['invalidNameTags'])) {
-					$errors[] = 'Your username contains a restricted word.';
-				}
-				else if(strlen($res) == 1) {
-					$errors[] = 'Too short words in your name.';
-				}
-			}
+            // name restriction
+            $resname = explode(" ", $_POST['name']);
+            $username = $_POST['name'];
+            foreach($resname as $res) {
+                if(in_array(strtolower($res), $config['invalidNameTags'])) {
+                        $errors[] = 'Your username contains a restricted word.';
+                }
+				if(strlen($res) == 1) {
+                	$errors[] = 'Too short words in your name.';
+            	}
+            }
+            if(in_array(strtolower($username), $config['creatureNameTags'])) {
+                $errors[] = 'Your username contains a creature name.';
+            }
 			// Validate vocation id
 			if (!in_array((int)$_POST['selected_vocation'], $config['available_vocations'])) {
 				$errors[] = 'Permission Denied. Wrong vocation.';
