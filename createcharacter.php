@@ -37,12 +37,12 @@ if (empty($_POST) === false) {
                 if(in_array(strtolower($res), $config['invalidNameTags'])) {
                         $errors[] = 'Your username contains a restricted word.';
                 }
+				if(strlen($res) == 1) {
+                	$errors[] = 'Too short words in your name.';
+            	}
             }
             if(in_array(strtolower($username), $config['creatureNameTags'])) {
                 $errors[] = 'Your username contains a creature name.';
-            }
-            if(strlen($username) == 1) {
-                $errors[] = 'Too short words in your name.';
             }
 			// Validate vocation id
 			if (!in_array((int)$_POST['selected_vocation'], $config['available_vocations'])) {
