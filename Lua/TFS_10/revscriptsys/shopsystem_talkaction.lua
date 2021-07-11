@@ -92,17 +92,17 @@ function talkaction.onSay(player)
 				end
 
 				-- ORDER TYPE 7 (Direct house purchase)
-				if orderType == 7 then
+				if q_type == 7 then
 					served = true
-					local house = House(orderItemId)
+					local house = House(q_itemid)
 					-- Logged in player is not necessarily the player that bough the house. So we need to load player from db.
-					local buyerQuery = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = "..orderCount.." LIMIT 1")
+					local buyerQuery = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = "..q_count.." LIMIT 1")
 					if buyerQuery ~= false then
 						local buyerName = result.getString(buyerQuery, "name")
 						result.free(buyerQuery)
 						if house then
-							db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. orderId .. ";")
-							house:setOwnerGuid(orderCount)
+							db.query("DELETE FROM `znote_shop_orders` WHERE `id` = " .. q_id .. ";")
+							house:setOwnerGuid(q_count)
 							player:sendTextMessage(MESSAGE_INFO_DESCR, "You have successfully bought the house "..house:getName().." on "..buyerName..", be sure to have the money for the rent in the bank.")
 							print("Process complete. [".. buyerName .."] has received house: ["..house:getName().."]")
 						end
