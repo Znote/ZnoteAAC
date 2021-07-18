@@ -1,6 +1,43 @@
 <?php
+/* 2021: Paypal hosts arent neccesarily notify.paypal.com any longer.
 if (gethostbyaddr($_SERVER['REMOTE_ADDR']) !== 'notify.paypal.com') {
 	exit();
+}
+*/
+
+function ip_in_range( $ip, $range ) {
+    if ( strpos( $range, '/' ) === false ) {
+        $range .= '/32';
+    }
+    // $range is in IP/CIDR format eg 127.0.0.1/24
+    list( $range, $netmask ) = explode( '/', $range, 2 );
+    $range_decimal = ip2long( $range );
+    $ip_decimal = ip2long( $ip );
+    $wildcard_decimal = pow( 2, ( 32 - $netmask ) ) - 1;
+    $netmask_decimal = ~ $wildcard_decimal;
+    return ( ( $ip_decimal & $netmask_decimal ) == ( $range_decimal & $netmask_decimal ) );
+}
+
+$paypal_ip_ranges = array(
+    "173.0.81.65",
+    "173.0.81.140",
+    "64.4.240.0/21",
+    "64.4.248.0/22",
+    "66.211.168.0/22",
+    "173.0.80.0/20",
+    "91.243.72.0/23"
+);
+
+$verified = false;
+for($i = 0; $i < count($paypal_ip_ranges); $i++) {
+    if(ip_in_range($_SERVER["REMOTE_ADDR"], $paypal_ip_ranges[$i])) {
+        $verified = true;
+        break;
+    }
+}
+
+if(!$verified) {
+    exit();
 }
 
 // Require the functions to connect to database and fetch config values
