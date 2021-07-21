@@ -315,8 +315,9 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 										<div id="piv_lifebar"></div><div id="piv_lifetext"><span><?php echo $playerstats['health']; ?></span></div>
 										<div id="piv_manabar"></div><div id="piv_manatext"><span><?php echo $playerstats['mana']; ?></span></div>
 										<?php if ($PEQ !== false && !empty($PEQ)): foreach($PEQ as $item): ?>
-											<img class="itm itm-<?php echo $item['pid']; ?>"
-											src="<?php echo "http://{$imageServer}/".$item['itemtype'].".{$imageType}"; ?>">
+											<div class="itm itm-<?php echo $item['pid']; ?>">
+												<img src="<?php echo "http://{$imageServer}/".$item['itemtype'].".{$imageType}"; ?>">
+											</div>
 										<?php endforeach; endif; ?>
 										<span id="piv_cap">Cap:<br><?php echo $playerstats['cap']; ?></span>
 										<?php if ($loadOutfits): ?>
@@ -455,7 +456,12 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 									background-color: rgba(0,0,0,0.7);
 									border-radius: 3px;
 								}
-								#piv_flex .itm { background-image: url("/engine/img/bg.png"); }
+								#piv_flex .itm { 
+									background-image: url("/engine/img/bg.png"); 
+									width: 32px; 
+									height: 32px; 
+									position: absolute; 
+								}
 								#piv_flex .itm-1 { left: 48px; top: 39px; }
 								#piv_flex .itm-2 { left: 11px; top: 53px; }
 								#piv_flex .itm-3 { left: 85px; top: 53px; }
