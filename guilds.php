@@ -162,7 +162,7 @@ function guild_change_leader($nCid, $oCid) {
 // Creates a guild, where cid is the owner of the guild, and name is the name of guild.
 function create_guild($cid, $name) {
 	$cid = (int)$cid;
-	$name = sanitize($name);
+	$name = trim(preg_replace('/\s\s+/', ' ', str_replace("\n", " ", sanitize($name))));
 	$time = time();
 
 	// Create the guild
@@ -556,14 +556,28 @@ if (user_logged_in() === true) {
 
 		// Uninvite and joinguild is also used for visitors who reject their invitation.
 		if (!empty($_POST['uninvite'])) {
-			guild_remove_invitation($_POST['uninvite'], $gid);
-			header('Location: guilds.php?name='. $_GET['name']);
-			exit();
+			// Is this action being triggered by a vice leader+, or the invited player?
+			$u_player = (int)$_POST['uninvite'];
+			$u_player = user_character_name($u_player);
+			$u_player = (int)user_character_account_id($u_player);
+			if (in_array($highest_access, array(2,3)) || $u_player === $session_user_id) {
+				guild_remove_invitation($_POST['uninvite'], $gid);
+				header('Location: guilds.php?name='. $_GET['name']);
+				exit();
+			}
 		}
 
 		// Join guild
 		if (!empty($_POST['joinguild'])) {
 			$joining_player_id = (int)$_POST['joinguild'];
+			$join_account = (int)user_character_account_id(user_character_name($joining_player_id));
+			
+			if ($join_account !== $session_user_id) {
+				echo '<font color="red" size="4">Join guild request sent from wrong account.</font>';
+				include 'layout/overall/footer.php';
+				exit();
+			}
+
 			// Join a guild
 			if ($inv_data !== false) foreach ($inv_data as $inv) {
 				if ((int)$inv['player_id'] == $joining_player_id) {
@@ -593,6 +607,14 @@ if (user_logged_in() === true) {
 		if (!empty($_POST['leave_guild'])) {
 			$name = sanitize($_POST['leave_guild']);
 			$cidd = user_character_id($name);
+			
+			$leave_account = (int)user_character_account_id($name);
+			if ($leave_account !== $session_user_id) {
+				echo '<font color="red" size="4">Leave guild request sent from wrong account.</font>';
+				include 'layout/overall/footer.php';
+				exit();
+			}
+
 			// If character is offline
 			$chardata['online'] = (user_is_online_10($cidd)) ? 1 : 0;
 			if ($chardata['online'] == 0) {
@@ -627,23 +649,6 @@ if (user_logged_in() === true) {
 
 					} else echo '<font color="red" size="4">Character guild nick may only contain a-z, A-Z and spaces.</font>';
 				} else echo '<font color="red" size="4">Change guild nickname feature has been disabled.</font>';
-			}
-
-			// Promote character to guild position
-			if (!empty($_POST['promote_character']) && !empty($_POST['promote_position'])) {
-				// Verify that promoted character is from this guild.
-				$p_rid = $_POST['promote_position'];
-				$p_cid = user_character_id($_POST['promote_character']);
-				$p_guild = get_player_guild_data($p_cid);
-
-				if ($p_guild['guild_id'] == $gid) {
-					$chardata['online'] = (user_is_online_10($p_cid)) ? 1 : 0;
-					if ($chardata['online'] == 0) {
-						update_player_guild_position_10($p_cid, $p_rid);
-						header('Location: guilds.php?name='. $_GET['name']);
-						exit();
-					} else echo '<font color="red" size="4">Character not offline.</font>';
-				}
 			}
 
 			// Invite character to guild
@@ -681,89 +686,17 @@ if (user_logged_in() === true) {
 				exit();
 			}
 
-			// Disband guild
-			if (!empty($_POST['disband'])) {
-				$gidd = (int)$_POST['disband'];
-				$members = get_guild_players($gidd);
-				$online = false;
-
-				// First figure out if anyone are online.
-				foreach ($members as $member) {
-					$chardata['online'] = (user_is_online_10(user_character_id($member['name']))) ? 1 : 0;
-					if ($chardata['online'] == 1) {
-						$online = true;
-					}
-				}
-
-				if (!$online) {
-					// Then remove guild rank from every player.
-					foreach ($members as $member) 
-						guild_player_leave_10(user_character_id($member['name']));
-
-					// Remove all guild invitations to this guild
-					if ($inv_count > 0) 
-						guild_remove_invites($gidd);
-
-					// Then remove the guild itself.
-					guild_delete($gidd);
-					header('Location: success.php');
-					exit();
-				} else echo '<font color="red" size="4">All members must be offline to disband the guild.</font>';
-			}
-
-			// Change guild leader
-			if (!empty($_POST['new_leader'])) {
-				$new_leader = (int)$_POST['new_leader'];
-				$old_leader = guild_leader($gid);
-
-				$online = false;
-				$newData['online'] = (user_is_online_10($new_leader)) ? 1 : 0;
-				$oldData['online'] = (user_is_online_10($old_leader)) ? 1 : 0;
-
-				if ($newData['online'] == 1 || $oldData['online'] == 1) $online = true;
-
-				if ($online == false) {
-					if (guild_change_leader($new_leader, $old_leader)) {
-						header('Location: guilds.php?name='. $_GET['name']);
-						exit();
-					} else echo '<font color="red" size="4">Something went wrong when attempting to change leadership.</font>';
-				} else echo '<font color="red" size="4">The new and old leader must be offline to change leadership.</font>';
-			}
-
-			// Change guild ranks
-			if (!empty($_POST['change_ranks'])) {
-				$c_gid = (int)$_POST['change_ranks'];
-				$c_ranks = get_guild_rank_data($c_gid);
-				$rank_data = array();
-				$rank_ids = array();
-
-				// Feed new rank data
-				foreach ($c_ranks as $rank) {
-					$tmp = 'rank_name!'. $rank['level'];
-					if (!empty($_POST[$tmp])) {
-						$rank_data[$rank['level']] = sanitize($_POST[$tmp]);
-						$rank_ids[$rank['level']] = $rank['id'];
-					}
-				}
-
-				// Change guild rank name.
-				foreach ($rank_data as $level => $name) {
-					$rid = (int)$rank_ids[$level];
-					$name = sanitize($name);
-					mysql_update("UPDATE `guild_ranks` SET `name`='{$name}' WHERE `id`={$rid}");
-				}
-
-				header('Location: guilds.php?name='. $_GET['name']);
-				exit();
-			}
-
 			// Remove guild member
 			if (!empty($_POST['remove_member'])) {
 				$name = sanitize($_POST['remove_member']);
 				$cid = user_character_id($name);
-				guild_remove_member_10($cid);
-				header('Location: guilds.php?name='. $_GET['name']);
-				exit();
+				
+				$p_guild = get_player_guild_data($cid);
+				if ($p_guild['guild_id'] == $gid) {
+					guild_remove_member_10($cid);
+					header('Location: guilds.php?name='. $_GET['name']);
+					exit();
+				}
 			}
 
 			// Create forum guild board
@@ -772,15 +705,15 @@ if (user_logged_in() === true) {
 				if ($config['forum']['guildboard'] === true) {
 					$forumExist = mysql_select_single("SELECT `id` FROM `znote_forum` WHERE `guild_id`='{$gid}' LIMIT 1;");
 						
-						if ($forumExist === false) {
-							// Insert data
-							mysql_insert("
-								INSERT INTO `znote_forum` 
-								(`name`, `access`, `closed`, `hidden`, `guild_id`)
-								VALUES ('Guild','1','0','0','{$gid}')
-							;");
-							echo '<h1>Guild board has been created.</h1>';
-						} else echo '<h1>Guild board already exist.</h1>';
+					if ($forumExist === false) {
+						// Insert data
+						mysql_insert("
+							INSERT INTO `znote_forum` 
+							(`name`, `access`, `closed`, `hidden`, `guild_id`)
+							VALUES ('Guild','1','0','0','{$gid}')
+						;");
+						echo '<h1>Guild board has been created.</h1>';
+					} else echo '<h1>Guild board already exist.</h1>';
 
 				} else {
 					echo '<h1>Error: Guild board system is disabled.</h1>';
@@ -1004,8 +937,101 @@ if (user_logged_in() === true) {
 			<?php 
 		} // end vice leader+
 
-		if ($highest_access == 3) { ?>
-			<!-- guild leaders only -->
+		// Guild leaders only
+		if ($highest_access == 3) { 
+			// Promote character to guild position
+			if (!empty($_POST['promote_character']) && !empty($_POST['promote_position'])) {
+				// Verify that promoted character is from this guild.
+				$p_rid = $_POST['promote_position'];
+				$p_cid = user_character_id($_POST['promote_character']);
+				$p_guild = get_player_guild_data($p_cid);
+
+				if ($p_guild['guild_id'] == $gid) {
+					$chardata['online'] = (user_is_online_10($p_cid)) ? 1 : 0;
+					if ($chardata['online'] == 0) {
+						update_player_guild_position_10($p_cid, $p_rid);
+						header('Location: guilds.php?name='. $_GET['name']);
+						exit();
+					} else echo '<font color="red" size="4">Character not offline.</font>';
+				}
+			}
+			
+			// Disband guild
+			if (!empty($_POST['disband'])) {
+				//$gidd = (int)$_POST['disband'];
+				$members = get_guild_players($gid);
+				$online = false;
+
+				// First figure out if anyone are online.
+				foreach ($members as $member) {
+					$chardata['online'] = (user_is_online_10(user_character_id($member['name']))) ? 1 : 0;
+					if ($chardata['online'] == 1) {
+						$online = true;
+					}
+				}
+
+				if (!$online) {
+					// Then remove guild rank from every player.
+					foreach ($members as $member) 
+						guild_player_leave_10(user_character_id($member['name']));
+
+					// Remove all guild invitations to this guild
+					if ($inv_count > 0) 
+						guild_remove_invites($gid);
+
+					// Then remove the guild itself.
+					guild_delete($gid);
+					header('Location: success.php');
+					exit();
+				} else echo '<font color="red" size="4">All members must be offline to disband the guild.</font>';
+			}
+			
+			// Change guild leader
+			if (!empty($_POST['new_leader'])) {
+				$new_leader = (int)$_POST['new_leader'];
+				$old_leader = guild_leader($gid);
+
+				$online = false;
+				$newData['online'] = (user_is_online_10($new_leader)) ? 1 : 0;
+				$oldData['online'] = (user_is_online_10($old_leader)) ? 1 : 0;
+
+				if ($newData['online'] == 1 || $oldData['online'] == 1) $online = true;
+
+				if ($online == false) {
+					if (guild_change_leader($new_leader, $old_leader)) {
+						header('Location: guilds.php?name='. $_GET['name']);
+						exit();
+					} else echo '<font color="red" size="4">Something went wrong when attempting to change leadership.</font>';
+				} else echo '<font color="red" size="4">The new and old leader must be offline to change leadership.</font>';
+			}
+			
+			// Change guild ranks
+			if (!empty($_POST['change_ranks'])) {
+				$c_gid = (int)$_POST['change_ranks'];
+				$c_ranks = get_guild_rank_data($c_gid);
+				$rank_data = array();
+				$rank_ids = array();
+
+				// Feed new rank data
+				foreach ($c_ranks as $rank) {
+					$tmp = 'rank_name!'. $rank['level'];
+					if (!empty($_POST[$tmp])) {
+						$rank_data[$rank['level']] = sanitize($_POST[$tmp]);
+						$rank_ids[$rank['level']] = $rank['id'];
+					}
+				}
+
+				// Change guild rank name.
+				foreach ($rank_data as $level => $name) {
+					$rid = (int)$rank_ids[$level];
+					$name = sanitize($name);
+					mysql_update("UPDATE `guild_ranks` SET `name`='{$name}' WHERE `id`={$rid}");
+				}
+
+				header('Location: guilds.php?name='. $_GET['name']);
+				exit();
+			}
+			?>
 			
 			<!-- forms to change rank titles -->
 			<form action="" method="post">
