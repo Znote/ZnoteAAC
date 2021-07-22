@@ -13,8 +13,6 @@ We use github to distribute our versions, stable are tagged as releases, while d
 * [Stable](https://github.com/Znote/ZnoteAAC/releases)
 * [Development](https://github.com/Znote/ZnoteAAC/archive/master.zip)
 
-**NOTE:** Development version supports TFS 1.3, but you can expect bugs to occur.
-
 ### Compatible OT distributions
 Znote AAC primarily aims to be compatible with [Forgotten Server](https://github.com/otland/forgottenserver)
 Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC supports these versions:

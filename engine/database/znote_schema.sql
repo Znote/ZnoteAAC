@@ -1,6 +1,6 @@
 -- Start of Znote AAC database schema
 
-SET @znote_version = '1.5_SVN';
+SET @znote_version = '1.6';
 
 CREATE TABLE IF NOT EXISTS `znote` (
   `id` int NOT NULL AUTO_INCREMENT,

@@ -1,6 +1,6 @@
 <?php
 $time = time();
-if (!isset($version)) $version = '1.5_SVN';
+if (!isset($version)) $version = '1.6';
 
 if (!function_exists("elapsedTime")) {
 	function elapsedTime($l_start = false, $l_time = false) {

@@ -15,7 +15,7 @@ function elapsedTime($l_start = false, $l_time = false) {
 }
 
 $time = time();
-$version = '1.5_SVN';
+$version = '1.6';
 
 $aacQueries = 0;
 $accQueriesData = array();

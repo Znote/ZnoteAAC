@@ -1,9 +1,9 @@
 <?php
 // Verify the PHP version, gives tutorial if fail.
-if (version_compare(phpversion(), '5.3.3', '<')) die('PHP 5.3.3 or higher is required');
+if (version_compare(phpversion(), '5.6', '<')) die('PHP version 5.6 or higher is required.');
 if (!isset($filepath)) $filepath = '../';
 
-$version = '1.5_SVN';
+$version = '1.6';
 session_start();
 ob_start();
 require_once $filepath.'config.php';
