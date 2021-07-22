@@ -351,13 +351,25 @@ if (user_logged_in() === true) {
 
 	// Uninvite and joinguild is also used for visitors who reject their invitation.
 	if (!empty($_POST['uninvite'])) {
-		//
-		guild_remove_invitation($_POST['uninvite'], $gid);
-		header('Location: guilds.php?name='. $_GET['name']);
-		exit();
+		// Is this action being triggered by a vice leader+, or the invited player?
+		$u_player = (int)$_POST['uninvite'];
+		$u_player = user_character_name($u_player);
+		$u_player = (int)user_character_account_id($u_player);
+		if (in_array($highest_access, array(2,3)) || $u_player === $session_user_id) {
+			guild_remove_invitation($_POST['uninvite'], $gid);
+			header('Location: guilds.php?name='. $_GET['name']);
+			exit();
+		}
 	}
 	if (!empty($_POST['joinguild'])) {
 		$joining_player_id = (int)$_POST['joinguild'];
+		$join_account = (int)user_character_account_id(user_character_name($joining_player_id));
+
+		if ($join_account !== $session_user_id) {
+			echo '<font color="red" size="4">Join guild request sent from wrong account.</font>';
+			include 'layout/overall/footer.php';
+			exit();
+		}
 		// Join a guild
 		if ($inv_data !== false) foreach ($inv_data as $inv) {
 			if ((int)$inv['player_id'] == $joining_player_id) {
@@ -383,6 +395,14 @@ if (user_logged_in() === true) {
 	if (!empty($_POST['leave_guild'])) {
 		$name = sanitize($_POST['leave_guild']);
 		$cidd = user_character_id($name);
+
+		$leave_account = (int)user_character_account_id($name);
+		if ($leave_account !== $session_user_id) {
+			echo '<font color="red" size="4">Leave guild request sent from wrong account.</font>';
+			include 'layout/overall/footer.php';
+			exit();
+		}
+
 		// If character is offline
 		if ($config['ServerEngine'] !== 'TFS_10') $chardata = user_character_data($cidd, 'online');
 		else $chardata['online'] = (user_is_online_10($cidd)) ? 1 : 0;
@@ -482,9 +502,8 @@ if ($highest_access >= 2) {
 	}
 
 	if (!empty($_POST['disband'])) {
-		//
-		$gidd = (int)$_POST['disband'];
-		$members = get_guild_players($gidd);
+		// $gidd = (int)$_POST['disband'];
+		$members = get_guild_players($gid);
 		$online = false;
 
 		// First figure out if anyone are online.
@@ -534,8 +553,8 @@ if ($highest_access >= 2) {
 	}
 
 	if (!empty($_POST['change_ranks'])) {
-		$c_gid = (int)$_POST['change_ranks'];
-		$c_ranks = get_guild_rank_data($c_gid);
+		//$c_gid = (int)$_POST['change_ranks'];
+		$c_ranks = get_guild_rank_data($gid);
 		$rank_data = array();
 		$rank_ids = array();
 
@@ -560,10 +579,13 @@ if ($highest_access >= 2) {
 		$name = sanitize($_POST['remove_member']);
 		$cid = user_character_id($name);
 
-		if ($config['ServerEngine'] !== 'TFS_10') guild_remove_member($cid);
-		else guild_remove_member_10($cid);
-		header('Location: guilds.php?name='. $_GET['name']);
-		exit();
+		$p_guild = get_player_guild_data($cid);
+		if ($p_guild['guild_id'] == $gid) {
+			if ($config['ServerEngine'] !== 'TFS_10') guild_remove_member($cid);
+			else guild_remove_member_10($cid);
+			header('Location: guilds.php?name='. $_GET['name']);
+			exit();
+		}
 	}
 
 	if (!empty($_POST['forumGuildId'])) {

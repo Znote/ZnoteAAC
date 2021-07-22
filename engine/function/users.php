@@ -457,7 +457,7 @@ function get_guild_rank_data($gid) {
 // Creates a guild, where cid is the owner of the guild, and name is the name of guild.
 function create_guild($cid, $name) {
 	$cid = (int)$cid;
-	$name = sanitize($name);
+	$name = trim(preg_replace('/\s\s+/', ' ', str_replace("\n", " ", sanitize($name))));
 	$time = time();
 
 	// Create the guild
