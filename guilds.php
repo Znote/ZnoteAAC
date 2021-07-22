@@ -1007,8 +1007,8 @@ if (user_logged_in() === true) {
 			
 			// Change guild ranks
 			if (!empty($_POST['change_ranks'])) {
-				$c_gid = (int)$_POST['change_ranks'];
-				$c_ranks = get_guild_rank_data($c_gid);
+				//$c_gid = (int)$_POST['change_ranks'];
+				$c_ranks = get_guild_rank_data($gid);
 				$rank_data = array();
 				$rank_ids = array();
 
