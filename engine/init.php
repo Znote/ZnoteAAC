@@ -1,4 +1,4 @@
-<?php if (version_compare(phpversion(), '5.6', '<')) die('PHP version 5.6 or higher is required.');
+<?php if (version_compare(phpversion(), '7.2', '<')) die('PHP version 7.2 or higher is required.');
 
 $l_time = microtime();
 $l_time = explode(' ', $l_time);
@@ -15,7 +15,7 @@ function elapsedTime($l_start = false, $l_time = false) {
 }
 
 $time = time();
-$version = '1.5_SVN';
+$version = '2.0_DEV';
 
 $aacQueries = 0;
 $accQueriesData = array();
