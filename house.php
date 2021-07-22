@@ -5,11 +5,20 @@ if ($config['log_ip']) {
 
 $house = (isset($_GET['id']) && (int)$_GET['id'] > 0) ? (int)$_GET['id'] : false;
 
-if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
-	$house_SQL = "SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='$house';";
-	$house = mysql_select_single($house_SQL);
+if ($house !== false) {
+	$house = mysql_select_single("
+		SELECT 
+			`h`.`id`, `h`.`owner`, `h`.`paid`, `h`.`name`, `h`.`rent`, `h`.`town_id`, 
+			`h`.`size`, `h`.`beds`, `h`.`bid`, `h`.`bid_end`, `h`.`last_bid`, `h`.`highest_bidder`, 
+			`p`.`name` AS `ownername`
+		FROM `houses` AS `h`
+		LEFT JOIN `players` AS `p`
+			ON `h`.`owner` > 0
+			AND `p`.`id` = `h`.`owner`
+		WHERE `h`.`id`='{$house}';
+	");
 	$minbid = $config['houseConfig']['minimumBidSQM'] * $house['size'];
-	if ($house['owner'] > 0) $house['ownername'] = user_name($house['owner']);
+	if ($house['owner'] == 0) unset($house['ownername']);
 
 	if ($config['houseConfig']['shopPoints']['enabled']) {
 		$house['points'] = $house['size'];
@@ -28,19 +37,36 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 	if ($bid_amount && $bid_char) {
 		$bid_char = (int)$bid_char;
 		$bid_amount = (int)$bid_amount;
-		$player = mysql_select_single("SELECT `id`, `account_id`, `name`, `level`, `balance` FROM `players` WHERE `id`='$bid_char' LIMIT 1;");
+		
+		$player = mysql_select_single("
+			SELECT `id`, `account_id`, `name`, `level`, `balance` 
+			FROM `players` 
+			WHERE `id`='$bid_char' LIMIT 1;
+		");
 
 		if (user_logged_in() === true && $player['account_id'] == $session_user_id) {
 			// Does player have or need premium?
 			$premstatus = ($config['houseConfig']['requirePremium'] && $user_data['premdays']  == 0) ? false : true;
 			if ($premstatus) {
+				
 				// Can player have or bid on more houses?
-				$pHouseCount = mysql_select_single("SELECT COUNT('id') AS `value` FROM `houses` WHERE ((`highest_bidder`='$bid_char' AND `owner`='$bid_char') OR (`highest_bidder`='$bid_char') OR (`owner`='$bid_char')) AND `id`!='".$house['id']."' LIMIT 1;");
+				$pHouseCount = mysql_select_single("
+					SELECT COUNT('id') AS `value` 
+					FROM `houses` 
+					WHERE (
+						(`highest_bidder`='{$bid_char}' AND `owner`='{$bid_char}') 
+						OR (`highest_bidder`='{$bid_char}') 
+						OR (`owner`='{$bid_char}')
+					) 
+					AND `id`!='{$house['id']}' LIMIT 1;
+				");
+
 				if ($pHouseCount['value'] < $config['houseConfig']['housesPerPlayer']) {
 					// Is character level high enough?
 					if ($player['level'] >= $config['houseConfig']['levelToBuyHouse']) {
 						// Can player afford this bid?
 						if ($player['balance'] > $bid_amount) {
+							
 							// Is bid higher than previous bid?
 							if ($bid_amount > $house['bid']) {
 								// Is bid higher than lowest bid?
@@ -55,17 +81,51 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 									// Has bid already started?
 									if ($house['bid_end'] > 0) {
 										if ($house['bid_end'] > time()) {
-											mysql_update("UPDATE `houses` SET `highest_bidder`='". $player['id'] ."', `bid`='$bid_amount', `last_bid`='$lastbid' WHERE `id`='". $house['id'] ."' LIMIT 1;");
-											$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
+											
+											mysql_update("
+												UPDATE `houses` 
+												SET 
+													`highest_bidder`='{$player['id']}', 
+													`bid`='{$bid_amount}', 
+													`last_bid`='{$lastbid}' 
+												WHERE `id`='{$house['id']}' LIMIT 1;
+											");
+
+											$house = mysql_select_single("
+												SELECT 
+													`id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, 
+													`beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` 
+												FROM `houses` 
+												WHERE `id`='{$house['id']}';
+											");
 										}
+
 									} else {
 										$lastbid = $minbid + 1;
 										$bidend = time() + $config['houseConfig']['auctionPeriod'];
-										mysql_update("UPDATE `houses` SET `highest_bidder`='". $player['id'] ."', `bid`='$bid_amount', `last_bid`='$lastbid', `bid_end`='$bidend' WHERE `id`='". $house['id'] ."' LIMIT 1;");
-										$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
+										
+										mysql_update("
+											UPDATE `houses` 
+											SET 
+												`highest_bidder`='{$player['id']}', 
+												`bid`='{$bid_amount}', 
+												`last_bid`='{$lastbid}', 
+												`bid_end`='{$bidend}' 
+											WHERE `id`='{$house['id']}' LIMIT 1;
+										");
+
+										$house = mysql_select_single("
+											SELECT 
+												`id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, 
+												`beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` 
+											FROM `houses` 
+											WHERE `id`='{$house['id']}';
+										");
+
 									}
 									echo "<b><font color='green'>You have the highest bid on this house!</font></b>";
 								} else echo "<b><font color='red'>You need to place a bid that is higher or equal to {$minbid}gp.</font></b>";
+							
 							} else {
 								// Check if current bid is higher than last_bid
 								if ($bid_amount > $house['last_bid']) {
@@ -73,8 +133,21 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 									// being forced to pay his full previous bid.
 									if ($house['highest_bidder'] != $player['id']) {
 										$lastbid = $bid_amount + 1;
-										mysql_update("UPDATE `houses` SET `last_bid`='$lastbid' WHERE `id`='". $house['id'] ."' LIMIT 1;");
-										$house = mysql_select_single("SELECT `id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, `beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` FROM `houses` WHERE `id`='". $house['id'] ."';");
+										
+										mysql_update("
+											UPDATE `houses` 
+											SET `last_bid`='$lastbid' 
+											WHERE `id`='{$house['id']}' LIMIT 1;
+										");
+										
+										$house = mysql_select_single("
+											SELECT 
+												`id`, `owner`, `paid`, `name`, `rent`, `town_id`, `size`, 
+												`beds`, `bid`, `bid_end`, `last_bid`, `highest_bidder` 
+											FROM `houses` 
+											WHERE `id`='{$house['id']}';
+										");
+										
 										echo "<b><font color='orange'>Unfortunately your bid was not higher than previous bidder.</font></b>";
 									} else {
 										echo "<b><font color='orange'>You already have a higher pledge on this house.</font></b>";
@@ -103,8 +176,22 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 		if ($account_points >= $house['points']) {
 
 			$bid_char = (int)$bid_char;
-			$player = mysql_select_single("SELECT `id`, `account_id`, `name`, `level` FROM `players` WHERE `id`='$bid_char' LIMIT 1;");
-			$pHouseCount = mysql_select_single("SELECT COUNT('id') AS `value` FROM `houses` WHERE ((`highest_bidder`='$bid_char' AND `owner`='$bid_char') OR (`highest_bidder`='$bid_char') OR (`owner`='$bid_char')) AND `id`!='".$house['id']."' LIMIT 1;");
+			$player = mysql_select_single("
+				SELECT `id`, `account_id`, `name`, `level` 
+				FROM `players` 
+				WHERE `id`='$bid_char' LIMIT 1;
+			");
+			
+			$pHouseCount = mysql_select_single("
+				SELECT COUNT('id') AS `value` 
+				FROM `houses` 
+				WHERE (
+					(`highest_bidder`='$bid_char' AND `owner`='$bid_char') 
+					OR (`highest_bidder`='$bid_char') 
+					OR (`owner`='$bid_char')
+				) 
+				AND `id`!='{$house['id']}' LIMIT 1;
+			");
 
 			if (user_logged_in() === true
 				&& $player['account_id'] == $session_user_id
@@ -177,12 +264,12 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 		<li><b>Town</b>:
 		<?php
 		$town_name = &$config['towns'][$house['town_id']];
-		echo "<a href='houses.php?id=". $house['town_id'] ."'>". ($town_name ? $town_name : 'Specify town id ' . $house['town_id'] . ' name in config.php first.') ."</a>";
+		echo "<a href='houses.php?id={$house['town_id']}'>". ($town_name ? $town_name : 'Specify town id ' . $house['town_id'] . ' name in config.php first.') ."</a>";
 		?></li>
 		<li><b>Size</b>: <?php echo $house['size']; ?></li>
 		<li><b>Beds</b>: <?php echo $house['beds']; ?></li>
 		<li><b>Owner</b>: <?php
-		if ($house['owner'] > 0) echo "<a href='characterprofile.php?name=". $house['ownername'] ."' target='_BLANK'>". $house['ownername'] ."</a>";
+		if ($house['owner'] > 0) echo "<a href='characterprofile.php?name={$house['ownername']}' target='_BLANK'>{$house['ownername']}</a>";
 		else echo "Available for auction.";
 		?></li>
 		<li><b>Rent</b>: <?php echo $house['rent']; ?></li>
@@ -198,17 +285,17 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 		<?php
 		if ($house['highest_bidder'] == 0) echo "<b>This house don't have any bidders yet.</b>";
 		else {
-			$bidder = mysql_select_single("SELECT `name` FROM `players` WHERE `id`='". $house['highest_bidder'] ."' LIMIT 1;");
+			$bidder = mysql_select_single("SELECT `name` FROM `players` WHERE `id`='{$house['highest_bidder']}' LIMIT 1;");
 			echo "<b>This house have bidders! If you want this house, now is your chance!</b>";
-			echo "<br><b>Active bid:</b> ". $house['last_bid'] ."gp";
-			echo "<br><b>Active bid by:</b> <a href='characterprofile.php?name=". $bidder['name'] ."' target='_BLANK'>". $bidder['name'] ."</a>";
+			echo "<br><b>Active bid:</b> {$house['last_bid']}gp";
+			echo "<br><b>Active bid by:</b> <a href='characterprofile.php?name={$bidder['name']}' target='_BLANK'>{$bidder['name']}</a>";
 			echo "<br><b>Bid will end on:</b> ". getClock($house['bid_end'], true);
 		}
 
 		if ($house['bid_end'] == 0 || $house['bid_end'] > time()) {
 			if (user_logged_in()) {
 				// Your characters, indexed by char_id
-				$yourChars = mysql_select_multi("SELECT `id`, `name`, `balance` FROM `players` WHERE `account_id`='". $user_data['id'] ."';");
+				$yourChars = mysql_select_multi("SELECT `id`, `name`, `balance` FROM `players` WHERE `account_id`='{$user_data['id']}';");
 				if ($yourChars !== false) {
 					$charData = array();
 					foreach ($yourChars as $char) {
@@ -219,7 +306,7 @@ if ($house !== false && $config['ServerEngine'] === 'TFS_10') {
 						<select name="char">
 							<?php
 							foreach ($charData as $id => $char) {
-								echo "<option value='$id'>". $char['name'] ." [". $char['balance'] ."]</option>";
+								echo "<option value='$id'>{$char['name']} [{$char['balance']}]</option>";
 							}
 							?>
 						</select>
