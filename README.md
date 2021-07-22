@@ -1,6 +1,14 @@
 ZnoteAAC
 ========
 [![CodeFactor](https://www.codefactor.io/repository/github/znote/znoteaac/badge)](https://www.codefactor.io/repository/github/znote/znoteaac)
+### Branch: v2
+The purpose of this branch is to server as code cleanup, and strip distro compatibility for anything below TFS 1.4. 
+I want to refactor some code, try to get Znote AAC a bit more lightweight. Remove single-use functions from globally included function files etc. 
+
+New features and bugfixes might arrive here first, and then backported to 1.5/6 (master branch).
+
+---
+
 ### What is Znote AAC?
 
 Znote AAC is a full-fledged website used together with an Open Tibia(OT) server.
