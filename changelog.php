@@ -54,6 +54,7 @@ if (user_logged_in()) {
 <h1>Changelog</h1>
 <?php
 $cache = new Cache('engine/cache/changelog');
+$cache->useMemory(false);
 if ($updateCache === true) {
 	$changelogs = mysql_select_multi("SELECT `id`, `text`, `time`, `report_id`, `status` FROM `znote_changelog` ORDER BY `id` DESC;");
 

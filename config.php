@@ -658,8 +658,15 @@
 		'name' => 'Forgotten' // Must be identical to config.lua (OT config file) server name.
 	);
 
-	// How often do you want highscores to update?
-	$config['cache_lifespan'] = 5; // 60 * 15; // 15 minutes.
+	// How often do you want highscores (cache) to update?
+	$config['cache'] = array(
+		// If you have two instances installed on same server, make each instance prefix unique
+		'prefix' => 'znote_',
+		// 60 * 15; // 15 minutes.
+		'lifespan' => 5,
+		// Store cache in memory/RAM? Requires PHP extension APCu
+		'memory' => true
+	);
 
 	// WARNING! Account names written here will have admin access to web page!
 	$config['page_admin_access'] = array(
