@@ -4,6 +4,7 @@ if ($config['UseChangelogTicker']) {
 	// Changelog ticker //
 	// Load from cache
 	$changelogCache = new Cache('engine/cache/changelog');
+	$changelogCache->useMemory(false);
 	$changelogs = $changelogCache->load();
 
 	if (isset($changelogs) && !empty($changelogs) && $changelogs !== false) {
