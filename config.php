@@ -673,6 +673,9 @@
 		'firstaccountName',
 		'secondaccountName',
 	);
+	// Allow admins to see executed SQL queries overlay
+	// Useful for testing and optimizing query usage on website
+	$config['admin_show_queries'] = true;
 
 	// Built-in FORUM
 	// Enable forum, enable guildboards, level to create threads/post in them
