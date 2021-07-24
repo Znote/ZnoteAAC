@@ -893,36 +893,13 @@ function user_account_id_from_name($id) {
 
 // Add additional premium days to account id
 function user_account_add_premdays($accid, $days) {
-	global $tfs_10_hasPremDays; // Initialized in engine/init.php
 	$accid = (int)$accid;
 	$days = (int)$days;
-
-	if (config('ServerEngine') !== 'OTHIRE') {
-		if ($tfs_10_hasPremDays) {
-			if (mysql_select_single("SHOW COLUMNS from `accounts` WHERE `Field` = 'lastday'") === false) {
-				mysql_update("UPDATE `accounts` SET `premdays` = `premdays`+{$days} WHERE `id`='{$accid}'");
-			} else {
-				mysql_update("	UPDATE `accounts` 
-								SET `premdays` = `premdays`+{$days} 
-								,`lastday` = GREATEST(`lastday`,UNIX_TIMESTAMP(CURDATE())) + ({$days} * 86400)
-								WHERE `id`='{$accid}'
-				");
-			}
-		} else {
-			mysql_update("	UPDATE `accounts` 
-							SET `premium_ends_at` = GREATEST(`premium_ends_at`, UNIX_TIMESTAMP(CURDATE())) + ({$days} * 86400)
-							WHERE `id`='{$accid}';
-			");
-		}
-	} else {
-		$data = mysql_select_single("SELECT `premend` FROM `accounts` WHERE `id`='$accid';");
-		$tmp = $data['premend'];
-		if($tmp == 0)
-			$tmp = time() + ($days * 24 * 60 * 60);
-		else
-			$tmp = $tmp + ($days * 24 * 60 * 60);
-		mysql_update("UPDATE `accounts` SET `premend`='$tmp' WHERE `id`='$accid'");
-	}
+	mysql_update("
+		UPDATE `accounts` 
+		SET `premium_ends_at` = GREATEST(`premium_ends_at`, UNIX_TIMESTAMP(CURDATE())) + ({$days} * 86400)
+		WHERE `id`='{$accid}';
+	");
 }
 
 // Name = char name. Changes from male to female & vice versa.
