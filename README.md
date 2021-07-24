@@ -13,13 +13,6 @@ We use github to distribute our versions, stable are tagged as releases, while d
 * [Stable](https://github.com/Znote/ZnoteAAC/releases)
 * [Development](https://github.com/Znote/ZnoteAAC/archive/master.zip)
 
-### Compatible OT distributions
-Znote AAC primarily aims to be compatible with [Forgotten Server](https://github.com/otland/forgottenserver)
-Forgotten Server is commonly known as TFS (The Forgotten Server) and Znote AAC supports these versions:
-* TFS 0.2.13+ (Since initial release)
-* TFS 0.3.6+ (Since Znote AAC 1.2)
-* TFS 1.2+ (Since Znote AAC 1.5)
-
 ### Requirements
 * PHP Version 5.6 or higher. Mostly tested on 5.6 and 7.4. Most web stacks ships with this as default these days.
 
@@ -54,11 +47,15 @@ This will show you the rest of the instructions as well as the mysql schema.
 Znote AAC is very rich feature wise, here is an attempt at summarizing what we offer.
 
 #### Server distribution compatibility:
-- OTHire
-- TFS 0.2
-- TFS 0.3/4
-- TFS 1.x
-- Distributions based on these (such as OTX).
+- [Znote AAC 1.6](https://github.com/Znote/ZnoteAAC/releases/tag/1.6)
+  - OTHire
+  - TFS 0.2
+  - TFS 0.3/4
+  - TFS 1.3
+  - Distributions based on these (such as OTX).
+- Znote AAC 2.0 [v2 dev branch](https://github.com/Znote/ZnoteAAC/tree/v2)
+  - TFS 1.4
+  - OTservBR-Global
 
 #### General
 - Server wide latest death list
