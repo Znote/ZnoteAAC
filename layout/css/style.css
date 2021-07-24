@@ -229,6 +229,9 @@ table, .header, .well, .smedia a {
 }
 
 /* Znote AAC */
+.leftPane img {
+	max-width: 100%;
+}
 /* adding button style to select */
 select {
 	background: rgb(15,17,20);
