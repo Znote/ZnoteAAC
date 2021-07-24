@@ -27,6 +27,7 @@ function toYesNo($bool) {
 }
 // Loading stage list
 $cache = new Cache('engine/cache/stages');
+$cache->useMemory(false);
 if (user_logged_in() && is_admin($user_data)) {
 	if (isset($_GET['loadStages'])) {
 		echo "<p><strong>Logged in as admin, loading engine/XML/stages.xml file and updating cache.</strong></p>";
@@ -35,34 +36,18 @@ if (user_logged_in() && is_admin($user_data)) {
 		if ($stagesXML !== false) {
 			$stagesData = array();
 			// Load config (stages enabled or disabled)
-			if ($config['ServerEngine'] == 'TFS_10')
-				foreach ($stagesXML->config->attributes() as $name => $value)
-					$stagesData["$name"] = "$value";
+			foreach ($stagesXML->config->attributes() as $name => $value)
+				$stagesData["$name"] = "$value";
 			// Load stage levels
 			// Each stage XML object
-			if ($config['ServerEngine'] == 'TFS_10') {
-				foreach ($stagesXML->stage as $stage) {
-					$rowData = array();
-					// Each attribute name and values on current stage object
-					foreach ($stage->attributes() as $name => $value) {
-						$rowData["$name"] = "$value";
-					}
-					// Populate XML assoc array
-					$stagesData['stages'][] = $rowData;
+			foreach ($stagesXML->stage as $stage) {
+				$rowData = array();
+				// Each attribute name and values on current stage object
+				foreach ($stage->attributes() as $name => $value) {
+					$rowData["$name"] = "$value";
 				}
-			} else {
-				// TFS 0.3/4
-				foreach ($stagesXML->world as $world) {
-					foreach ($world->stage as $stage) {
-						$rowData = array();
-						// Each attribute name and values on current stage object
-						foreach ($stage->attributes() as $name => $value) {
-							$rowData["$name"] = "$value";
-						}
-						// Populate XML assoc array
-						$stagesData['stages'][] = $rowData;
-					}
-				}
+				// Populate XML assoc array
+				$stagesData['stages'][] = $rowData;
 			}
 			$cache->setContent($stagesData);
 			$cache->save();
@@ -83,6 +68,7 @@ if (user_logged_in() && is_admin($user_data)) {
 
 // Loading config.lua
 $cache = new Cache('engine/cache/luaconfig');
+$cache->useMemory(false);
 if (user_logged_in() && is_admin($user_data)) {
 	if (isset($_POST['loadConfig']) && isset($_POST['configData'])) {
 		// Whitelist for values we are interested in
@@ -120,19 +106,6 @@ if (user_logged_in() && is_admin($user_data)) {
 			'staminaSystem',
 			'experienceStages'
 		);
-		// TFS 0.3/4 compatibility, convert config value names to TFS 1.0 values
-		$tfs03to10 = array(
-			// TFS 0.3/4		  TFS 1.0
-			'rateExperience' 			=> 'rateExp',
-			'loginPort' 				=> 'loginProtocolPort',
-			'rateExperienceFromPlayers' => 'experienceByKillingPlayers',
-			'dailyFragsToRedSkull' 		=> 'killsToRedSkull',
-			'dailyFragsToBlackSkull' 	=> 'killsToBlackSkull',
-			'removeRuneCharges' 		=> 'removeChargesFromRunes',
-			'stairhopDelay' 			=> 'stairJumpExhaustion',
-			'housePriceEachSquare' 		=> 'housePriceEachSQM',
-			'idleKickTime' 				=> 'kickIdlePlayerAfterMinutes',
-		);
 		// This will be the populated array with filtered relevant data
 		$luaConfig = array();
 
@@ -168,13 +141,7 @@ if (user_logged_in() && is_admin($user_data)) {
 					// Remove unnecessary whitespace
 					$data[0] = trim($data[0]);
 					$data[1] = trim($data[1]);
-					// TFS 0.3/4 compatibility
-					if (isset($tfs03to10[$data[0]])) {
-						$data[0] = $tfs03to10[$data[0]];
-						if (isset($tfs03to10[$data[1]])) {
-							$data[1] = $tfs03to10[$data[1]];
-						}
-					}
+
 					if (in_array($data[0], $whitelist)) {
 						// Type cast: boolean
 						if (in_array(strtolower($data[1]), array('true', 'false'))) {
@@ -227,7 +194,12 @@ $stages = false;
 <h1>Server Information</h1>
 <p>Here you will find all basic information about <b><?php echo $config['site_title']; ?></b></p>
 
-<?php if (($stagesData && isset($stagesData['enabled']) && $stagesData['enabled']) || (isset($luaConfig['experienceStages']) && $luaConfig['experienceStages'] === true)): $stages = true; ?>
+<?php 
+if (
+	($stagesData && isset($stagesData['enabled']) && $stagesData['enabled']) 
+	|| (isset($luaConfig['experienceStages']) && $luaConfig['experienceStages'] === true)
+): 
+	$stages = true; ?>
 	<h2>Server rates</h2>
 	<table class="table tbl-hover">
 		<tbody>

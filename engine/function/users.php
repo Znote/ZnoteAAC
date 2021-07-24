@@ -1226,19 +1226,8 @@ function user_create_character($character_data) {
 
 // Returns counted value of all players online
 function user_count_online() {
-	if (config('ServerEngine') == 'TFS_10') {
-		$online = mysql_select_single("SELECT COUNT(`player_id`) AS `value` FROM `players_online`;");
-		return ($online !== false) ? $online['value'] : 0;
-	} else {
-		$data = mysql_select_single("SELECT COUNT(`id`) AS `count` from `players` WHERE `online` = 1;");
-		return ($data !== false) ? $data['count'] : 0;
-	}
-}
-
-// Returns counted value of all accounts.
-function user_count_accounts() {
-	$result = mysql_select_single("SELECT COUNT(`id`) AS `id` from `accounts`;");
-	return ($result !== false) ? $result['id'] : 0;
+	$online = mysql_select_single("SELECT COUNT(`player_id`) AS `value` FROM `players_online`;");
+	return ($online !== false) ? $online['value'] : 0;
 }
 
 /* user_character_data (fetches whatever data you want from players table)!
