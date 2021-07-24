@@ -1,6 +1,6 @@
 <div class="well myaccount_widget widget" id="loginContainer">
 	<div class="header">
-		Welcome, <?php if ($config['ServerEngine'] !== 'OTHIRE') echo $user_data['name']; else echo $user_data['id'];?>.
+		Welcome, <?php echo $user_data['name']; ?>.
 	</div>
 	<div class="body">
 		<ul class="linkbuttons">
