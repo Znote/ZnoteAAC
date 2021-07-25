@@ -5,7 +5,15 @@ include 'layout/overall/header.php';
 $undelete_id = @$_GET['cancel_delete_id'];
 if($undelete_id) {
 	$undelete_id = (int)$undelete_id;
-	$undelete_q1 = mysql_select_single('SELECT `character_name` FROM `znote_deleted_characters` WHERE `done` = 0 AND `id` = ' . $undelete_id . ' AND `original_account_id` = ' . $session_user_id . ' AND NOW() < `time`');
+	$undelete_q1 = mysql_select_single("
+		SELECT 
+			`character_name` 
+		FROM `znote_deleted_characters` 
+		WHERE `done` = 0 
+		AND `id` = {$undelete_id} 
+		AND `original_account_id` = {$session_user_id} 
+		AND NOW() < `time`
+	");
 	if($undelete_q1) {
 		mysql_delete('DELETE FROM `znote_deleted_characters` WHERE `id` = ' . $undelete_id);
 		echo 'Pending delete of ' . $undelete_q1['character_name'] . ' has been successfully canceled.<br/>';
@@ -93,7 +101,7 @@ if (!empty($_POST['selected_character'])) {
 		switch($action) {
 			// Change character comment PAGE2 (Success).
 			case 'update_comment':
-				if (user_character_account_id($char_name) === $session_user_id) {
+				if ((int)user_character_account_id($char_name) === $session_user_id) {
 					user_update_comment(user_character_id($char_name), getValue($_POST['comment']));
 					echo 'Successfully updated comment.';
 				}
@@ -103,7 +111,7 @@ if (!empty($_POST['selected_character'])) {
 			// Hide character
 			case 'toggle_hide':
 				$hide = (user_character_hide($char_name) == 1 ? 0 : 1);
-				if (user_character_account_id($char_name) === $session_user_id) {
+				if ((int)user_character_account_id($char_name) === $session_user_id) {
 					user_character_set_hide(user_character_id($char_name), $hide);
 				}
 				break;
@@ -111,21 +119,13 @@ if (!empty($_POST['selected_character'])) {
 
 			// DELETE character
 			case 'delete_character':
-				if (user_character_account_id($char_name) === $session_user_id) {
+				if ((int)user_character_account_id($char_name) === $session_user_id) {
 					$charid = user_character_id($char_name);
 					if ($charid !== false) {
-						if ($config['ServerEngine'] === 'TFS_10') {
-							if (!user_is_online_10($charid)) {
-								if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
-								else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
-							} else echo 'Character must be offline first.';
-						} else {
-							$chr_data = user_character_data($charid, 'online');
-							if ($chr_data['online'] != 1) {
-								if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
-								else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
-							} else echo 'Character must be offline first.';
-						}
+						if (!user_is_online_10($charid)) {
+							if (guild_leader_gid($charid) === false) user_delete_character_soft($charid);
+							else echo 'Character is leader of a guild, you must disband the guild or change leadership before deleting character.';
+						} else echo 'Character must be offline first.';
 					}
 				}
 				break;
@@ -137,10 +137,8 @@ if (!empty($_POST['selected_character'])) {
 				$newname = isset($_POST['newName']) ? getValue($_POST['newName']) : '';
 
 				$player = false;
-				if ($config['ServerEngine'] === 'TFS_10') {
-					$player = mysql_select_single("SELECT `id`, `account_id` FROM `players` WHERE `name` = '$oldname'");
-					$player['online'] = (user_is_online_10($player['id'])) ? 1 : 0;
-				} else $player = mysql_select_single("SELECT `id`, `account_id`, `online` FROM `players` WHERE `name` = '$oldname'");
+				$player = mysql_select_single("SELECT `id`, `account_id` FROM `players` WHERE `name` = '$oldname'");
+				$player['online'] = (user_is_online_10($player['id'])) ? 1 : 0;
 
 				// Check if user is online
 				if ($player['online'] == 1) {
@@ -204,13 +202,11 @@ if (!empty($_POST['selected_character'])) {
 
 			// Change character sex
 			case 'change_gender':
-				if (user_character_account_id($char_name) === $session_user_id) {
+				if ((int)user_character_account_id($char_name) === $session_user_id) {
 					$char_id = (int)user_character_id($char_name);
 					$account_id = user_character_account_id($char_name);
 
-					if ($config['ServerEngine'] == 'TFS_10') {
-						$chr_data['online'] = user_is_online_10($char_id) ? 1 : 0;
-					} else $chr_data = user_character_data($char_id, 'online');
+					$chr_data['online'] = user_is_online_10($char_id) ? 1 : 0;
 					if ($chr_data['online'] != 1) {
 						// Verify that we are not messing around with data
 						if ($account_id != $user_data['id']) die("wtf? Something went wrong, try relogging.");
@@ -254,7 +250,7 @@ if (!empty($_POST['selected_character'])) {
 			// Change character comment PAGE1:
 			case 'change_comment':
 				$render_page = false; // Regular "myaccount" page should not render
-				if (user_character_account_id($char_name) === $session_user_id) {
+				if ((int)user_character_account_id($char_name) === $session_user_id) {
 					$comment_data = user_znote_character_data(user_character_id($char_name), 'comment');
 					?>
 					<!-- Changing comment MARKUP -->
@@ -303,21 +299,12 @@ if ($render_page) {
 	?>
 	<div id="myaccount">
 		<h1>My account</h1>
-		<p>Welcome to your account page, <?php if ($config['ServerEngine'] !== 'OTHIRE') echo $user_data['name']; else echo $user_data['id']; ?><br>
-			<?php if ($config['ServerEngine'] !== 'OTHIRE') {
-				if ($user_data['premdays'] != 0) {
-					echo 'You have ' .$user_data['premdays']. ' remaining premium account days.';
-				} else {
-					echo 'You are free account.';
-				}
-			} else {
-				if ($user_data['premend'] != 0) {
-					echo 'Your premium account will last till ';
-					echo date("d/m/Y", $user_data['premend']);
-				} else {
-					echo 'You do not have premium account days.';
-				}
-			}
+		<p>Welcome to your account page, <?php echo $user_data['name']; ?><br>
+			<?php 
+			// Todo: If premdays is less than 2, inform how many hours are left.
+			if ($user_data['premdays'] != 0) echo "You have {$user_data['premdays']} remaining premium account days."; 
+			else echo 'You are free account.';
+
 			if ($config['mailserver']['myaccount_verify_email']):
 				?><br>Email: <?php echo $user_data['email'];
 				if ($user_znote_data['active_email'] == 1) {
@@ -328,7 +315,7 @@ if ($render_page) {
 			endif; ?>
 		</p>
 		<?php
-		if ($config['ServerEngine'] === 'TFS_10' && $config['twoFactorAuthenticator']) {
+		if ($config['twoFactorAuthenticator']) {
 			$query = mysql_select_single("SELECT `secret` FROM `accounts` WHERE `id`='".(int)$session_user_id."' LIMIT 1;");
 			$status = ($query['secret'] === NULL) ? false : true;
 			?><p>Account security with Two-factor Authentication: <a href="twofa.php"><?php echo ($status) ? 'Enabled' : 'Disabled'; ?></a></p><?php
@@ -343,18 +330,28 @@ if ($render_page) {
 			?>
 			<table id="myaccountTable" class="table table-striped table-hover">
 				<tr class="yellow">
-					<th>NAME</th><th>LEVEL</th><th>VOCATION</th><th>TOWN</th><th>LAST LOGIN</th><th>STATUS</th><th>HIDE</th>
+					<th>NAME</th>
+					<th>LEVEL</th>
+					<th>VOCATION</th>
+					<th>TOWN</th>
+					<th>LAST LOGIN</th>
+					<th>STATUS</th>
+					<th>HIDE</th>
 				</tr>
 				<?php
-				$characters = array();
-				foreach ($char_array as $value) {
-					// characters: [0] = name, [1] = level, [2] = vocation, [3] = town_id, [4] = lastlogin, [5] = online
-					echo '<tr>';
-					echo '<td><a href="characterprofile.php?name='. $value['name'] .'">'. $value['name'] .'</a></td><td>'. $value['level'] .'</td><td>'. $value['vocation'] .'</td><td>'. $value['town_id'] .'</td><td>'. $value['lastlogin'] .'</td><td>'. $value['online'] .'</td><td>'. hide_char_to_name(user_character_hide($value['name'])) .'</td>';
-					echo '</tr>';
-					$characters[] = $value['name'];
-				}
-			?>
+				foreach ($char_array as $value): ?>
+					<tr>
+						<td><a href="characterprofile.php?name=<?php echo $value['name']; ?>"><?php echo $value['name']; ?></a></td>
+						<td><?php echo $value['level']; ?></td>
+						<td><?php echo $value['vocation']; ?></td>
+						<td><?php echo $value['town_id']; ?></td>
+						<td><?php echo $value['lastlogin']; ?></td>
+						<td><?php echo $value['online']; ?></td>
+						<td><?php echo hide_char_to_name($value['hide_char']); ?></td>
+					</tr>
+					<?php
+				endforeach;
+				?>
 			</table>
 			<!-- FORMS TO EDIT CHARACTER-->
 			<form action="" method="post">
@@ -362,15 +359,9 @@ if ($render_page) {
 					<tr>
 						<td>
 							<select id="selected_character" name="selected_character" class="form-control">
-							<?php
-							for ($i = 0; $i < $char_count; $i++) {
-								if (user_character_hide($characters[$i]) == 1) {
-									echo '<option value="'. $characters[$i] . '">'. $characters[$i] .'</option>';
-								} else {
-									echo '<option value="'. $characters[$i] . '">'. $characters[$i] .'</option>';
-								}
-							}
-							?>
+								<?php foreach ($char_array as $character): ?>
+									<option value="<?php echo $character['name']; ?>"><?php echo $character['name']; ?></option>
+								<?php endforeach; ?>
 							</select>
 						</td>
 						<td>
@@ -395,7 +386,7 @@ if ($render_page) {
 			</form>
 			<?php
 		} else {
-			echo 'You don\'t have any characters. Why don\'t you <a href="createcharacter.php">create one</a>?';
+			echo "You don't have any characters. Why don't you <a href='createcharacter.php'>create one</a>?";
 		}
 		?>
 	</div>

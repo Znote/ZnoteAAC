@@ -143,7 +143,18 @@ function support_list03() {
 
 // NEWS
 function fetchAllNews() {
-	return mysql_select_multi("SELECT `n`.`id`, `n`.`title`, `n`.`text`, `n`.`date`, `p`.`name` FROM `znote_news` AS `n` INNER JOIN `players` AS `p` ON `n`.`pid` = `p`.`id` ORDER BY `n`.`id` DESC;");
+	return mysql_select_multi("
+		SELECT 
+			`n`.`id`, 
+			`n`.`title`, 
+			`n`.`text`, 
+			`n`.`date`, 
+			`p`.`name` 
+		FROM `znote_news` AS `n` 
+		INNER JOIN `players` AS `p` 
+			ON `n`.`pid` = `p`.`id` 
+		ORDER BY `n`.`id` DESC;
+	");
 }
 
 // HOUSES
@@ -640,16 +651,30 @@ function user_character_list($account_id) {
 	//$count = user_character_list_count($account_id);
 	$account_id = (int)$account_id;
 
-	if (config('ServerEngine') == 'TFS_10') {
-		$characters = mysql_select_multi("SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `p`.`town_id`, `p`.`lastlogin`, `gm`.`rank_id`, `po`.`player_id` AS `online` FROM `players` AS `p` LEFT JOIN `guild_membership` AS `gm` ON `p`.`id`=`gm`.`player_id` LEFT JOIN `players_online` AS `po` ON `p`.`id`=`po`.`player_id` WHERE `p`.`account_id`='$account_id' ORDER BY `p`.`level` DESC");
-		if ($characters !== false) {
-			for ($i = 0; $i < count($characters); $i++) {
-				$characters[$i]['online'] = ($characters[$i]['online'] > 0) ? 1 : 0;
-				//unset($characters[$i]['id']);
-			}
-		}
-
-	} else $characters = mysql_select_multi("SELECT `id`, `name`, `level`, `vocation`, `town_id`, `lastlogin`, `online`, `rank_id` FROM `players` WHERE `account_id`='$account_id' ORDER BY `level` DESC");
+	$characters = mysql_select_multi("
+		SELECT 
+			`p`.`id`, 
+			`p`.`name`, 
+			`p`.`level`, 
+			`p`.`vocation`, 
+			`p`.`town_id`, 
+			`p`.`lastlogin`, 
+			`gm`.`rank_id`, 
+			`zp`.`hide_char`, 
+			CASE WHEN `po`.`player_id` IS NULL 
+				THEN 0
+				ELSE 1
+			END AS `online` 
+		FROM `players` AS `p` 
+		LEFT JOIN `guild_membership` AS `gm` 
+			ON `p`.`id`=`gm`.`player_id` 
+		LEFT JOIN `players_online` AS `po` 
+			ON `p`.`id`=`po`.`player_id` 
+		LEFT JOIN `znote_players` AS `zp`
+			ON `p`.`id`=`zp`.`player_id`
+		WHERE `p`.`account_id`='{$account_id}' 
+		ORDER BY `p`.`level` DESC
+	");
 
 	if ($characters !== false) {
 		$count = count($characters);
