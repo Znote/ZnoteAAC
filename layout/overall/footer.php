@@ -43,7 +43,7 @@
 				#admin-queries pre {
 					margin: 0;
 					padding-right: 10px;
-					padding-bottom: 5px;
+					padding-bottom: 25px;
 				}
 				#admin-queries label {
 					user-select: none;
