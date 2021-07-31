@@ -2,6 +2,7 @@
 
 // Loading spell list
 $spellsCache = new Cache('engine/cache/spells');
+$spellsCache->useMemory(false);
 if (user_logged_in() && is_admin($user_data)) {
 	if (isset($_GET['update'])) {
 		echo "<p><strong>Logged in as admin, loading engine/XML/spells.xml file and updating cache.</strong></p>";
