@@ -213,8 +213,9 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 				}
 
 				$sessionKey = ($email !== false) ? $email."\n".$client->password : $username."\n".$client->password;
-				if (isset($account['secret']) && strlen($account['secret']) > 5) $sessionKey .= "\n".$token."\n".floor(time() / 30);
-
+				$sessionKey .= (isset($account['secret']) && strlen($account['secret']) > 5) ? "\n".$token : "\n";
+				$sessionKey .= "\n".floor(time() / 30);
+				
 				$response = array(
 					'session' => array(
 						'fpstracking' => false,
