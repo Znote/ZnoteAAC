@@ -4,9 +4,9 @@ if ($config['log_ip']) {
 }
 
 $house = (isset($_GET['id']) && (int)$_GET['id'] > 0) ? (int)$_GET['id'] : false;
-
+$house_SQL = "";
 if ($house !== false) {
-	$house = mysql_select_single("
+	$house_SQL = "
 		SELECT 
 			`h`.`id`, `h`.`owner`, `h`.`paid`, `h`.`name`, `h`.`rent`, `h`.`town_id`, 
 			`h`.`size`, `h`.`beds`, `h`.`bid`, `h`.`bid_end`, `h`.`last_bid`, `h`.`highest_bidder`, 
@@ -16,7 +16,8 @@ if ($house !== false) {
 			ON `h`.`owner` > 0
 			AND `p`.`id` = `h`.`owner`
 		WHERE `h`.`id`='{$house}';
-	");
+	";
+	$house = mysql_select_single($house_SQL);
 	$minbid = $config['houseConfig']['minimumBidSQM'] * $house['size'];
 	if ($house['owner'] == 0) unset($house['ownername']);
 

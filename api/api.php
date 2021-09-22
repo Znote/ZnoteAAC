@@ -7,6 +7,8 @@ $version = '2.0_DEV';
 session_start();
 ob_start();
 require_once $filepath.'config.php';
+$sessionPrefix = $config['session_prefix'];
+
 require_once $filepath.'engine/database/connect.php';
 require_once $filepath.'engine/function/general.php';
 require_once $filepath.'engine/function/cache.php';
