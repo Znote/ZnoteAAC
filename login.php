@@ -227,8 +227,8 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 						'emailcoderequest' => false,
 						'sessionkey' => $sessionKey,
 						'lastlogintime' => 0,
-						'ispremium' => ($account['premium_ends_at'] > 0) ? true : false,
-						'premiumuntil' => time() + ($account['premium_ends_at'] * 86400),
+						'ispremium' => ($account['premium_ends_at'] > time()) ? true : false,
+						'premiumuntil' => $account['premium_ends_at'],
 						'status' => 'active'
 					),
 					'playdata' => array(
