@@ -11,36 +11,20 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 	if ($user_id !== false) {
 		$loadOutfits = $config['show_outfits']['characterprofile'];
 
-		if ($config['ServerEngine'] == 'TFS_10') {
-			if (!$loadOutfits) {
-				$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin');
-			} else { // Load outfits
-				if ($config['client'] < 780) {
-					$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype');
-				} else {
-					$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
-				}
+		if (!$loadOutfits) {
+			$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin');
+		} else { // Load outfits
+			if ($config['client'] < 780) {
+				$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype');
+			} else {
+				$profile_data = user_character_data($user_id, 'account_id', 'name', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'sex', 'lastlogin', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
 			}
-			$profile_data['online'] = user_is_online_10($user_id);
+		}
+		$profile_data['online'] = user_is_online_10($user_id);
 
-			if ($config['Ach']) {
-				$user_id = (int) $user_id;
-				$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`={$user_id} LIMIT 1");
-			}
-		} else { // TFS 0.2, 0.3
-			if (!$loadOutfits) {
-				$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex');
-			} else { // Load outfits
-				if ($config['ServerEngine'] !== 'OTHIRE') {
-					if ($config['client'] < 780) {
-						$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype');
-					} else {
-						$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype', 'lookaddons');
-					}
-				} else {
-					$profile_data = user_character_data($user_id, 'name', 'account_id', 'level', 'group_id', 'vocation', 'health', 'healthmax', 'experience', 'mana', 'manamax', 'lastlogin', 'online', 'sex', 'lookbody', 'lookfeet', 'lookhead', 'looklegs', 'looktype');
-				}
-			}
+		if ($config['Ach']) {
+			$user_id = (int) $user_id;
+			$achievementPoints = mysql_select_single("SELECT SUM(`value`) AS `sum` FROM `player_storage` WHERE `key` LIKE '30___' AND `player_id`={$user_id} LIMIT 1");
 		}
 
 		$profile_znote_data = user_znote_character_data($user_id, 'created', 'hide_char', 'comment');
@@ -82,10 +66,22 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 			</thead>
 			<tbody>
 				<!-- Player Position -->
-				<?php if ($profile_data['group_id'] > 1): ?>
+				<?php if ($profile_data['group_id'] > 1): 
+					$position = mysql_select_single("
+					SELECT 
+						`a`.`type` 
+					FROM `players` AS `p` 
+					INNER JOIN `accounts` AS `a` 
+						ON `p`.`account_id` = `a`.`id` 
+					WHERE 
+						`a`.`type` > 1 
+						AND `p`.`id` = '{$user_id}'
+					");
+					$position = (isset($config['ingame_positions'][$position['type']])) ? $config['ingame_positions'][$position['type']] : "Unknown";
+					?>
 					<tr>
 						<td>Position</td>
-						<td><?php echo group_id_to_name($profile_data['group_id']); ?></td>
+						<td><?php echo $position; ?></td>
 					</tr>
 				<?php endif; ?>
 				<!-- Player male / female -->
@@ -124,31 +120,20 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				<?php endif; ?>
 				<!-- Display house start -->
 				<?php
-				if ($config['ServerEngine'] !== 'TFS_02') {
-					// Compatibility fix
-					$column_town_id = array(
-						'OTHIRE' => 'townid',
-						'TFS_03' => 'town'
-						// Default: town_id
-					);
-					$column_town_id = (isset($column_town_id[$config['ServerEngine']]))
-					? $column_town_id[$config['ServerEngine']]
-					: 'town_id';
 
-					$houses = mysql_select_multi("
-						SELECT `id`, `owner`, `name`, `{$column_town_id}` AS `town_id`
-						FROM `houses`
-						WHERE `owner` = {$user_id};
-					");
+				$houses = mysql_select_multi("
+					SELECT `id`, `owner`, `name`, `town_id` AS `town_id`
+					FROM `houses`
+					WHERE `owner` = {$user_id};
+				");
 
-					if ($houses !== false) {
-						foreach ($houses as $h): ?>
-							<tr>
-								<td>House</td>
-								<td><?php echo $h['name'] . ', ' . $config['towns'][$h['town_id']]; ?></td>
-							</tr>
-						<?php endforeach;
-					}
+				if ($houses !== false) {
+					foreach ($houses as $h): ?>
+						<tr>
+							<td>House</td>
+							<td><?php echo $h['name'] . ', ' . $config['towns'][$h['town_id']]; ?></td>
+						</tr>
+					<?php endforeach;
 				}
 				?>
 				<!-- Display player status -->
@@ -180,56 +165,30 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							AND `pid`<'11'
 						");
 
-						$soulStamina = (in_array($config['ServerEngine'], ['TFS_10']))
-							? " `soul`, `stamina`,"
-							: " `p`.`soul`, `p`.`stamina`,";
-
+						$soulStamina = " `soul`, `stamina`,";
 						if ($config['client'] < 780) {
 							$soulStamina = " 0 AS `soul`, 0 AS `stamina`,";
 						}
 
-						$player_query = (in_array($config['ServerEngine'], ['TFS_10']))
-							? /* true */ "SELECT
-									`health`, `healthmax`,
-									`mana`, `manamax`,
-									`cap`,
-									`experience`, `level`,
-									{$soulStamina}
-									`maglevel`,
-									`skill_fist`,
-									`skill_club`,
-									`skill_sword`,
-									`skill_axe`,
-									`skill_dist`,
-									`skill_shielding`,
-									`skill_fishing`
-								FROM `players`
-								WHERE `id`={$user_id}
-								LIMIT 1;"
-							: /* false */ "SELECT
-									`p`.`health`, `p`.`healthmax`,
-									`p`.`mana`, `p`.`manamax`,
-									`p`.`cap`,
-									`p`.`experience`, `p`.`level`,
-									{$soulStamina}
-									`p`.`maglevel`,
-									`fist`.`value` AS `skill_fist`,
-									`club`.`value` AS `skill_club`,
-									`sword`.`value` AS `skill_sword`,
-									`axe`.`value` AS `skill_axe`,
-									`dist`.`value` AS `skill_dist`,
-									`shield`.`value` AS `skill_shielding`,
-									`fish`.`value` AS `skill_fishing`
-								FROM `players` AS `p`
-								LEFT JOIN `player_skills` AS `fist` ON `p`.`id` = `fist`.`player_id` AND `fist`.`skillid` = 0
-								LEFT JOIN `player_skills` AS `club` ON `p`.`id` = `club`.`player_id` AND `club`.`skillid` = 1
-								LEFT JOIN `player_skills` AS `sword` ON `p`.`id` = `sword`.`player_id` AND `sword`.`skillid` = 2
-								LEFT JOIN `player_skills` AS `axe` ON `p`.`id` = `axe`.`player_id` AND `axe`.`skillid` = 3
-								LEFT JOIN `player_skills` AS `dist` ON `p`.`id` = `dist`.`player_id` AND `dist`.`skillid` = 4
-								LEFT JOIN `player_skills` AS `shield` ON `p`.`id` = `shield`.`player_id` AND `shield`.`skillid` = 5
-								LEFT JOIN `player_skills` AS `fish` ON `p`.`id` = `fish`.`player_id` AND `fish`.`skillid` = 6
-								WHERE `p`.`id`= {$user_id}
-								LIMIT 1;";
+						$player_query = "
+							SELECT
+								`health`, `healthmax`,
+								`mana`, `manamax`,
+								`cap`,
+								`experience`, `level`,
+								{$soulStamina}
+								`maglevel`,
+								`skill_fist`,
+								`skill_club`,
+								`skill_sword`,
+								`skill_axe`,
+								`skill_dist`,
+								`skill_shielding`,
+								`skill_fishing`
+							FROM `players`
+							WHERE `id`={$user_id}
+							LIMIT 1;
+						";
 						$playerstats = mysql_select_single($player_query);
 
 						$playerstats['experience'] = number_format($playerstats['experience'],0,'',',');
@@ -252,9 +211,8 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							[133,134,143,144,145],
 							[146,151,152,153,154],
 							[251,268,273,278,289],
-							[325,328,335,367,430],
-							[432,463,465,472,512],
-							//516,541,574,577,610,619,633,634,637,665,667,684,695,697,699,725,733,746,750,760,846,853,873,884,899
+							[325,328,335,367],
+							//430,432,463,465,472,512,516,541,574,577,610,619,633,634,637,665,667,684,695,697,699,725,733,746,750,760,846,853,873,884,899
 						);
 
 						$female_outfits = array(
@@ -262,9 +220,8 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 							[141,142,147,148,149],
 							[150,155,156,157,158],
 							[252,269,270,279,288],
-							[324,329,336,366,431],
-							[433,464,466,471,513],
-							//514,542,575,578,618,620,632,635,636,664,666,683,694,696,698,724,732,745,749,759,845,852,874,885,900
+							[324,329,336,366],
+							//431,433,464,466,471,513,514,542,575,578,618,620,632,635,636,664,666,683,694,696,698,724,732,745,749,759,845,852,874,885,900
 						);
 
 						$featured_outfits = ($profile_data['sex'] == 1) ? $male_outfits : $female_outfits;
@@ -411,11 +368,15 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 								}
 								#piv_flex img {
 									position: absolute;
+									bottom:  0;
+									right:  0;
 								}
 								#piv_i .inventory_outfit {
 									position: absolute;
 									top: 130px;
 									left: -24px;
+									width: 64px;
+									height: 64px;
 								}
 								#piv_lifebar {
 									position: absolute;
@@ -711,121 +672,63 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 			</thead>
 			<tbody>
 				<?php
-				if ($config['ServerEngine'] == 'TFS_10') {
-					$deaths = mysql_select_multi("
-						SELECT
-							`player_id`,
-							`time`,
-							`level`,
-							`killed_by`,
-							`is_player`,
-							`mostdamage_by`,
-							`mostdamage_is_player`,
-							`unjustified`,
-							`mostdamage_unjustified`
-						FROM `player_deaths`
-						WHERE `player_id`=$user_id
-						ORDER BY `time` DESC
-						LIMIT 10;
-					");
+				$deaths = mysql_select_multi("
+					SELECT
+						`player_id`,
+						`time`,
+						`level`,
+						`killed_by`,
+						`is_player`,
+						`mostdamage_by`,
+						`mostdamage_is_player`,
+						`unjustified`,
+						`mostdamage_unjustified`
+					FROM `player_deaths`
+					WHERE `player_id`=$user_id
+					ORDER BY `time` DESC
+					LIMIT 10;
+				");
 
-					if ($deaths) {
-						foreach ($deaths as $d) {
-							$lasthit = ($d['is_player'])
-							? "<a href='characterprofile.php?name=".$d['killed_by']."'>".$d['killed_by']."</a>"
-							: $d['killed_by'];
+				if ($deaths) {
+					foreach ($deaths as $d) {
+						$lasthit = ($d['is_player'])
+						? "<a href='characterprofile.php?name=".$d['killed_by']."'>".$d['killed_by']."</a>"
+						: $d['killed_by'];
 
-							?>
-							<tr>
-								<td><?php echo getClock($d['time'], true, true); ?></td>
-								<td>
-									<?php
-									echo "Killed at level ".$d['level']." by {$lasthit}";
-									if ($d['unjustified']) {
+						?>
+						<tr>
+							<td><?php echo getClock($d['time'], true, true); ?></td>
+							<td>
+								<?php
+								echo "Killed at level ".$d['level']." by {$lasthit}";
+								if ($d['unjustified']) {
+									echo " <font color='red' style='font-style: italic;'>(unjustified)</font>";
+								}
+								$mostdmg = ($d['mostdamage_by'] !== $d['killed_by']) ? true : false;
+								if ($mostdmg) {
+									$mostdmg = ($d['mostdamage_is_player'])
+									? "<a href='characterprofile.php?name=".$d['mostdamage_by']."'>".$d['mostdamage_by']."</a>"
+									: $d['mostdamage_by'];
+
+									echo "<br>and by $mostdmg.";
+
+									if ($d['mostdamage_unjustified']) {
 										echo " <font color='red' style='font-style: italic;'>(unjustified)</font>";
 									}
-									$mostdmg = ($d['mostdamage_by'] !== $d['killed_by']) ? true : false;
-									if ($mostdmg) {
-										$mostdmg = ($d['mostdamage_is_player'])
-										? "<a href='characterprofile.php?name=".$d['mostdamage_by']."'>".$d['mostdamage_by']."</a>"
-										: $d['mostdamage_by'];
-
-										echo "<br>and by $mostdmg.";
-
-										if ($d['mostdamage_unjustified']) {
-											echo " <font color='red' style='font-style: italic;'>(unjustified)</font>";
-										}
-									} else {
-										echo " <b>(soloed)</b>";
-									}
-									?>
-								</td>
-							</tr>
-							<?php
-						}
-					} else {
-						?>
-						<tr>
-							<td colspan="2">This player has never died.</td>
-						</tr>
-						<?php
-					}
-				} elseif ($config['ServerEngine'] == 'TFS_02') {
-					$array = user_fetch_deathlist($user_id);
-					if ($array) {
-						foreach ($array as $value):
-							if ($value['is_player'] == 1) {
-								$value['killed_by'] = 'player: <a href="characterprofile.php?name='. $value['killed_by'] .'">'. $value['killed_by'] .'</a>';
-							} else {
-								$value['killed_by'] = 'monster: '. $value['killed_by'] .'.';
-							}
-							?>
-							<tr>
-								<td><?php echo getClock($value['time'], true, true); ?></td>
-								<td><?php echo 'Killed at level '. $value['level'] .' by '. $value['killed_by']; ?></td>
-							</tr>
-						<?php endforeach;
-					} else {
-						?>
-						<tr>
-							<td colspan="2">This player has never died.</td>
-						</tr>
-						<?php
-					}
-				} elseif (in_array($config['ServerEngine'], array('TFS_03', 'OTHIRE'))) {
-					//mysql_select_single("SELECT * FROM players WHERE name='TEST DEBUG';");
-					$array = user_fetch_deathlist03($user_id);
-					if ($array) {
-						// Design and present the list
-						foreach ($array as $value):
-							$value[3] = user_get_killer_id(user_get_kid($value['id']));
-							if ($value[3] !== false && $value[3] >= 1) {
-								$namedata = user_character_data((int)$value[3], 'name');
-								if ($namedata !== false) {
-									$value[3] = $namedata['name'];
-									$value[3] = 'player: <a href="characterprofile.php?name='. $value[3] .'">'. $value[3] .'</a>';
 								} else {
-									$value[3] = 'deleted player.';
+									echo " <b>(soloed)</b>";
 								}
-							} else {
-								$value[3] = user_get_killer_m_name(user_get_kid($value['id']));
-								if ($value[3] === false) {
-									$value[3] = 'deleted player.';
-								}
-							}
-							?>
-							<tr>
-								<td><?php echo getClock($value['date'], true, true); ?></td>
-								<td><?php echo 'Killed at level '. $value['level'] .' by '. $value[3]; ?></td>
-							</tr>
-						<?php endforeach;
-					} else {
-						?>
-						<tr>
-							<td colspan="2">This player has never died.</td>
+								?>
+							</td>
 						</tr>
 						<?php
 					}
+				} else {
+					?>
+					<tr>
+						<td colspan="2">This player has never died.</td>
+					</tr>
+					<?php
 				}
 				?>
 			</tbody>
@@ -893,14 +796,6 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 
 		<!-- CHARACTER LIST -->
 		<?php
-		// Backward compatibility
-		$select_online = "CASE WHEN `l`.`player_id` IS NULL THEN 0 else 1 END as `online`";
-		$join_online = "LEFT JOIN `players_online` as `l` ON `p`.`id` = `l`.`player_id`";
-		if ($config['ServerEngine'] != 'TFS_10') {
-			$select_online = "`p`.`online`";
-			$join_online = "";
-		}
-
 		// Load other visible characters
 		$otherChars = mysql_select_multi("
 			SELECT
@@ -909,7 +804,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				`p`.`level`,
 				`p`.`vocation`,
 				`p`.`lastlogin`,
-				{$select_online}
+				CASE WHEN `l`.`player_id` IS NULL THEN 0 else 1 END as `online`
 			FROM `players` as `o`
 			JOIN `players` as `p`
 				ON `o`.`account_id` = `p`.`account_id`
@@ -917,7 +812,7 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 				ON `p`.`id` = `z`.`player_id`
 			LEFT JOIN `znote_players` as `z2`
 				ON `o`.`id` = `z2`.`player_id`
-			{$join_online}
+			LEFT JOIN `players_online` as `l` ON `p`.`id` = `l`.`player_id`
 			WHERE `o`.`id` = {$user_id}
 			AND `p`.`id` != `o`.`id`
 			AND `z`.`hide_char` = 0
