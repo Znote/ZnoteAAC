@@ -537,6 +537,7 @@
 	// Minimum allowed letters in character name. Ex: 4 letters: "Kare".
 	$config['minL'] = 3;
 	// Maximum allowed letters in character name. Ex: 20 letters: "Bobkareolesofiesberg"
+	// Pre QT clients (lower than version 11) support only 20 letters max, while newer clients support up to 25
 	$config['maxL'] = 20;
 	// Maximum allowed words in character name. Ex: 2 words = "Bob Kare", 3 words: "Bob Arne Kare" as maximum char name words.
 	$config['maxW'] = 3;
