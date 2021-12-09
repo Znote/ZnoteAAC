@@ -154,7 +154,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 			$password = SHA1($client->password);
 			$token = (isset($client->token)) ? sanitize($client->token) : false;
 
-			$fields = '`id`, `premdays`';
+			$fields = '`id`, `premium_ends_at`';
 			if ($config['twoFactorAuthenticator']) $fields .= ', `secret`';
 
 			$account = false;
@@ -213,7 +213,8 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 				}
 
 				$sessionKey = ($email !== false) ? $email."\n".$client->password : $username."\n".$client->password;
-				if (isset($account['secret']) && strlen($account['secret']) > 5) $sessionKey .= "\n".$token."\n".floor(time() / 30);
+				$sessionKey .= (isset($account['secret']) && strlen($account['secret']) > 5) ? "\n".$token : "\n";
+				$sessionKey .= "\n".floor(time() / 30);
 
 				$response = array(
 					'session' => array(
@@ -226,8 +227,8 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 						'emailcoderequest' => false,
 						'sessionkey' => $sessionKey,
 						'lastlogintime' => 0,
-						'ispremium' => ($account['premdays'] > 0) ? true : false,
-						'premiumuntil' => time() + ($account['premdays'] * 86400),
+						'ispremium' => ($account['premium_ends_at'] > time()) ? true : false,
+						'premiumuntil' => $account['premium_ends_at'],
 						'status' => 'active'
 					),
 					'playdata' => array(
