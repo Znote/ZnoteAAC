@@ -80,12 +80,14 @@ if (empty($_POST) === false) {
 		if ($_POST['selected'] != 1) {
 			$errors[] = 'You are only allowed to have an account if you accept the rules.';
 		}
-		if (validate_ip(getIP()) === false && $config['validate_IP'] === true) {
-			$errors[] = 'Failed to recognize your IP address. (Not a valid IPv4 address).';
+		if ($config['validate_IP'] === true) {
+			if (validate_ip(getIP()) === false) {
+				$errors[] = 'Failed to recognize your IP address. (Not a valid IPv4 address).';
+			}
 		}
-			if (strlen($_POST['flag']) < 1) {
-						$errors[] = 'Please choose country.';
-				}
+		if (strlen($_POST['flag']) < 1) {
+			$errors[] = 'Please choose country.';
+		}
 	}
 }
 
