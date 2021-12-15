@@ -36,7 +36,7 @@ if (empty($_POST) === false) {
 		if ($isNoob) {
 			$errors[] = 'This account name is blocked for registration.';
 		}
-		if ($config['ServerEngine'] !== 'OTHIRE' && $config['client'] >= 830) {
+		if ($config['client'] >= 830) {
 			if (preg_match("/^[a-zA-Z0-9]+$/", $_POST['username']) == false) {
 				$errors[] = 'Your account name can only contain characters a-z, A-Z and 0-9.';
 			}
@@ -127,25 +127,14 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 		}
 
 		//Register
-		if ($config['ServerEngine'] !== 'OTHIRE') {
-			$register_data = array(
-				'name'		=>	$_POST['username'],
-				'password'	=>	$_POST['password'],
-				'email'		=>	$_POST['email'],
-				'created'	=>	time(),
-				'ip'		=>	getIPLong(),
-				'flag'		=> 	$_POST['flag']
-			);
-		} else {
-			$register_data = array(
-				'id'		=>	$_POST['username'],
-				'password'	=>	$_POST['password'],
-				'email'		=>	$_POST['email'],
-				'created'	=>	time(),
-				'ip'		=>	getIPLong(),
-				'flag'		=> 	$_POST['flag']
-			);
-		}
+		$register_data = array(
+			'name'		=>	$_POST['username'],
+			'password'	=>	$_POST['password'],
+			'email'		=>	$_POST['email'],
+			'created'	=>	time(),
+			'ip'		=>	getIPLong(),
+			'flag'		=> 	$_POST['flag']
+		);
 
 		user_create_account($register_data, $config['mailserver']);
 		if (!$config['mailserver']['debug']) header('Location: register.php?success');
@@ -160,24 +149,23 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 ?>
 	<form action="" method="post">
 		<ul>
-			<li>
-				Account Name:<br>
+			<li>Account Name:<br>
 				<input type="text" name="username">
 			</li>
-			<li>
-				Password:<br>
+
+			<li>Password:<br>
 				<input type="password" name="password">
 			</li>
-			<li>
-				Password again:<br>
+			
+			<li>Password again:<br>
 				<input type="password" name="password_again">
 			</li>
-			<li>
-				Email:<br>
+			
+			<li>Email:<br>
 				<input type="text" name="email">
 			</li>
-			<li>
-				Country:<br>
+			
+			<li>Country:<br>
 				<select name="flag">
 					<option value="">(Please choose)</option>
 					<?php
@@ -190,6 +178,7 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 					?>
 				</select>
 			</li>
+			
 			<?php
 			if ($config['use_captcha']) {
 				?>
@@ -199,8 +188,8 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 				<?php
 			}
 			?>
-			<li>
-				<h2>Server Rules</h2>
+
+			<li><h2>Server Rules</h2>
 				<p>The golden rule: Have fun.</p>
 				<p>If you get pwn3d, don't hate the game.</p>
 				<p>No <a href='https://en.wikipedia.org/wiki/Cheating_in_video_games' target="_blank">cheating</a> allowed.</p>
@@ -208,8 +197,8 @@ if (isset($_GET['success']) && empty($_GET['success'])) {
 				<p>The staff can delete, ban, do whatever they want with your account and your <br>
 					submitted information. (Including exposing and logging your IP).</p>
 			</li>
-			<li>
-				Do you agree to follow the server rules?<br>
+
+			<li>Do you agree to follow the server rules?<br>
 				<select name="selected">
 				  <option value="0">Umh...</option>
 				  <option value="1">Yes.</option>
