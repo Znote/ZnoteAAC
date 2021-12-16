@@ -67,7 +67,7 @@ if (empty($_POST) === false) {
 			}
 			// Char count
 			$char_count = user_character_list_count($session_user_id);
-			if ($char_count >= $config['max_characters']) {
+			if ($char_count >= $config['max_characters'] && !is_admin($user_data)) {
 				$errors[] = 'Your account is not allowed to have more than '. $config['max_characters'] .' characters.';
 			}
 			if (validate_ip(getIP()) === false && $config['validate_IP'] === true) {
