@@ -87,6 +87,13 @@ if (isset($_GET['name']) === true && empty($_GET['name']) === false) {
 						<td>Position</td>
 						<td><?php echo group_id_to_name($profile_data['group_id']); ?></td>
 					</tr>
+				<?php endif;
+				// pending deletion?
+				$deletion_time = mysql_select_single("SELECT `time` FROM `znote_deleted_characters` WHERE `character_name`='{$name}' AND `done` = '0' LIMIT 1;");
+				if ($deletion_time !== false): ?>
+					<tr>
+						<td colspan="2" style="color: red;">Flagged for deletion by owner after <?php echo $deletion_time['time']; ?>.</td>
+					</tr>
 				<?php endif; ?>
 				<!-- Player male / female -->
 				<tr>
