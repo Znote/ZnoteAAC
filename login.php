@@ -216,6 +216,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 				$sessionKey .= (isset($account['secret']) && strlen($account['secret']) > 5) ? "\n".$token : "\n";
 				$sessionKey .= "\n".floor(time() / 30);
 
+				$freePremium = (isset($config['freePremium'])) ? $config['freePremium'] : true;
 				$response = array(
 					'session' => array(
 						'fpstracking' => false,
@@ -227,7 +228,7 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 						'emailcoderequest' => false,
 						'sessionkey' => $sessionKey,
 						'lastlogintime' => 0,
-						'ispremium' => ($account['premium_ends_at'] > time()) ? true : false,
+						'ispremium' => ($account['premium_ends_at'] > time() || $freePremium) ? true : false,
 						'premiumuntil' => $account['premium_ends_at'],
 						'status' => 'active'
 					),

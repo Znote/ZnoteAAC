@@ -657,6 +657,8 @@
 		'port' => 7172,
 		'name' => 'Forgotten' // Must be identical to config.lua (OT config file) server name.
 	);
+	// Unlock all protocol 12 client features? Free premium in config.lua? Then set this to true.
+	$config['freePremium'] = true;
 
 	// How often do you want highscores (cache) to update?
 	$config['cache'] = array(
