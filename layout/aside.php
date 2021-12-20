@@ -11,6 +11,7 @@
 	include 'layout/widgets/charactersearch.php';
 	include 'layout/widgets/topplayers.php';
 	include 'layout/widgets/highscore.php';
+	if ($config['powergamers']['enabled']) include 'layout/widgets/powergamers.php';
 	include 'layout/widgets/serverinfo.php';
 	if ($config['ServerEngine'] !== 'TFS_02') include 'layout/widgets/houses.php';
 	if ($follow["enabled"]): ?>

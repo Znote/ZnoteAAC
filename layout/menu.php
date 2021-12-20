@@ -22,6 +22,7 @@
 						<li><a href="forum.php">Forum</a> </li>
 						<li><a href="guilds.php">Guilds</a> </li>
 						<li><a href="highscores.php">Highscores</a> </li>
+						<?php if ($config['powergamers']['enabled']): ?><li><a href="powergamers.php">Powergamers</a> </li><?php endif; ?>
 						<li><a href="houses.php">Houses</a> </li>
 						<li><a href="killers.php">Killstatistics</a> </li>
 						<li><a href="deaths.php">Latest deaths</a> </li>
