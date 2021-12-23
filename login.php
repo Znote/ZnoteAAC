@@ -241,7 +241,13 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 								'externalport' => $gameserver['port'],
 								'previewstate' => 0,
 								'location' => 'ALL',
-								'pvptype' => 'pvp',
+								// 0 - open pvp
+								// 1 - optional
+								// 2 - hardcore
+								// 3 - retro open pvp
+								// 4 - retro hardcore pvp
+								// 5 and higher - (unknown)
+								'pvptype' => 0,
 								'externaladdressunprotected' => $gameserver['ip'],
 								'externaladdressprotected' => $gameserver['ip'],
 								'externalportunprotected' => $gameserver['port'],
