@@ -75,7 +75,7 @@ if ($cache->hasExpired()) {
 				THEN `hfb`.`experience` 
 				ELSE `h7b`.`experience` 
 			END AS `diff_exp`,
-			`p`.`experience` - IFNULL(`h1b`.`experience`, 0) AS `diff_0`,
+			CAST(`p`.`experience` as SIGNED) - IFNULL(`h1b`.`experience`, 0) AS `diff_0`,
 			IFNULL(`h1b`.`experience`, 0) - IFNULL(`h2b`.`experience`, 0) AS `diff_1`,
 			IFNULL(`h2b`.`experience`, 0) - IFNULL(`h3b`.`experience`, 0) AS `diff_2`,
 			IFNULL(`h3b`.`experience`, 0) - IFNULL(`h4b`.`experience`, 0) AS `diff_3`,
