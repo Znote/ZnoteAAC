@@ -7,9 +7,8 @@ if (!function_exists("elapsedTime")) {
 		if ($l_start === false) global $l_start;
 		if ($l_time === false) global $l_time;
 
-		$l_time = explode(' ', microtime());
-		$l_finish = $l_time[1] + $l_time[0];
-		return round(($l_finish - $l_start), 4);
+		$l_time = microtime(true);
+		return round(($l_time - $l_start), 4);
 	}
 }
 

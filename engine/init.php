@@ -1,8 +1,6 @@
 <?php if (version_compare(phpversion(), '5.6', '<')) die('PHP version 5.6 or higher is required.');
 
-$l_time = microtime();
-$l_time = explode(' ', $l_time);
-$l_time = $l_time[1] + $l_time[0];
+$l_time = microtime(true);
 $l_start = $l_time;
 
 function elapsedTime($l_start = false, $l_time = false) {
