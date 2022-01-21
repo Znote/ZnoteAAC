@@ -18,6 +18,51 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 		die($response);
 	}
 
+	function createWorld($name, $ip, $port, $id = 0, $location = 'ALL', $pvptype = 0) {
+		return [
+			'id' => $id,
+			'name' => $name,
+			'externaladdress' => $ip,
+			'externalport' => $port,
+			'previewstate' => 0,
+			'location' => $location,
+			// 0 - open pvp
+			// 1 - optional
+			// 2 - hardcore
+			// 3 - retro open pvp
+			// 4 - retro hardcore pvp
+			// 5 and higher - (unknown)
+			'pvptype' => $pvptype,
+			'externaladdressunprotected' => $ip,
+			'externaladdressprotected' => $ip,
+			'externalportunprotected' => $port,
+			'externalportprotected' => $port,
+			'istournamentworld' => false,
+			'restrictedstore' => false,
+			'currenttournamentphase' => 2,
+			'anticheatprotection' => false,
+		];
+	}
+
+	function createPlayer($player, $worldid = 0) {
+		return [
+			'worldid' => $worldid,
+			'name' => $player['name'],
+			'ismale' => ($player['sex'] === 1) ? true : false,
+			'tutorial' => false,
+			'level' => intval($player['level']),
+			'vocation' => vocation_id_to_name($player['vocation']),
+			'outfitid' => intval($player['looktype']),
+			'headcolor' => intval($player['lookhead']),
+			'torsocolor' => intval($player['lookbody']),
+			'legscolor' => intval($player['looklegs']),
+			'detailcolor' => intval($player['lookfeet']),
+			'addonsflags' => intval($player['lookaddons']),
+			'ishidden' => intval($player['deletion']) === 1,
+			'istournamentparticipant' => false,
+			'remainingdailytournamentplaytime' => 0,
+		];
+	}
 
 	header("Content-Type: application/json");
 	$input = file_get_contents("php://input");
@@ -234,29 +279,8 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 					),
 					'playdata' => array(
 						'worlds' => array(
-							array(
-								'id' => 0,
-								'name' => $gameserver['name'],
-								'externaladdress' => $gameserver['ip'],
-								'externalport' => $gameserver['port'],
-								'previewstate' => 0,
-								'location' => 'ALL',
-								// 0 - open pvp
-								// 1 - optional
-								// 2 - hardcore
-								// 3 - retro open pvp
-								// 4 - retro hardcore pvp
-								// 5 and higher - (unknown)
-								'pvptype' => 0,
-								'externaladdressunprotected' => $gameserver['ip'],
-								'externaladdressprotected' => $gameserver['ip'],
-								'externalportunprotected' => $gameserver['port'],
-								'externalportprotected' => $gameserver['port'],
-								'istournamentworld' => false,
-								'restrictedstore' => false,
-								'currenttournamentphase' => 2,
-								'anticheatprotection' => false
-							)
+							createWorld($gameserver['name'], $gameserver['ip'], $gameserver['port'], 0, 'ALL'),
+//							createWorld($gameserver['name'], '__PROXY_IP__', '__PROXY_PORT__', 1, '__PROXY_LOCATION__'),
 						),
 						'characters' => array(
 							//array( 'worldid' => ASD, 'name' => asd, 'ismale' => true, 'tutorial' => false ),
@@ -265,23 +289,9 @@ if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0" && $config['ServerEngine'] === '
 				);
 
 				foreach ($players as $player) {
-					$response['playdata']['characters'][] = array(
-						'worldid' => 0,
-						'name' => $player['name'],
-						'ismale' => ($player['sex'] === 1) ? true : false,
-						'tutorial' => false,
-						'level' => intval($player['level']),
-						'vocation' => vocation_id_to_name($player['vocation']),
-						'outfitid' => intval($player['looktype']),
-						'headcolor' => intval($player['lookhead']),
-						'torsocolor' => intval($player['lookbody']),
-						'legscolor' => intval($player['looklegs']),
-						'detailcolor' => intval($player['lookfeet']),
-						'addonsflags' => intval($player['lookaddons']),
-						'ishidden' => intval($player['deletion']) === 1,
-						'istournamentparticipant' => false,
-						'remainingdailytournamentplaytime' => 0
-					);
+					$response['playdata']['characters'][] = createPlayer($player);
+//					$player['name'] .= ' [proxy]';
+//					$response['playdata']['characters'][] = createPlayer($player, 1);
 				}
 
 				sendMessage($response);
