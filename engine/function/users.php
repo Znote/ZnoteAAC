@@ -1125,13 +1125,13 @@ function user_account_add_premdays($accid, $days) {
 			} else {
 				mysql_update("	UPDATE `accounts` 
 								SET `premdays` = `premdays`+{$days} 
-								,`lastday` = GREATEST(`lastday`,UNIX_TIMESTAMP(CURDATE())) + ({$days} * 86400)
+								,`lastday` = GREATEST(`lastday`,UNIX_TIMESTAMP()) + ({$days} * 86400)
 								WHERE `id`='{$accid}'
 				");
 			}
 		} else {
 			mysql_update("	UPDATE `accounts` 
-							SET `premium_ends_at` = GREATEST(`premium_ends_at`, UNIX_TIMESTAMP(CURDATE())) + ({$days} * 86400)
+							SET `premium_ends_at` = GREATEST(`premium_ends_at`, UNIX_TIMESTAMP()) + ({$days} * 86400)
 							WHERE `id`='{$accid}';
 			");
 		}
