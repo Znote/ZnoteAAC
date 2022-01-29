@@ -889,7 +889,7 @@ function user_account_add_premdays($accid, $days) {
 	$days = (int)$days;
 	mysql_update("
 		UPDATE `accounts` 
-		SET `premium_ends_at` = GREATEST(`premium_ends_at`, UNIX_TIMESTAMP(CURDATE())) + ({$days} * 86400)
+		SET `premium_ends_at` = GREATEST(`premium_ends_at`, UNIX_TIMESTAMP()) + ({$days} * 86400)
 		WHERE `id`='{$accid}';
 	");
 }
