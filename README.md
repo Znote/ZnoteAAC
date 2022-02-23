@@ -20,6 +20,7 @@ We use github to distribute our versions, stable are tagged as releases, while d
 * For email registration verification and account recovery: [PHPMailer](https://github.com/PHPMailer/PHPMailer/releases) Version 6.x, extracted and renamed to just "PHPMailer" in Znote AAC directory.
 * PHP extension curl for PHPMailer, paypal and google reCaptcha services.
 * PHP extension openssl for google reCaptcha services.
+* PHP extension gd for guild logos.
 
 ### Installation instructions
 
