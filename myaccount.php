@@ -60,7 +60,7 @@ if (isset($_GET['authenticate']) && $config['mailserver']['myaccount_verify_emai
 		$verify_account_id = (int)$session_user_id;
 		$user = mysql_select_single("SELECT `id`, `activekey`, `active_email` FROM `znote_accounts` WHERE `account_id`='{$verify_account_id}' LIMIT 1;");
 		if ($user !== false) {
-			$thisurl = config('site_url') . "myaccount.php";
+			$thisurl = config('site_url') . "/myaccount.php";
 			$thisurl .= "?authenticate&u=".$verify_account_id."&k=".$user['activekey'];
 
 			$mailer = new Mail($config['mailserver']);
