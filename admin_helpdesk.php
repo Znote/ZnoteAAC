@@ -36,6 +36,11 @@ if ($view !== false){
 	}
 
 	$ticketData = mysql_select_single("SELECT * FROM znote_tickets WHERE id='$view' LIMIT 1;");
+	if(!$ticketData) {
+		echo 'You can not view this ticket!';
+		include 'layout/overall/footer.php';
+		die;
+	}
 	?>
 	<h1>View Ticket #<?php echo $ticketData['id']; ?></h1>
 	<table class="znoteTable ThreadTable table table-striped">

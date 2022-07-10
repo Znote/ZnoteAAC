@@ -21,7 +21,7 @@ if ($view !== false) {
 	}
 	$ticketData = mysql_select_single("SELECT * FROM znote_tickets WHERE id='$view' LIMIT 1;");
 
-	if($ticketData['owner'] != $session_user_id) {
+	if(!$ticketData || $ticketData['owner'] != $session_user_id) {
 		echo 'You can not view this ticket!';
 		include 'layout/overall/footer.php';
 		die;
