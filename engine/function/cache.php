@@ -103,7 +103,7 @@ class Cache
 		$remaining = 0;
 		if ($this->_memory) {
 			if (apcu_exists($this->_file)) {
-				$meta = apc_cache_info('user');
+				$meta = apcu_cache_info();
 				foreach ($meta['cache_list'] AS $item) {
 					if ($item['info'] == $this->_file) {
 						$remaining = ($item['creation_time'] + $item['ttl']) - time();
