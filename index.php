@@ -1,4 +1,4 @@
-<?php if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0") { require_once 'login.php'; die(); } // Client 11 loginWebService
+<?php if(isset($_SERVER["HTTP_USER_AGENT"]) && $_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0") { require_once 'login.php'; die(); } // Client 11 loginWebService
 require_once 'engine/init.php'; include 'layout/overall/header.php';
 
 	if (!isset($_GET['page'])) {
