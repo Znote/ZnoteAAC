@@ -276,22 +276,23 @@ if (user_logged_in() === true) {
 <table>
 	<tr class="yellow">
 		<td>Name:</td>
-		<?php
-		if ($highest_access == 2 || $highest_access == 3) {
-			echo '<td>Remove:</td>';
-		}
-		// Shuffle through visitor characters
-		for ($i = 0; $i < $char_count; $i++) {
-			$exist = false;
-			// Shuffle through invited character, see if they match your character.
-			if ($inv_data !== false) foreach ($inv_data as $inv) {
-				if ($charactersId[$i] == $inv['player_id']) {
-					$exist = true;
-				}
-			}
-			if ($exist) echo '<td>Join Guild:</td><td>Reject Invitation:</td>';
-		}
-		?>
+        <?php
+        if ($highest_access == 2 || $highest_access == 3) {
+            echo '<td>Remove:</td>';
+        }
+        // Shuffle through visitor characters
+        $exist = false;
+            for ($i = 0; $i < $char_count; $i++) {
+            // Shuffle through invited character, see if they match your character.
+            if ($inv_data !== false) foreach ($inv_data as $inv) {
+                if ($charactersId[$i] == $inv['player_id']) {
+                    $exist = true;
+                    break;
+                }
+            }
+        }
+        if ($exist) echo '<td>Join Guild:</td><td>Reject Invitation:</td>';
+        ?>
 	</tr>
 		<?php
 		$bool = false;
