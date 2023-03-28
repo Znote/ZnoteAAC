@@ -1,0 +1,3355 @@
+.BigButton.btn
+{
+	text-align: center;
+	line-height: 25px;
+	color: #eed1a3;
+    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, 0px 1px 0 #000, 1px 0px 0 #000, -1px 0px 0 #000, -1px 0px 0 #000;
+	transition: opacity 0.1s linear;vertical-align: middle; 
+}
+input[type="submit"].BigButton.btn 
+{
+	background:url(tibia_img/sbutton.gif);
+	border: 0 none;
+	width: 135px;
+	height: 25px;
+	text-align: center;
+	line-height: 25px;
+	padding: 0;
+	margin: 0;
+	color: #eed1a3;
+    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, 0px 1px 0 #000, 1px 0px 0 #000, -1px 0px 0 #000, -1px 0px 0 #000;
+	transition: opacity 0.1s linear;
+}
+.BigButton.btn:hover, input[type="submit"].BigButton.btn:hover
+{
+	opacity: 0.9;
+	color: orange;
+	cursor: pointer;
+}
+.OptionContainer input {
+  vertical-align: middle;
+  margin: 0px;
+  margin-right: 3px;
+}
+.OptionContainer label {
+  vertical-align: middle;
+}
+#DeactivationContainer{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 80;
+  height: 1500px;
+  width: 100%;
+  background-color: black;
+  filter: alpha(opacity=75);
+  opacity: 0.75;
+  -moz-opacity: 0.75;
+  display: none;
+}
+#DeactivationContainerThemebox {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 95;
+  height: 1000px;
+  width: 100%;
+  display: none;
+}
+#MainHelper1 {
+  position: relative;
+  text-align: center;
+  top: 0px;
+  height: 100%;
+  min-width: 1000px;
+  overflow: visible;
+}
+#MainHelper2 {
+  position: relative;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0px;
+  height: 100%;
+  max-width: 1200px;
+  overflow: visible;
+  padding-top: 155px;
+}
+#ArtworkHelper1 {
+  position: absolute;
+  max-width: 1200px;
+  text-align: center;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  margin-left: -800px;
+}
+#ArtworkHelper2 {
+  position: absolute;
+  text-align: center;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  width: 1600px;
+  margin-right: auto;
+  margin-left: 50%;
+}
+#HeaderArtworkDiv {
+  position: absolute;
+  text-align: center;
+  background-position: top left;
+  background-attachment: scroll;
+  background-repeat: no-repeat;
+  top: 0px;
+  height: 800px;
+  width: 100%;
+}
+* html #HeaderArtworkDiv {
+  left: 0px;
+}
+/* container to implement min/max width */
+#Bodycontainer {
+  text-align: center;
+  min-width: 1000px;
+  max-width: 1200px;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0px;
+  display: table;
+}
+#MenuColumn {
+  position: absolute;
+  width: 180px;
+  top: 160px;
+  margin-right: 15px;
+  margin-left: 15px;
+  padding: 0px;
+  font-family:  Arial, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  line-height: 12pt;
+  text-align: left;
+}
+* html #MenuColumn {
+  top: 155px;
+  margin-left: -190px;
+}
+#ContentColumn {
+  margin: 0px;
+  margin-left: 205px;
+  margin-right: 205px;
+  text-align: left;
+}
+* html #ContentColumn {
+  width: 790px;
+}
+#ThemeboxesColumn {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 180px;
+  margin-top: -144px;
+  margin-left: 15px;
+  margin-right: -190px;
+  filter: alpha(opacity=100);
+}
+* html #ThemeboxesColumn {
+  top: 5px;
+  height: 1000px;
+}
+#Footer {
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+  font-size: 7pt;
+  font-weight: normal;
+  text-align: center;
+  position: relative;
+  width: 100%;
+  padding-bottom: 20px;
+  color: white;
+}
+* html #Footer {
+  padding-bottom: 120px;
+  margin-bottom: 50px;
+}
+
+/* Footer linkes */
+#Footer a:link    { color: white; text-decoration: none; }
+#Footer a:visited { color: white; text-decoration: none; }
+#Footer a:focus   { color: white; text-decoration: none; }
+#Footer a:active  { color: white; text-decoration: underline; }
+#Footer a:hover   { color: white; text-decoration: underline; }
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  HEADER AREA
+ *  -------------------------------
+ */
+
+#LeftArtwork {
+  position: absolute;
+  height: 140px;
+  width: 166px;
+  top: -140px;
+  left: 4px;
+  background-repeat: no-repeat;
+  z-index:5;
+}
+
+#LeftArtwork #TibiaLogoArtworkTop {
+  position: absolute;
+  top: -17px;
+  left: -14px;
+  height: 158px;
+  width: 196px;
+  z-index: 5;
+  cursor: pointer;
+  border: 0px;
+}
+
+#LeftArtwork #LogoLink {
+  position: absolute;
+  bottom: 14px;
+  left: 58px;
+  height: 14px;
+  width: 50px;
+  z-index: 99;
+  cursor: pointer;
+}
+
+#RightArtwork {
+  text-align: left;
+  position: absolute;
+  top: 143px;
+  right: 24px;
+  width: 132px;
+  background-repeat: no-repeat;
+  z-index: 90;
+}
+
+#RightArtwork #Monster {
+  position: absolute;
+  height: 80px;
+  width: 80px;
+  top: -137px;
+  left: 7px;
+  z-index: 15;
+  cursor: pointer;
+}
+
+#PedestalAndOnline {
+  position: absolute;
+  left: -10px;
+  top: -105px;
+  width: 153px;
+  height: 107px;
+}
+
+#RightArtwork #PlayersOnline {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size: 7pt;
+  line-height: 8pt;
+  text-align: center;
+  position: absolute;
+  width: 92px;
+  bottom: 11px;
+  left: 21px;
+  color: #cfa600;
+  border-bottom: 1px solid #010101;
+  cursor: pointer;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  LOGINBOX
+ *  -------------------------------
+ */
+
+#LoginBox {
+  position: relative;
+  left: 5px;
+  top: 8px;
+  width: 100%;
+  margin-bottom: 42px;
+  background-repeat: no-repeat;
+}
+
+#LoginBox #LoginTop {
+  position: absolute;
+  left: -5px;
+  top: -12px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+#LoginBox #LoginBottom {
+  position: absolute;
+  top: 52px;
+  left: -5px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+#LoginBox .LoginBorder {
+  position: absolute;
+  top: 0px;
+  height: 52px;
+  width: 8px;
+  background-repeat: repeat-y;
+  z-index: 10;
+}
+
+#LoginBox #BorderRight {
+  right: 9px;
+}
+
+#LoginBox .Loginstatus {
+  position: relative;
+  top: 0px;
+  left: 5px;
+  height: 13px;
+  width: 160px;
+}
+
+#LoginBox .LoginstatusText {
+  position: absolute;
+  top: 1px;
+  left: 18px;
+  width: 124px;
+  height: 11px;
+  cursor: pointer;
+}
+
+#LoginBox #LoginstatusText_1 {
+  visibility: visible;
+}
+
+#LoginBox #LoginstatusText_2 {
+  visibility: hidden;
+}
+
+#LoginBox #LoginButtonContainer {
+  position: relative;
+  height: 39px;
+  width: 160px;
+  left: 5px;
+  background-repeat: repeat-y;
+}
+#PlayNowContainer {
+  position: absolute;
+  width: 150px;
+  height: 37px;
+  top: 1px;
+  left: 5px;
+  z-index: 99;
+}
+#PlayNowContainer form {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+}
+.BigBoldText {
+  font-weight: bold;
+  font-size: 14pt;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  MENU
+ *  -------------------------------
+ */
+
+#Menu {
+  position: relative;
+  left: 5px;
+  top: 0px;
+  background-repeat: no-repeat;
+}
+
+#MenuTop {
+  position: absolute;
+  left: -5px;
+  top: -12px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+#MenuBottom {
+  position: relative;
+  left: -5px;
+  bottom: 0px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+/* Menuitems */
+
+.MenuButton {
+  position: relative;
+  height: 32px;
+  width: 170px;
+  display: block;
+  cursor: pointer;
+}
+
+.Button {
+  position: relative;
+  height: 32px;
+  width: 170px;
+  visibility: hidden;
+  display: block;
+}
+
+.Extend {
+  position: absolute;
+  top: 20px;
+  right: -2px;
+  height: 12px;
+  width: 12px;
+  background-repeat: no-repeat;
+}
+
+.Lights {
+  visibility: hidden;
+}
+
+.Light_lu {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  height: 2px;
+  width: 2px;
+  background-repeat: no-repeat;
+}
+
+.Light_ru {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  height: 2px;
+  width: 2px;
+  background-repeat: no-repeat;
+}
+
+.Light_ld {
+  position: absolute;
+  height: 2px;
+  width: 2px;
+  top: 28px;
+  left: 3px;
+}
+
+.Icon {
+  position: absolute;
+  height: 32px;
+  width: 32px;
+  top: 0px;
+  left: 8px;
+}
+
+.Label {
+  position: absolute;
+  height: 22px;
+  width: 116px;
+  top: 6px;
+  left: 42px;
+}
+
+/* Submenus(items) */
+
+.LeftChain {
+  position: absolute;
+  top: 0px;
+  left: -5px;
+  height: 33px;
+  width: 7px;
+  background-repeat: repeat-y;
+}
+
+.RightChain {
+  position: absolute;
+  top: 0px;
+  right: -4px;
+  height: 33px;
+  width: 7px;
+  background-repeat: repeat-y;
+}
+
+.Submenu {
+  position: relative;
+  margin-left: 5px;
+  margin-right: 5px;
+  background-color: #0D2E2B;
+  width: 160px;
+}
+
+.Submenuitem {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+}
+
+.ActiveSubmenuItemIcon {
+  position: absolute;
+  top: 5px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  background-repeat: no-repeat;
+  visibility: hidden;
+}
+
+.SubmenuitemLabel {
+  margin: 0px;
+  border-top: 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 15px;
+  border-bottom: 1px solid #4b7874;
+  overflow: hidden;
+}
+
+/* Submenu links */
+.Submenu a:link    { color: #d7d7d7; text-decoration: none; }
+.Submenu a:visited { color: #d7d7d7; text-decoration: none; }
+.Submenu a:focus   { color: #d7d7d7; text-decoration: none; }
+.Submenu a:active  { color: white; text-decoration: none; }
+.Submenu a:hover   { color: white; text-decoration: none; }
+
+/* webshop button as link */
+.SubmenuButtonAsLinkLabel {
+  color: #d7d7d7;
+}
+.SubmenuButtonAsLink {
+  position: absolute;
+  background-color: #0D2E2B;
+  width: 160px;
+  z-index: 40;
+  text-align: left;
+  background: none !important;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  border: 0 none;
+}
+input[type="submit"].SubmenuButtonAsLink {
+  color: transparent;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  CONTENT AREA
+ *  -------------------------------
+ */
+
+.Content .BoxContent {
+  padding: 10px;
+}
+
+/* "tanhack" for correction of IE bug */
+* html .Content {
+  top: -5px;
+}
+
+.Content {
+  position: relative;
+  top: 0px;
+  width: 100%;
+  z-index: 100;
+}
+
+/* "star-HTML-hack" to correct the position of the content area */
+* html .Content {
+  position: relative;
+  top: 796px;
+  margin: 20px;
+  border: 0px dashed #051122;
+  border-right-width: 550px;
+}
+
+#ContentHelper {
+  position: relative;
+}
+
+/* "star-HTML-hack" to to implement min-width in IE */
+* html #ContentHelper {
+  display: inline-block;
+  position: relative;
+  top: -800px;
+  margin: -20px;
+  margin-right: -570px;
+}
+
+.Content .Box {
+  font-size: 0pt;
+  position: relative;
+  margin: 5px;
+  margin-bottom: 18px;
+  color: #5A2800;
+  border-left: 2px solid #3a3738;
+  border-right: 2px solid #3a3738;
+  background-color: #debb9d;
+  background-repeat: no-repeat;
+  overflow: visible;
+}
+
+.Content .BoxContent {
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+  font-size: 9pt;
+  background-color: #FFF2db;
+  color: #5A2800;
+  min-height: 367px;
+  height: auto !important;
+  height: 387px;
+}
+
+/* "star-HTML-hack" to correct Box width in IE */
+* html .Content .Box {
+  width: 100%;
+}
+/* "star-HTML-hack" to correct BoxContent width in IE */
+* html .Content .BoxContent {
+  width: 100%;
+}
+
+.Content th {
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  text-align: left;
+  color: white;
+  background-color: #505050;
+}
+
+.Table3 td {
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+  font-size: 10pt;
+  color: #5A2800;
+ }
+
+/* Content Links */
+
+.Content a {
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+  font-weight: bold;
+  color: #004294;
+  text-decoration: none;
+}
+.Content a:hover {
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #0063DC;
+}
+.Content .HelpLink {
+  font-size: 7pt;
+  cursor: pointer;
+}
+.TableHeadlineNavigation {
+  margin-top: 4px;
+  font-size: 8px;
+  float: right;
+}
+.TableHeadlineNavigation a {
+  color: white;
+}
+.TableHeadlineNavigation a:hover {
+  color: white;
+}
+/* Corners */
+
+.Content .Corner-tl {
+  position: absolute;
+  top: -4px;
+  left: -5px;
+  width: 17px;
+  height: 17px;
+  z-index: 50;
+}
+
+.Content .Corner-tr {
+  position: absolute;
+  top: -4px;
+  right: -5px;
+  width: 17px;
+  height: 17px;
+  z-index: 50;
+}
+
+.Content .BottomCornersHelper {
+  position: absolute;
+  width: 100%;
+}
+
+.Content .CornerWrapper-b {
+  position: absolute;
+  width:100%;
+}
+
+.Content .Corner-bl {
+  position: absolute;
+  bottom: -4px;
+  left: -6px;
+  width: 17px;
+  height: 17px;
+  z-index: 50;
+}
+
+.Content .Corner-br {
+  position: absolute;
+  bottom: -4px;
+  right: -6px;
+  width: 17px;
+  height: 17px;
+  z-index: 50;
+}
+
+/* Borders */
+
+.Content .Border_1 {
+  position: relative;
+  height: 6px;
+  width: 100%;
+  background-repeat: repeat-x;
+}
+
+.Content .BorderTitleText {
+  position: relative;
+  height: 24px;
+  background-repeat: repeat-x;
+}
+
+.Content .Title {
+  position: absolute;
+  top: 6px;
+  left: 5px;
+}
+
+.Content .Border_2 {
+  margin: 4px;
+  padding: 0px;
+  background-color: #793d03;
+}
+
+.Content .Border_3 {
+  margin: 1px;
+  border-top: 1px solid #793d03;
+  border-bottom: 1px solid #793d03;
+}
+
+.Content .ScrollableTextBox {
+  height: 125px;
+  padding: 3px;
+  margin-right: 5px;
+  overflow-y: scroll;
+  font-family: Courier New;
+  border: 1px solid grey;
+  font-weight: normal !important;
+  background-image: url("/TibiaWebsite_refactoring/html/images/global/content/scroll.gif");
+}
+.Content .BoxContent .ScrollableTextBox td {
+  font-family: Courier New;
+}
+
+/* ------ */
+/* Manual */
+/* ------ */
+
+#TableOfContents ol {
+  list-style-type: none;
+  counter-reset: item;
+  margin: 0;
+  padding: 0;
+}
+#TableOfContents ol > li {
+  display: table;
+  counter-increment: item;
+  margin-bottom: 15px;
+  font-size: 10pt;
+  line-height: 1.5;
+}
+#TableOfContents ol > li:before {
+  content: counters(item, ".") " ";
+  display: table-cell;
+  padding-right: 10px;
+}
+#TableOfContents li ol > li {
+  margin: 0;
+}
+#TableOfContents li ol > li:before {
+  content: counters(item, ".") " ";
+}
+
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  THEMEBOXES of the Tibia
+ *  website
+ *  -------------------------------
+ */
+
+.Themebox {
+  position: relative;
+  margin-bottom: 10px;
+  top: 140px;
+  width: 180px;
+  height: 154px;
+}
+#Themeboxes div {
+  font-size: 10pt;
+  background-repeat: no-repeat;
+}
+#Themeboxes .ThemeboxButton {
+  position: absolute;
+  bottom: 20px;
+  left: 22px;
+  height: 25px;
+  width: 135px;
+  cursor: pointer;
+}
+#Themeboxes .Bottom {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 12px;
+  width: 180px;
+}
+/* "star-HTML-hack" to correct the position of the bottom element */
+* html #Themeboxes .Bottom {
+  bottom: -3px;
+}
+#Themeboxes #AnniversaryCountDownBox {
+  height: 120px;
+}
+#Themeboxes #AnniversaryCountDownExtendedBox {
+  height: 146px;
+}
+#Themeboxes #AnniversaryBox {
+  height: 188px;
+}
+#Themeboxes #NewcomerBox .ThemeboxButton {
+  bottom: 15px;
+}
+#Themeboxes #PremiumBox {
+  height: 164px;
+}
+#Themeboxes #JobBox {
+  height: 164px;
+}
+#TrailerBox {
+  height: 153px;
+}
+#TrailerIdleFrame {
+  
+  position: absolute;
+  top: 31px;
+  left: 5px;
+}
+#TrailerOverFrame {
+  position: absolute;
+  top: 31px;
+  left: 5px;
+  visibility: hidden;
+  cursor: pointer;
+}
+#Themeboxes #ScreenshotBox #ScreenshotContentFrame {
+  position: relative;
+  height: 111px;
+  width: 170px;
+  top: 31px;
+  left: 0px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border: 0;
+  cursor: pointer;
+}
+#Themeboxes #ScreenshotBox #ScreenshotContentImageContainer {
+  position: absolute;
+  top: 35px;
+  left: 5px;
+  overflow: hidden;
+  width: 170px;
+  height: 102px; 
+}
+#Themeboxes #ScreenshotBox #ScreenshotContentImage {
+  position: absolute;
+  width: 974px;
+  height: 621px;
+  left: -400px;
+  top: -200px;
+}
+#Themeboxes #CurrentPollBox #CurrentPollText {
+  font-family: Verdana, Arial, sans-serif;
+  font-weight: bold;
+  line-height: 11pt;
+  color: #5A2800;
+  position: absolute;
+  height: 70px;
+  width: 150px;
+  top: 37px;
+  left: 15px;
+  padding-top: 5px;
+  overflow: hidden;
+  text-align: center;
+}
+
+#Themeboxes #FansiteBox {
+  position: relative;
+  height: 188px;
+  text-align: center;
+}
+#Themeboxes #FansiteLogoFrame {
+  position: relative;
+  top: 31px;
+  width: 180;
+  height: 145px;
+}
+#Themeboxes #FansiteLogo {
+  position: relative;
+  height: 100px;
+  width: 150px;
+  top: 8px;
+  border: 0;
+  cursor: pointer;
+}
+#Themeboxes #FansiteBox .ThemeboxButton {
+  bottom: 19px;
+}
+#Themeboxes #NetworksBox {
+  position: relative;
+  height: 204px;
+}
+#Themeboxes #NetworksBox #FacebookBlock {
+  position: relative;
+  top: 32px;
+  height: 113px;
+}
+#Themeboxes #NetworksBox #FacebookPageLink {
+  position: absolute;
+  left: 37px;
+  top: 12px;
+  height: 50px;
+  width: 50px;
+}
+#Themeboxes #NetworksBox #FacebookLikeButton {
+  position: absolute;
+  left: 92px;
+  top: 40px;
+}
+#Themeboxes #NetworksBox #FacebookShareButton {
+  position: absolute;
+  left: 92px;
+  top: 14px;
+}
+#Themeboxes #NetworksBox #FacebookLikes {
+  position: relative;
+  top: 75px;
+  width: 155px;
+  left: 13px;
+  overflow: hidden;
+}
+#Themeboxes #NetworksBox #FacebookLikes div {
+  position: relative;
+  left: -95px;
+}
+#Themeboxes #NetworksBox #TwitterBlock {
+  position: relative;
+  top: 47px;
+  text-align: center;
+}
+
+/** -------------------------------
+ *  OLD Stylesheet declarations for
+ *  the CONTENT AREA
+ *  -------------------------------
+ */
+
+.Content .BoxContent td .white {
+  color: #EFEFEF;
+  visibility: visible;
+}
+
+.Content .BoxContent td .whites {
+  color: #EFEFEF;
+  visibility: visible;
+  font-size: 9pt;
+}
+
+.Content .BoxContent .white {
+  color: #EFEFEF;
+  visibility: visible;
+}
+
+.Content .BoxContent td .green {
+  color: #00BF00;
+}
+
+.Content .BoxContent td .yellow {
+  color: #FFBB05;
+}
+
+.Content .BoxContent td .red {
+  color: #EF0000;
+}
+
+.Content .BoxContent td .grey {
+  color: #808080;
+}
+
+.Content .BoxContent td .orange {
+  color: #FF9712;
+}
+
+/** -------------------------------
+ *  OLD Stylesheet declarations for
+ *  the CONTENT AREA (forum)
+ *  -------------------------------
+ */
+
+.Content .BoxContent .ff_info {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 10pt;
+  color : #5A2800;
+  visibility : visible;
+}
+
+.Content .ff_white a {
+  color: #FFFFFF;
+}
+
+.Content .BoxContent .ff_white {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  color : #EFEFEF;
+  visibility : visible;
+  font-size : 7pt;
+  font-weight: bold;
+}
+
+.Content .BoxContent .ff_red {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  color : #EF0000;
+  visibility : visible;
+  font-size : 8pt;
+  font-weight: bold;
+}
+
+.Content .BoxContent .ff_whitelarge {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  color : #EFEFEF;
+  visibility : visible;
+  font-size : 9pt;
+  font-weight: bold;
+}
+
+.Content .BoxContent .ff_info {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 8pt;
+  color : #5A2800;
+  visibility : visible;
+}
+
+.Content .BoxContent .ff_infotext {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 8pt;
+  color : #5A2800;
+  visibility : visible;
+  line-height: 12pt;
+}
+
+.Content .BoxContent .ff_smallinfo {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 7pt;
+  color : #5A2800;
+  visibility : visible;
+}
+
+.Content .BoxContent .ff_large {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 12pt;
+  color : #5A2800;
+  visibility : visible;
+}
+
+.Content .BoxContent .ff_pagetext {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 9pt;
+  color : #5A2800;
+  visibility : visible;
+  line-height: 13pt;
+}
+
+.Content .BoxContent .ff_pagetextgrey {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 9pt;
+  color : #505050;
+  visibility : visible;
+  line-height: 13pt;
+}
+
+.Content .BoxContent .ff_pagetextred {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 9pt;
+  color : #F00;
+  visibility : visible;
+  line-height: 13pt;
+}
+
+.Content .BoxContent .ff_correct {
+  font-family : Verdana, Arial, Times New Roman, sans-serif;
+  font-size : 11pt;
+  color : #FF0000;
+  visibility : visible;
+  font-weight: bold;
+}
+
+/** ------------------------------
+ *  new payment and error handling
+ *  ------------------------------
+ */
+
+.PaymentOrderTypeImage {
+  width: 81px;
+  height: 80px;
+  margin-right:5px;
+}
+.PaymentMethodBrandingSmall {
+  width: 48px;
+  height: 30px;  
+}
+.PaymentMethodBrandingBig {
+  width: 103px;
+  height: 65px;
+}
+.PaymentResultImage {
+  float: left;
+  margin-right: 8px;
+  margin-top: 3px;
+  width: 62px;
+  height: 60px;  
+}
+.FormFieldError {
+  font-size: 8pt;
+  color: red;
+}
+.SmallBox {
+  position: relative;
+  
+}
+.SmallBox .ErrorMessage {
+  font-size: 8pt;
+  position: relative;
+  color: red;
+  height: 100%;
+  background-color: #d4c0a1;
+  padding: 5px;
+  padding-left: 43px;
+}
+.SmallBox .SuccessMessage {
+  font-size: 10pt;
+  position: relative;
+  color: green;
+  height: 100%;
+  background-color: #d4c0a1;
+  padding: 8px;
+  padding-left: 43px;
+}
+.SmallBox .Message {
+  font-size: 10pt;
+  position: relative;
+  height: 100%;
+  background-color: #d4c0a1;
+  padding: 10px;
+}
+.SmallBox .ErrorMessage ul {
+  padding-left: 15px;
+}
+.SmallBox .BoxFrameHorizontal {
+  position: relative;
+  height: 4px;
+}
+.SmallBox .BoxFrameVerticalRight {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 3px;
+  background-repeat: repeat-y;
+  height: 100%;
+}
+.SmallBox .BoxFrameVerticalLeft {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 3px;
+  background-repeat: repeat-y;
+  height: 100%;
+}
+.SmallBox .MessageContainer {
+  position: relative;
+  height: 100%;
+}
+.SmallBox .BoxFrameEdgeLeftTop {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: 5px;
+  height: 5px;
+}
+.SmallBox .BoxFrameEdgeLeftBottom {
+  position: absolute;
+  left: -1px;
+  bottom: -1px;
+  width: 5px;
+  height: 5px;
+}
+.SmallBox .BoxFrameEdgeRightTop {
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 5px;
+  height: 5px;
+}
+.SmallBox .BoxFrameEdgeRightBottom {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 5px;
+  height: 5px;
+}
+.SmallBox .AttentionSign {
+  position: absolute;
+  top: 3px;
+  left: 8px;
+  width: 30px;
+  height: 26px;
+}
+#BrowserIssuesBox #DownloadClientContainer {
+  float: right;
+  text-align: center;
+  margin-right: 5px;
+}
+#BrowserIssuesBox #DownloadClientContainer img {
+  height: 45px;
+}
+
+#StartDownloadContainer table {
+  background-repeat: no-repeat; 
+  background-position: right center;
+}
+
+.CharacterList {
+  height: 56px;
+}
+
+/** ----------------
+ *  new process bars
+ *  ----------------
+ */
+
+#ProgressBar #Headline {
+  text-align: center;
+  font-size: 14pt;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+#ProgressBar #MainContainer {
+  position: relative;
+  top: 10px;
+  height: 50px;
+  margin-bottom: 25px;
+}
+#ProgressBar #BackgroundContainer {
+  position: relative;
+  width: 100%;
+}
+
+#ProgressBar #BackgroundContainerLeftEnd {
+  position: absolute;
+  float: left;
+}
+#ProgressBar #BackgroundContainerCenter {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 17px;
+  width: 100%;
+}
+#ProgressBar #BackgroundContainerCenterImage {
+  position: relative;
+  margin-left: 25px;
+  margin-right: 25px;
+  height: 17px;
+}
+#ProgressBar #BackgroundContainerRightEnd {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  float: right;
+}
+#ProgressBar #TubeLeftEnd {
+  position: absolute;
+  left: 25px;
+  top: 4px;
+}
+#ProgressBar #TubeRightEnd {
+  position: absolute;
+  right: 25px;
+  top: 4px;
+  z-index: 0;
+}
+#ProgressBar .Steps {
+  position: relative;
+  height: 39px;
+  font-size: 9px;
+  float: left;
+  top: -11px;
+  margin-left: -1px;
+}
+#ProgressBar #StepsContainer1 {
+  text-align: right;
+  margin-left: 92px;
+  margin-right: 40px;
+  height: 10px;
+}
+#ProgressBar #StepsContainer2 {
+  width: 100%;
+  height: 10px;
+}
+#ProgressBar .TubeContainer {
+  position: relative;
+  padding-right: 47px;
+}
+#ProgressBar .Tube {
+  position: relative;
+  top: 16px;
+  left: 0px;
+  width: 100%;
+  height: 7px;
+  background: #FFFFFF none repeat scroll 0%;
+}
+* html #ProgressBar .Tube {
+  top: 13px;
+}
+#ProgressBar .SingleStepContainer {
+  position: absolute;
+  top: 0px;
+  width: 47px;
+  height: 30px;
+  right: 0px;
+  text-align: center;
+}
+#ProgressBar #FirstStep .SingleStepContainer {
+  left: 45px;
+  width: 47px;
+  position: absolute;
+}
+#ProgressBar .StepIcon {
+  position: absolute;
+  right: 0px;
+}
+* html #ProgressBar .StepIcon {
+  right: -1px;
+}
+#ProgressBar #FirstStep .StepIcon {
+  top: 0px;
+  left: 0px;
+}
+#ProgressBar .StepText {
+  top: 40px;
+  position: absolute;
+  width: 200px;
+  right: -77px;
+}
+
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  NEW TABLES
+ *  -------------------------------
+ */
+
+.TableContainer {
+  border: 1px solid black;
+  position: relative;
+  width: 100%;
+  
+}
+.TableContainer .Odd {
+  background-color: #f1e0c6;
+}
+.TableContainer .Even {
+  background-color: #d5c0a1;
+}
+
+/* TABLEHEADER DECORATION */
+.TableContainer .CaptionContainer {
+  position: relative;
+  font-size: 1pt;
+  background-color: #5f4d41 !important;
+  height: 100%;
+  width: 100%;
+  text-align: left;
+}
+.CaptionContainer .CaptionInnerContainer {
+  position: relative;
+  background-color: #5f4d41;
+  width: 100%;
+  height: 100%;
+  padding-top: 3px;
+  padding-bottom: 4px;
+}
+.CaptionContainer .Text {
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  text-align: left;
+  color: white;
+  padding-left: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+.CaptionContainer .CaptionEdgeLeftTop {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  top: -2px;
+  left: -2px;
+  z-index: 50;
+}
+.CaptionContainer .CaptionEdgeRightTop {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  top: -2px;
+  right: -2px;
+  z-index: 50;
+}
+.CaptionContainer .CaptionEdgeLeftBottom {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  left: -2px;
+  bottom: -3px;
+  z-index: 50;
+}
+.CaptionContainer .CaptionEdgeRightBottom {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  right: -2px;
+  bottom: -3px;
+  z-index: 50;
+}
+.CaptionContainer .CaptionBorderTop {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  left: 0px;
+  top: -1px;
+}
+.CaptionContainer .CaptionBorderBottom {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  left: 0px;
+  bottom: -2px;
+}
+.CaptionContainer .CaptionVerticalLeft {
+  position: absolute;
+  height: 100%;
+  width: 3px;
+  left: -1px;
+  top: 0px;
+}
+.CaptionContainer .CaptionVerticalRight {
+  position: absolute;
+  height: 100%;
+  width: 3px;
+  right: -1px;
+  top: 0px;
+}
+* html .TableContainer .CaptionContainer .CaptionEdgeRightTop {
+  right: -3px;
+}
+* html .TableContainer .CaptionContainer .CaptionEdgeLeftBottom {
+  bottom: -4px;
+}
+* html .TableContainer .CaptionContainer .CaptionEdgeRightBottom {
+  right: -3px;
+  bottom: -4px;
+}
+* html .TableContainer .CaptionContainer .CaptionBorderBottom {
+  bottom: -3;
+}
+* html .TableContainer .CaptionContainer .CaptionVerticalRight {
+  right: -2px;
+}
+/* TABLE CONTENT */
+.TableContentContainer {
+  border: 1px solid #5F4D41;
+  position: relative;
+  margin-right: 4px;
+  height: 100%;
+  background-color: #d4c0a1;
+  padding: 0px;
+}
+.TableContent {
+  width: 100%;
+  border-collapse: collapse;
+}
+.TableContent td {
+  padding-left: 5px;
+  padding-top: 2px;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+/* INNERLYOUT 1 */
+.TableContainer .Table1 {
+  width: 100%;
+  background-color: #d4c0a1;
+  border: 2px solid #55636c;
+}
+.TableContainer .Table1 .InnerTableContainer {
+  padding: 5px;
+}
+/* INNERLYOUT 2 */
+.TableContainer .Table2 {
+  width: 100%;
+  border: 2px solid #55636c;
+  background-color: #f1e0c5;
+  padding: 0px;
+  margin: 0px;
+  border-collapse: collapse;
+}
+.TableContainer .Table2 td {
+  padding: 0px;
+  margin: 0px;
+}
+.TableContainer .Table2 .InnerTableContainer {
+  margin-top: 1px;
+}
+.TableContainer .Table2 .InnerTableContainer table {
+  border-collapse: collapse;
+}
+.TableContainer .Table2 .InnerTableContainer td {
+  padding-top: 2px;
+  padding-left: 5px;
+  padding-bottom: 2px;
+  padding-right: 5px;
+  border: 1px solid #faf0d7;
+}
+/* INNERLYOUT 3 */
+.TableContainer .Table3 {
+  width: 100%;
+  border: 2px solid #55636c;
+  background-color: #f1e0c5;
+}
+.TableContainer .Table3 .InnerTableContainer {
+  width: 100%;
+  position: relative;
+  margin-top: 5px;
+  margin-left: 3px;
+}
+.TableContainer .Table3 .TableContentAndRightShadow td {
+  border: 1px solid #faf0d7;
+}
+/* INNERLYOUT 4 */
+.TableContainer .Table4 {
+  width: 100%;
+  border: 2px solid #55636c;
+  background-color: #f1e0c5;
+  padding-left: 3px;
+}
+.TableContainer .Table4 .InnerTableContainer {
+  width: 100%;
+  position: relative;
+  margin-top: 3px;
+}
+.TableContainer .Table4 .TableContentAndRightShadow .TableContent td {
+  padding-left: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+.TableContainer .RowInnerTableDataBorders td {
+  border: 1px solid #faf0d7;
+}
+/* INNERLYOUT 5 */
+.TableContainer .Table5 {
+  width: 100%;
+  border: 2px solid #55636c;
+  background-color: #f1e0c5;
+}
+.TableContainer .Table5 .InnerTableContainer {
+  width: 100%;
+  position: relative;
+  margin-top: 5px;
+  margin-left: 3px;
+}
+.TableContainer .Table5 .TableContentAndRightShadow .TableContent td {
+  padding-left: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+/* SHADOWS */
+.TableShadowContainerRightTop {
+  position: relative;
+  top: 0px;
+  right: 3px;
+  margin-right: 0px;
+  
+  float: right;
+  z-index: 98;
+}
+.TableShadowRightTop {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 4px;
+  height: 5px;
+  z-index: 98;
+}
+.TableContentAndRightShadow {
+  position: relative;
+  background-repeat: repeat-y;
+  background-position: top right;
+  margin-right: 3px;
+  
+}
+.TableShadowContainer {
+  position: relative;
+  margin-right: 5px;
+}
+.TableBottomShadow {
+  position: relative;
+  
+  height: 5px;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+.TableBottomLeftShadow {
+  position: relative;
+  height: 5px;
+  width: 4px;
+  float: left;
+  padding: 0px;
+  margin: 0px;
+}
+.TableBottomRightShadow {
+  position: relative;
+  float: right;
+  right: -2px;
+  top: 0px;
+  height: 5px;
+  width: 4px;
+}
+/* INNER TABLE TABS */
+.InnerTableTab {
+  position: relative;
+  float: left;
+  top: 5px;
+  margin-left: 1px;
+  margin-right: 0px;
+  cursor: pointer;
+  vertical-align: middle;
+  width: 105px;
+  height: 45px;
+}
+.InnerTableTab .RibbonNewProduct {
+  position: absolute;
+  top: 2px;
+  left: -1px;
+  height: 39px;
+  width: 39px;
+  z-index: 199;
+}
+.ActiveInnerTableTab .RibbonNewProduct {
+  top: -2px;
+}
+.InnerTableTab .RibbonLastChance {
+  position: absolute;
+  top: 2px;
+  left: 65px;
+  height: 39px;
+  width: 39px;
+  z-index: 199;
+}
+.ActiveInnerTableTab .RibbonLastChance {
+  top: -2px;
+  left: 64px;
+}
+.InnerTableTab a {
+  border: 0px;
+  color: #5A2800;
+  font-weight: normal;
+}
+.InnerTableTab a img {
+  border: 0px;
+  width: 105px;
+  height: 45px;
+  position: absolute;
+  top: 0px;
+}
+.InnerTableTabLabel {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  text-align: center;
+  width: 86px;
+  height: 35px;
+  display: table-cell;
+  vertical-align: middle;
+  padding-top: 5px;
+  padding-left: 5px;
+}
+.InnerTableTab a:hover {
+  border: 0px;
+  color: #5A2800;
+/*  font-weight: normal;*/
+  text-decoration: none;
+}
+.ActiveInnerTableTab {
+  z-index: 99;
+  top: 6px;
+}
+.ActiveInnerTableTab a {
+  font-weight: bold;
+}
+.ActiveInnerTableTab .InnerTableTabLabel {
+  top: 6px;
+  padding-top: 1px;
+}
+.ProductCategoryHelperDiv {
+  position: relative;
+  float:right;
+  top: 35px;
+  right: 5px;
+}
+.TableTabInnerArea {
+  padding: 10px !important;
+}
+/* TOGGLE BUTTON */
+.BigToggleButton {
+  text-align: center;
+  cursor: pointer;
+  font-weight: normal;
+}
+.BigToggleButton:hover {
+  font-weight: bold;
+}
+/* HEADLESS CONTENT TABLE */
+.HeadlessTable {
+  border: 0px;
+  border-style: solid;
+  border-color: #656565;
+  border-top-width: 1px;
+  border-top-color: white;
+  border-left-width: 1px;
+  border-left-color: white;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+  border-right-color: #656565;
+  margin-left: 15px;
+}
+/* LABELS */
+.LabelV {
+  font-weight: bold;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+}
+.LabelV120 {
+  font-weight: bold;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 120px;
+}
+.LabelV150 {
+  font-weight: bold;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 150px;
+}
+.LabelV175 {
+  font-weight: bold;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 175px;
+}
+.LabelV200 {
+  font-weight: bold;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 200px;
+}
+.LabelH {
+  font-weight: bold;
+  padding-right: 10px;
+  white-space: nowrap;
+  background-color: #d5c0a1;
+
+}
+.LabelH td {
+  background-color: #d5c0a1;
+  padding-left: 5px;
+  padding-top: 2px;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+
+/* BUTTONS */
+.InnerTableButtonRow {
+  width: 100%;
+  padding-left: 1px;
+  padding-right: 0px;
+  padding-bottom: 4px;
+  border: 0px;
+}
+.InnerTableButtonRow td {
+  padding-right: 4px;
+}
+.InnerTableButtonRow .RowButton {
+  float: right;
+  margin-left: 10px;
+}
+.MediumButtonText {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 37px;
+  width: 150px;
+  z-index: 20;
+}
+.MediumButtonBackground {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 37px;
+  z-index: 10;
+}
+.MediumButtonOver {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 37px;
+  visibility: hidden;
+  z-index: 15;
+}
+.MediumButtonForm {
+  margin: 0px;
+  padding: 0px;
+}
+.BigButton {
+  position: relative;
+  width: 135px;
+  height: 25px;
+  z-index: 10;
+}
+.BigButtonOver {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 135px;
+  height: 25px;
+  visibility: hidden;
+  z-index: 15;
+}
+.ButtonText {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 25px;
+  width: 135px;
+  z-index: 20;
+}
+.ButtonEventHook .zeroclipboard-is-hover img {
+  margin: 1px;
+}
+.TopButtonContainer {
+  position: relative;
+  right: 4px;
+  top: 4px;
+  z-index: 60;
+}
+.TopButtonContainerInnerTable {
+  position: absolute;
+  right: 4px;
+  top: 2px;
+  z-index: 60;
+}
+* html .TopButtonContainer {
+  right: 27px;
+}
+.TopButtonContainer .TopButton {
+  position: absolute;
+  right: 0px;
+  z-index: 55;
+}
+#world_list_tr td {
+  text-align: left;
+}
+.OptionContainer {
+  text-align: center;
+}
+label {
+  cursor: pointer;
+}
+.InputIndicator {
+  position: relative;
+  top: 5px;
+  left: 218px;
+  height: 12px;
+  width: 12px;
+  background-repeat: no-repeat;
+}
+* html .InputIndicator {
+  left: 0px;
+}
+.sortarrow {
+  width: 10px;
+  height: 10px;
+}
+/* FORUM - general post format */
+.ForumPost {
+  position: relative;
+  height: 100%;
+  width: 798px;
+  margin: -5px;
+}
+.PostUpper {
+  clear: both;
+}
+.PostLower {
+  clear: both;
+  border-top: 1px solid #fff0d9;
+  height: 50px;
+  padding: 4px 0px;
+}
+.PostSeparatorV {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  background-color: #fff0d9;
+  left: 185px;
+}
+* html .PostCharacterText {
+  width: 185px;
+}
+.PostCharacterText {
+  width: 175px;
+  float: left;
+  padding: 5px;
+}
+.PostText {
+  position: relative;
+  min-height: 150px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 600px;
+  word-wrap: break-word;
+  padding: 5px;
+}
+.PostDetails {
+  width: 175px;
+  float: left;
+  padding: 0px 5px;
+  font-size: 7pt;
+}
+.PostActions {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: visible;
+  word-wrap: break-word; 
+  font-size: 8pt;
+  padding: 10px;
+  padding-right: 0px;
+  margin-left: 180px;
+  width: 600px;
+}
+.PostActions .AdditionalBox {
+  float: right;
+  white-space: nowrap;
+  text-align: right;
+  margin: 4px 4px 0px 0px;
+}
+/* FORUM - CipSoft post format */
+.CipPost .CipBorder {
+  
+  position: absolute;
+  width: 798px;
+  height: 3px;
+  z-index: 99;
+}
+.CipPost .CipBorderBottom .CipBorder {
+  bottom: 0px;
+}
+.CipPost .CipBorder .CipBorderCornerL {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  top: 0px;
+  left: 0px;
+  z-index: 99;
+}
+.CipPost .CipBorder .CipBorderH {
+  position: absolute;
+  width: 792px;
+  height: 3px;
+  top: 0px;
+  left: 3px
+}
+.CipPost .CipBorder .CipBorderCornerR {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  top: 0px;
+  right: 0px;
+  z-index: 99;
+}
+.CipPost .CipBorderLeft {
+  
+  width: 3px;
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  z-index: 0;
+}
+.CipPost .CipBorderLeft .CipBorderV {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 3px;
+  height: 100%;
+}
+.CipPost .CipBorderRight .CipBorderV {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 3px;
+  height: 100%;
+}
+.CipPost .CipPostIcon {
+  position: relative;
+  top: 7px;
+  left: 12px;
+  width: 60px;
+  height: 60px;
+}
+.PostDetailsHelper {
+  position: relative;
+}
+.HNCContainer {
+  position: absolute;
+  margin-top: -10px;
+}
+* html .HNCContainer {
+  margin-left: -10px;
+}
+.ThreadClassificationNumberContainer {
+  float: left;
+  width: 15px;
+  height: 15px;
+  margin-right: 7px;
+}
+* html .ThreadClassificationNumberContainer {
+  margin-left: 0px;
+}
+#BoardView td {
+  padding-top: 0px;
+  padding-right: 3px;
+  padding-bottom: 0px;
+  padding-left: 3px;
+}
+#BoardView .CipPost {
+  position: relative;
+  height: 100%;
+}
+.ThreadTitleHeadline {
+  position: relative;
+  height: 100%; 
+  width: 798px;
+  margin-top: -2px;
+}
+.ThreadClassificationNumber {
+  width: 15px;
+  height: 15px;
+  margin-top: 1px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  margin-right: 7px;
+  border: 0px;
+}
+.ThreadTitleHeadline .ThreadClassificationNumber {
+  margin-left: -1px;
+  margin-top: 3px;
+}
+.BoardThreadLine {
+  margin-left: -61px;
+  margin-top: -3px;
+  margin-bottom: 0px;
+  min-height: 47px;
+}
+* html .BoardThreadLine {
+  margin-top: 0px;
+}
+* html .BoardThreadLine {
+    height: 47px;
+}
+.BoardThreadLine .CipBorderRight .CipBorderV {
+  left: 734px;
+}
+.Text {
+  margin-top: 3px;
+  margin-left: 4px;
+  margin-bottom: 2px;
+  padding: 3px;
+  padding-top: 3px;
+}
+* html .Text {
+  margin-top: 0px;
+  margin-left: 4px;
+}
+.BoardThreadLine .Text {
+  margin-left: 11px;
+  padding-left: 50px;
+  padding-top: 13px;
+  padding-bottom: 10px;
+}
+* html .BoardThreadLine .Text {
+  padding-left: 55px;
+}
+.PostReplyLink {
+  float: right;
+  margin-top: 3px;
+}
+.HintBox {
+  width: 100%;
+  margin-top: -3px;
+}
+.HintBox p {
+  margin-top: 0px;
+}
+.HintBox .BoxButtons {
+  width: 135px;
+  float: right;
+}
+#PremiumBoxSpecialOfferHorizontal {
+  position: absolute;
+  top: 70px;
+  left: 13px;
+  width: 150px;
+  height: 14px;
+}
+.Container1_PaymentMethod {
+  height: 88px;
+  width: 165px;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 2px;
+  cursor: pointer;
+}
+.Container2_PaymentMethod {
+  top: 2px;
+  left: 2px;
+  height: 80px;
+  width: 157px;
+  background-color: #d5c0a1;
+  margin: 2px;
+  padding: 2px;
+}
+.BlockedPaymentMethod {
+  color: red;
+  cursor: help !important;
+}
+/* helper div */
+.HelperDivIndicator {
+  position: relative;
+  cursor: help;
+}
+#HelperDivContainer {
+  display: none;
+  position: absolute;
+  width: 225px;
+  z-index: 1000;
+  color: #5A2800;
+  font-family: Verdana,Arial,Times New Roman,sans-serif;
+  font-size: 9pt;
+  text-align: left;
+  padding: 10px;
+  border: 1px double #5A2800;
+  margin-left: 8px;
+}
+#HelperDivContainer .HelperDivArrow {
+  position: absolute;
+  top: -1px;
+  left: -8px;
+  width: 8px;
+  height: 13px;
+}
+#HelperDivContainer #HelperDivHeadline {
+  font-size: 12pt;
+  font-weight: bold;
+}
+#HelperDivContainer #HelperDivHeadline {
+  position: relative;
+  white-space: normal;
+  text-align: justify;
+  margin-top: 0px;
+  margin-bottom: 15px;
+}
+#HelperDivContainer .Ornament {
+  width: 220px;
+}
+#HelperDivContainer #HelperDivText {
+  text-align: justify;
+}
+#HelperDivContainer #HelperDivText ul {
+  padding-left: 20px;
+}
+#SuggestCharacterName {
+  font-size: 7pt;
+  margin-top: -5px;
+}
+.FB_Identification {
+  font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
+  background: none repeat scroll 0 0 #526DA4;
+  color: #D8DFEA;
+  border: gray;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px;
+  height: 25px;
+  border: 1px solid blue;
+}
+.FB_Identification div {
+  position: relative;
+  float: left;
+  margin-right: 4px;
+}
+#FB_ProfileWindow {
+  width: 23px;
+  height: 23px;
+  border: 1px solid blue;
+  overflow: hidden;
+}
+#FB_ProfileWindow img {
+  height: 50px !important;
+}
+#FB_Name {
+  top: 5px;
+}
+#FB_Button {
+  top: 1px;
+  float: right;
+}
+#FB_Button div {
+  display: inline;
+}
+.FacebookButtonText {
+  position: absolute;
+  color: white;
+  left: 20px;
+  width: 112;
+  top: 5px;
+  font-size: 11px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 15;
+}
+#FB_LoginButton {
+  position: relative;
+  width: 68px;
+  height: 22px;
+  float: right;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+}
+#FB_LoginButton span {
+  position: absolute;
+  left: 28px;
+  top: 4px;
+}
+.ButtonText:hover {
+  margin-top: 1px;
+  margin-left: 1px;
+}
+
+#LoginCreateAccountBox p {
+  margin: 0px;
+  padding: 0px;
+  font-size: 12pt;
+}
+
+.Width100Percent {
+  width: 100%;
+}
+
+/* ---------------- */
+/* jQuery UI Layout */
+/* ---------------- */
+.SliderValue {
+  text-align: right;
+  width: 135px;
+  font-weight: bold;
+  color: green;
+}
+.VoucherAdjustFallBackBlock select {
+  width: 100%;
+}
+#VoucherDurationSlider {
+  margin: 5px;
+  margin-top: 15px;
+  margin-bottom: 0px;
+  height: 5px;
+}
+#VoucherDurationSlider a {
+  margin-top: -2px;
+  height: 20px;
+  width: 17px;
+}
+
+/* Layout helpers
+----------------------------------*/
+.ui-helper-hidden {
+  display: none;
+}
+.ui-helper-hidden-accessible {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+.ui-helper-reset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  line-height: 1.3;
+  text-decoration: none;
+  font-size: 100%;
+  list-style: none;
+}
+.ui-helper-clearfix:before,
+.ui-helper-clearfix:after {
+  content: "";
+  display: table;
+  border-collapse: collapse;
+}
+.ui-helper-clearfix:after {
+  clear: both;
+}
+.ui-helper-clearfix {
+  min-height: 0; /* support: IE7 */
+}
+.ui-helper-zfix {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  opacity: 0;
+  filter:Alpha(Opacity=0);
+}
+
+.ui-front {
+  z-index: 100;
+}
+
+/* Misc visuals
+----------------------------------*/
+
+/* Overlays */
+.ui-widget-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ui-slider {
+  position: relative;
+  text-align: left;
+}
+.ui-slider .ui-slider-handle {
+  position: absolute;
+  z-index: 2;
+  width: 1.2em;
+  height: 1.2em;
+  cursor: default;
+}
+.ui-slider .ui-slider-range {
+  position: absolute;
+  z-index: 1;
+  font-size: .7em;
+  display: block;
+  border: 0;
+  background-position: 0 0;
+}
+
+/* For IE8 - See #6727 */
+.ui-slider.ui-state-disabled .ui-slider-handle,
+.ui-slider.ui-state-disabled .ui-slider-range {
+  filter: inherit;
+}
+
+.ui-slider-horizontal {
+  height: .8em;
+}
+.ui-slider-horizontal .ui-slider-handle {
+  top: -.3em;
+  margin-left: -.6em;
+}
+.ui-slider-horizontal .ui-slider-range {
+  top: 0;
+  height: 100%;
+}
+.ui-slider-horizontal .ui-slider-range-min {
+  left: 0;
+}
+.ui-slider-horizontal .ui-slider-range-max {
+  right: 0;
+  background-color: #5b0600;
+}
+
+.ui-slider-vertical {
+  width: .8em;
+  height: 100px;
+}
+.ui-slider-vertical .ui-slider-handle {
+  left: -.3em;
+  margin-left: 0;
+  margin-bottom: -.6em;
+}
+.ui-slider-vertical .ui-slider-range {
+  left: 0;
+  width: 100%;
+}
+.ui-slider-vertical .ui-slider-range-min {
+  bottom: 0;
+}
+.ui-slider-vertical .ui-slider-range-max {
+  top: 0;
+}
+
+/* Component containers
+----------------------------------*/
+.ui-widget {
+  font-family: segoe ui,Arial,sans-serif;
+  font-size: 1.1em;
+}
+.ui-widget .ui-widget {
+  font-size: 1em;
+}
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+  font-family: segoe ui,Arial,sans-serif;
+  font-size: 1em;
+}
+.ui-widget-content {
+  border: 1px solid #624d3c;
+  background-color: #8e0b01;
+  color: #312e25;
+}
+.ui-widget-content a {
+  color: #312e25;
+}
+.ui-widget-header {
+  border: 1px solid #d4ccb0;
+  color: #433f38;
+  font-weight: bold;
+}
+.ui-widget-header a {
+  color: #433f38;
+}
+
+/* Misc visuals
+----------------------------------*/
+
+/* Corner radius */
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-left,
+.ui-corner-tl {
+  border-top-left-radius: 6px;
+}
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-right,
+.ui-corner-tr {
+  border-top-right-radius: 6px;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-left,
+.ui-corner-bl {
+  border-bottom-left-radius: 6px;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-right,
+.ui-corner-br {
+  border-bottom-right-radius: 6px;
+}
+
+/*
+  payment system
+*/
+.GameCode {
+  text-transform: uppercase;
+  width: 60px;
+}
+.Saving {
+  background-color: blue;
+  color: white;
+  padding: 1px 8px;
+  border: 2px solid;
+  border-radius: 10px;
+  font-size: 10px;
+}
+#LastSaving {
+  background-color: red;
+}
+.BGRed {
+  background-color: #EF0000;
+}
+.BGOrange {
+  background-color: #FF9712;;
+}
+.BGGreen {
+  background-color: #00BF00; 
+}
+.Content .BoxContent .Disabled td {
+  color: grey;
+}
+.PlaySpanContainer {
+  position: relative;
+  text-align: center;
+}
+
+
+
+.ServiceID_Icon_Container {
+  position: relative;
+  width: 156px;
+  height: 156px;
+  float: left;
+  margin: 3px;
+}
+.ServiceID_Icon_Container_Background {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  top: 3px;
+  left: 3px;
+}
+.ServiceID_Icon_Container label {
+  font-size: 8pt;
+}
+.ServiceID_Icon {
+  position: relative;
+  float: left;
+  width: 150px;
+  height: 150px;
+  text-align: center;
+  background-repeat: no-repeat;
+  color: white;
+  cursor: pointer;
+}
+.ServiceID_Icon_New {
+  position: absolute;
+  left: 10px;
+  top: 48px;
+  height: 64px;
+  width: 128px;
+}
+.ServiceID_Icon .ServiceID_Deactivated {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 150px;
+  z-index: 99;
+}
+.ServiceID_Icon .ServiceID_Icon_Selected {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 150px;
+  z-index: 98;
+}
+.ServiceID_Icon .ServiceIDLabelContainer {
+  position: absolute;
+  left: 0px;
+  display: table;
+  top: 6px;
+  height: 35px; 
+  width: 130px;
+  margin-left: 10px;
+  margin-right: 10px;
+  z-index: 99;
+}
+.ServiceID_Icon .ServiceIDLabel {
+  display: table-cell;
+  vertical-align: middle;
+}
+.ServiceID_Icon .ServiceIDPriceContainer {
+  position: absolute;
+  left: 0px;
+  bottom: 10px;
+  width: 140px;
+  margin-left: 5px;
+  margin-right: 5px;
+  z-index: 99;
+}
+.ServiceID_Icon .ServiceIDSpecialOffer {
+  position: absolute;
+  left: 0px;
+  top: -5px;
+  z-index: 100;
+}
+.ServiceID_Icon .ServiceID_Icon_Over {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 150px;
+  z-index: 97;
+}
+.ServiceID_Icon .ServiceID_HelperDiv {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 150px;
+  z-index: 399;
+}
+.ServiceID_Icon .RibbonNewProduct {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  height: 58px;
+  width: 58px;
+  z-index: 199;
+}
+.ServiceID_Icon .RibbonLastChance {
+  position: absolute;
+  top: -4px;
+  left: 96px;
+  height: 58px;
+  width: 58px;
+  z-index: 199;
+}
+.ServiceID_Icon .ServiceID_Icon_Animation_1 {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 150px;
+  height: 150px;
+  display: none;
+  z-index: 95;
+}
+
+.ServiceID_Icon .ServiceID_Icon_New_Animation_1 {
+  position: absolute;
+  top: 48px;
+  right: 12px;
+  width: 128px;
+  height: 64px;
+  display: none;
+  z-index: 95;
+}
+
+.PMCID_Icon_Container {
+  position: relative;
+  width: 156px;
+  height: 106px;
+  float: left;
+  margin: 3px;
+}
+.PMCID_Icon_Container label {
+  font-size: 8pt;
+}
+.PMCID_Icon {
+  position: relative;
+  float: left;
+  top: 3px;
+  left: 3px;
+  width: 150px;
+  height: 100px;
+  text-align: center;
+  background-repeat: no-repeat;
+  color: white;
+  cursor: pointer;
+}
+.PMCID_Icon .PMCID_CP_Icon {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25px;
+}
+.PMCID_Icon .PMCID_CP_Label {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  top: 18px;
+  z-index: 99;
+}
+.PMCID_Icon .PMCID_Icon_Selected {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 100px;
+  z-index: 98;
+}
+.PMCID_Icon .PMCID_Deactivated {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 100px;
+  z-index: 99;
+}
+.PMCID_Icon .PMCID_Icon_Over {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 100px;
+}
+
+.PermanentDeactivated {
+  position: absolute;
+  left: 0px;
+  z-index: 400;
+}
+.PermanentDeactivated .PMCID_Deactivated {
+  position: relative;
+  left: 0px;
+  width: 150px;
+}
+
+.PermanentDeactivated .ServiceID_Deactivated {
+  position: relative;
+  left: 0px;
+  width: 150px;
+}
+
+
+/* button row */
+.SubmitButtonRow {
+  position: relative;
+  height: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  text-align: center
+}
+.SubmitButtonRow .LeftButton {
+  float: left;
+  margin-left: 50px;
+}
+.SubmitButtonRow .CenterButton {
+  margin-left: auto;
+  margin-right: auto;
+  width: 135px;
+}
+.SubmitButtonRow .RightButton {
+  float: right;
+  margin-right: 50px;
+}
+
+/* purchased items detail view and assign process */
+.PurchasedItemContainer {
+  position: relative;
+  float: right; 
+  overflow: hidden;
+  height: 70px;
+  width: 130px;
+  border: 1px solid #7b6e4c;
+  margin-left: 10px;
+}
+.PurchasedItemImage {
+  position: absolute;
+  height: 150px;
+  width: 150px;
+  top: -47px;
+  left: -7px;
+}
+
+.PurchasedItemImageNew {
+  position: absolute;
+  height: 64px;
+  width: 128px;
+  top: 0px;
+  left: 0px;
+}
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  screenshots gallery and single 
+ *  screenshot view
+ *  -------------------------------
+ */
+
+/* screenshot gallery */
+#ScreenshotThumbnailContainerTable {
+  width: 100%;
+}
+.ScreenshotThumbnailContainer {
+  position: relative;
+  margin: 3px;
+  padding: 3px;
+  width: 232px;
+  border: 1px solid #7B6E4C;
+  color: #C9BDAB;
+  display: inline-block;
+}
+* html .ScreenshotThumbnailContainer {
+  display: inline;
+}
+.ScreenshotThumbnailContainer img {
+  border: 1px solid #7B6E4C;
+  width: 230px;
+  height: 147px;
+  cursor: pointer;
+}
+.ScreenshotThumbnailContainer .ScreenshotText {
+  position: relative;
+  width: 230px;
+  height: 75px;
+  display: table; 
+}
+.ScreenshotThumbnailContainer .ScreenshotText p {
+  text-align: center;
+  vertical-align: middle;
+  display: table-cell; 
+}
+/* light box an control elements */
+#LightBox {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: none;
+  width: 100%;
+  height: 300%;
+  text-align: center;
+  z-index: 200;
+  /* to avoid a problem in chrome text selection is disabled */
+  -webkit-user-select: none;
+}
+#LightBoxBackground {
+  position: absolute;
+  width: 100%;
+  height: 300%;
+  background-color: black;
+  z-index: 101;
+}
+#LightBoxContent {
+  position: fixed;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  z-index: 201;
+}
+* html #LightBoxBackground {
+  left: 0px;
+}
+* html #LightBoxContent {
+  position: absolute;
+  left: 0px;
+  top: expression( ( 10 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+.NavigationRow {
+  position: relative;  
+  z-index: 202;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5px;
+  height: 29px;
+  width: 620px;
+  font-family:  Arial, sans-serif;
+  
+}
+.NavigationButton {
+  position: relative;
+  width: 200px;
+  height: 25px;
+  padding-top: 2px;
+  margin-right: 2px;
+  margin-left: 2px;
+  float: left;
+  color: #f2af4e;
+  background-color: #223533;
+  border: 1px solid black;
+  text-align: center;
+  cursor: pointer;
+  z-index: 80;
+}
+.NavigationButton div {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border: 1px solid gray;
+  text-align: center;
+  width: 198px;
+  height: 25px;
+  cursor: pointer;
+  z-index: 90;
+}
+.NavigationButton:hover {
+  color: #ffc664;
+  background-color: #3a4448;
+}
+#ScreenshotContainer {
+  position: relative;
+  text-align: center;
+  width: 976px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0px;
+  z-index: 202;
+}
+#ScreenshotContainer #ScreenshotImage {
+  width: 974px;
+  height: 621px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5px;
+  border: 1px solid #7b6e4c;
+}
+#ScreenshotContainer .ScreenshotTextRow {
+  font-family:  Arial, sans-serif;
+  width: 974px;
+  height: 25px;
+  line-height: 25px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 5px;
+  color: #c9bdab;
+  border: 1px solid #7b6e4c;
+  background-color: #223533;
+}
+#ScreenshotContainer #LightBoxClose {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  top: -45px;
+  right: -40px;
+  background: red;
+  border: 1px solid gray;
+  -moz-border-radius: 60px;
+  -webkit-border-radius: 60px;
+  border-radius: 60px;
+  color: #f2af4e;
+  background-color: #223533;
+  font-family:  Arial, sans-serif;
+  font-size: 25px;
+  line-height: 60px;
+  cursor: pointer;
+}
+#ScreenshotContainer #LightBoxClose {
+  color: #ffc664;
+  background-color: #3a4448;
+}
+table.fixed { table-layout:fixed; }
+table.fixed td { overflow: hidden; }
+#GuildInformation .MessageContainer .Message {
+  word-wrap: break-word;
+}
+.ColorGreen {
+  color : green;
+}
+.ColorBlue {
+  color : blue;
+}
+.ColorRed {
+  color : #EF0000;
+}
+
+
+/* tell a friend */
+
+.TAF_Option {
+  position: relative;
+  width: 125px;
+  height: 125px;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+  border: 6px solid transparent;
+  border-radius: 6px;
+}
+.TAF_Option:hover {
+  border: 6px solid #c2ae90;
+  background-color: #c2ae90;
+}
+.TAF_Option img {
+  width: 125px;
+  height: 125px;
+}
+.TAF_Option .TAF_Option_GoldBorder {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 125px;
+  height: 125px;
+  visibility: hidden;  
+}
+.TAF_ActiveSelection {
+  border: 6px solid #5f4d41;
+  background-color: #5f4d41;
+}
+.TAF_SelectionDetails {
+  clear: both;
+} 
+.TAF_RewardContainer {
+  position: relative;
+  padding: 5px;
+  padding-right: 10px;
+  background-color: #FAF0D7;
+  border: 1px solid #5A2800;
+  min-height: 85px;
+}
+.TAF_RewardContainer p {
+  margin-top: 0px;
+}
+.TAF_Progress {
+  position: relative;
+  border: 1px solid #5A2800;
+  border-radius: 4px;
+  width: 100%;
+  height: 25px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 8pt;
+  line-height: 2.5;
+  color: #5A2800;
+    text-shadow:
+   -1px -1px 1px #fff,  
+    1px -1px 1px #fff,
+   -1px  1px 1px #fff,
+    1px  1px 1px #fff;
+  background: #5a2800; /* Old browsers */
+  background: -moz-linear-gradient(top,  #5a2800 0%, #825909 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5a2800), color-stop(100%,#825909)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #5a2800 0%,#825909 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #5a2800 0%,#825909 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #5a2800 0%,#825909 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #5a2800 0%,#825909 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5a2800', endColorstr='#825909',GradientType=0 ); /* IE6-9 */
+}
+* html .TAF_Progress{
+  color: white;
+}
+.TAF_Progress :first-child {
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+}
+.TAF_Progress :last-child {
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.TAF_Progress .TAF_Progress_Step {
+  position: relative;
+  width: 10%;
+  height: 25px;
+  float: left;
+}
+.TAF_Progress .TAF_Progress_Step_Taken {
+  color: #5A2800;
+  background: #cbb088; /* Old browsers */
+  background: -moz-linear-gradient(top,  #cbb088 0%, #a57833 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cbb088), color-stop(100%,#a57833)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #cbb088 0%,#a57833 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #cbb088 0%,#a57833 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #cbb088 0%,#a57833 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #cbb088 0%,#a57833 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cbb088', endColorstr='#a57833',GradientType=0 ); /* IE6-9 */
+}
+.TAF_MarkerRow {
+  position: relative;
+  height: 10px;
+  width: 100%;
+}
+.TAF_MarkerRow .Marker {
+  position: absolute;
+  top: 0px;
+  margin-top: 0px;
+  width: 0px;
+  height: 0px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid #5A2800;
+  margin-left: -5px;
+  font-size: 0pt;
+  overflow: visible;
+}
+.TAF_MarkerRow #Marker_1 {
+  left: 10%;
+}
+.TAF_MarkerRow #Marker_2 {
+  left: 30%;
+}
+.TAF_MarkerRow #Marker_3 {
+  right: 0px;
+  margin-right: -5px;
+}
+.OutfitsRow {
+  position: relative;
+  width: 100%;
+  height: 110px; 
+}
+.OutfitRewardContainer {
+  height: 110px;
+  width: 130px;
+  border-radius: 4px;
+  border: 1px solid #5A2800; 
+}
+.TAF_RewardContainer .GradeImage {
+  float: right;
+  border: 0px;
+  margin-left: 5px;
+}
+.OutfitRewardImage {
+  width: 128px;
+  height: 64px;
+  margin-top: 6px;
+}
+.OutfitRewardLabel {
+  display: table;
+  height: 36px;
+}
+.OutfitRewardLabel div {
+  display: table-cell;
+  vertical-align: middle;
+  width: 128px;
+  text-align: center;
+  color: white;
+  font-size: 8pt;
+}
+#OutfitReward_1 {
+  position: absolute; 
+  left: 0px;
+}
+#OutfitReward_2 {
+  position: absolute; 
+  left: 30%;
+}
+#OutfitReward_3 {
+  position: absolute; 
+  right: 0px; 
+  right: 0px; 
+}
+#PenaltyPointsContainer {
+  float: left;
+  width: 46%;
+}
+#LoyaltyPointsContainer {
+  float: right;
+  width: 46%;
+}
+#TAF_Email {
+  display: none;
+}
+#TAF_Facebook {
+  display: none;
+}
+
+/* ------- */
+/* TRAILER */
+/* ------- */
+
+#HiddenContentContainer {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+}
+#HiddenContentContainer a {
+  color: #da761e;
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+}
+#HiddenContentContainer a:hover {
+  color: #edb045
+}
+#TibiaTrailerCloseContainer {
+  position: absolute;
+  right: -15px;
+  top: -15px;
+  cursor: pointer;
+}
+#TibiaTrailerCloseContainer #TibiaTrailerCloseBackground {
+  width: 45px;
+  height: 45px;
+}
+#TibiaTrailerCloseContainer #TibiaTrailerCloseSymbol {
+  position: absolute;
+  top: 12px;
+  left: 17px;
+}
+
+#TibiaTrailer {
+  position: relative;
+  top: 60px;
+  height: 447px;
+  width: 775px;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 250;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+#TibiaTrailer iframe {
+  margin-top: 13px;
+}
+
+
+/* --------- */
+/* Light Box */
+/* --------- */
+
+#DeactivationContainer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 200;
+  min-height: 100%;
+  width: 100%;
+  background-color: black;
+  filter: alpha(opacity=75);
+  opacity: 0.75;
+  -moz-opacity: 0.75;
+  display: none;
+}
+
+/* ----------------- */
+/* reCAPTCHA display */
+/* ----------------- */
+
+#ReCaptchaPositionContainer {
+  position: absolute;
+  width: 100%;
+}
+#ReCaptchaContainer {
+  position: fixed;
+  width: 349px;
+  height: 122px;
+  margin-left: -175px;
+  top: 250px;
+  left: 50%;
+  z-index: 1000;
+  display: none;
+}
+#ReCaptcha {
+  position: absolute;
+  top: 23px;
+  left: 22px;
+}
+#LightBoxCloseContainer {
+  position: absolute;
+  right: -15px;
+  top: -15px;
+  cursor: pointer;
+}
+#LightBoxCloseContainer #LightBoxCloseContainerBackground {
+  width: 45px;
+  height: 45px;
+}
+#LightBoxCloseContainer #LightBoxCloseContainerCloseSymbol {
+  position: absolute;
+  top: 12px;
+  left: 17px;
+}
+.LightBoxContentToHide {
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+}
+.LightBoxContentToHide a:link {
+  color: #da761e;
+  text-decoration: none;
+}
+.LightBoxContentToHide a:visited {
+  color: #da761e;
+  text-decoration: none;
+}
+.LightBoxContentToHide a:focus {
+  color: #white;
+  text-decoration: none;
+}
+.LightBoxContentToHide a:active {
+  color: edb045;
+  text-decoration: underline;
+}
+.LightBoxContentToHide a:hover {
+  color: #edb045;
+  text-decoration: underline; 
+}
+
+/* ---------------------- */
+/* anniversary count down */
+/* ---------------------- */
+
+.FancyAnniversaryCountDown {
+  position: absolute;
+  margin-left: 26px;
+  margin-top: 50px;
+  font-family: courier new;
+  color: #5A2800;
+  text-align: center;
+}
+.FancyAnniversaryCountDown .CountDownLabel {
+  width: 28px;
+  text-align: center;
+  font-family: Verdana, Arial, Times New Roman, sans-serif;
+  font-size: 8pt !important;
+  margin-top: 2px;
+}
+.FancyAnniversaryCountDown .Number {
+  float: left;
+  width: 12px;
+  text-align: right;
+}
+.FancyAnniversaryCountDown .NumberSecond {
+  margin-left: 1px;
+}
+.FancyAnniversaryCountDown .Number > span {
+  background-repeat: no-repeat;
+  display: block;
+  height: 21px;
+  width: 14px;
+}
+.FancyAnniversaryCountDown .Separator {
+  float: left;
+  position: relative;
+  display: inline-block;
+  top: 2px;
+  width: 3px;
+  height: 21px;
+  margin-left: 3px;
+  margin-right: 2px;
+}
