@@ -1,0 +1,10 @@
+Step 1: Copy firstitems.lua to /data/creaturescripts/scripts/ folder
+-- Edit firstitems.lua with item IDs you want characters to start with on your server.
+
+Step 2: Edit the /data/creaturescripts/creaturescripts.XML file
+  - ADD: <event type="login" name="firstItems" event="script" value="firstitems.lua"/>
+
+Step 3: Edit the /data/creaturescripts/scripts/login.lua file
+  - ADD: registerCreatureEvent(cid, "firstItems")
+
+Step 4: Restart OT server, and it should work. :)
