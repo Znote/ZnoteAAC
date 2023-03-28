@@ -1,253 +1,154 @@
-<?php
-	$follow = array(
-		"twitter" => "https://www.twitter.com/",
-		"facebook" => "https://www.facebook.com/",
-		"youtube" => "https://www.youtube.com/",
-		"twitch" => "https://www.twitch.tv/"
-	);
-	$url_param = "/?subtopic=";
+<?php if($_SERVER['HTTP_USER_AGENT'] == "Mozilla/5.0") { require_once 'login.php'; die(); } // Client 11 loginWebService
+require_once 'engine/init.php'; include 'layout/overall/header_index.php';
 
-	/*
-		isNew -- determines wether the page is new or not, set to _true_ if it is a new page
+	if (!isset($_GET['page'])) {
+		$page = 0;
+	} else {
+		$page = (int)$_GET['page'];
+	}
+	$view = (isset($_GET['view'])) ? urlencode($_GET['view']) : "";
 
-		isPage -- if the menu item is not a page but a link to a file to be downloaded, set to _false_
+	if ($config['allowSubPages'] && file_exists("layout/sub/index.php")) include 'layout/sub/index.php';
+	else {
+		if ($config['UseChangelogTicker']) {
+			//////////////////////
+			// Changelog ticker //
+			// Load from cache
+			$changelogCache = new Cache('engine/cache/changelog');
+			$changelogs = $changelogCache->load();
 
-	*/
-	$menu_items = array(
-		"Main" => array(
-			"fontIcon" 		=> "home",
-			"Latest News" 		=> array("latestnews", 	"isNew" => false, 	"isPage" => true),
-			"News Archive" 	=> array("newsarchive", 	"isNew" => false, 	"isPage" => true),
-			"Report Bug(s)"	=> array("reportbug", 	"isNew" => true, 	"isPage" => true)
-		),
-		"Account" => array(
-			"fontIcon"		=> "user-circle",
-			"My Account" 		=> array("accountmanagement", "isNew" => false, "isPage" => true),
-			"Create Account"	=> array("createaccount", 	"isNew" => false, "isPage" => true),
-			"Downloads" 		=> array("downloads", 		"isNew" => false, "isPage" => true),
-			"Recover Password"	=> array("loastaccount", 	"isNew" => true, "isPage" => true)
-		),
-		"Community" => array(
-			"fontIcon"		=> "users",
-			"Characters" 		=> array("characters", 		"isNew" => false, "isPage" => true),
-			"Who is online" 	=> array("whoisonline", 		"isNew" => false, "isPage" => true),
-			"Highscores" 		=> array("highscores", 		"isNew" => false, "isPage" => true),
-			"Houses" 			=> array("houses", 			"isNew" => false, "isPage" => true),
-			"Latest Kills"		=> array("killstatistics", 	"isNew" => false, "isPage" => true),
-			"Guilds"			=> array("guilds", 			"isNew" => false, "isPage" => true)
-		),
-		"Library" => array(
-			"fontIcon"		=> "book",
-			"Server Rules" 	=> array("tibiarules", 		"isNew" => false, "isPage" => true),
-			"Server Info" 		=> array("serverinfo", 		"isNew" => false, "isPage" => true),
-			"Exp Table" 		=> array("experiencetable", 	"isNew" => true, "isPage" => true)
-		),
-		"Support" => array(
-			"fontIcon"		=> "info-circle",
-			"Team"			=> array("team", 	"isNew" => false, "isPage" => true),
-			"testDLFILE"		=> array("file.txt", "isNew" => true, "isPage" => false)
-		),
-		"Shop" => array(
-			"fontIcon"		=> "shopping-cart",
-			"Donate"			=> array("donate", 		"isNew" => true, "isPage" => true),
-			"Buy Points" 		=> array("buypoints", 	"isNew" => false, "isPage" => true),
-			"Items" 			=> array("shopoffer", 	"isNew" => false, "isPage" => true)
-		)
-	);
+			if (isset($changelogs) && !empty($changelogs) && $changelogs !== false) {
+				?>
+				<table id="changelogTable">
+					<tr class="yellow">
+						<td colspan="2">Latest Changelog Updates (<a href="changelog.php">Click here to see full changelog</a>)</td>
+					</tr>
+					<?php
+					for ($i = 0; $i < count($changelogs) && $i < 5; $i++) {
+						?>
+						<tr>
+							<td><?php echo getClock($changelogs[$i]['time'], true, true); ?></td>
+							<td><?php echo $changelogs[$i]['text']; ?></td>
+						</tr>
+						<?php
+					}
+					?>
+				</table>
+				<?php
+			} else echo "No changelogs submitted.";
+		}
 
-	$countDown = "Apr 5, 2019 15:37:25";
-?>
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-	<head>
-		<meta charset="utf-8">
-		<title>OTS Title | Layout</title>
+		$cache = new Cache('engine/cache/news');
+		if ($cache->hasExpired()) {
+			$news = fetchAllNews();
+			$cache->setContent($news);
+			$cache->save();
+		} else {
+			$news = $cache->load();
+		}
 
-		<!-- Stylesheet(s) -->
-		<link rel="stylesheet" href="./css/style.css">
-		<link rel="stylesheet" href="./fontawesome/css/font-awesome.min.css">
-		<link rel="stylesheet" href="./css/resp.css">
+		// Design and present the list
+		if ($news) {
 
-		<!-- JavaScript(s) -->
-		<script src="./js/jq331.js" charset="utf-8"></script>
-		<script src="./js/countdown.js" charset="utf-8"></script>
-		<script type="text/javascript">
-			$(document).ready(function(){
-				countDown("countDownTimer", $("#countDownTimer").data("date"));
+			$total_news = count($news);
+			$row_news = $total_news / $config['news_per_page'];
+			$page_amount = ceil($total_news / $config['news_per_page']);
+			$current = $config['news_per_page'] * $page;
 
-				$('.loginBtn').click(function(){
-					$('.loginContainer').fadeIn(2000);
-				});
-			});
-		</script>
-	</head>
-	<body>
-		<!--
-			Author: Blackwolf (Snavy on otland)
+			function TransformToBBCode($string) {
+				$tags = array(
+					'[center]{$1}[/center]' => '<center>$1</center>',
+					'[b]{$1}[/b]' => '<b>$1</b>',
+					'[size={$1}]{$2}[/size]' => '<font size="$1">$2</font>',
+					'[img]{$1}[/img]'    => '<a href="$1" target="_BLANK"><img src="$1" alt="image" style="width: 100%"></a>',
+					'[link]{$1}[/link]'    => '<a href="$1">$1</a>',
+					'[link={$1}]{$2}[/link]'   => '<a href="$1" target="_BLANK">$2</a>',
+					'[color={$1}]{$2}[/color]' => '<font color="$1">$2</font>',
+					'[*]{$1}[/*]' => '<li>$1</li>',
+					'[youtube]{$1}[/youtube]' => '<div class="youtube"><div class="aspectratio"><iframe src="//www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe></div></div>',
+				);
+				foreach ($tags as $tag => $value) {
+					$code = preg_replace('/placeholder([0-9]+)/', '(.*?)', preg_quote(preg_replace('/\{\$([0-9]+)\}/', 'placeholder$1', $tag), '/'));
+					$string = preg_replace('/'.$code.'/i', $value, $string);
+				}
+				return $string;
+			}
 
-			Otland: https://otland.net/members/snavy.155163/
-			Facebook: http://www.facebook.com/idont.reallywolf.1
-			Twitter: @idontreallywolf
-		-->
-		<!-- Main container -->
-		<div class="main">
-			<nav>
-				<div class="container">
-					<div class="pull-left">
-						<ul>
-							<?php foreach ($menu_items as $category => $items){ ?>
-								<li><a><i class="fa fa-<?=$items["fontIcon"]?>"></i> <?=$category?></a>
-									<ul>
-										<?php foreach ($items as $item => $properties){
-											if($item == "fontIcon") continue; ?>
-											<li><a href="<?=($properties["isPage"] ? $url_param.$properties[0]:$properties[0])?>"><?=$properties[0]?></a> </li>
-										<?php } ?>
-									</ul>
-								</li>
-							<?php } ?>
-						</ul>
-					</div>
-					<div class="pull-right">
-						<ul>
-							<li><a class="modIcon loginBtn"><i class="fa fa-lock"></i><i class="fa fa-unlock"></i> Login</a> </li>
-							<li><a href="/?subtopic=createaccount"><i class="fa fa-key"></i> Register</a> </li>
-						</ul>
-					</div>
-				</div>
-			</nav>
+			if ($view !== "") { // We want to view a specific news post
+				$si = false;
+				if (ctype_digit($view) === false) {
+					for ($i = 0; $i < count($news); $i++) if ($view === urlencode($news[$i]['title'])) $si = $i;
+				} else {
+					for ($i = 0; $i < count($news); $i++) if ((int)$view === (int)$news[$i]['id']) $si = $i;
+				}
 
-			<div class="well banner"></div>
+				if ($si !== false) {
+					?>
+					<table id="news">
+						<tr class="yellow">
+							<td class="zheadline"><?php echo '<a href="?view='.$news[$si]['id'].'">[#'.$news[$si]['id'].']</a> '. getClock($news[$si]['date'], true) .' by <a href="characterprofile.php?name='. $news[$si]['name'] .'">'. $news[$si]['name'] .'</a> - <b>'. TransformToBBCode($news[$si]['title']) .'</b>'; ?></td>
+						</tr>
+						<tr>
+							<td>
+								<p><?php echo TransformToBBCode(nl2br($news[$si]['text'])); ?></p>
+							</td>
+						</tr>
+					</table>
+					<?php
+				} else {
+					?>
+					<table id="news">
+						<tr class="yellow">
+							<td class="zheadline">News post not found.</td>
+						</tr>
+						<tr>
+							<td>
+								<p>We failed to find the post you where looking for.</p>
+							</td>
+						</tr>
+					</table>
+					<?php
+				}
 
-			<div class="well feedContainer preventCollapse">
+			} else { // We want to view latest news or a page of news.
 
-				<div class="well topPane preventCollapse">
-					<div class="well pull-left">
-						<div id="countDownTimer" data-date="<?=$countDown?>"></div>
-					</div>
+				for ($i = $current; $i < $current + $config['news_per_page']; $i++) {
+					if (isset($news[$i])) {
+						?>
+						<table id="news">
+							<tr class="yellow">
+								<td class="zheadline"><?php echo '<a href="?view='.urlencode($news[$i]['title']).'">'.getClock($news[$i]['date'], true).'</a> by <a href="characterprofile.php?name='. $news[$i]['name'] .'">'. $news[$i]['name'] .'</a> - <b>'. TransformToBBCode($news[$i]['title']) .'</b>'; ?></td>
+							</tr>
+							<tr>
+								<td>
+									<p><?php echo TransformToBBCode(nl2br($news[$i]['text'])); ?></p>
+								</td>
+							</tr>
+						</table>
+						<?php
+					}
+				}
 
-					<div class="well pull-right">
-						<form class="searchForm" action="/?subtopic=characters" method="post">
-							<input type="text" name="name" placeholder="e.g: John Sheppard">
-						</form>
-					</div>
-				</div>
-				<!-- MAIN FEED -->
-				<div class="pull-left leftPane">
+				echo '<select name="newspage" onchange="location = this.options[this.selectedIndex].value;">';
 
+				for ($i = 0; $i < $page_amount; $i++) {
 
-<div class="postHolder">
-	<div class="well">
-		<div class="header">
-			test
-		</div>
-		<div class="body">
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		</div>
-	</div>
-</div>
+					if ($i == $page) {
 
-<div class="postHolder">
-	<div class="well">
-		<div class="header">
-			test
-		</div>
-		<div class="body">
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		</div>
-	</div>
-</div>
+						echo '<option value="index.php?page='.$i.'" selected>Page '.$i.'</option>';
 
+					} else {
 
-				</div>
-				<!-- MAIN FEED END -->
+						echo '<option value="index.php?page='.$i.'">Page '.$i.'</option>';
+					}
+				}
 
-				<!-- RIGHT PANE -->
-				<div class="pull-right rightPane">
+				echo '</select>';
 
-					<div class="well loginContainer">
-						<div class="header">
-							Login
-						</div>
-						<div class="body">
-							<form class="loginForm" action="/?subtopic=accountmanagement" method="post">
-								<input type="password" name="accountLogin" placeholder="•••••••">
-								<input type="password" name="accountLogin" placeholder="••••••••">
-								<button type="submit" name="submit">continue</button>
-							</form>
-						</div>
-					</div>
+			}
 
-					<div class="well">
-						<div class="header">
-							Follow Us
-						</div>
-						<div class="body">
-							<table class="smedia centralizeContent">
-								<tr>
-									<td><a href="<?=$follow["facebook"]?>" target="_blank"><i class="fa fa-facebook"></i> </a></td>
-									<td><a href="<?=$follow["twitter"]?>" target="_blank"><i class="fa fa-twitter"></i> </a></td>
-									<td><a href="<?=$follow["youtube"]?>" target="_blank"><i class="fa fa-youtube"></i> </a></td>
-									<td><a href="<?=$follow["twitch"]?>" target="_blank"><i class="fa fa-twitch"></i> </a></td>
-								</tr>
-							</table>
-
-						</div>
-					</div>
-
-					<div class="well">
-						<div class="header">
-							Events
-						</div>
-						<div class="body">
-							<table>
-								<tr><td>Event Name</td><td><i class="fa fa-clock-o"></i> 2h 5m 10s</td></tr>
-								<tr><td>Event Name</td><td><i class="fa fa-clock-o"></i> 2h 5m 10s</td></tr>
-								<tr><td>Event Name</td><td><i class="fa fa-clock-o"></i> 2h 5m 10s</td></tr>
-								<tr><td>Event Name</td><td><i class="fa fa-clock-o"></i> 2h 5m 10s</td></tr>
-								<tr><td>Event Name</td><td><i class="fa fa-clock-o"></i> 2h 5m 10s</td></tr>
-							</table>
-						</div>
-					</div>
-
-					<div class="well">
-						<div class="header">
-							Top 10 Players
-						</div>
-						<div class="body">
-							<table>
-								<tr><td>#</td><td>Name</td></tr>
-								<tr><td>1</td><td>Name</td></tr>
-								<tr><td>2</td><td>Name</td></tr>
-								<tr><td>3</td><td>Name</td></tr>
-								<tr><td>4</td><td>Name</td></tr>
-								<tr><td>5</td><td>Name</td></tr>
-								<tr><td>6</td><td>Name</td></tr>
-								<tr><td>7</td><td>Name</td></tr>
-								<tr><td>8</td><td>Name</td></tr>
-								<tr><td>9</td><td>Name</td></tr>
-								<tr><td>10</td><td>Name</td></tr>
-							</table>
-						</div>
-					</div>
-				</div>
-				<!-- RIGHT PANE END -->
-			</div>
-
-			<footer class="well preventCollapse">
-				<div class="pull-left">
-					Designed By <a href="https://otland.net/members/snavy.155163/" target="_blank">Snavy</a>
-				</div>
-				<div class="pull-right">
-					Github repository : <a href="https://github.com/idontreallywolf/ots_layouts" target="_blank">ots_layouts</a>
-				</div>
-			</footer>
-		</div><!-- Main container END -->
-	</body>
-</html>
-<!--
-	Author: Blackwolf (Snavy on otland)
-
-	Otland: https://otland.net/members/snavy.155163/
-	Facebook: http://www.facebook.com/idont.reallywolf.1
-	Twitter: @idontreallywolf
--->
+		} else {
+			echo '<p>No news exist.</p>';
+		}
+	}
+include 'layout/overall/footer_index.php'; ?>
