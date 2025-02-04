@@ -5,7 +5,7 @@
 	<div class="body">
 		<form class="loginForm" action="login.php" method="post">
 			<div class="well">
-				<label for="login_username">Userame:</label> <input type="text" name="username" id="login_username">
+				<label for="login_username">Username:</label> <input type="text" name="username" id="login_username">
 			</div>
 			<div class="well">
 				<label for="login_password">Password:</label> <input type="password" name="password" id="login_password">
